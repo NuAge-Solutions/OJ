@@ -1,0 +1,49 @@
+.OjSelector {
+	height: auto;
+	min-height: 28px;
+
+	border: none;
+
+	-moz-box-shadow:    none;
+	-webkit-box-shadow: none;
+	box-shadow:         none;
+
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+	.OjSelector > .wrapper {
+		background: none;
+
+		border: none;
+
+		-webkit-border-radius: 0px;
+		-moz-border-radius: 0px;
+		border-radius: 0px;
+
+		-moz-box-shadow:    none;
+		-webkit-box-shadow: none;
+		box-shadow:         none;
+	}
+		.OjSelector > .wrapper > .psuedoInput {
+			padding: 0px;
+			margin: 0px;
+		}
+
+.OjSelector .options {
+	white-space: normal;
+}
+
+
+.OjOption .indicator {
+	overflow: hidden;
+}
+
+.OjOption .indicator > .input {
+	position: absolute;
+
+	height: 0px;
+
+	left: -50px;
+}

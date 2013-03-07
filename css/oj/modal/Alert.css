@@ -1,0 +1,109 @@
+.ModalManager,
+.OjAlert {
+	position: absolute;
+
+	top: 0px;
+	left: 0px;
+
+	min-width: 100%;
+	min-height: 100%;
+
+	margin: 0px;
+	padding: 0px;
+
+	background: none;
+
+	overflow: hidden;
+
+	z-index: 999999;
+}
+.ModalManager {
+	position: fixed;
+}
+	.OjAlert > .underlay {
+		 position: absolute;
+
+		 top: 0px;
+		 left: 0px;
+
+		 width: 100%;
+		 height: 100%;
+
+		 margin: 0px;
+		 padding: 0px;
+
+		 background: #000000;
+
+		 opacity: 0.3;
+		 filter:alpha(opacity=30);
+
+		 z-index: 1;
+	 }
+
+	.OjAlert > .pane {
+		position: absolute;
+
+		top: 50%;
+		left: 50%;
+
+		background: #0b1b44;
+
+		border: 3px solid #FFFFFF;
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+
+		-moz-box-shadow:    0px 0px 20px 0px #333333;
+		-webkit-box-shadow: 0px 0px 20px 0px #333333;
+		box-shadow:         0px 0px 20px 0px #333333;
+
+		z-index: 5;
+	}
+		.OjAlert > .pane > .bar {
+			height: 3px;
+			padding: 15px 10px 10px;
+
+			background: #858b9d; /* Old browsers */
+			background: -moz-linear-gradient(top,  #858b9d 0%, #303b59 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#858b9d), color-stop(100%,#303b59)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top,  #858b9d 0%,#303b59 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top,  #858b9d 0%,#303b59 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top,  #858b9d 0%,#303b59 100%); /* IE10+ */
+			background: linear-gradient(to bottom,  #858b9d 0%,#303b59 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#858b9d', endColorstr='#303b59',GradientType=0 ); /* IE6-9 */
+
+			-webkit-border-radius: 6px;
+			-webkit-border-bottom-right-radius: 50%;
+			-webkit-border-bottom-left-radius: 50%;
+			-moz-border-radius: 6px;
+			-moz-border-radius-bottomright: 50%;
+			-moz-border-radius-bottomleft: 50%;
+			border-radius: 6px;
+			border-bottom-right-radius: 50%;
+			border-bottom-left-radius: 50%;
+
+			color: #FFFFFF;
+			font-size: 18px;
+			font-weight: bold;
+			text-align: center;
+			text-shadow: 0px -1px 1px #000000;
+
+			overflow: visible;
+		}
+		.OjAlert > .pane > .content {
+			padding: 20px 10px 10px;
+		}
+			.OjAlert > .pane > .content > .container {
+				color: #FFFFFF;
+				font-size: 16px;
+				text-align: center;
+				text-shadow: 0px -1px 1px #000000;
+			}
+			.OjAlert > .pane > .content > .buttons {
+				padding: 20px 0px 0px;
+
+				text-align: center;
+			}
+				.OjAlert > .pane > .content > .buttons > * {
+					margin: 0px 5px;
+				}

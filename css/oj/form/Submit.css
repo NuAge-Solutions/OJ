@@ -1,0 +1,6 @@
+.OjSubmitButton {
+
+}
+    .OjSubmitButton > [var~="input"] {
+        display: none;
+    }

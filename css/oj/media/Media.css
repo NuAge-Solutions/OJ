@@ -1,0 +1,68 @@
+.OjMedia {
+	display: inline-block;
+
+	text-align: center;
+
+	vertical-align: middle;
+}
+	.OjMedia > .OjSpinner {
+		position: absolute;
+
+		top: 50%;
+		left: 50%;
+
+		margin: -15px 0px 0px -15px;
+	}
+	.OjMedia > .media {
+		border: none;
+	}
+
+
+.arrow-up, .OjImage > .media.arrow-up,
+.arrow-left, .OjImage > .media.arrow-left,
+.arrow-down, .OjImage > .media.arrow-down,
+.arrow-right, .OjImage > .media.arrow-right {
+	display: inline-block;
+
+	transform:rotate(45deg);
+	-moz-transform:rotate(45deg); /* Firefox */
+	-webkit-transform:rotate(45deg); /* Safari and Chrome */
+	-o-transform:rotate(45deg); /* Opera */
+	-ms-transform:rotate(45deg); /* IE 9 */
+	filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=.125); /* IE 8 */
+}
+.arrow-left, .OjImage > .media.arrow-left {
+	transform:rotate(315deg);
+	-moz-transform:rotate(315deg); /* Firefox */
+	-webkit-transform:rotate(315deg); /* Safari and Chrome */
+	-o-transform:rotate(315deg); /* Opera */
+	-ms-transform:rotate(315deg); /* IE 9 */
+	filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=.875); /* IE 8 */
+}
+.arrow-bottom, .OjImage > .media.arrow-bottom {
+	transform:rotate(225deg);
+	-moz-transform:rotate(225deg); /* Firefox */
+	-webkit-transform:rotate(225deg); /* Safari and Chrome */
+	-o-transform:rotate(225deg); /* Opera */
+	-ms-transform:rotate(225deg); /* IE 9 */
+	filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=.625); /* IE 8 */
+}
+.arrow-right, .OjImage > .media.arrow-right {
+	transform:rotate(135deg);
+	-moz-transform:rotate(135deg); /* Firefox */
+	-webkit-transform:rotate(135deg); /* Safari and Chrome */
+	-o-transform:rotate(135deg); /* Opera */
+	-ms-transform:rotate(135deg); /* IE 9 */
+	filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=.375); /* IE 8 */
+}
+
+.arrow-up, .OjImage > .media.arrow-up,
+.arrow-left, .OjImage > .media.arrow-left,
+.arrow-down, .OjImage > .media.arrow-down,
+.arrow-right, .OjImage > .media.arrow-right {
+	width: 7px;
+	height: 7px;
+
+	border-top: 3px solid #777777;
+	border-left: 3px solid #777777;
+}

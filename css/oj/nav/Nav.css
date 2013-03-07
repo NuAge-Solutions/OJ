@@ -1,0 +1,33 @@
+.OjNav {
+    display: block;
+}
+
+    .OjNav > .items{
+        z-index: 3;
+    }
+
+    .OjNav > .items > * {
+        display: block;
+        float: left;
+
+        margin: 0px 0px 0px 5px;
+    }
+    .OjNav.horizontal > .items > *.first {
+        margin-left: 0px;
+    }
+    .OjNav.vertical > .items > * {
+        clear: both;
+        margin: 5px 0px 0px;
+    }
+    .OjNav.vertical > .items > *.first {
+        margin-top: 0px;
+    }
+
+    .OjNav .active-bg{
+        background: #CCCCCC;
+        width: 160px;
+        height: 45px;
+        position: absolute;
+        z-index: 1;
+    }
+

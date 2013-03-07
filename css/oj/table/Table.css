@@ -1,0 +1,66 @@
+.OjTable{
+    margin: 0px;
+    padding: 0px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    vertical-align: middle;
+}
+    .OjTable > thead,
+    .OjTable > tbody,
+    .OjTable > tfoot {
+        margin: 0px;
+        padding: 0px;
+    }
+        .OjTable > thead > tr {
+            background: #FFFFFF;
+        }
+            .OjTable > thead > tr > td {
+                padding: 10px 20px;
+
+                background: #AAAAAA;
+
+                border-left: 1px solid #FFFFFF;
+                border-top: 1px solid #999999;
+
+                color: #FFFFFF;
+                font-size: 14px;
+                font-weight: bold;
+                text-align: left;
+            }
+
+        .OjTable > tbody > tr > td {
+            padding: 10px;
+
+            background: none repeat scroll 0 0 transparent;
+
+            border-top: 1px solid #E5E5E5;
+            border-left: solid 1px #FFFFFF;
+
+            font-weight: normal;
+            text-align: left;
+
+            vertical-align: middle;
+
+        }
+        .OjTable > tbody > tr.odd > td {
+            background: #F5F5F5;
+        }
+        .OjTable > tbody > tr.even > td {
+            background-color: #FFFFFF;
+        }
+        .OjTable > tbody > tr.even.first > td {
+            border-top-color: #999999;
+        }
+
+        .OjTable > * > tr > td:first-child{
+            border-left: none;
+        }
+
+        .OjTable .even.highlight{
+            background: #e9f2f9;
+        }
+        .OjTable .odd.highlight {
+            background: #b2d1e5;
+        }

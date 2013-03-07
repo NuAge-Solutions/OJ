@@ -1,0 +1,6 @@
+
+.DS_Store
+*.svn
+js/mc_php/*
+js/na/*
+js/sm/*
