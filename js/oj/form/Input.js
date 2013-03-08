@@ -120,7 +120,7 @@ OJ.compileClass(
 				'_onFocusOut' : function(evt){
 					var classes = ['focus'];
 
-					if(isEmpty(this._value)){
+					if(isEmpty(this._value) && this._default){
 						classes.push('no-default');
 					}
 

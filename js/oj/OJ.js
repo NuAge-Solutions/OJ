@@ -1593,8 +1593,6 @@ function onDomReady(){
 
 // on oj ready event handler
 function onOjReady(){
-	OJ._is_ready = true;
-
 	traceGroup();
 
 	traceGroup('Juicing the oranges.', true);
@@ -1617,6 +1615,8 @@ function onOjReady(){
 	OJ.container.show();
 
 	traceGroup();
+
+	OJ._is_ready = true;
 
 	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
 }

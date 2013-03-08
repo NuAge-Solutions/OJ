@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.Component');
+OJ.importJs('oj.components.View');
 
 OJ.importCss('oj.components.Iframe');
 
@@ -8,7 +8,7 @@ OJ.importCss('oj.components.Iframe');
 OJ.compileClass(
 	'OjIframe',
 	oj.components.Iframe = function(){
-		return new oj.components.Component(
+		return new oj.components.View(
 			arguments, 'OjIframe',
 			{
 				'_source' : null,  '_interval' : null,  '_timeout' : 60,

@@ -172,6 +172,11 @@ OJ.compileClass(
 				}
 			}
 		);
+	},
+	{
+		'collection' : function(obj){
+			return isArray(obj) || !isObjective(obj) ? new OjCollection(obj) : obj;
+		}
 	}
 );
 

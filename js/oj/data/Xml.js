@@ -77,7 +77,7 @@ OJ.compileClass(
 					return null;
 				},
 
-				'value' : function(/*xpath*/){
+				'value' : function(/*xpath, value*/){
 					if(arguments.length){
 						var xpath = arguments[0];
 

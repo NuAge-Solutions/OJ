@@ -80,7 +80,9 @@ OJ.compileComponent(
 
 					this.icon.removeAllChildren();
 
-					this.icon.addChild(this._icon = icon);
+					if(this._icon = icon){
+						this.icon.addChild(this._icon);
+					}
 				},
 
 				'setUrl' : function(url){

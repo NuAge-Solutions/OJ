@@ -26,6 +26,11 @@ OJ.compileManager(
 						this._modals = manager._modals;
 						this._modal_holder = manager._modal_holder;
 
+						if(!OJ.isReady()){
+							OJ.removeEventListener(OjEvent.READY, manager, '_onOjReady');
+							OJ.addEventListener(OjEvent.READY, this, '_onOjReady');
+						}
+
 						OJ.destroy(manager);
 					}
 					else{

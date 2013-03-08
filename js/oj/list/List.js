@@ -359,13 +359,13 @@ OJ.compileComponent(
 
 					// remove previous dp event listeners
 					if(this._dataProvider){
-						this._dataProvider.removeEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
-						this._dataProvider.removeEventListener(OjListEvent.ITEM_MOVE, this, '_onItemMove');
-						this._dataProvider.removeEventListener(OjListEvent.ITEM_REMOVE, this, '_onItemRemove');
-						this._dataProvider.removeEventListener(OjListEvent.ITEM_REPLACE, this, '_onItemReplace');
+						this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+						this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+						this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+						this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
 					}
 
-					this._dataProvider = isArray(dp) || !isObjective(dp) ? new OjCollection(dp) : dp;
+					this._dataProvider = OjCollection.collection(dp);
 
 					// make sure that we always have a valid dp object
 					if(!this._dataProvider){
@@ -373,10 +373,10 @@ OJ.compileComponent(
 					}
 
 					// add event listeners for item changes
-					this._dataProvider.addEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
-					this._dataProvider.addEventListener(OjListEvent.ITEM_MOVE, this, '_onItemMove');
-					this._dataProvider.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onItemRemove');
-					this._dataProvider.addEventListener(OjListEvent.ITEM_REPLACE, this, '_onItemReplace');
+					this._dataProvider.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+					this._dataProvider.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+					this._dataProvider.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+					this._dataProvider.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
 
 					this.redraw();
 				},

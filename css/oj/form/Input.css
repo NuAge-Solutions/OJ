@@ -107,6 +107,8 @@
 			min-height: 26px;
 		}
 			.OjInput > .wrapper > .psuedoInput > .stem > .input {
+				display: block;
+
 				width: 100%;
 				height: 100%;
 
@@ -123,7 +125,7 @@
 				z-index: 1;
 			}
 
-			.OjInput > .wrapper > .psuedoInput > .stem > .default {
+			.OjInput > .wrapper > .psuedoInput > .stem > .dflt {
 				position: absolute;
 
 				top: 0px;
@@ -139,7 +141,7 @@
 
 				overflow: hidden;
 			}
-			.OjInput.no-default > .wrapper > .psuedoInput > .stem > .default {
+			.OjInput.no-default > .wrapper > .psuedoInput > .stem > .dflt {
 				height: 0px;
 			}
 
