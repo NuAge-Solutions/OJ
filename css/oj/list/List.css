@@ -41,7 +41,7 @@
 	-webkit-box-shadow: inset 0px 1px 0px 0px #DDDDDD;
 	box-shadow:         inset 0px 1px 0px 0px #DDDDDD;
 }
-	.OjItemRender {
+	.OjItemRenderer {
 		display: block;
 
 		padding: 15px 20px;
@@ -51,7 +51,7 @@
 		border-top: 1px solid #FFFFFF;
 		border-bottom: 1px solid #BBBBBB;
 	}
-	.items.horizontal > .OjListItem {
+	.items.horizontal > .OjItemRenderer {
 		display: inline-block;
 
 		padding: 0px;
@@ -59,17 +59,17 @@
 
 		border: none;
 	}
-	.OjItemRender.first {
+	.OjItemRenderer.first {
 		border-top: none;
 	}
-	.OjItemRender.last {
+	.OjItemRenderer.last {
 		border-bottom: none;
 	}
-		.OjItemRender > .accessory {
+		.OjItemRenderer > .accessory {
 			float: left;
 
 			height: 100%;
 		}
-		.OjItemRender > .content {
+		.OjItemRenderer > .content {
 			text-align: left;
 		}
