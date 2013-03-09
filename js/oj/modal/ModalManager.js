@@ -112,14 +112,14 @@ OJ.compileManager(
 				},
 
 				'browser' : function(url, title/*, width, height */){
-					var ln = arguments.length,
-						iframe = new OjIframe(url);
+					var ln = arguments.length, iframe = new OjIframe(url);
 
-					iframe.setWidth(ln > 2 ? arguments[2] : this._calcBrowserWidth());
-					iframe.setHeight(ln > 3 ? arguments[3] : this._calcBrowserHeight());
+					iframe.setWidth(100, '%');
+					iframe.setHeight(100, '%');
 
 					var modal = new OjModal(title, iframe);
-					modal.showClose(true);
+					modal.setPaneWidth(ln > 2 ? arguments[2] : this._calcBrowserWidth());
+					modal.setPaneHeight(ln > 3 ? arguments[3] : this._calcBrowserHeight());
 
 					return this.show(modal);
 				},
