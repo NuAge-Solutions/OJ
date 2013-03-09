@@ -17,6 +17,8 @@
 }
 	.flow-nav-controller > .top,
 	.flow-nav-controller > .bottom {
+		display: table;
+
 		position: absolute;
 
 		top: 0px;
@@ -31,11 +33,9 @@
 	.flow-nav-controller > * > .left,
 	.flow-nav-controller > * > .title,
 	.flow-nav-controller > * > .right {
-		position: absolute;
+		display: table-cell;
 
-		left: 0px;
-		right: 75%;
-
+		width: 25%;
 		height: 100%;
 
 		padding: 0px 10px;
@@ -45,17 +45,13 @@
 		z-index: 3;
 	}
 	.flow-nav-controller > * > .title {
-		left: 25%;
-		right: 25%;
+		width: 50%;
 
 		color: #FFFFFF;
 		font-size: 16px;
 		text-align: center;
 	}
 	.flow-nav-controller > * > .right {
-		left: 75%;
-		right: 0px;
-
 		text-align: right;
 	}
 	.flow-nav-controller > .title {
@@ -75,8 +71,4 @@
 		height: 100%;
 
 		text-align: center;
-	}
-	.flow-nav-controller > * > .left > *,
-	.flow-nav-controller > * > .right > * {
-		margin-top: -4px;
 	}

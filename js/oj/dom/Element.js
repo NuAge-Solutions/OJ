@@ -317,7 +317,7 @@ oj.dom.Element = function(){
 
 			'_onDomTouchEvent' : function(evt){
 				if(this.ojProxy && this.ojProxy._processEvent(evt)){
-					this.ojProxy._onTouch(OjTouchEvent.convertDomEvent(evt));
+					return this.ojProxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 				}
 
 				return false;
@@ -353,6 +353,8 @@ oj.dom.Element = function(){
 
 			'_onEvent' : function(evt){
 				this.dispatchEvent(evt);
+
+				return false;
 			},
 
 			'_onMouse' : function(evt){
@@ -369,7 +371,7 @@ oj.dom.Element = function(){
 					this.dispatchEvent(new OjDragEvent(OjDragEvent.DRAG_INIT, 0, 0, evt, false, false));
 				}
 
-				this._onEvent(evt);
+				return this._onEvent(evt);
 			},
 
 			'_onMoveTick' : function(evt){
@@ -393,10 +395,21 @@ oj.dom.Element = function(){
 							this._onMouse(new OjMouseEvent(OjMouseEvent.UP, evt.getBubbles(), evt.getCancelable(), evt.getPageX(), evt.getPageY()));
 						}
 
-						if(this.hasEventListener(OjMouseEvent.CLICK)){
+						if(
+							this.hasEventListener(OjMouseEvent.CLICK) &&
+							evt.getPageX() == this._dragX && evt.getPageY() == this._dragY
+						){
 							this._onMouse(new OjMouseEvent(OjMouseEvent.CLICK, evt.getBubbles(), evt.getCancelable(), evt.getPageX(), evt.getPageY()));
 						}
 					}
+				}
+				else if(evt.getType() == OjTouchEvent.START){
+					// store the start so we know on the end if its a move or click
+					this._dragX = evt.getPageX();
+					this._dragY = evt.getPageY();
+
+					// allow this event to go through
+					return true;
 				}
 //				if(evt.getType() == OjMouseEvent.DOWN && this._draggable){
 //					this._dragX = evt.getPageX();
@@ -411,7 +424,7 @@ oj.dom.Element = function(){
 //					this.dispatchEvent(new OjDragEvent(OjDragEvent.DRAG_INIT, 0, 0, evt, false, false));
 //				}
 //
-				this._onEvent(evt);
+				return this._onEvent(evt);
 			},
 
 			'find' : function(query){
@@ -433,6 +446,7 @@ oj.dom.Element = function(){
 					this._proxy.onclick = this._onDomMouseEvent;
 
 					if(OJ.isTouchCapable()){
+						this._proxy.ontouchstart = this._onDomTouchEvent;
 						this._proxy.ontouchend = this._onDomTouchEvent;
 					}
 				}

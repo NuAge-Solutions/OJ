@@ -110,6 +110,7 @@ OJ.compileClass(
 //				},
 
 				'_onDefaultClick' : function(evt){
+					trace(evt);
 					this.input.focus();
 				},
 
