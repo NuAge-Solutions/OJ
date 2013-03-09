@@ -331,24 +331,18 @@ OJ.compileComponent(
 					var index = this.indexOfElm(evt.getCurrentTarget());
 
 					this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_CLICK, this._dataProvider.getItemAt(index), index));
-
-					index = null;
 				},
 
 				'_onItemOver' : function(evt){
 					var index = this.indexOfElm(evt.getCurrentTarget());
 
 					this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OVER, this._dataProvider.getItemAt(index), index));
-
-					index = null;
 				},
 
 				'_onItemOut' : function(evt){
 					var index = this.indexOfElm(evt.getCurrentTarget());
 
 					this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OUT, this._dataProvider.getItemAt(index), index));
-
-					index = null;
 				},
 
 

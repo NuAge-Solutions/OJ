@@ -41,7 +41,7 @@
 	-webkit-box-shadow: inset 0px 1px 0px 0px #DDDDDD;
 	box-shadow:         inset 0px 1px 0px 0px #DDDDDD;
 }
-	.OjListItem {
+	.OjItemRender {
 		display: block;
 
 		padding: 15px 20px;
@@ -59,17 +59,17 @@
 
 		border: none;
 	}
-	.OjListItem.first {
+	.OjItemRender.first {
 		border-top: none;
 	}
-	.OjListItem.last {
+	.OjItemRender.last {
 		border-bottom: none;
 	}
-		.OjListItem > .accessory {
+		.OjItemRender > .accessory {
 			float: left;
 
 			height: 100%;
 		}
-		.OjListItem > .content {
+		.OjItemRender > .content {
 			text-align: left;
 		}

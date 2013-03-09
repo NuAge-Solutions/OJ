@@ -126,6 +126,20 @@ OJ.compileClass(
 					}
 
 					this.bar.setText(this._title = title);
+				},
+
+				'getPaneHeight' : function(){
+					return this.pane.getHeight();
+				},
+				'setPaneHeight' : function(val/*, unit*/){
+					this.pane.setHeight.apply(this.pane, arguments);
+				},
+
+				'getPaneWidth' : function(){
+					return this.pane.getWidth();
+				},
+				'setPaneWidth' : function(val/*, unit*/){
+					this.pane.setWidth.apply(this.pane, arguments);
 				}
 			}
 		);

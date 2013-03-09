@@ -84,6 +84,8 @@ OJ.compileManager(
 					this.removeEventListener(OjEvent.READY, this, '_onOjReady');
 
 					document.body.appendChild(this._modal_holder._dom);
+
+					this._modal_holder._setIsDisplayed(true);
 				},
 
 

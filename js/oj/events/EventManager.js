@@ -78,6 +78,10 @@ OJ.compileManager(
 
 
 				'_dispatchEvents' : function(evt, type, target){
+					if(evt.isCanceled()){
+						return;
+					}
+
 					var target_id = target.id();
 
 					evt._currentTarget = target;

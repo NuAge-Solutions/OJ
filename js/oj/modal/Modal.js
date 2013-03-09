@@ -33,6 +33,10 @@ OJ.compileClass(
 
 					this.bar.parent().replaceChild(this.bar, this.bar = controller);
 
+					this.showBar(true);
+
+					this.showClose(true);
+
 					// process arguments
 					var ln = arguments.length;
 
@@ -43,10 +47,6 @@ OJ.compileClass(
 
 						this.setTitle(arguments[0]);
 					}
-
-					this.showBar(true);
-
-					this.showClose(true);
 
 					if(!this.buttons.numChildren()){
 						this.buttons.hide();
