@@ -7,21 +7,16 @@ OJ.importCss('oj.form.Switch');
 
 'use strict';
 
-OJ.compileComponent(
-	'OjSwitch',
-	oj.form.Switch = function(){
-		return new oj.form.Input(
-			arguments, 'OjSwitch',
-			{
-				'_properties_' : {
+OJ.extendComponent(
+	OjInput, 'OjSwitch',
+	{
+		'_props_' : {
 
-				},
+		},
 
-				'_template' : 'oj.form.Switch'
-			}
-		);
+		'_template' : 'oj.form.Switch'
 	},
 	{
-		'SUPPORTED_TAGS' : ['switch']
+		'_TAGS' : ['switch']
 	}
 );

@@ -4,761 +4,817 @@
 /**
  * OJ Core Package
  */
-if(!window.oj){
-	window.oj = {};
-}
+window.OJ = function Oj(){
+	return {
+		'_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
 
-window.oj.OJ = {
-	'_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
+		'_engine' : null,  '_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
 
-	'_engine' : null,  '_events' : [],  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
+		'_is_tablet' : false,  '_is_touch_capable' : false,  '_library' : null,  '_loaded' : {},  '_metadata' : null,
 
-	'_is_tablet' : false,  '_is_touch_capable' : false,  '_library' : null,  '_loaded' : {},  '_metadata' : null,
+		'_metas' : null,  '_os' : null,  '_protocol' : 'http', '_root' : null,
 
-	'_metas' : null,  '_os' : null,  '_protocol' : 'http', '_root' : null,
+		'_settings' : {
+			'assetsPath' : 'assets',
 
-	'_settings' : {
-		'assetsPath' : 'assets',
+			'cssExt' : '.css',  'cssPath' : 'css',
 
-		'cssExt' : '.css',  'cssPath' : 'css',
+			'dimUnit' : 'px',  'fontUnit' : 'px',  'init' : null,
 
-		'dimUnit' : 'px',  'fontUnit' : 'px',  'init' : null,
+			'jsPath' : 'js',  'jsExt' : '.js',  'lazyLoad' : true,  'mode' : 'loading',
 
-		'jsPath' : 'js',  'jsExt' : '.js',  'lazyLoad' : true,  'mode' : 'loading',
+			'separator' : '/',  'target' : null,  'theme' : 'oj',  'themePath' : 'themes',
 
-		'separator' : '/',  'target' : null,  'theme' : 'oj',  'themePath' : 'themes',
+			'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
 
-		'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
+			'waitForCss' : true
+		},
 
-		'waitForCss' : true
-	},
+		'_script_elm' : null,  '_theme_elm' : null,    '_tween' : null,
 
-	'_script_elm' : null,  '_theme_elm' : null,    '_tween' : null,
-
-	'_viewport' : {
-		'top'    : 0,
-		'left'   : 0,
-		'bottom' : 0,
-		'right'  : 0,
-		'width'  : 0,
-		'height' : 0
-	},
+		'_viewport' : {
+			'top'    : 0,
+				'left'   : 0,
+				'bottom' : 0,
+				'right'  : 0,
+				'width'  : 0,
+				'height' : 0
+		},
 
 
-	// modes
-	'DEV'           : 'development',
-	'LOADING'       : 'loading',
-	'PRODUCTION'    : 'production',
+		// modes
+		'DEV'           : 'development',
+		'LOADING'       : 'loading',
+		'PRODUCTION'    : 'production',
 
-	// protocols
-	'FILE'          : 'file',
-	'HTTP'          : 'http',
-	'HTTPS'         : 'https',
+		// protocols
+		'FILE'          : 'file',
+		'HTTP'          : 'http',
+		'HTTPS'         : 'https',
 
-	// browsers
-	'CHROME'    : 'Chrome',
-	'FIREFOX'   : 'Firefox',
-	'IE'        : 'Internet Explorer',
-	'MOZILLA'   : 'Mozilla',
-	'OPERA'     : 'Opera',
-	'SAFARI'    : 'Safari',
+		// browsers
+		'CHROME'    : 'Chrome',
+		'FIREFOX'   : 'Firefox',
+		'IE'        : 'Internet Explorer',
+		'MOZILLA'   : 'Mozilla',
+		'OPERA'     : 'Opera',
+		'SAFARI'    : 'Safari',
 
-	// Engines
-	'GECKO'     : 'Gecko',
-	'KHTML'     : 'KHTML',
-	'TRIDENT'   : 'Trident',
-	'WEBKIT'    : 'WebKit',
+		// Engines
+		'GECKO'     : 'Gecko',
+		'KHTML'     : 'KHTML',
+		'TRIDENT'   : 'Trident',
+		'WEBKIT'    : 'WebKit',
 
-	// OSs
-	'CHROME_OS' : 'Chrome OS',
-	'LINUX'     : 'Linux',
-	'OSX'       : 'OS X',
-	'UNIX'      : 'UNIX',
-	'WINDOWS'   : 'Windows',
+		// OSs
+		'CHROME_OS' : 'Chrome OS',
+		'LINUX'     : 'Linux',
+		'OSX'       : 'OS X',
+		'UNIX'      : 'UNIX',
+		'WINDOWS'   : 'Windows',
 
-	// mobile OSs
-	'ANDROID'       : 'Android',
-	'BADA'          : 'Bada',
-	'BLACKBERRY'    : 'BlackBerry OS',
-	'BREW'          : 'Brew',
-	'GRID'          : 'Grid OS',
-	'IOS'           : 'iOS',
-	'MEEGO'         : 'MeeGo',
-	'PALM'          : 'Palm',
-	'QNX'           : 'QNX',
-	'SYMBIAN'       : 'Symbian',
-	'WEBOS'         : 'Web OS',
-	'WIN_MOBILE'    : 'Windows Mobile',
-	'WIN_PHONE'     : 'Windows Phone',
-
-
-	// protected functions
-	'_getClassPath' : function(css){
-		return css.replace(/\./g, this._s('separator'));
-	},
-
-	'_getCssImportPath' : function(path){
-		if(path.indexOf('/') != -1){
-			return path;
-		}
-
-		return this._root + this._s('cssPath') + this._s('separator') +
-			this._getClassPath(path) + this._s('cssExt') + this.getVersionQuery();
-	},
-
-	'_getJsImportPath' : function(path){
-		if(path.indexOf('/') != -1){
-			return path;
-		}
-
-		return this._root + this._s('jsPath') + this._s('separator') +
-			this._getClassPath(path) + this._s('jsExt') + this.getVersionQuery();
-	},
-
-	'_getTemplateImportPath' : function(path){
-		if(path.indexOf('/') != -1){
-			return path;
-		}
-
-		return this._root + this._s('tplPath') + this._s('separator') +
-			this._getClassPath(path) + this._s('tplExt') + this.getVersionQuery();
-	},
-
-	'_handleEvent' : function(action, type, context, func){
-		this._events.push({
-			'action'  : action,
-			'type'    : type,
-			'context' : context,
-			'func'    : func
-		});
-	},
-
-	'_s' : function(key){
-		return this._settings[key];
-	},
+		// mobile OSs
+		'ANDROID'       : 'Android',
+		'BADA'          : 'Bada',
+		'BLACKBERRY'    : 'BlackBerry OS',
+		'BREW'          : 'Brew',
+		'GRID'          : 'Grid OS',
+		'IOS'           : 'iOS',
+		'MEEGO'         : 'MeeGo',
+		'PALM'          : 'Palm',
+		'QNX'           : 'QNX',
+		'SYMBIAN'       : 'Symbian',
+		'WEBOS'         : 'Web OS',
+		'WIN_MOBILE'    : 'Windows Mobile',
+		'WIN_PHONE'     : 'Windows Phone',
 
 
-	// event handling functions
-	'_onTouchEvent' : function(evt){
-		var touches = evt.changedTouches, first = touches[0], type = '';
+		// protected functions
+		'_' : function(key){
+			return this._settings[key];
+		},
 
-		switch(evt.type){
-			case 'touchstart':
-				type = 'mousedown';
-			break;
+		'_getClassPath' : function(css){
+			return css.replace(/\./g, this._('separator'));
+		},
 
-			case 'touchmove':
-				type = 'mousemove';
-			break;
+		'_getCssImportPath' : function(path){
+			if(path.indexOf('/') != -1){
+				return path;
+			}
 
-			case 'touchend':
-				type = 'mouseup';
-			break;
+			return this._root + this._('cssPath') + this._('separator') +
+				this._getClassPath(path) + this._('cssExt') + this.getVersionQuery();
+		},
 
-			default: return;
-		}
+		'_getJsImportPath' : function(path){
+			if(path.indexOf('/') != -1){
+				return path;
+			}
 
-		var simulatedEvent = document.createEvent('MouseEvent');
-		simulatedEvent.initMouseEvent(
-			type, true, true, window, 1,
-			first.screenX, first.screenY,
-			first.clientX, first.clientY, false,
-			false, false, false, 0, null
-		);
+			return this._root + this._('jsPath') + this._('separator') +
+				this._getClassPath(path) + this._('jsExt') + this.getVersionQuery();
+		},
 
-		first.target.dispatchEvent(simulatedEvent);
+		'_getTemplateImportPath' : function(path){
+			if(path.indexOf('/') != -1){
+				return path;
+			}
 
-		evt.preventDefault();
-	},
+			return this._root + this._('tplPath') + this._('separator') +
+				this._getClassPath(path) + this._('tplExt') + this.getVersionQuery();
+		},
+
+		'_handleEvent' : function(action, type, context, func){
+			this._events.push({
+				'action'  : action,
+				'type'    : type,
+				'context' : context,
+				'func'    : func
+			});
+		},
 
 
-	// public functions
-	'addEventListener' : function(type, context, func){
-		this._handleEvent('add', type, context, func);
-	},
+		// event handling functions
+		'_onTouchEvent' : function(evt){
+			var touches = evt.changedTouches, first = touches[0], type = '';
 
-	'addCss' : function(css/*, is_path*/){
-		var elm;
+			switch(evt.type){
+				case 'touchstart':
+					type = 'mousedown';
+					break;
 
-		if(arguments.length > 1 && arguments[1]){
-			elm = document.createElement('link');
-			elm.setAttribute('rel', 'stylesheet');
-			elm.setAttribute('type','text/css');
-			elm.setAttribute('href', css);
-		}
-		else if(css){
-			elm = document.createElement('style');
-			elm.type = 'text/css';
+				case 'touchmove':
+					type = 'mousemove';
+					break;
 
-			if(elm.styleSheet){
-				elm.styleSheet.cssText = css;
+				case 'touchend':
+					type = 'mouseup';
+					break;
+
+				default: return;
+			}
+
+			var simulatedEvent = document.createEvent('MouseEvent');
+			simulatedEvent.initMouseEvent(
+				type, true, true, window, 1,
+				first.screenX, first.screenY,
+				first.clientX, first.clientY, false,
+				false, false, false, 0, null
+			);
+
+			first.target.dispatchEvent(simulatedEvent);
+
+			evt.preventDefault();
+		},
+
+
+		// public functions
+		'addEventListener' : function(type, context, func){
+				this._handleEvent('add', type, context, func);
+			},
+
+		'addCss' : function(css/*, is_path*/){
+			var elm;
+
+			if(arguments.length > 1 && arguments[1]){
+				elm = document.createElement('link');
+				elm.setAttribute('rel', 'stylesheet');
+				elm.setAttribute('type','text/css');
+				elm.setAttribute('href', css);
+			}
+			else if(css){
+				elm = document.createElement('style');
+				elm.type = 'text/css';
+
+				if(elm.styleSheet){
+					elm.styleSheet.cssText = css;
+				}
+				else{
+					elm.appendChild(document.createTextNode(css));
+				}
 			}
 			else{
-				elm.appendChild(document.createTextNode(css));
+				return null;
 			}
-		}
-		else{
-			return null;
-		}
 
-		var head = document.getElementsByTagName('head')[0];
+			var head = document.getElementsByTagName('head')[0];
 
-		if(this._theme_elm){
-			head.insertBefore(elm, this._theme_elm);
-		}
-		else{
-			head.appendChild(elm);
-		}
-
-		return elm;
-	},
-
-	// dynamically add js to page
-	'addJs' : function(js/*, is_path*/){
-		var is_path = arguments.length > 1 ? arguments[1] : false;
-
-		try{
-			if(this._s('mode') != this.LOADING){
-				var elm = document.createElement('script');
-				elm.setAttribute('type', 'text/javascript');
-				elm.setAttribute('language', 'javascript');
-
-				if(is_path){
-					elm.setAttribute('src', js);
-				}
-				else{
-					elm.appendChild(document.createTextNode(js));
-				}
-
-				document.getElementsByTagName('head')[0].appendChild(elm);
-
-				return;
+			if(this._theme_elm){
+				head.insertBefore(elm, this._theme_elm);
 			}
-		}
-		catch(e){}
-
-		if(is_path){
-			document.write('<scri' + 'pt type="text/javascript" language="javascript" src="' + js + '"></scr' + 'ipt>');
-		}
-		else{
-			eval(js);
-		}
-	},
-
-	'async' : function(context, func/*, ...args*/){
-		setTimeout(func.apply(context, Array.array(arguments).slice(2)), 1);
-	},
-
-	'byId' : function(id){
-		if(id.charAt(0) == '#'){
-			id = id.substr(1);
-		}
-
-		return document.getElementById(id);
-	},
-
-	/* Returns the class name of the argument or undefined if
-	 it's not a valid JavaScript object.
-	 */
-	'classToString' : function(obj){
-		if(obj && obj.prototype && obj.prototype.constructor && obj.prototype.constructor.toString){
-			var arr = obj.prototype.constructor.toString().match(/function\s*(\w+)/);
-
-			if(arr && arr.length == 2){
-				return arr[1];
-			}
-		}
-
-		return undefined;
-	},
-
-	'compileComponent' : function(class_name, proto/*, statics*/){
-		var cls = this.compileClass.apply(this, arguments);
-
-		var tags = cls.SUPPORTED_TAGS,
-			ln = tags.length;
-
-		// register class name as tag
-		OjElement.registerComponentTag(class_name.toLowerCase(), class_name);
-
-		// register special tags
-		for(; ln--;){
-			OjElement.registerComponentTag(tags[ln], class_name);
-		}
-
-		return cls;
-	},
-
-	'compileClass' : function(class_name, proto/*, statics*/){
-		var key, constructor, statics;
-
-		eval(
-			'constructor = window[class_name] = function ' + class_name +
-				'(){ this._constructor.apply(this, arguments); };'
-		);
-
-		// process static functions and variables
-		if(arguments.length > 2 && (statics = arguments[2])){
-			for(key in statics){
-				constructor[key] = statics[key];
-			}
-		}
-
-		// setup the prototype and constructor for the class
-		(constructor.prototype = new proto()).constructor = constructor
-
-		if(statics){
-			for(key in statics){
-				constructor[key] = statics[key];
-			}
-		}
-
-		return constructor;
-	},
-
-	'compileManager' : function(manager, proto){
-		var prev_manager = window[manager];
-
-		return (window[manager] = new proto())._constructor(prev_manager);
-	},
-
-	'destroy' : function(obj/*, recursive = false*/){
-		if(obj && isFunction(obj._destructor)){
-			obj._destructor(arguments.length > 1 ? arguments[1] : false);
-		}
-
-		return obj = null;
-	},
-
-	'elm' : function(elm){
-		return OjElement.element(elm);
-	},
-
-	'guid' : function(){
-		return oj.utils.guid.apply(oj.utils, arguments);
-	},
-
-	'implementsClass' : function(def/*, intrfc1, intrfc2, ...*/){
-		var i, key, intrfc, ln = arguments.length;
-
-		for(i = 1; i < ln; i++){
-			intrfc = arguments[i];
-
-			for(key in intrfc){
-				if(isUndefined(def[key])){
-					def[key] = intrfc[key];
-				}
-				// if this is properties and they are already defined then we handle them differently
-				else if(key == '_properties_' || key =='_get_properties_' || key == '_set_properties_'){
-					OJ.implementsClass(def[key], intrfc[key]);
-				}
-			}
-		}
-
-		return def;
-	},
-
-	'importCss' : function(path/*, data, wait_for_css*/){
-		var css_path = this._getCssImportPath(path);
-
-		if(this._library){
-			var was_loaded = this._library.isLoaded(css_path);
-			var ln = arguments.length, css_data = ln > 1 ? arguments[1] : null, elm;
-
-			if(!was_loaded){
-				if(
-					this._s('lazyLoad') && this._protocol != this.FILE &&
-					(this._s('waitForCss') || (ln > 2 && arguments[2]))
-				){
-					elm = this.addCss(this._library.load(css_path));
-				}
-				else if(isFunction(document.createStyleSheet)){
-					elm = document.createStyleSheet(css_path);
-				}
-				else{
-					elm = this.addCss(css_path, true);
-				}
-
-				this._library.setAsset(css_path, true);
+			else{
+				head.appendChild(elm);
 			}
 
 			return elm;
-		}
+		},
 
-		if(!this._loaded[css_path]){
-			this._loaded[css_path] = true;
+		// dynamically add js to page
+		'addJs' : function(js/*, is_path*/){
+			var is_path = arguments.length > 1 ? arguments[1] : false;
 
-			return this.addCss(css_path, true);
-		}
+			try{
+				if(this._('mode') != this.LOADING){
+					var elm = document.createElement('script');
+					elm.setAttribute('type', 'text/javascript');
+					elm.setAttribute('language', 'javascript');
 
-		return null;
-	},
+					if(is_path){
+						elm.setAttribute('src', js);
+					}
+					else{
+						elm.appendChild(document.createTextNode(js));
+					}
 
-	'importJs' : function(path/*, data*/){
-		var js_path = this._getJsImportPath(path);
-
-		if(this._library){
-			var was_loaded = this._library.isLoaded(js_path);
-
-			if(!was_loaded){
-				this.stringToVar(path);
-
-				if(this._s('lazyLoad') && this._protocol != this.FILE){
-					this.addJs(arguments.length > 1 ? arguments[1] : this._library.load(js_path));
-				}
-				else{
-					this.addJs(js_path, true);
-				}
-
-				this._library.setAsset(js_path, true);
-			}
-
-			return arguments.length > 1 ? arguments[1] : this._library.load(js_path);
-		}
-
-		if(!this._loaded[js_path]){
-			this.stringToVar(path);
-
-			this._loaded[js_path] = true;
-
-			this.addJs(js_path, true);
-		}
-	},
-
-	'importTemplate' : function(path/*, data*/){
-		var template_path = this._getTemplateImportPath(path);
-		var was_loaded = this._library.isLoaded(template_path);
-		var template_data = arguments.length > 1 ? arguments[1] : this._library.load(template_path);
-
-		this._library.setAsset(template_path, template_data);
-
-		return template_data;
-	},
-
-	'isLandscape' : function(){
-		return this._is_landscape;
-	},
-
-	'isMobile' : function(){
-		return this._is_mobile;
-	},
-
-	'isPortrait' : function(){
-		return !this._is_landscape;
-	},
-
-	'isReady' : function(){
-		return this._is_ready;
-	},
-
-	'isTablet' : function(){
-		return this._is_tablet;
-	},
-
-	'isTouchCapable' : function(){
-		return this._is_touch_capable;
-	},
-
-	'merge' : function(obj, obj2/*, ...objs*/){
-		var key, i, ln = arguments.length;
-
-		for(i = 1; i < ln; i++){
-			for(key in arguments[i]){
-				obj[key] = arguments[i][key];
-			}
-		}
-
-		return obj;
-	},
-
-	'makeRect' : function(x, y, width, height){
-		var rect = {
-			'top'       : y,
-			'left'      : x,
-			'width'     : width,
-			'height'    : height
-		};
-
-		rect.bottom = rect.top + rect.height;
-		rect.right = rect.left + rect.width;
-
-		return rect;
-	},
-
-	'meta' : function(/*property, value*/){
-		var ln, meta, name;
-
-		// make sure we have the metadata obj populated
-		if(!this._metadata){
-			var metas = document.getElementsByTagName('meta');
-
-			this._metadata = {};
-			this._metas = {};
-
-			for(ln = metas.length; ln--;){
-				meta = metas[ln];
-
-				if(meta.parentNode != document.head){
-					continue;
-				}
-
-				name = meta.getAttribute('name');
-
-				if(!name){
-					name = meta.getAttribute('http-equiv');
-				}
-
-				if(name){
-					name = name.toLowerCase();
-
-					this._metadata[name] = meta.getAttribute('content');
-					this._metas[name] = meta;
-				}
-			}
-		}
-
-		// check to see if we are getting or setting a specific metadata item
-		var ln = arguments.length;
-
-		if(ln){
-			name = arguments[0].toLowerCase();
-
-			if(ln > 1){
-				if(meta = this._metas[name]){
-					meta.setAttribute('content', this._metadata[name] = arguments[1]);
-				}
-				else{
-					this._metas[name] = meta = document.createElement('meta');
-					meta.setAttribute('name', arguments[0]);
-					meta.setAttribute('content', this._metadata[name] = arguments[1]);
-
-					document.head.appendChild(meta);
-				}
-			}
-
-			return this._metadata[name];
-		}
-
-		// else return the whole thing
-		return OJ.merge({}, this._metadata);
-	},
-
-	'open' : function(url/*, target*/){
-		if(arguments.length > 1){
-			var target = arguments[1];
-
-			if(target != '_blank'){
-				// do something here not sure what
-			}
-
-			window.open(url.toString(), target);
-		}
-		else{
-			// the toString in case it is a url object and not a string
-			url = url.toString();
-
-			// if the url is the same minus the hash and their is no hash
-			// then we force a hash to prevent a reload
-			if(window.location.href.indexOf(url) != -1 && url.indexOf('#') == -1){
-				url += '#';
-			}
-
-			window.location.href = url;
-		}
-	},
-
-	'pluralize' : function(str){
-		var c = str.slice(-1),
-			c2 = str.slice(-2),
-			c3 = str.slice(-3);
-
-		if(c == 's'){
-			return str + '\'';
-		}
-		else if(c2 == 'ey'){
-			return str.slice(0, -2) + 'ies';
-		}
-		else if(c3 == 'elf'){
-			return str.slice(0, -3) + 'elvs'
-		}
-
-		return str + 's';
-	},
-
-	'removeEventListener' : function(type, context, func){
-		this._handleEvent('remove', type, context, func);
-	},
-
-	'render' : function(dom_elm){
-		if(this.renderer){
-			this.renderer.dom().appendChild(dom_elm);
-		}
-	},
-
-	'setting' : function(key/*, val*/){
-		if(arguments.length == 1){
-			return this._settings[key];
-		}
-
-		var val = arguments[1];
-
-		if(key == 'theme'){
-			var sep = this._s('separator'),
-				old_path = this._compiled_theme_path,
-				path = this._root + this._s('themePath') + sep + val + this._s('cssExt') + this.getVersionQuery();
-
-			// check for change
-			if(path.indexOf(old_path) > -1){
-				return;
-			}
-
-			var elms = document.getElementsByTagName('link'), ln = elms.length;
-
-			this._compiled_theme_path = this._root + this._s('themePath') + sep + val + sep;
-
-			for(; ln--;){
-				if(elms[ln].getAttribute('href').indexOf(old_path)> -1){
-					elms[ln].setAttribute('href', path);
+					document.getElementsByTagName('head')[0].appendChild(elm);
 
 					return;
 				}
 			}
+			catch(e){}
 
-			this._theme_elm = this.importCss(path);
-		}
+			if(is_path){
+				document.write('<scri' + 'pt type="text/javascript" language="javascript" src="' + js + '"></scr' + 'ipt>');
+			}
+			else{
+				eval(js);
+			}
+		},
 
-		this._settings[key] = val;
-	},
+		'async' : function(context, func/*, ...args*/){
+			setTimeout(func.apply(context, Array.array(arguments).slice(2)), 1);
+		},
 
-	'settings' : function(settings){
-		var key;
-
-		for(key in settings){
-			this.setting(key, settings[key]);
-		}
-	},
-
-	'stringToClass' : function(str) {
-		return window[str];
-	},
-
-	'stringToVar' : function(obj){
-		var parts = isArray(obj) ? obj : obj.split('.'), ln = parts.length, i;
-
-		obj = window;
-
-		for(i = 0; i < ln; i++){
-			if(!obj[parts[i]]){
-				obj[parts[i]] = {};
+		'byId' : function(id){
+			if(id.charAt(0) == '#'){
+				id = id.substr(1);
 			}
 
-			obj = obj[parts[i]];
+			return document.getElementById(id);
+		},
+
+		/* Returns the class name of the argument or undefined if
+		 it's not a valid JavaScript object.
+		 */
+		'classToString' : function(obj){
+			if(obj && obj.prototype && obj.prototype.constructor && obj.prototype.constructor.toString){
+				var arr = obj.prototype.constructor.toString().match(/function\s*(\w+)/);
+
+				if(arr && arr.length == 2){
+					return arr[1];
+				}
+			}
+
+			return undefined;
+		},
+
+		'destroy' : function(obj/*, recursive = false*/){
+			if(obj && isFunction(obj._destructor)){
+				obj._destructor(arguments.length > 1 ? arguments[1] : false);
+			}
+
+			return obj = null;
+		},
+
+		'elm' : function(elm){
+			return OjElement.element(elm);
+		},
+
+		'extendComponent' : function(base, ns, def/*, static_def*/){
+			var cls = this.extendClass.apply(this, arguments);
+
+			var tags = cls._TAGS,
+				ln = tags.length;
+
+			// register class name as tag
+			OjElement.registerComponentTag(ns.toLowerCase(), ns);
+
+			// register special tags
+			for(; ln--;){
+				OjElement.registerComponentTag(tags[ln], ns);
+			}
+
+			return cls;
+		},
+
+		'extendClass' : function(base, ns, def/*, static_def*/){
+			// setup our vars & prototype
+			var key, c,
+				proto = {
+					'_class_name' : ns
+				};
+
+			// setup the constructor
+			eval(
+				'c = window[ns] = function ' + ns +
+					'(){ this._constructor.apply(this, arguments); };'
+			);
+
+			// copy the base class statics
+			for(key in base){
+				c[key] = base[key];
+			}
+
+			// add new statics
+			if(arguments.length > 3){
+				var statics = arguments[3];
+
+				for(key in statics){
+					c[key] = statics[key];
+				}
+			}
+
+			// copy the prototype as our starting point of inheritance
+			base = base.prototype;
+
+			for(key in base){
+				if(key == '_class_name'){
+					continue
+				}
+
+				if(key == '_class_names'){
+					proto[key] = base[key].clone();
+				}
+				else{
+					proto[key] = base[key];
+				}
+			}
+
+			// add our class name to the class names array
+			proto._class_names.push(ns);
+
+			// setup the supers array
+			proto._supers_[ns] = {};
+
+			// process properties if they exist
+			if(isObject(def['_props_'])){
+				proto._propCompile_(def, '_props_');
+			}
+
+			if(isObject(def['_get_props_'])){
+				proto._propCompile_(def, '_get_props_');
+			}
+
+			if(isObject(def['_set_props_'])){
+				proto._propCompile_(def, '_set_props_');
+			}
+
+			// process other functions and properties accordingly
+			for(key in def){
+				// skip private funcs
+				if(key.charAt(0) == '_' && key.slice(-1) == '_'){
+					continue;
+				}
+
+				if(isFunction(proto[key])){
+					proto._supers_[ns][key] = proto[key];
+				}
+
+				proto[key] = def[key];
+			}
+
+			// if there is a compile function use it
+			if(isFunction(def._compile_)){
+				def._compile_.call(proto);
+			}
+
+			// setup the prototype and constructor for the class
+			(c.prototype = proto).constructor = c;
+
+			// return the constructor
+			return c;
+		},
+
+		'extendManager' : function(manager, base, ns, def/*, static_def*/){
+			var prev_manager = window[manager],
+				cls = OJ.extendClass.apply(this, Array.slice(arguments, 1));
+
+			return window[manager] = new cls(prev_manager);
+		},
+
+		'guid' : function(){
+			return (arguments.length ? arguments[0]._class_name : 'func') + '_' + this._guid++;
+		},
+
+		'implementsClass' : function(/*intrfc1, intrfc2, ..., def*/){
+			var key, intrfc,
+				i = 0,
+				ln = arguments.length - 1,
+				def = arguments[ln];
+
+			for(; i < ln; i++){
+				intrfc = arguments[i];
+
+				for(key in intrfc){
+					if(isUndefined(def[key])){
+						def[key] = intrfc[key];
+					}
+					// if this is properties and they are already defined then we handle them differently
+					else if(key == '_props_' || key =='_get_props_' || key == '_set_props_'){
+						OJ.implementsClass(intrfc[key], def[key]);
+					}
+				}
+			}
+
+			return def;
+		},
+
+		'importCss' : function(path/*, data, wait_for_css*/){
+			var css_path = this._getCssImportPath(path);
+
+			if(this._library){
+				var was_loaded = this._library.isLoaded(css_path);
+				var ln = arguments.length, css_data = ln > 1 ? arguments[1] : null, elm;
+
+				if(!was_loaded){
+					if(
+						this._('lazyLoad') && this._protocol != this.FILE &&
+							(this._('waitForCss') || (ln > 2 && arguments[2]))
+						){
+						elm = this.addCss(this._library.load(css_path));
+					}
+					else if(isFunction(document.createStyleSheet)){
+						elm = document.createStyleSheet(css_path);
+					}
+					else{
+						elm = this.addCss(css_path, true);
+					}
+
+					this._library.setAsset(css_path, true);
+				}
+
+				return elm;
+			}
+
+			if(!this._loaded[css_path]){
+				this._loaded[css_path] = true;
+
+				return this.addCss(css_path, true);
+			}
+
+			return null;
+		},
+
+		'importJs' : function(path/*, data*/){
+			var js_path = this._getJsImportPath(path);
+
+			if(this._library){
+				var was_loaded = this._library.isLoaded(js_path);
+
+				if(!was_loaded){
+
+					if(this._('lazyLoad') && this._protocol != this.FILE){
+						this.addJs(arguments.length > 1 ? arguments[1] : this._library.load(js_path));
+					}
+					else{
+						this.addJs(js_path, true);
+					}
+
+					this._library.setAsset(js_path, true);
+				}
+
+				return arguments.length > 1 ? arguments[1] : this._library.load(js_path);
+			}
+
+			if(!this._loaded[js_path]){
+				this._loaded[js_path] = true;
+
+				this.addJs(js_path, true);
+			}
+		},
+
+		'importTemplate' : function(path/*, data*/){
+			var template_path = this._getTemplateImportPath(path);
+			var was_loaded = this._library.isLoaded(template_path);
+			var template_data = arguments.length > 1 ? arguments[1] : this._library.load(template_path);
+
+			this._library.setAsset(template_path, template_data);
+
+			return template_data;
+		},
+
+		'isLandscape' : function(){
+			return this._is_landscape;
+		},
+
+		'isMobile' : function(){
+			return this._is_mobile;
+		},
+
+		'isPortrait' : function(){
+			return !this._is_landscape;
+		},
+
+		'isReady' : function(){
+			return this._is_ready;
+		},
+
+		'isTablet' : function(){
+			return this._is_tablet;
+		},
+
+		'isTouchCapable' : function(){
+			return this._is_touch_capable;
+		},
+
+		'merge' : function(obj, obj2/*, ...objs*/){
+			var key, i, ln = arguments.length;
+
+			for(i = 1; i < ln; i++){
+				for(key in arguments[i]){
+					obj[key] = arguments[i][key];
+				}
+			}
+
+			return obj;
+		},
+
+		'makeRect' : function(x, y, width, height){
+			var rect = {
+				'top'       : y,
+				'left'      : x,
+				'width'     : width,
+				'height'    : height
+			};
+
+			rect.bottom = rect.top + rect.height;
+			rect.right = rect.left + rect.width;
+
+			return rect;
+		},
+
+		'meta' : function(/*property, value*/){
+			var ln, meta, name;
+
+			// make sure we have the metadata obj populated
+			if(!this._metadata){
+				var metas = document.getElementsByTagName('meta');
+
+				this._metadata = {};
+				this._metas = {};
+
+				for(ln = metas.length; ln--;){
+					meta = metas[ln];
+
+					if(meta.parentNode != document.head){
+						continue;
+					}
+
+					name = meta.getAttribute('name');
+
+					if(!name){
+						name = meta.getAttribute('http-equiv');
+					}
+
+					if(name){
+						name = name.toLowerCase();
+
+						this._metadata[name] = meta.getAttribute('content');
+						this._metas[name] = meta;
+					}
+				}
+			}
+
+			// check to see if we are getting or setting a specific metadata item
+			var ln = arguments.length;
+
+			if(ln){
+				name = arguments[0].toLowerCase();
+
+				if(ln > 1){
+					if(meta = this._metas[name]){
+						meta.setAttribute('content', this._metadata[name] = arguments[1]);
+					}
+					else{
+						this._metas[name] = meta = document.createElement('meta');
+						meta.setAttribute('name', arguments[0]);
+						meta.setAttribute('content', this._metadata[name] = arguments[1]);
+
+						document.head.appendChild(meta);
+					}
+				}
+
+				return this._metadata[name];
+			}
+
+			// else return the whole thing
+			return OJ.merge({}, this._metadata);
+		},
+
+		'open' : function(url/*, target*/){
+			if(arguments.length > 1){
+				var target = arguments[1];
+
+				if(target != '_blank'){
+					// do something here not sure what
+				}
+
+				window.open(url.toString(), target);
+			}
+			else{
+				// the toString in case it is a url object and not a string
+				url = url.toString();
+
+				// if the url is the same minus the hash and their is no hash
+				// then we force a hash to prevent a reload
+				if(window.location.href.indexOf(url) != -1 && url.indexOf('#') == -1){
+					url += '#';
+				}
+
+				window.location.href = url;
+			}
+		},
+
+		'pluralize' : function(str){
+			var c = str.slice(-1),
+				c2 = str.slice(-2),
+				c3 = str.slice(-3);
+
+			if(c == 's'){
+				return str + '\'';
+			}
+			else if(c2 == 'ey'){
+				return str.slice(0, -2) + 'ies';
+			}
+			else if(c3 == 'elf'){
+				return str.slice(0, -3) + 'elvs'
+			}
+
+			return str + 's';
+		},
+
+		'removeEventListener' : function(type, context, func){
+			this._handleEvent('remove', type, context, func);
+		},
+
+		'render' : function(dom_elm){
+			if(this.renderer){
+				this.renderer.dom().appendChild(dom_elm);
+			}
+		},
+
+		'setting' : function(key/*, val*/){
+			if(arguments.length == 1){
+				return this._settings[key];
+			}
+
+			var val = arguments[1];
+
+			if(key == 'theme'){
+				var sep = this._('separator'),
+					old_path = this._compiled_theme_path,
+					path = this._root + this._('themePath') + sep + val + this._('cssExt') + this.getVersionQuery();
+
+				// check for change
+				if(path.indexOf(old_path) > -1){
+					return;
+				}
+
+				var elms = document.getElementsByTagName('link'), ln = elms.length;
+
+				this._compiled_theme_path = this._root + this._('themePath') + sep + val + sep;
+
+				for(; ln--;){
+					if(elms[ln].getAttribute('href').indexOf(old_path)> -1){
+						elms[ln].setAttribute('href', path);
+
+						return;
+					}
+				}
+
+				this._theme_elm = this.importCss(path);
+			}
+
+			this._settings[key] = val;
+		},
+
+		'settings' : function(settings){
+			var key;
+
+			for(key in settings){
+				this.setting(key, settings[key]);
+			}
+		},
+
+		'stringToClass' : function(str) {
+			return window[str];
+		},
+
+		'stringToVar' : function(obj){
+			var parts = isArray(obj) ? obj : obj.split('.'), ln = parts.length, i;
+
+			obj = window;
+
+			for(i = 0; i < ln; i++){
+				if(!obj[parts[i]]){
+					obj[parts[i]] = {};
+				}
+
+				obj = obj[parts[i]];
+			}
+
+			return obj;
+		},
+
+		'toClass' : function(obj){
+			return isString(obj) ? this.stringToClass(obj) : obj;
+		},
+
+		'tokenReplace' : function(source, token, value){
+			return source.replace(new RegExp('\\[%' + token + '\\]', 'g'), value);
+		},
+
+		'tokensReplace' : function(source, key_vals){
+			var key;
+
+			for(key in key_vals){
+				source = this.tokenReplace(source, key, key_vals[key]);
+			}
+
+			return source;
+		},
+
+		// getter & setters
+		'getAssetPath' : function(path){
+			return this._root + this._('assetsPath') + this._('separator') + path + this.getVersionQuery();
+		},
+
+		'getBrowser' : function(){
+			return this._browser;
+		},
+
+		'getCssPrefix' : function(){
+			return this._css_prefix;
+		},
+
+		'getEngine' : function(){
+			return this._engine;
+		},
+
+		'getMode' : function(){
+			return this._('mode');
+		},
+
+		'getOs' : function(){
+			return this._os;
+		},
+
+		'getProtocol' : function(){
+			return this._protocol;
+		},
+
+		'getRoot' : function(){
+			return this._root;
+		},
+		'setRoot' : function(root){
+			this._root = isEmpty(root) && this._protocol == this.FILE ? '' : (root + this._('separator'));
+		},
+
+		'getScrollLeft' : function(){
+			return document.body.scrollLeft;
+		},
+		'setScrollLeft' : function(pos){
+			document.body.scrollLeft = pos;
+		},
+
+		'getScrollTop' : function(){
+			return document.body.scrollTop;
+		},
+		'setScrollTop' : function(pos){
+			document.body.scrollTop = pos;
+		},
+
+		'getVersionQuery' : function(){
+			if(this._('mode') == this.LOADING || this._protocol == this.FILE){
+				return '';
+			}
+
+			return '?v=' + this._('version');
+		},
+
+		'getViewport' : function(){
+			var rect = {
+				'top'       : window.pageYOffset ? window.pageYOffset : document.body.scrollTop,
+				'left'      : window.pageXOffset ? window.pageXOffset : document.body.scrollLeft,
+				'bottom'    : 0,
+				'right'     : 0,
+				'width'     : window.innerWidth ? window.innerWidth : document.body.clientWidth,
+				'height'    : window.innerHeight ? window.innerHeight : document.body.clientHeight
+			};
+
+			rect.bottom = rect.top + rect.height;
+			rect.right = rect.left + rect.width;
+
+			return rect;
+
+			return Object.clone(this._viewport);
+		},
+		'setViewport' : function(rect){
+			// todo : add set viewport functionality (aka scrolling and window size)
 		}
-
-		return obj;
-	},
-
-	'toClass' : function(obj){
-		return isString(obj) ? this.stringToClass(obj) : obj;
-	},
-
-	'tokenReplace' : function(source, token, value){
-		return source.replace(new RegExp('\\[%' + token + '\\]', 'g'), value);
-	},
-
-	'tokensReplace' : function(source, key_vals){
-		var key;
-
-		for(key in key_vals){
-			source = this.tokenReplace(source, key, key_vals[key]);
-		}
-
-		return source;
-	},
-
-	// getter & setters
-	'getAssetPath' : function(path){
-		return this._root + this._s('assetsPath') + this._s('separator') + path + this.getVersionQuery();
-	},
-
-	'getBrowser' : function(){
-		return this._browser;
-	},
-
-	'getCssPrefix' : function(){
-		return this._css_prefix;
-	},
-
-	'getEngine' : function(){
-		return this._engine;
-	},
-
-	'getOs' : function(){
-		return this._os;
-	},
-
-	'getProtocol' : function(){
-		return this._protocol;
-	},
-
-	'getRoot' : function(){
-		return this._root;
-	},
-	'setRoot' : function(root){
-		this._root = isEmpty(root) && this._protocol == this.FILE ? '' : (root + this._s('separator'));
-	},
-
-	'getScrollLeft' : function(){
-		return document.body.scrollLeft;
-	},
-	'setScrollLeft' : function(pos){
-		document.body.scrollLeft = pos;
-	},
-
-	'getScrollTop' : function(){
-		return document.body.scrollTop;
-	},
-	'setScrollTop' : function(pos){
-		document.body.scrollTop = pos;
-	},
-
-	'getVersionQuery' : function(){
-		if(this._s('mode') == this.LOADING || this._protocol == this.FILE){
-			return '';
-		}
-
-		return '?v=' + this._s('version');
-	},
-
-	'getViewport' : function(){
-		var rect = {
-			'top'       : window.pageYOffset ? window.pageYOffset : document.body.scrollTop,
-			'left'      : window.pageXOffset ? window.pageXOffset : document.body.scrollLeft,
-			'bottom'    : 0,
-			'right'     : 0,
-			'width'     : window.innerWidth ? window.innerWidth : document.body.clientWidth,
-			'height'    : window.innerHeight ? window.innerHeight : document.body.clientHeight
-		};
-
-		rect.bottom = rect.top + rect.height;
-		rect.right = rect.left + rect.width;
-
-		return rect;
-
-		return Object.clone(this._viewport);
-	},
-	'setViewport' : function(rect){
-		// todo : add set viewport functionality (aka scrolling and window size)
 	}
-};
-
-window.oj.utils = {
-	'_guid' : 85,
-
-	'guid' : function(){
-		return (arguments.length ? arguments[0]._class_name : 'func') + '_' + oj.utils._guid++;
-	}
-};
+}();
 
 
 
@@ -767,9 +823,6 @@ window.oj.utils = {
  * Framework Setup
  */
 (function(){
-	// init functionality
-	window.OJ = window.oj.OJ;
-
 	// detect script element
 	var script_elms = document.getElementsByTagName('script');
 	var ln = script_elms.length;
@@ -954,6 +1007,14 @@ Array.prototype.equalize = function(obj){
 	}
 
 	return obj;
+};
+
+Array.slice = function(ary, start/*, end*/){
+	var args = Array.array(arguments);
+
+	ary = Array.array(ary);
+
+	return ary.slice.apply(ary, args.slice(1));
 };
 
 // TODO:
@@ -1390,7 +1451,7 @@ function isTrue(obj){
  * Framework Logging Functions
  */
 function trace(obj/*, ...objs*/){
-	if(OJ._s('mode') == OJ.PRODUCTION){
+	if(OJ._('mode') == OJ.PRODUCTION){
 		return;
 	}
 
@@ -1483,7 +1544,7 @@ function onDomReady(){
 		}
 	}
 
-	if(OJ._s('mode') == OJ.LOADING){
+	if(OJ._('mode') == OJ.LOADING){
 		OJ.setting('mode', OJ.PRODUCTION);
 	}
 
@@ -1516,8 +1577,14 @@ function onDomReady(){
 		tmp.dom().onclick = function(){};
 	}
 
-	if(OJ._target){
-		var target = OJ.byId(OJ._target);
+	// place OJ in the DOM
+	var target = OJ.byId(OJ._('target'));
+
+	if(target){
+		// transfer the id
+		if(target.id){
+			tmp.setId(target.id);
+		}
 
 		if(target == document.body){
 			document.body.appendChild(tmp.dom());
@@ -1576,14 +1643,6 @@ function onDomReady(){
 	OJ.container.setAlpha(0);
 	OJ._setIsDisplayed(true);
 
-	// for touch devices do something special
-	if(OJ._is_touch_capable){
-//		document.addEventListener('touchstart', OJ._onTouchEvent, true);
-//		document.addEventListener('touchmove', OJ._onTouchEvent, true);
-//		document.addEventListener('touchend', OJ._onTouchEvent, true);
-//		document.addEventListener('touchcancel', OJ._onTouchEvent, true);
-	}
-
 	// timeout offset to allow for css and stuff to settle
 	// this is clearly a hack so deal with it
 	setTimeout(window.onOjReady, 100);
@@ -1597,7 +1656,7 @@ function onOjReady(){
 
 	traceGroup('Juicing the oranges.', true);
 
-	var init = OJ._s('init');
+	var init = OJ._('init');
 
 	if(init){
 		init();
@@ -1609,6 +1668,7 @@ function onOjReady(){
 
 	// remove the loading spinner
 	OJ._unset('loading');
+	OJ.removeClasses('loading');
 
 	// show the content
 	OJ.container.setAlpha(1);

@@ -3,11 +3,9 @@ OJ.importJs('oj.events.Event');
 
 'use strict';
 
-OJ.compileClass(
-	'OjDomEvent',
-	oj.events.DomEvent = function(){
-		return new oj.events.Event(arguments, 'OjDomEvent', { });
-	},
+OJ.extendClass(
+	OjEvent, 'OjDomEvent',
+	{},
 	{
 		'normalizeDomEvent' : function(evt){
 			if(!evt){

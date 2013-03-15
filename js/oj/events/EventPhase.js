@@ -1,8 +1,8 @@
 'use strict';
 
-OJ.compileClass(
-	'OjEventPhase',
-	oj.events.EventPhase = function(){},
+OJ.extendClass(
+	OjObject, 'OjEventPhase',
+	{},
 	{
 		'BUBBLING'  : 3,
 		'CAPTURING' : 1,

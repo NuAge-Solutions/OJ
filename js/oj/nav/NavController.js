@@ -4,8 +4,8 @@ OJ.importJs('oj.components.Component');
 'use strict';
 
 
-oj.nav.INavController = {
-	'_properties_' : {
+window.OjINavController = {
+	'_props_' : {
 		'stack'   : null
 	},
 
@@ -49,84 +49,79 @@ oj.nav.INavController = {
 };
 
 
-OJ.compileComponent(
-	'OjNavController',
-	oj.nav.NavController = function(){
-		return new oj.components.Component(
-			arguments, 'OjNavController',
-			OJ.implementsClass(
-				{
-					'_constructor' : function(/*stack*/){
-						this._super('OjNavController', '_constructor', []);
+OJ.extendComponent(
+	OjComponent, 'OjNavController',
+	OJ.implementsClass(
+		OjINavController,
+		{
+			'_constructor' : function(/*stack*/){
+				this._s('OjNavController', '_constructor', []);
 
-						// process the arguments
-						if(arguments.length){
-							this.setStack(arguments[0]);
-						}
-					},
+				// process the arguments
+				if(arguments.length){
+					this.setStack(arguments[0]);
+				}
+			},
 
-					'_destructor' : function(){
-						this._cleanupStack();
+			'_destructor' : function(){
+				this._cleanupStack();
 
-						return this._super('OjNavController', '_destructor', arguments);
-					},
+				return this._s('OjNavController', '_destructor', arguments);
+			},
 
 
 
-					// stack view functions
-					'addView' : function(view){
-						if(this._stack){
-							return this._stack.addElm(view);
-						}
+			// stack view functions
+			'addView' : function(view){
+				if(this._stack){
+					return this._stack.addElm(view);
+				}
 
-						throw new Error('No Stack');
-					},
+				throw new Error('No Stack');
+			},
 
-					'addViewAt' : function(view, index){
-						if(this._stack){
-							return this._stack.addElmAt(view, index);
-						}
+			'addViewAt' : function(view, index){
+				if(this._stack){
+					return this._stack.addElmAt(view, index);
+				}
 
-						throw new Error('No Stack');
-					},
+				throw new Error('No Stack');
+			},
 
-					'hasView' : function(view){
-						if(this._stack){
-							return this._stack.hasElm(view);
-						}
+			'hasView' : function(view){
+				if(this._stack){
+					return this._stack.hasElm(view);
+				}
 
-						throw new Error('No Stack');
-					},
+				throw new Error('No Stack');
+			},
 
-					'indexOfView' : function(view){
-						if(this._stack){
-							return this._stack.indexOfElm(view);
-						}
+			'indexOfView' : function(view){
+				if(this._stack){
+					return this._stack.indexOfElm(view);
+				}
 
-						throw new Error('No Stack');
-					},
+				throw new Error('No Stack');
+			},
 
-					'removeView' : function(view){
-						if(this._stack){
-							return this._stack.removeElm(view);
-						}
+			'removeView' : function(view){
+				if(this._stack){
+					return this._stack.removeElm(view);
+				}
 
-						throw new Error('No Stack');
-					},
+				throw new Error('No Stack');
+			},
 
-					'removeViewAt' : function(view, index){
-						if(this._stack){
-							return this._stack.removeElmAt(view, index);
-						}
+			'removeViewAt' : function(view, index){
+				if(this._stack){
+					return this._stack.removeElmAt(view, index);
+				}
 
-						throw new Error('No Stack');
-					}
-				},
-				oj.nav.INavController
-			)
-		);
-	},
+				throw new Error('No Stack');
+			}
+		}
+	),
 	{
-		'SUPPORTED_TAGS' : ['nav', 'navcontroller']
+		'_TAGS' : ['nav', 'navcontroller']
 	}
 );

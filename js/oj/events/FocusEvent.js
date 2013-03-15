@@ -3,11 +3,9 @@ OJ.importJs('oj.events.DomEvent');
 
 'use strict';
 
-OJ.compileClass(
-	'OjFocusEvent',
-	oj.events.FocusEvent = function(){
-		return new oj.events.DomEvent(arguments, 'OjFocusEvent');
-	},
+OJ.extendClass(
+	OjDomEvent, 'OjFocusEvent',
+	{},
 	{
 		'convertDomEvent' : function(evt){
 			var type;

@@ -12,8 +12,8 @@ OJ.importCss('oj.nav.FlowNavController');
 
 'use strict';
 
-oj.nav.IFlowNavController = {
-	'_properties_' : {
+window.OjIFlowNavController = {
+	'_props_' : {
 		'cancelLabel' : 'Cancel',
 		'title'       : null
 	},
@@ -218,47 +218,42 @@ oj.nav.IFlowNavController = {
 };
 
 
-OJ.compileComponent(
-	'OjFlowNavController',
-	oj.nav.FlowNavController = function(){
-		return new oj.nav.NavController(
-			arguments, 'OjFlowNavController',
-			OJ.implementsClass(
-				{
-					'_constructor' : function(/*stack*/){
-						this._super('OjFlowNavController', '_constructor', []);
+OJ.extendComponent(
+	OjNavController, 'OjFlowNavController',
+	OJ.implementsClass(
+		OjIFlowNavController,
+		{
+			'_constructor' : function(/*stack*/){
+				this._s('OjFlowNavController', '_constructor', []);
 
-						// process the arguments
-						if(arguments.length){
-							this.setStack(arguments[0]);
-						}
-					},
+				// process the arguments
+				if(arguments.length){
+					this.setStack(arguments[0]);
+				}
+			},
 
 
-					'_setupStack' : function(){
-						this._super('OjFlowNavController', '_setupStack', arguments);
+			'_setupStack' : function(){
+				this._s('OjFlowNavController', '_setupStack', arguments);
 
-						this._stack.addEventListener(OjStackEvent.ADD, this, '_onStackAdd');
-					},
+				this._stack.addEventListener(OjStackEvent.ADD, this, '_onStackAdd');
+			},
 
-					'_cleanupStack' : function(){
-						this._super('OjFlowNavController', '_cleanupStack', arguments);
+			'_cleanupStack' : function(){
+				this._s('OjFlowNavController', '_cleanupStack', arguments);
 
-						if(this._stack){
-							this._stack.removeEventListener(OjStackEvent.ADD, this, '_onStackAdd');
-						}
-					},
+				if(this._stack){
+					this._stack.removeEventListener(OjStackEvent.ADD, this, '_onStackAdd');
+				}
+			},
 
 
-					'_onStackAdd' : function(evt){
-						this._stack.setActive(evt.getView());
-					}
-				},
-				oj.nav.IFlowNavController
-			)
-		);
-	},
+			'_onStackAdd' : function(evt){
+				this._stack.setActive(evt.getView());
+			}
+		}
+	),
 	{
-		'SUPPORTED_TAGS' : ['flownav']
+		'_TAGS' : ['flownav']
 	}
 );

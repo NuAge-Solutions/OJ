@@ -1,35 +1,30 @@
 'use strict';
 
-OJ.compileClass(
-	'OjCachePolicy',
-	oj.utils.CachePolicy = function(){
-		return new oj.data.Object(
-			arguments, 'OjCachePolicy',
-			{
-				'_get_properties_' : {
-					'action'     : 1,
-					'lifespan'   : null,
-					'url'        : null
-				},
+OJ.extendClass(
+	OjObject, 'OjCachePolicy',
+	{
+		'_get_props_' : {
+			'action'     : 1,
+			'lifespan'   : null,
+			'url'        : null
+		},
 
 
-				'_constructor' : function(url/*, action, lifespan*/){
-					this._super('OjCachePolicy', '_constructor', arguments);
+		'_constructor' : function(url/*, action, lifespan*/){
+			this._s('OjCachePolicy', '_constructor', arguments);
 
-					var ln = arguments.length > 2;
+			var ln = arguments.length > 2;
 
-					this._url = url;
+			this._url = url;
 
-					if(ln > 1){
-						this._action = arguments[1];
+			if(ln > 1){
+				this._action = arguments[1];
 
-						if(ln > 2){
-							this._lifespan = arguments[2];
-						}
-					}
+				if(ln > 2){
+					this._lifespan = arguments[2];
 				}
 			}
-		);
+		}
 	},
 	{
 		// actions

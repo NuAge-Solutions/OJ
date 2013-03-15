@@ -342,6 +342,7 @@ if(!JSON){
 	}
 }());
 
+
 /**
  * JSON Prototype Functions
  */
@@ -368,6 +369,6 @@ String.prototype.parseJson = function(){
 	return JSON.parse(this);
 };
 
-window['toJson'] = function(obj){
+window.toJson = function(obj){
 	return JSON.stringify(obj);
 };

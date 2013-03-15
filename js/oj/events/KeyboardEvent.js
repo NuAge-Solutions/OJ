@@ -3,11 +3,9 @@ OJ.importJs('oj.events.DomEvent');
 
 'use strict';
 
-OJ.compileClass(
-	'OjKeyboardEvent',
-	oj.events.KeyboardEvent = function(){
-		return new oj.events.DomEvent(arguments, 'OjKeyboardEvent');
-	},
+OJ.extendClass(
+	OjDomEvent, 'OjKeyboardEvent',
+	{},
 	{
 		'convertDomEvent' : function(evt){
 			var type;

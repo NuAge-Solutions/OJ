@@ -3,45 +3,40 @@ OJ.importJs('oj.events.DomEvent');
 
 'use strict';
 
-OJ.compileClass(
-	'OjTouchEvent',
-	oj.events.TouchEvent = function(){
-		return new oj.events.DomEvent(
-			arguments, 'OjTouchEvent',
-			{
-				'_get_properties_' : {
-					'layerX'  : NaN,
-					'layerY'  : NaN,
-					'pageX'   : NaN,
-					'pageY'   : NaN
-				},
+OJ.extendClass(
+	OjDomEvent, 'OjTouchEvent',
+	{
+		'_get_props_' : {
+			'layerX'  : NaN,
+			'layerY'  : NaN,
+			'pageX'   : NaN,
+			'pageY'   : NaN
+		},
 
 
-				'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
-					var ln = arguments.length;
+		'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
+			var ln = arguments.length;
 
-					this._super('OjTouchEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
+			this._s('OjTouchEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
 
-					if(ln > 3){
-						this._pageX = arguments[3];
+			if(ln > 3){
+				this._pageX = arguments[3];
 
-						if(ln > 4){
-							this._pageY = arguments[4];
-						}
-					}
-				},
-
-
-				'clone' : function(){
-					var clone = this._super('OjTouchEvent', 'clone', arguments);
-
-					clone._pageX = this._pageX;
-					clone._pageY = this._pagY;
-
-					return clone;
+				if(ln > 4){
+					this._pageY = arguments[4];
 				}
 			}
-		)
+		},
+
+
+		'clone' : function(){
+			var clone = this._s('OjTouchEvent', 'clone', arguments);
+
+			clone._pageX = this._pageX;
+			clone._pageY = this._pagY;
+
+			return clone;
+		}
 	},
 	{
 		'convertDomEvent' : function(evt){

@@ -3,43 +3,38 @@ OJ.importJs('oj.events.DomEvent');
 
 'use strict';
 
-OJ.compileClass(
-	'OjMouseEvent',
-	oj.events.MouseEvent = function(){
-		return new oj.events.DomEvent(
-			arguments, 'OjMouseEvent',
-			{
-				'_get_properties_' : {
-					'pageX' : NaN,
-					'pageY' : NaN
-				},
+OJ.extendClass(
+	OjDomEvent, 'OjMouseEvent',
+	{
+		'_get_props_' : {
+			'pageX' : NaN,
+			'pageY' : NaN
+		},
 
 
-				'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
-					var ln = arguments.length;
+		'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
+			var ln = arguments.length;
 
-					this._super('OjMouseEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
+			this._s('OjMouseEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
 
-					if(ln > 3){
-						this._pageX = arguments[3];
+			if(ln > 3){
+				this._pageX = arguments[3];
 
-						if(ln > 4){
-							this._pageY = arguments[4];
-						}
-					}
-				},
-
-
-				'clone' : function(){
-					var clone = this._super('OjMouseEvent', 'clone', arguments);
-
-					clone._pageX = this._pageX;
-					clone._pageY = this._pageY;
-
-					return clone;
+				if(ln > 4){
+					this._pageY = arguments[4];
 				}
 			}
-		)
+		},
+
+
+		'clone' : function(){
+			var clone = this._s('OjMouseEvent', 'clone', arguments);
+
+			clone._pageX = this._pageX;
+			clone._pageY = this._pageY;
+
+			return clone;
+		}
 	},
 	{
 		'convertDomEvent' : function(evt){

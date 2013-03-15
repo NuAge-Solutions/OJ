@@ -3,87 +3,82 @@ OJ.importJs('oj.media.Media');
 
 'use strict';
 
-OJ.compileComponent(
-	'OjAudio',
-	oj.media.Audio = function(){
-		return new oj.media.Media(
-			arguments, 'OjAudio',
-			{
-				'_sources' : null,
+OJ.extendComponent(
+	OjMedia, 'OjAudio',
+	{
+		'_sources' : null,
 
 
-				'_makeMedia' : function(){
-					var elm = new OjStyleElement('<audio></audio>');
+		'_makeMedia' : function(){
+			var elm = new OjStyleElement('<audio></audio>');
 
-//					elm.addEventListener('load', this._callback = this._onMediaLoad.bind(this));
+//			elm.addEventListener('load', this._callback = this._onMediaLoad.bind(this));
 
-					return elm;
-				},
+			return elm;
+		},
 
-				'_setSource' : function(url){
-					this._super('OjAudio', '_setSource', arguments);
+		'_setSource' : function(url){
+			this._s('OjAudio', '_setSource', arguments);
 
-					if(this.media){
-						this.media.setAttr('src', this._source);
-					}
-				},
-
-
-				'_onMediaLoad' : function(evt){
-
-				},
+			if(this.media){
+				this.media.setAttr('src', this._source);
+			}
+		},
 
 
-				'pause' : function(){
-					if(this.media){
-						this.media.dom().pause();
-					}
-				},
+		'_onMediaLoad' : function(evt){
 
-				'play' : function(){
-					if(this.media){
-						this.media.dom().play();
-					}
-				},
-
-				'stop' : function(){
-					if(this.media){
-						if(this.media.load){
-							this.media.dom().load();
-						}
-						else{
-							this.media.setAttr('src', null);
-							this.media.setAttr('src', this._source);
-						}
-					}
-				},
+		},
 
 
-				'getSources' : function(){
-					if(this._sources){
-						return this._sources.clone();
-					}
+		'pause' : function(){
+			if(this.media){
+				this.media.dom().pause();
+			}
+		},
 
-					return [];
-				},
-				'setSources' : function(sources){
-					this._sources = sources ? sources.clone() : [];
+		'play' : function(){
+			if(this.media){
+				this.media.dom().play();
+			}
+		},
 
-					var ln = this._sources.length;
+		'stop' : function(){
+			if(this.media){
+				if(this.media.load){
+					this.media.dom().load();
+				}
+				else{
+					this.media.setAttr('src', null);
+					this.media.setAttr('src', this._source);
+				}
+			}
+		},
 
-					if(this.media){
-						for(var i = 0; i < ln; i++){
-							if(this.media.canPlayType(OjAudio.audioType(this._sources[i])) == ''){
 
-							}
-						}
-					}
-					else if(ln){
-						this.setSource(this._sources[ln]);
+		'getSources' : function(){
+			if(this._sources){
+				return this._sources.clone();
+			}
+
+			return [];
+		},
+		'setSources' : function(sources){
+			this._sources = sources ? sources.clone() : [];
+
+			var ln = this._sources.length;
+
+			if(this.media){
+				for(var i = 0; i < ln; i++){
+					if(this.media.canPlayType(OjAudio.audioType(this._sources[i])) == ''){
+
 					}
 				}
 			}
-		);
+			else if(ln){
+				this.setSource(this._sources[ln]);
+			}
+		}
 	},
 	{
 		'MP3' : 'audio/mpeg',
@@ -120,6 +115,6 @@ OJ.compileComponent(
 			return null;
 		},
 
-		'SUPPORTED_TAGS' : ['audio']
+		'_TAGS' : ['audio']
 	}
 );

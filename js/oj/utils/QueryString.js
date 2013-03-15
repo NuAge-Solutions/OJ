@@ -94,7 +94,7 @@ String.prototype.parseQueryString = function(){
 	return obj;
 };
 
-window['toQueryString'] = function(obj){
+window.toQueryString = function(obj){
 	if(obj){
 		if(obj.toQueryString){
 			return obj.toQueryString();

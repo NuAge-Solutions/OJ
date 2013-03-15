@@ -1,7 +1,7 @@
 'use strict';
 
 // t = time, o = origin, d = delta, l = length
-window['OjEasing'] = {
+window.OjEasing = {
 	'NONE' : function(t, o, d, l){
 		return ((d * t) / l) + o;
 	},
