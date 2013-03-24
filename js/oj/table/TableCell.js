@@ -4,7 +4,7 @@ OJ.importJs('oj.components.Component');
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'TableCell',
+	OjComponent, 'OjTableCell',
 	{
 		'_template' : 'oj.table.TableCell',
 

@@ -27,8 +27,8 @@ OJ.extendClass(
 			return type == OjDomEvent.KEY_DOWN || type == OjDomEvent.KEY_PRESS || type == OjDomEvent.KEY_UP;
 		},
 
-		'DOWN'  : 'keyDown',
-		'PRESS' : 'keyPress',
-		'UP'    : 'keyUp'
+		'DOWN'  : 'onKeyDown',
+		'PRESS' : 'onKeyPress',
+		'UP'    : 'onKeyUp'
 	}
 );

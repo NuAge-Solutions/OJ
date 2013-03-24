@@ -48,6 +48,31 @@ OJ.extendManager(
 		},
 
 
+		'_alert' : function(title, message/*, buttons, cancel_label*/){
+			var ln = arguments.length,
+				buttons = ln > 2 ? arguments[2] : [],
+				cancel_label = 'Ok';
+
+			if(ln > 3){
+				cancel_label = arguments[3];
+			}
+			else if(ln > 2){
+				cancel_label = 'Cancel';
+			}
+
+			var alrt = new OjAlert(title, message, buttons, cancel_label);
+
+			if(!buttons && !cancel_label){
+				alrt.hideButtons();
+			}
+
+			alrt.addEventListener(OjEvent.HIDE, this, function(){
+				OJ.destroy(alrt);
+			});
+
+			return alrt;
+		},
+
 		'_calcBrowserWidth' : function(){
 			var vp = OJ.getViewport();
 
@@ -87,25 +112,11 @@ OJ.extendManager(
 
 
 		'alert' : function(title, message/*, buttons, cancel_label*/){
-			var ln = arguments.length;
-			var cancel_label = 'Ok';
+			var alrt = this._alert.apply(this, arguments);
 
-			if(ln > 3){
-				cancel_label = arguments[3];
-			}
-			else if(ln > 2){
-				cancel_label = 'Cancel';
-			}
+			this.show(alrt);
 
-			var alert = new OjAlert(title, message, ln > 2 ? arguments[2] : [], cancel_label);
-
-			alert.addEventListener(OjEvent.HIDE, this, function(){
-				OJ.destroy(alert);
-			});
-
-			this.show(alert);
-
-			return alert;
+			return alrt;
 		},
 
 		'browser' : function(url, title/*, width, height */){

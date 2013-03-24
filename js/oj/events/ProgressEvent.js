@@ -30,6 +30,6 @@ OJ.extendClass(
 		}
 	},
 	{
-		'PROGRESS' : 'ojProgress'
+		'PROGRESS' : 'onProgress'
 	}
 );

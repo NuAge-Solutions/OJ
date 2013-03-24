@@ -15,7 +15,7 @@ OJ.importCss('oj.components.Stack');
 
 OJ.extendComponent(
 	OjComponent, 'OjStack',
-	OJ.implementsClass(
+	OJ.implementInterface(
 		OjICollection,
 		{
 			// Properties & Vars
@@ -31,7 +31,7 @@ OJ.extendComponent(
 				'views'          : null
 			},
 
-			'_current_index' : 0,  '_prev_active' : null,  '_prev_index' : -1,  '_trans_in' : null,  '_trans_out' : null,
+			'_current_index' : 0,  '_deferred_index' : null,  '_prev_active' : null,  '_prev_index' : -1,  '_trans_in' : null,  '_trans_out' : null,
 
 
 			// Construction & Destruction Functions
@@ -215,6 +215,10 @@ OJ.extendComponent(
 				this.container.removeClasses('animating');
 
 				this.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, this._activeIndex, this._prev_index));
+
+				if(!isNull(this._deferred_index)){
+					this.setActiveIndex(this._deferred_index);
+				}
 			},
 
 			'_onTransOut' : function(evt){
@@ -252,9 +256,19 @@ OJ.extendComponent(
 
 			// Getter & Setter Functions
 			'setActiveIndex' : function(val){
+				// check for change
 				if(this._current_index == val && this._active){
 					return;
 				}
+
+				// if we are in the middle of an animation then deffer the change until afterware
+				if(this._trans_in){
+					this._deferred_index = val;
+
+					return;
+				}
+
+				this._deferred_index = null;
 
 				var elm, w = null, h = null, direction = null;
 

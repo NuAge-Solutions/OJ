@@ -175,6 +175,14 @@ a:HOVER {
 	display: table-cell;
 }
 
+/* misc helper styles */
+.fill-horz {
+	width: 100%;
+}
+.fill-vert {
+	height: 100%;
+}
+
 /* OJ Styles */
 .OJ.OjComponent,
 .OJ > .container {

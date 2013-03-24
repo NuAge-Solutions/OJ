@@ -220,7 +220,7 @@ window.OjIFlowNavController = {
 
 OJ.extendComponent(
 	OjNavController, 'OjFlowNavController',
-	OJ.implementsClass(
+	OJ.implementInterface(
 		OjIFlowNavController,
 		{
 			'_constructor' : function(/*stack*/){

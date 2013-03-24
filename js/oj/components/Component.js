@@ -67,8 +67,30 @@ OJ.extendClass(
 		},
 
 		'_setDomSource' : function(dom_elm, context){
+			// process the dom source children
+			var children = dom_elm.childNodes, ln = children.length, child;
+
+			for(; ln--;){
+				if(child = this._processDomSourceChild(children[ln], context)){
+					this.addElmAt(child, 0);
+				}
+			}
+
+			// process the dom source attributes
+
+			// do the switcher-roo
 			if(dom_elm.parentNode){
-				dom_elm.parentNode.replaceChild(this._dom, dom_elm);
+				if(dom_elm == document.body){
+					children = this._dom.children;
+					ln = children.length;
+
+					for(var i = 0; i < ln; i++){
+						dom_elm.appendChild(children[0]);
+					}
+				}
+				else{
+					dom_elm.parentNode.replaceChild(this._dom, dom_elm);
+				}
 			}
 
 			// we need to copy over the attributes
@@ -88,15 +110,6 @@ OJ.extendClass(
 
 			// process attributes
 			this._processAttributes(context);
-
-			// process children
-			var children = dom_elm.childNodes, ln = children.length, child;
-
-			for(; ln--;){
-				if(child = this._processDomSourceChild(children[ln], context)){
-					this.addElmAt(child, 0);
-				}
-			}
 		},
 
 		'_setElmFuncs' : function(container){

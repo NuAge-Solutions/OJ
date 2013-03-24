@@ -13,7 +13,7 @@ OJ.extendClass(
 			'duration' : 500,
 			'easing'   : OjEasing.NONE,
 			'from'     : null,
-			'quality'  : 100,
+			'quality'  : 60,  // frame rate
 			'to'       : null
 		},
 
@@ -104,7 +104,7 @@ OJ.extendClass(
 				this._timer.stop();
 			}
 
-			this._timer.setDuration(this._duration / this._quality);
+			this._timer.setDuration(1000 / this._quality);
 
 			this._start = Date.time();
 

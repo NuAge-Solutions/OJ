@@ -35,9 +35,9 @@ OJ.extendComponent(
 		},
 
 		'_redrawText' : function(){
-			this._dom.innerHTML = (this._prefix ? this._prefix : '') +
+			this._dom.innerHTML = ((this._prefix ? this._prefix : '') +
 				(this._text ? this._text : '') +
-				(this._suffix ? this._suffix : '');
+				(this._suffix ? this._suffix : '')).replaceAll('\n', '<br />');
 		},
 
 

@@ -10,7 +10,11 @@ OJ.extendComponent(
 	OjComponent, 'OjFieldset',
 	{
 		'_props_' : {
+			'collapsedIcon' : null,
+			'collapsedText' : 'show',
 			'collapsable'   : false,
+			'expandedIcon'  : null,
+			'expandedText'  : 'hide',
 			'isCollapsed'   : false,
 			'icon'          : null,
 			'title'         : null
@@ -21,6 +25,11 @@ OJ.extendComponent(
 
 		'_constructor' : function(/*title*/){
 			this._s('OjFieldset', '_constructor', []);
+
+			// remove the actuator
+			this.actuator.addEventListener(OjMouseEvent.CLICK, this, '_onActuatorClick');
+
+			this.removeChild(this.actuator);
 
 			// process arguments
 			var ln = arguments.length;
@@ -51,6 +60,43 @@ OJ.extendComponent(
 			return this._processChild(dom_elm, component);
 		},
 
+		'_redrawActuator' : function(){
+			if(this._is_displayed){
+				if(this._collapsable){
+					this.actuator.setHeight(this.legend.getHeight());
+
+					if(this._isCollapsed){
+						if(this._collapsedIcon || this._collapsedText){
+							this.actuator.setIcon(this._collapsedIcon);
+							this.actuator.setText(this._collapsedText);
+
+							this.addChildAt(this.actuator,  1);
+						}
+						else{
+							this.removeChild(this.actuator);
+						}
+					}
+					else{
+						if(this._expandedIcon || this._expandedText){
+							this.actuator.setIcon(this._expandedIcon);
+							this.actuator.setText(this._expandedText);
+
+							this.addChildAt(this.actuator,  1);
+						}
+						else{
+							this.removeChild(this.actuator);
+						}
+					}
+				}
+				else{
+					this.removeChild(this.actuator);
+				}
+
+				return true;
+			}
+
+			return false;
+		},
 
 		'_redrawLegend' : function(){
 			if(this._is_displayed){
@@ -75,6 +121,15 @@ OJ.extendComponent(
 		},
 
 
+		'_onActuatorClick' : function(evt){
+			if(this._isCollapsed){
+				this.expand();
+			}
+			else{
+				this.collapse();
+			}
+		},
+
 		'_onExpand' : function(evt){
 			this.removeClasses('collapsed');
 
@@ -89,12 +144,12 @@ OJ.extendComponent(
 				return;
 			}
 
-			this._isCollapsed = true;
-
-			this.addClasses('collapsed');
+			this.setIsCollapsed(true);
 
 			var tween = new OjResize(this, OjResize.HEIGHT, this.legend.getHeight(), 250, OjEasing.OUT);
 			tween.start();
+
+			this._redrawActuator();
 		},
 
 		'expand' : function(){
@@ -102,15 +157,19 @@ OJ.extendComponent(
 				return;
 			}
 
-			this._isCollapsed = false;
+			this.setIsCollapsed(false);
 
 			var tween = new OjResize(this, OjResize.HEIGHT, this.legend.getHeight() + this.container.getHeight(), 250, OjEasing.OUT);
 			tween.addEventListener(OjTweenEvent.COMPLETE, this, '_onExpand');
 			tween.start();
+
+			this._redrawActuator();
 		},
 
 		'redraw' : function(){
 			if(this._s('OjFieldset', 'redraw', arguments)){
+				this._redrawActuator();
+
 				this._redrawLegend();
 
 				return true;
@@ -118,6 +177,56 @@ OJ.extendComponent(
 			return false;
 		},
 
+
+		'setCollapsable' : function(val){
+			if(this._collapsable == val){
+				return;
+			}
+
+			this._collapsable = val;
+
+			this._redrawActuator();
+		},
+
+		'setCollapsedIcon' : function(val){
+			if(this._collapsedIcon == val){
+				return;
+			}
+
+			this._collapsedIcon = val;
+
+			this._redrawActuator();
+		},
+
+		'setCollapsedText' : function(val){
+			if(this._collapsedText == val){
+				return;
+			}
+
+			this._collapsedText = val;
+
+			this._redrawActuator();
+		},
+
+		'setExpandedIcon' : function(val){
+			if(this._expandedIcon == val){
+				return;
+			}
+
+			this._expandedIcon = val;
+
+			this._redrawActuator();
+		},
+
+		'setExpandedText' : function(val){
+			if(this._expandedText == val){
+				return;
+			}
+
+			this._expandedText = val;
+
+			this._redrawActuator();
+		},
 
 		'setIcon' : function(val){
 			if(this._icon == val){
@@ -127,6 +236,23 @@ OJ.extendComponent(
 			this._icon = val;
 
 			this._redrawLegend();
+		},
+
+		'setIsCollapsed' : function(val){
+			if(this._isCollapsed == val){
+				return;
+			}
+
+			if(this._isCollapsed = val){
+				this.addClasses('collapsed');
+
+				this.dispatchEvent(new OjEvent(this._static('COLLAPSE')));
+			}
+			else{
+				this.removeClasses('collapsed');
+
+				this.dispatchEvent(new OjEvent(this._static('EXPAND')));
+			}
 		},
 
 		'setTitle' : function(val){
@@ -140,6 +266,9 @@ OJ.extendComponent(
 		}
 	},
 	{
-		'_TAGS' : ['fieldset']
+		'_TAGS' : ['fieldset'],
+
+		'COLLAPSE' : 'onCollapse',
+		'EXPAND'   : 'onExpand'
 	}
 );

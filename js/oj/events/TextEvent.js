@@ -30,6 +30,6 @@ OJ.extendClass(
 		}
 	},
 	{
-		'TEXT' : 'text'
+		'TEXT' : 'onText'
 	}
 );

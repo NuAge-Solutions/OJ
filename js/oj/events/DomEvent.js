@@ -12,6 +12,9 @@ OJ.extendClass(
 				evt = window.event;
 			}
 
+			// todo: figure out a better way to handle FF not liking us changing event properties
+			evt = OJ.merge({}, evt); // because FF sucks
+
 			if(evt.clientX || evt.clientY){
 				evt.pageX = evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
 				evt.pageY = evt.clientY + document.body.scrollTop + document.documentElement.scrollTop;

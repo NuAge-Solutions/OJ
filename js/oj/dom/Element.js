@@ -493,26 +493,6 @@ OJ.extendClass(
 		}
 	},
 	{
-		'COMPONENT_TAGS' : {},
-
-		'attributeToFunc' : function(attr){
-			var parts = attr.split('-'), ln = parts.length;
-
-			while(ln-- > 0){
-				parts[ln] = parts[ln].ucFirst();
-			}
-
-			return parts.join('');
-		},
-
-		'attributeToGetter' : function(attr){
-			return 'get' + OjElement.attributeToFunc(attr);
-		},
-
-		'attributeToSetter' : function(attr){
-			return 'set' + OjElement.attributeToFunc(attr);
-		},
-
 		'byId' : function(id){
 			var elm = document.getElementById(id);
 
@@ -534,10 +514,6 @@ OJ.extendClass(
 			return new OjStyleElement(obj);
 		},
 
-		'getTagComponent' : function(tag){
-			return this.COMPONENT_TAGS[tag];
-		},
-
 		'hasDomElement' : function(haystack, needle){
 			if(haystack == needle){
 				return true;
@@ -550,10 +526,6 @@ OJ.extendClass(
 			}
 
 			return false;
-		},
-
-		'isComponentTag' : function(tag){
-			return isSet(this.COMPONENT_TAGS[tag]);
 		},
 
 		'isTextNode' : function(dom_elm){
@@ -578,14 +550,6 @@ OJ.extendClass(
 			}
 
 			return null;
-		},
-
-		'registerComponentTag' : function(tag, component){
-			this.COMPONENT_TAGS[tag] = component;
-
-			if(this._browser == this.IE && this._browser_version < 9){
-				document.createElement(tag);
-			}
 		}
 	}
 );

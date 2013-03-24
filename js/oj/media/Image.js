@@ -40,8 +40,8 @@ OJ.extendComponent(
 
 		'_setSource' : function(url){
 			// remove any old source css classes
-			if(this._source && this._source.charAt(0) == '@'){
-				this.media.removeClasses(this._source);
+			if(this._source_is_css){
+				this.media.removeClasses(this._source.substring(1));
 			}
 
 			this._s('OjImage', '_setSource', arguments);
@@ -55,7 +55,7 @@ OJ.extendComponent(
 				this.addChild(this.media);
 
 				// check to see if this is a css class
-				if(url.charAt(0) == '@'){
+				if(this._source_is_css){
 					this.media.addClasses(url.substring(1));
 
 					this.media.setAttr('src', OJ.getAssetPath('oj/empty.png'));
@@ -67,7 +67,7 @@ OJ.extendComponent(
 				}
 			}
 			else{
-				this.removeChild(media);
+				this.removeChild(this.media);
 
 				this.media.setAttr('src', null);
 			}

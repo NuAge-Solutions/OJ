@@ -1,4 +1,4 @@
-OJ.importJs('oj.component.ItemRenderer');
+OJ.importJs('oj.components.ItemRenderer');
 OJ.importJs('oj.data.Object');
 
 

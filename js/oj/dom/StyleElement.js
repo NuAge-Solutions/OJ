@@ -19,7 +19,7 @@ OJ.extendClass(
 		'_h_align' : null,  '_v_align' : null,
 
 
-		'_compile_' : function(){
+		'_compile_' : function(def){
 			var cls = OjStyleElement;
 
 			if(cls.STYLE_MODE == cls.STYLE_IE){
@@ -30,7 +30,50 @@ OJ.extendClass(
 			}
 
 			// build functions for style getter and setters
-			// todo: implement StyleElement margin/padding/etc funcs
+			def._style_funcs_.call(this, 'margin', 'Margin');
+			def._style_funcs_.call(this, 'padding', 'Padding');
+		},
+
+		'_style_funcs_' : function(style, u_style){
+			this['get' + u_style] = function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
+				return this._getStyler(style, arguments);
+			};
+
+			this['set' + u_style] = function(val/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
+				this._setStyler(style, arguments);
+			};
+
+			this['get' + u_style + 'Bottom'] = function(){
+				return this['get' + u_style](2);
+			};
+
+			this['set' + u_style + 'Bottom'] = function(val){
+				this['set' + u_style](null, null, val, null);
+			};
+
+			this['get' + u_style + 'Left'] = function(){
+				return this['get' + u_style](3);
+			};
+
+			this['set' + u_style + 'Left'] = function(val){
+				this['set' + u_style](null, null, null, val);
+			};
+
+			this['get' + u_style + 'Right'] = function(){
+				return this['get' + u_style](1);
+			};
+
+			this['set' + u_style + 'Right'] = function(val){
+				this['set' + u_style](null, val, null, null);
+			};
+
+			this['get' + u_style + 'Top'] = function(){
+				return this['get' + u_style](0);
+			};
+
+			this['set' + u_style + 'Top'] = function(val){
+				this['set' + u_style](val, null, null, null);
+			};
 		},
 
 
@@ -97,36 +140,70 @@ OJ.extendClass(
 
 
 		'_processAttributes' : function(context){
-			var ln = this._dom.attributes.length,
-				attr, val, setter;
+			var dom = this._dom,
+				attr, val;
 
-			// reset the classes array
+			// process known attributes
+			// css classes
 			this._classes = [];
 
-			while(ln-- > 0){
-				attr = this._dom.attributes[ln].nodeName;
-				val = this._dom.attributes[ln].value;
+			if(val = dom.getAttribute(attr = 'class')){
+				dom.removeAttribute(attr);
 
-				if(attr == 'var'){
-					if(!isEmpty(val) && context){
-						(context[val] = this).addClasses(val);
+				this.addClass(val);
+			}
+
+			// variable reference
+			if(val = dom.getAttribute(attr = 'var')){
+				if(!isEmpty(val) && context){
+					(context[val] = this).addClasses(val);
+				}
+
+				dom.removeAttribute(attr);
+			}
+
+			// class name
+			dom.removeAttribute('class-name');
+
+			// class path
+			dom.removeAttribute('class-path');
+
+
+			// process the other attributes
+			var attrs = dom.attributes,
+				ln = attrs.length,
+				setter, solo, target;
+
+			for(; ln--;){
+				attr = attrs[ln].nodeName;
+				val = attrs[ln].value;
+
+				if(attr.substr(0, 3) == 'on-'){
+					// todo: add support for multiple event listeners
+					// todo: add support for nested functions???
+					setter = val.split('.');
+					solo = setter.length == 1;
+					target = context;
+
+					if(!solo){
+						switch(setter[0]){
+							case 'this':
+								target = this;
+							break;
+
+							case 'window':
+								target = window;
+							break;
+						}
 					}
 
-					this._dom.removeAttribute(attr);
-				}
-				else if(attr == 'class-name' || attr == 'class-path' || attr == 'var'){
-					this._dom.removeAttribute(attr);
-				}
-				else if(attr == 'class'){
-					this._dom.removeAttribute('class');
-
-					this.addClass(val);
+					this.addEventListener(OJ.attributeToFunc(attr), target, solo ? setter[0] : setter[1]);
 				}
 				else{
-					setter = OjElement.attributeToSetter(attr);
+					setter = OjStyleElement.attributeToSetter(attr);
 
 					if(isFunction(this[setter])){
-						this._dom.removeAttribute(attr);
+						dom.removeAttribute(attr);
 
 						if(val == ''){
 							val = null;
@@ -178,17 +255,20 @@ OJ.extendClass(
 				return false;
 			}
 
-			if(OjElement.isComponentTag(tag)){
-				cls = OjElement.getTagComponent(tag);
+			// load the class if we need to
+			var cls_path;
+
+			if(!window[cls] && (cls_path = dom_elm.getAttribute('class-path'))){
+				OJ.importJs(cls_path);
 			}
 
+			// get the component tag class
+			if(OjStyleElement.isComponentTag(tag)){
+				cls = OjStyleElement.getTagComponent(tag);
+			}
+
+			// process the class
 			if(cls){
-				var cls_path = dom_elm.getAttribute('class-path');
-
-				if(cls_path){
-					OJ.importJs(cls_path);
-				}
-
 				if(isFunction(cls)){
 					child = cls(dom_elm);
 				}
@@ -411,7 +491,7 @@ OJ.extendClass(
 		},
 
 		'_getStyle' : function(style){
-			return document.defaultView.getComputedStyle(this._proxy, null).getPropertyValue(style);
+			return document.defaultView.getComputedStyle(this._proxy, null)[style];
 		},
 		'_setStyle' : function(style, value){
 			return this._proxy.style[style] = value;
@@ -429,91 +509,69 @@ OJ.extendClass(
 		},
 
 		'_setStyleNumber' : function(prop, val/*, unit*/){
-			var unit, p = prop.substr(0, 4);
-
-			if(p == 'font' || p == 'line'){
-				unit = OJ.setting('fontUnit');
-			}
-			else{
-				unit = OJ.setting('dimUnit');
-			}
-
-			this._setStyle(prop, val + (arguments.length > 2 ? arguments[2] : unit));
+			this._setStyle(prop, val + (arguments.length > 2 ? arguments[2] : this._getStyleUnit(prop)));
 		},
 
 		// Bulk Style Getter & Setter Functions
 		'_getStyler' : function(prop, args){
 			if(!this['_' + prop]){
-				var unit = prop == 'font' || prop  =='line' ? OJ.setting('fontUnit') : OJ.setting('dimUnit'),
-					parts = this._getStyle(type).replaceAll(unit, '').split(' '),
-					ln = parts.length;
+				var unit = prop == 'font' || prop  =='line' ? OJ.setting('fontUnit') : OJ.setting('dimUnit');
 
-				if(!ln){
-					this['_' + type] = [0, 0, 0, 0];
-				}
-				else if(ln == 1){
-					this['_' + type] = [parts[0], parts[0], parts[0], parts[0]];
-				}
-				else if(ln == 2){
-					this['_' + type] = [parts[0], parts[1], parts[0], parts[1]];
-				}
-				else if(ln == 3){
-					this['_' + type] = [parts[0], parts[1], parts[2], parts[1]];
-				}
-				else{
-					this['_' + type] = [parts[0], parts[1], parts[2], parts[3]];
-				}
+				this['_' + prop] = [
+					this._getStyle(prop + 'Top').replaceAll(unit, ''),
+					this._getStyle(prop + 'Right').replaceAll(unit, ''),
+					this._getStyle(prop + 'Bottom').replaceAll(unit, ''),
+					this._getStyle(prop + 'Left').replaceAll(unit, '')
+				];
 			}
+
+			return args && args.length ? this['_' + prop][args[0]] : this['_' + prop];
 		},
 
-		'_setStyler' : function(type, vals){
-			var val, ln = vals.length;
+		'_setStyler' : function(prop, vals){
+			this._getStyler(prop);
+
+			var val, str = '',
+				ln = vals.length,
+				unit = this._getStyleUnit(prop);
+
+			// fill out the vals array so that there is always the 4 values
+			val = vals[0];
 
 			if(ln == 1){
-				val = vals[0];
-
 				vals = [val, val, val, val];
 			}
+			else if(ln == 2){
+				vals = [val, vals[1], val, vals[1]];
+			}
+			else if(ln == 3){
+				vals = [val, vals[1], vals[2], vals[1]];
+			}
 
-
+			// substitute current values for null values
 			ln = 4
 
 			for(; ln--;){
 				val = vals[ln];
 
 				if(isNull(val)){
-
+					val = this['_' + prop][ln];
 				}
+
+				str = (ln ? ' ' : '') + val + unit + str;
 			}
 
+			this._setStyle(prop, str);
+		},
 
-			if(!ln){
-				this['set' + type + 'Top'](0); this['set' + type + 'Left'](0);
+		'_getStyleUnit' : function(prop){
+			prop = prop.substr(0, 4);
 
-				this._setStyleNumber(type + '-top', this._padding[0] = Math.max(0, padding));
-
-				this['set' + type + 'Bottom'](0); this['set' + type + 'Right'](0);
+			if(prop == 'font' || prop == 'line'){
+				return OJ.setting('fontUnit');
 			}
-			else if(ln == 1){
-				this['set' + type + 'Top'](vals[0]); this['set' + type + 'Left'](vals[0]);
 
-				this['set' + type + 'Bottom'](vals[0]); this['set' + type + 'Right'](vals[0]);
-			}
-			else if(ln == 2){
-				this['set' + type + 'Top'](vals[0]); this['set' + type + 'Left'](vals[1]);
-
-				this['set' + type + 'Bottom'](vals[0]); this['set' + type + 'Right'](vals[1]);
-			}
-			else if(ln == 3){
-				this['set' + type + 'Top'](vals[0]); this['set' + type + 'Left'](vals[1]);
-
-				this['set' + type + 'Bottom'](vals[2]); this['set' + type + 'Right'](vals[1]);
-			}
-			else{
-				this['set' + type + 'Top'](vals[0]); this['set' + type + 'Left'](vals[1]);
-
-				this['set' + type + 'Bottom'](vals[2]); this['set' + type + 'Right'](vals[3]);
-			}
+			return OJ.setting('dimUnit');
 		},
 
 
@@ -574,17 +632,15 @@ OJ.extendClass(
 		},
 
 		'addClasses' : function(classes/*... args*/){
-			var ln = arguments.length;
+			var ln = arguments.length, val;
 
-			while(ln-- > 0){
-				if(this._classes.indexOf(arguments[ln]) == -1){
-					this._classes.push(arguments[ln]);
-
-					this._proxy.className += ' ' + arguments[ln];
+			for(; ln--;){
+				if(!isEmpty(val = arguments[ln].trim()) && this._classes.indexOf(val) == -1){
+					this._classes.push(val);
 				}
 			}
 
-			this._proxy.className = this._proxy.className.trim();
+			this._proxy.className = this._classes.join(' ');
 		},
 
 		'getClasses' : function(){
@@ -704,7 +760,7 @@ OJ.extendClass(
 		},
 
 		'getWidth' : function(){
-			return this._proxy.offsetWidth;
+			return this._proxy.offsetWidth || this._getStyleNumber('width');
 		},
 		'setWidth' : function(w/*, unit*/){
 			if(w == OjStyleElement.AUTO){
@@ -751,7 +807,7 @@ OJ.extendClass(
 		},
 
 		'getHeight' : function(){
-			return this._proxy.offsetHeight;
+			return this._proxy.offsetHeight || this._getStyleNumber('height');;
 		},
 		'setHeight' : function(h/*, unit*/){
 			if(h == OjStyleElement.AUTO){
@@ -792,145 +848,40 @@ OJ.extendClass(
 
 
 		// border size functions
-		'getBorderSize' : function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
-			return this._getStyler('border-size', arguments);
-		},
-		'setBorderSize' : function(size/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
-			this._setStyler('border-size', arguments);
-		},
-
-		'getBorderSizeBottom' : function(){
-			return this.getMargin(2);
-		},
-		'setBorderSizeBottom' : function(margin){
-			this.setMargin(null, null, margin, null);
-		},
-
-		'getBorderSizeLeft' : function(){
-			return this.getMargin(3);
-		},
-		'setBorderSizeLeft' : function(margin){
-			this.setMargin(null, null, null, margin);
-		},
-
-		'getBorderSizeRight' : function(){
-			return this.getMargin(1);
-		},
-		'setBorderSizeRight' : function(margin){
-			this.setMargin(null, margin, null, null);
-		},
-
-		'getBorderSizeTop' : function(){
-			return this.getMargin(0);
-		},
-		'setBorderSizeTop' : function(margin){
-			this.setMargin(margin, null, null, null);
-		},
-
-
-		// margin functions
-		'getMargin' : function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
-			return this._getStyler('margin', arguments);
-		},
-		'setMargin' : function(margin/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
-			this._setStyler('margin', arguments);
-		},
-
-		'getMarginBottom' : function(){
-			return this.getMargin(2);
-		},
-		'setMarginBottom' : function(margin){
-			this.setMargin(null, null, margin, null);
-		},
-
-		'getMarginLeft' : function(){
-			return this.getMargin(3);
-		},
-		'setMarginLeft' : function(margin){
-			this.setMargin(null, null, null, margin);
-		},
-
-		'getMarginRight' : function(){
-			return this.getMargin(1);
-		},
-		'setMarginRight' : function(margin){
-			this.setMargin(null, margin, null, null);
-		},
-
-		'getMarginTop' : function(){
-			return this.getMargin(0);
-		},
-		'setMarginTop' : function(margin){
-			this.setMargin(margin, null, null, null);
-		},
-
-
-		// padding functions
-		'getPadding' : function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
-			this._getStyler('padding');
-
-			if(arguments){
-				return this._margin[arguments[0]];
-			}
-
-			return this._margin.clone();
-			this._getStyler('padding');
-
-			return this._padding.clone();
-		},
-		'setPadding' : function(padding){
-			this._getStyler('padding');
-
-			if(arguments.length > 1 || !isArray(arguments[0])){
-				padding = arguments;
-			}
-
-			this._setStyler('padding', padding);
-		},
-
-		'getPaddingTop' : function(){
-			this._getStyler('padding');
-
-			return this._padding[0];
-		},
-		'setPaddingTop' : function(padding){
-			this._getStyler('padding');
-
-			this._setStyleNumber('padding-top', this._padding[0] = Math.max(0, padding));
-		},
-
-		'getPaddingLeft' : function(){
-			this._getStyler('padding');
-
-			return this._padding[1];
-		},
-		'setPaddingLeft' : function(padding){
-			this._getStyler('padding');
-
-			this._setStyleNumber('padding-left', this._padding[1] = Math.max(0, padding));
-		},
-
-		'getPaddingBottom' : function(){
-			this._getStyler('padding');
-
-			return this._padding[2];
-		},
-		'setPaddingBottom' : function(padding){
-			this._getStyler('padding');
-
-			this._setStyleNumber('padding-bottom', this._padding[2] = Math.max(0, padding));
-		},
-
-		'getPaddingRight' : function(){
-			this._getStyler('padding');
-
-			return this._padding[3];
-		},
-		'setPaddingRight' : function(padding){
-			this._getStyler('padding');
-
-			this._setStyleNumber('padding-right', this._padding[3] = Math.max(0, padding));
-		},
+//		'getBorderSize' : function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
+//			return this._getStyler('border-size', arguments);
+//		},
+//		'setBorderSize' : function(size/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
+//			this._setStyler('border-size', arguments);
+//		},
+//
+//		'getBorderSizeBottom' : function(){
+//			return this.getMargin(2);
+//		},
+//		'setBorderSizeBottom' : function(margin){
+//			this.setMargin(null, null, margin, null);
+//		},
+//
+//		'getBorderSizeLeft' : function(){
+//			return this.getMargin(3);
+//		},
+//		'setBorderSizeLeft' : function(margin){
+//			this.setMargin(null, null, null, margin);
+//		},
+//
+//		'getBorderSizeRight' : function(){
+//			return this.getMargin(1);
+//		},
+//		'setBorderSizeRight' : function(margin){
+//			this.setMargin(null, margin, null, null);
+//		},
+//
+//		'getBorderSizeTop' : function(){
+//			return this.getMargin(0);
+//		},
+//		'setBorderSizeTop' : function(margin){
+//			this.setMargin(margin, null, null, null);
+//		},
 
 
 		// Style Getter & Setter Functions
@@ -995,6 +946,13 @@ OJ.extendClass(
 			this.addClasses('halign-' + this._h_align);
 		},
 
+		'getOverflow' : function(){
+			return this._overflow;
+		},
+		'setOverflow' : function(overflow){
+			this._overflow = this._setStyle('overflow', overflow);
+		},
+
 		'getRect' : function(){
 			return OJ.makeRect(this.getPageX(), this.getPageY(), this.getWidth(), this.getHeight());
 		},
@@ -1002,11 +960,34 @@ OJ.extendClass(
 			// add this later
 		},
 
-		'getOverflow' : function(){
-			return this._overflow;
+		'getScrollHeight' : function(){
+			return this._proxy.scrollHeight;
 		},
-		'setOverflow' : function(overflow){
-			this._overflow = this._setStyle('overflow', overflow);
+		'setScrollHeight' : function(val){
+			this._proxy.scrollHeight = val;
+		},
+
+		'getScrollWidth' : function(){
+			return this._proxy.scrollWidth;
+		},
+		'setScrollWidth' : function(val){
+			this._proxy.scrollWidth = val;
+		},
+
+		'getScrollX' : function(){
+			return this._proxy.scrollLeft;
+		},
+
+		'setScrollX' : function(val){
+			this._proxy.scrollLeft = val;
+		},
+
+		'getScrollY' : function(){
+			return this._proxy.scrollTop;
+		},
+
+		'setScrollY' : function(val){
+			this._proxy.scrollTop = val;
 		},
 
 		'getVertAlign' : function(){
@@ -1081,6 +1062,8 @@ OJ.extendClass(
 		}
 	},
 	{
+		'COMPONENT_TAGS' : {},
+
 		'STYLE_BACKUP'  : 'styleBackup',
 		'STYLE_DEFAULT' : 'styleDefault',
 		'STYLE_IE'      : 'styleIE',
@@ -1112,6 +1095,31 @@ OJ.extendClass(
 
 		'TOP'    : 'top',
 		'MIDDLE' : 'middle',
-		'BOTTOM' : 'bottom'
+		'BOTTOM' : 'bottom',
+
+
+		'attributeToGetter' : function(attr){
+			return 'get' + OJ.attributeToFunc(attr).ucFirst();
+		},
+
+		'attributeToSetter' : function(attr){
+			return 'set' + OJ.attributeToFunc(attr).ucFirst();
+		},
+
+		'getTagComponent' : function(tag){
+			return this.COMPONENT_TAGS[tag];
+		},
+
+		'isComponentTag' : function(tag){
+			return isSet(this.COMPONENT_TAGS[tag]);
+		},
+
+		'registerComponentTag' : function(tag, component){
+			this.COMPONENT_TAGS[tag] = component;
+
+			if(this._browser == this.IE && this._browser_version < 9){
+				document.createElement(tag);
+			}
+		}
 	}
 );

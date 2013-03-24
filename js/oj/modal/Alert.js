@@ -79,6 +79,19 @@ OJ.extendClass(
 		},
 
 
+		'hideButtons' : function(){
+			this.addClasses('no-buttons');
+
+			this.buttons.hide();
+		},
+
+		'showButtons' : function(){
+			this.removeClasses('no-buttons');
+
+			this.buttons.show();
+		},
+
+
 		'getButtons' : function(){
 			return this._buttons.clone();
 		},

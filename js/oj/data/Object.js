@@ -35,6 +35,8 @@ OjObject.prototype = {
 	 */
 	'_class_name' : 'OjObject',
 
+	'_post_compile_' : [],
+
 	'_propCompile_' : function(context, props){
 		var key;
 		var is_getter = props == '_props_' || props == '_get_props_' ? true : false;

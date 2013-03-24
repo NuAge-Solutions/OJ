@@ -51,7 +51,7 @@ window.OjINavController = {
 
 OJ.extendComponent(
 	OjComponent, 'OjNavController',
-	OJ.implementsClass(
+	OJ.implementInterface(
 		OjINavController,
 		{
 			'_constructor' : function(/*stack*/){

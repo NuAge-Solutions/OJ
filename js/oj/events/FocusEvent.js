@@ -27,7 +27,7 @@ OJ.extendClass(
 		},
 
 
-		'IN'  : 'focusIn',
-		'OUT' : 'focusOut'
+		'IN'  : 'onFocusIn',
+		'OUT' : 'onFocusOut'
 	}
 );

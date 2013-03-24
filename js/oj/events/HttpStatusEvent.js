@@ -30,6 +30,6 @@ OJ.extendClass(
 		}
 	},
 	{
-		'HTTP_STATUS' : 'httpStatus'
+		'HTTP_STATUS' : 'onHttpStatus'
 	}
 );

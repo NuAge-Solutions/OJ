@@ -7,7 +7,7 @@ OJ.extendClass(
 	OjErrorEvent, 'OjIoErrorEvent',
 	{},
 	{
-		'IO_ERROR'   : 'ioError',
-		'IO_TIMEOUT' : 'ioTimeout'
+		'IO_ERROR'   : 'onIoError',
+		'IO_TIMEOUT' : 'onIoTimeout'
 	}
 );

@@ -34,6 +34,6 @@ OJ.extendClass(
 		}
 	},
 	{
-		'ERROR' : 'error'
+		'ERROR' : 'onError'
 	}
 );

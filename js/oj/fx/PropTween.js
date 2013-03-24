@@ -74,12 +74,28 @@ OJ.extendClass(
 			}
 		},
 
+		'_isAnimating' : function(val){
+			if(val){
+				this._target.addClasses('animating');
+			}
+			else{
+				this._target.removeClasses('animating');
+			}
+		},
+
 		'_tick' : function(time){
 			var key;
 
 			for(key in this._delta){
 				this._target[key](this._easing(time, this._from_cache[key], this._delta[key], this._duration, 0, 0));
 			}
+		},
+
+
+		'_onComplete' : function(evt){
+			this._isAnimating(false);
+
+			this._s('OjPropTween', '_onComplete', arguments);
 		},
 
 		'_onWebKitComplete' : function(evt){
@@ -102,6 +118,12 @@ OJ.extendClass(
 		},
 
 
+		'pause' : function(){
+			this._isAnimating(false);
+
+			this._s('OjPropTween', 'pause', arguments);
+		},
+
 		'start' : function(){
 			if(!isSet(this._target) || !isSet(this._to)){
 				return;
@@ -110,6 +132,8 @@ OJ.extendClass(
 			if(!isSet(this._from)){
 				this._from = {};
 			}
+
+			this._isAnimating(true);
 
 			if(this._mode == OjPropTween.WEBKIT){
 				var key;
@@ -131,6 +155,12 @@ OJ.extendClass(
 			else{
 				this._s('OjPropTween', 'start', arguments);
 			}
+		},
+
+		'stop' : function(){
+			this._isAnimating(false);
+
+			this._s('OjPropTween', 'stop', arguments);
 		},
 
 

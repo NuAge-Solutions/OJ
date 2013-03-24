@@ -23,7 +23,7 @@ window.OJ = function Oj(){
 
 			'jsPath' : 'js',  'jsExt' : '.js',  'lazyLoad' : true,  'mode' : 'loading',
 
-			'separator' : '/',  'target' : null,  'theme' : 'oj',  'themePath' : 'themes',
+			'separator' : '/',  'target' : '#OJ',  'theme' : 'oj',  'themePath' : 'themes',
 
 			'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
 
@@ -246,6 +246,18 @@ window.OJ = function Oj(){
 			setTimeout(func.apply(context, Array.array(arguments).slice(2)), 1);
 		},
 
+		'attributeToFunc' : function(attr){
+			var parts = attr.split('-'), ln = parts.length;
+
+			for(; ln--;){
+				if(ln){
+					parts[ln] = parts[ln].ucFirst();
+				}
+			}
+
+			return parts.join('');
+		},
+
 		'byId' : function(id){
 			if(id.charAt(0) == '#'){
 				id = id.substr(1);
@@ -288,11 +300,11 @@ window.OJ = function Oj(){
 				ln = tags.length;
 
 			// register class name as tag
-			OjElement.registerComponentTag(ns.toLowerCase(), ns);
+			OjStyleElement.registerComponentTag(ns.toLowerCase(), ns);
 
 			// register special tags
 			for(; ln--;){
-				OjElement.registerComponentTag(tags[ln], ns);
+				OjStyleElement.registerComponentTag(tags[ln], ns);
 			}
 
 			return cls;
@@ -333,7 +345,7 @@ window.OJ = function Oj(){
 					continue
 				}
 
-				if(key == '_class_names'){
+				if(key == '_class_names' || key == '_post_compile_'){
 					proto[key] = base[key].clone();
 				}
 				else{
@@ -376,7 +388,18 @@ window.OJ = function Oj(){
 
 			// if there is a compile function use it
 			if(isFunction(def._compile_)){
-				def._compile_.call(proto);
+				def._compile_.call(proto, def);
+			}
+
+			// run the post compile functions
+			if(isFunction(def._post_compile_)){
+				proto._post_compile_.unshift(def._post_compile_);
+			}
+
+			var ln = proto._post_compile_.length;
+
+			for(; ln--;){
+				proto._post_compile_[ln].call(proto);
 			}
 
 			// setup the prototype and constructor for the class
@@ -397,7 +420,7 @@ window.OJ = function Oj(){
 			return (arguments.length ? arguments[0]._class_name : 'func') + '_' + this._guid++;
 		},
 
-		'implementsClass' : function(/*intrfc1, intrfc2, ..., def*/){
+		'implementInterface' : function(/*intrfc1, intrfc2, ..., def*/){
 			var key, intrfc,
 				i = 0,
 				ln = arguments.length - 1,
@@ -412,7 +435,7 @@ window.OJ = function Oj(){
 					}
 					// if this is properties and they are already defined then we handle them differently
 					else if(key == '_props_' || key =='_get_props_' || key == '_set_props_'){
-						OJ.implementsClass(intrfc[key], def[key]);
+						OJ.implementInterface(intrfc[key], def[key]);
 					}
 				}
 			}
@@ -948,7 +971,7 @@ window.OJ = function Oj(){
 // array functions
 if(!Array.isArray){
 	Array.isArray = function(obj){
-		return toString.call(obj) === '[object Array]';
+		return Object.prototype.toString.call(obj) === "[object Array]";
 	};
 }
 
@@ -963,7 +986,7 @@ if(!Array.prototype.indexOf){
 			from += ln;
 		}
 
-		for(; from < len; from++){
+		for(; from < ln; from++){
 			if(from in this && this[from] === needle){
 				return from;
 			}
@@ -1215,6 +1238,10 @@ Object.clone = function(obj){
 
 
 // string functions
+String.prototype.lcFirst = function(){
+	return this.charAt(0).toLowerCase() + this.slice(1);
+};
+
 String.prototype.ucFirst = function(){
 	return this.charAt(0).toUpperCase() + this.slice(1);
 };
@@ -1497,10 +1524,8 @@ if(!isSet(console.log) || !isFunction(console.log)){
 	};
 }
 
-if(!isSet(console.groupLog) || !isFunction(console.groupLog)){
-	console.groupLog = function(){
-		// do something not sure what
-	};
+if(!isSet(console.group) || !isFunction(console.group)){
+	console.group = console.groupCollapsed = console.groupEnd = console.log;
 }
 
 
@@ -1530,7 +1555,7 @@ OJ.importJs('oj.utils.Library');
 
 // on dom ready event handler
 function onDomReady(){
-	var key, lib = {};
+	var key;
 
 	// make sure the document has a head var
 	if(!document.head){
@@ -1544,16 +1569,42 @@ function onDomReady(){
 		}
 	}
 
+	// process the target and it's attributes for any additional settings
+	var target = OJ.byId(OJ._('target'));
+
+	if(target){
+		// process the target attributes
+		// as settings
+		var attrs = target.attributes, attr,
+			ln = attrs.length;
+
+		for(; ln--;){
+			attr = attrs[ln].nodeName;
+
+			if(attr == 'id'){
+				continue;
+			}
+
+			OJ.setting(OJ.attributeToFunc(attr), attrs[ln].nodeValue);
+
+			target.removeAttribute(attr);
+		}
+	}
+
+	// process the mode
 	if(OJ._('mode') == OJ.LOADING){
 		OJ.setting('mode', OJ.PRODUCTION);
 	}
 
+	// updated the loaded assets with the appropriate query string
 	for(key in OJ._loaded){
-		lib[key + OJ.getVersionQuery()] = true;
+		OJ._loaded[key + OJ.getVersionQuery()] = true;
 	}
 
-	OJ._library = new OjLibrary(OJ._loaded = lib);
+	// setup a library for the loaded assets
+	OJ._library = new OjLibrary(OJ._loaded);
 
+	// import the required classes
 	OJ.importJs('oj.dom.Element');
 	OJ.importJs('oj.timer.TimerManager');
 	OJ.importJs('oj.utils.HistoryManager');
@@ -1564,38 +1615,11 @@ function onDomReady(){
 	OJ.importJs('oj.fx.TweenSet');
 	OJ.importJs('oj.components.Spinner');
 
+	// create the OJ component
 	var tmp = new OjView();
 
-	// add the loading spinner
-	tmp.addChildAt(tmp.loading = new OjSpinner(), 0);
-	tmp.loading.addClasses('loading');
-
 	// add the rendering div
-	tmp.addChildAt(tmp.renderer = new OjStyleElement('<div class="renderer"></div>'), 0);
-
-	if(OJ._os == OJ.IOS){
-		tmp.dom().onclick = function(){};
-	}
-
-	// place OJ in the DOM
-	var target = OJ.byId(OJ._('target'));
-
-	if(target){
-		// transfer the id
-		if(target.id){
-			tmp.setId(target.id);
-		}
-
-		if(target == document.body){
-			document.body.appendChild(tmp.dom());
-		}
-		else{
-			target.parentNode.replaceChild(tmp.dom(), target);
-		}
-	}
-	else{
-		document.body.appendChild(tmp.dom());
-	}
+	tmp.addChild(tmp.renderer = new OjStyleElement('<div class="renderer"></div>'));
 
 	// handle events added before we could do anything with them
 	var evt,
@@ -1618,15 +1642,31 @@ function onDomReady(){
 	delete OJ.addEventListener;
 	delete OJ.removeEventListener;
 
-	// merge oj with new style element
+	// merge OJ with component
 	tmp.bulkSet(OJ);
 
 	tmp.addClasses('OJ');
 
 	window.OJ = tmp;
 
+	// dispatch load event
+	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
+
+	// place OJ component in the DOM
+	if(target){
+		OJ._setDomSource(target, tmp);
+	}
+	else{
+		document.body.appendChild(OJ.dom());
+	}
+
 	// setup the dom event proxy
 	OJ._setProxy(document.body);
+
+	// hack so that we can capture taps in iOS
+	if(OJ._os == OJ.IOS){
+		tmp.dom().onclick = function(){};
+	}
 
 	// setup the css classes for special displays
 	window.onresize();
@@ -1640,20 +1680,20 @@ function onDomReady(){
 		OJ.addClasses('is-tablet');
 	}
 
-	OJ.container.setAlpha(0);
+	// set all the content as displayed
 	OJ._setIsDisplayed(true);
 
 	// timeout offset to allow for css and stuff to settle
 	// this is clearly a hack so deal with it
 	setTimeout(window.onOjReady, 100);
-
-	tmp = target = null;
 }
 
 // on oj ready event handler
 function onOjReady(){
+	// close up the loading group logs
 	traceGroup();
 
+	// run this init function if any
 	traceGroup('Juicing the oranges.', true);
 
 	var init = OJ._('init');
@@ -1664,19 +1704,12 @@ function onOjReady(){
 
 	traceGroup();
 
+	// dispatch the ready event
 	traceGroup('Your OJ is ready. Enjoy!', true);
-
-	// remove the loading spinner
-	OJ._unset('loading');
-	OJ.removeClasses('loading');
-
-	// show the content
-	OJ.container.setAlpha(1);
-	OJ.container.show();
-
-	traceGroup();
 
 	OJ._is_ready = true;
 
 	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
+
+	traceGroup();
 }

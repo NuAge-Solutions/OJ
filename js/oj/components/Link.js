@@ -1,6 +1,7 @@
 OJ.importJs('oj.components.Label');
 OJ.importJs('oj.media.Image');
 
+OJ.importCss('oj.components.Link');
 
 'use strict';
 
@@ -16,7 +17,7 @@ OJ.extendComponent(
 		'_template' : 'oj.components.Link',
 
 
-		'_constructor' : function(/*url, label, target*/){
+		'_constructor' : function(/*label, url, target*/){
 			this._s('OjLink', '_constructor', []);
 
 			// setup structure
@@ -26,10 +27,10 @@ OJ.extendComponent(
 			var ln = arguments.length;
 
 			if(ln){
-				this.setUrl(arguments[0]);
+				this.setText(arguments[0]);
 
 				if(ln > 1){
-					this.setText(arguments[1]);
+					this.setUrl(arguments[1]);
 
 					if(ln > 2){
 						this.setTarget(arguments[2]);

@@ -74,6 +74,7 @@ OJ.extendClass(
 		'COMPLETE' : 'onComplete',
 		'FAIL'     : 'onFail',
 		'HIDE'     : 'onHide',
+		'LOAD'     : 'onLoad',
 		'OK'       : 'onOk',
 		'READY'    : 'onReady',
 		'REMOVED'  : 'onRemoved',

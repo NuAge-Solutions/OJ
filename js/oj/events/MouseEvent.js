@@ -84,17 +84,17 @@ OJ.extendClass(
 				type == OjDomEvent.MOUSE_UP;
 		},
 
-		'CLICK'        : 'mouseClick',
-		'DOUBLE_CLICK' : 'mouseDoubleClick',
-		'DOWN'         : 'mouseDown',
-		'MIDDLE_CLICK' : 'mouseMiddleClick',
-		'MOVE'         : 'mouseMove',
-		'OVER'         : 'mouseOver',
-		'OUT'          : 'mouseOut',
-		'RIGHT_CLICK'  : 'mouseRightClick',
-		'RIGHT_UP'     : 'mouseRightUp',
-		'RIGHT_DOWN'   : 'mouseRightDown',
-		'UP'           : 'mouseUp',
-		'WHEEL'        : 'mouseWheel'
+		'CLICK'        : 'onClick',
+		'DOUBLE_CLICK' : 'onDoubleClick',
+		'DOWN'         : 'onMouseDown',
+		'MIDDLE_CLICK' : 'onMiddleClick',
+		'MOVE'         : 'onMouseMove',
+		'OVER'         : 'onMouseOver',
+		'OUT'          : 'onMouseOut',
+		'RIGHT_CLICK'  : 'onRightClick',
+		'RIGHT_UP'     : 'onMouseRightUp',
+		'RIGHT_DOWN'   : 'onMouseRightDown',
+		'UP'           : 'onMouseUp',
+		'WHEEL'        : 'onMouseWheel'
 	}
 );

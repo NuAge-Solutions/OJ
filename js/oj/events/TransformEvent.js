@@ -45,7 +45,7 @@ OJ.extendClass(
 			return type == OjTransformEvent.MOVE || type == OjTransformEvent.RESIZE;
 		},
 
-		'MOVE'   : 'move',
-		'RESIZE' : 'resize'
+		'MOVE'   : 'onMove',
+		'RESIZE' : 'onResize'
 	}
 );

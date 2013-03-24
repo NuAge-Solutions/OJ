@@ -69,8 +69,8 @@ OJ.extendClass(
 			return type == OjDomEvent.TOUCH_END || type == OjDomEvent.TOUCH_MOVE || type == OjDomEvent.TOUCH_START;
 		},
 
-		'START' : 'touchStart',
-		'MOVE'  : 'touchMove',
-		'END'   : 'touchEnd'
+		'START' : 'onTouchStart',
+		'MOVE'  : 'onTouchMove',
+		'END'   : 'onTouchEnd'
 	}
 );

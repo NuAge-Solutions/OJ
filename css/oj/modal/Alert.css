@@ -93,6 +93,9 @@
 		.OjAlert > .pane > .content {
 			padding: 20px 10px 10px;
 		}
+		.OjAlert.no-buttons > .pane > .content {
+			padding-bottom: 20px;
+		}
 			.OjAlert > .pane > .content > .container {
 				color: #FFFFFF;
 				font-size: 16px;
