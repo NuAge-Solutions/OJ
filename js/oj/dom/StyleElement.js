@@ -245,7 +245,6 @@ OJ.extendClass(
 			}
 
 			var child,
-				var_val = dom_elm.getAttribute('var'),
 				cls = dom_elm.getAttribute('class-name');
 
 			tag = tag.toLowerCase();

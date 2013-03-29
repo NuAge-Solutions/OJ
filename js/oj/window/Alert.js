@@ -1,9 +1,9 @@
-OJ.importJs('oj.modal.AlertEvent');
-OJ.importJs('oj.modal.Modal');
+OJ.importJs('oj.window.AlertEvent');
+OJ.importJs('oj.window.Modal');
 OJ.importJs('oj.components.Button');
 OJ.importJs('oj.components.Label');
 
-OJ.importCss('oj.modal.Alert');
+OJ.importCss('oj.window.Alert');
 
 
 'use strict';
@@ -17,7 +17,7 @@ OJ.extendClass(
 			'title'   : null
 		},
 
-		'_template' : 'oj.modal.Alert',
+		'_template' : 'oj.window.Alert',
 
 
 		'_constructor' : function(/*title, content, buttons, cancel_label*/){
@@ -69,13 +69,13 @@ OJ.extendClass(
 				)
 			);
 
-			ModalManager.hide(this);
+			WindowManager.hide(this);
 		},
 
 		'_onCancelClick' : function(evt){
 			this.dispatchEvent(new OjEvent(OjEvent.CANCEL));
 
-			ModalManager.hide(this);
+			WindowManager.hide(this);
 		},
 
 

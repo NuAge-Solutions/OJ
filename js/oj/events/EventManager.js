@@ -119,8 +119,9 @@ OJ.extendManager(
 			callback = isString(callback) ? context[callback] : callback;
 
 			// get the unique ids needed to qualify listeners
-			var target_id = target.id(), context_id = context.id();
-			var guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
+			var target_id = target.id(),
+				context_id = context == window ? 'window' : context.id(),
+				guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
 
 			// make sure we have a holder for this target on this type of event
 			if(!this._events[type][target_id]){

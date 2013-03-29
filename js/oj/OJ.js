@@ -486,7 +486,6 @@ window.OJ = function Oj(){
 				var was_loaded = this._library.isLoaded(js_path);
 
 				if(!was_loaded){
-
 					if(this._('lazyLoad') && this._protocol != this.FILE){
 						this.addJs(arguments.length > 1 ? arguments[1] : this._library.load(js_path));
 					}
@@ -781,6 +780,10 @@ window.OJ = function Oj(){
 
 		'getOs' : function(){
 			return this._os;
+		},
+
+		'getPixelRatio' : function(){
+			return window.devicePixelRatio || 1;
 		},
 
 		'getProtocol' : function(){
@@ -1581,10 +1584,12 @@ function onDomReady(){
 		for(; ln--;){
 			attr = attrs[ln].nodeName;
 
-			if(attr == 'id'){
+			// disregard the id or events
+			if(attr == 'id' || attr.substr(0, 3) == 'on-'){
 				continue;
 			}
 
+			// all other attrs are settings
 			OJ.setting(OJ.attributeToFunc(attr), attrs[ln].nodeValue);
 
 			target.removeAttribute(attr);
@@ -1608,7 +1613,7 @@ function onDomReady(){
 	OJ.importJs('oj.dom.Element');
 	OJ.importJs('oj.timer.TimerManager');
 	OJ.importJs('oj.utils.HistoryManager');
-	OJ.importJs('oj.modal.ModalManager');
+	OJ.importJs('oj.window.WindowManager');
 	OJ.importJs('oj.components.View');
 	OJ.importJs('oj.events.TransformEvent');
 	OJ.importJs('oj.fx.Fade');
@@ -1678,6 +1683,18 @@ function onDomReady(){
 
 	if(OJ.isTablet()){
 		OJ.addClasses('is-tablet');
+	}
+
+	var scale = OJ.getPixelRatio();
+
+	if(scale <= .75){
+		OJ.addClasses('ld'); // low-density
+	}
+	else if(scale >= 1.5){
+		OJ.addClasses('hd'); // high-density
+	}
+	else{
+		OJ.addClasses('sd'); // standard-density
 	}
 
 	// set all the content as displayed

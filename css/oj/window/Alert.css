@@ -1,4 +1,4 @@
-.ModalManager,
+.WindowManager,
 .OjAlert {
 	position: absolute;
 
@@ -17,7 +17,7 @@
 
 	z-index: 999999;
 }
-.ModalManager {
+.WindowManager {
 	position: fixed;
 }
 	.OjAlert > .underlay {

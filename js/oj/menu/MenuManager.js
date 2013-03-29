@@ -2,7 +2,7 @@ OJ.importJs('oj.events.TransformEvent');
 OJ.importJs('oj.events.MouseEvent');
 OJ.importJs('oj.fx.Fade');
 OJ.importJs('oj.menu.Menu');
-OJ.importJs('oj.modal.ModalManager');
+OJ.importJs('oj.window.WindowManager');
 
 
 'use strict';

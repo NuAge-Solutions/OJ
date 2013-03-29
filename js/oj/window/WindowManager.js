@@ -2,22 +2,22 @@ OJ.importJs('oj.components.Iframe');
 OJ.importJs('oj.dom.StyleElement');
 OJ.importJs('oj.events.Actionable');
 OJ.importJs('oj.fx.Fade');
-OJ.importJs('oj.modal.Modal');
-OJ.importJs('oj.modal.Alert');
+OJ.importJs('oj.window.Modal');
+OJ.importJs('oj.window.Alert');
 
-OJ.importCss('oj.modal.Modal');
+OJ.importCss('oj.window.Modal');
 
 
 'use strict';
 
 OJ.extendManager(
-	'ModalManager', OjActionable, 'OjModalManager',
+	'WindowManager', OjActionable, 'OjWindowManager',
 	{
 		'_modal_holder' : null,  '_modals' : null,
 
 
 		'_constructor' : function(manager){
-			this._s('OjModalManager', '_constructor', []);
+			this._s('OjWindowManager', '_constructor', []);
 
 			if(manager){
 				this._modals = manager._modals;
@@ -34,7 +34,7 @@ OJ.extendManager(
 				this._modals = [];
 
 				this._modal_holder = new OjStyleElement();
-				this._modal_holder.addClasses('ModalManager');
+				this._modal_holder.addClasses('WindowManager');
 
 				this._modal_holder.hide();
 

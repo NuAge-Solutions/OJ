@@ -72,8 +72,12 @@ OJ.extendComponent(
 
 
 			// stack view functions
-			'addView' : function(view){
+			'addView' : function(view/*, replace_current*/){
 				if(this._stack){
+					if(arguments.length > 1 && arguments[1]){
+						return this._stack.replaceElmAt();
+					}
+
 					return this._stack.addElm(view);
 				}
 
@@ -83,6 +87,21 @@ OJ.extendComponent(
 			'addViewAt' : function(view, index){
 				if(this._stack){
 					return this._stack.addElmAt(view, index);
+				}
+
+				throw new Error('No Stack');
+			},
+
+			'gotoView' : function(/*view = root*/){
+				// if no view is specified we go all the way back to the root
+				var view = arguments.length ? arguments[0] : null;
+
+				this.gotoViewAt(view ? this.indexOfView(view) : 0);
+			},
+
+			'gotoViewAt' : function(index){
+				if(this._stack){
+					return this._stack.hasElm(view);
 				}
 
 				throw new Error('No Stack');

@@ -1,7 +1,7 @@
 OJ.importJs('oj.components.View');
 OJ.importJs('oj.components.Stack');
 OJ.importJs('oj.events.DragEvent');
-OJ.importJs('oj.modal.Alert');
+OJ.importJs('oj.window.Alert');
 OJ.importJs('oj.nav.FlowNavController');
 
 
