@@ -1,6 +1,6 @@
-OJ.importJs('oj.components.View');
+OJ.importJs('oj.nav.View');
 
-OJ.importCss('oj.components.Iframe');
+OJ.importCss('oj.nav.Iframe');
 
 
 'use strict';

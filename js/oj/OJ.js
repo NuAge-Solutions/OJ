@@ -1614,7 +1614,7 @@ function onDomReady(){
 	OJ.importJs('oj.timer.TimerManager');
 	OJ.importJs('oj.utils.HistoryManager');
 	OJ.importJs('oj.window.WindowManager');
-	OJ.importJs('oj.components.View');
+	OJ.importJs('oj.nav.View');
 	OJ.importJs('oj.events.TransformEvent');
 	OJ.importJs('oj.fx.Fade');
 	OJ.importJs('oj.fx.TweenSet');

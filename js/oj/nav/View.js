@@ -1,6 +1,6 @@
 OJ.importJs('oj.components.Component');
 
-OJ.importCss('oj.components.View');
+OJ.importCss('oj.nav.View');
 
 
 'use strict';
@@ -9,9 +9,11 @@ OJ.extendComponent(
 	OjComponent, 'OjView',
 	{
 		'_props_' : {
+			'controller'  : null,
 			'footer'      : null,
 			'header'      : null,
 			'shortTitle'  : null,
+			'stack'       : null,
 			'title'       : null
 		},
 
@@ -21,7 +23,7 @@ OJ.extendComponent(
 			'titleView'  : null
 		},
 
-		'_elm_funcs' : null,  '_template' : 'oj.components.View',
+		'_elm_funcs' : null,  '_template' : 'oj.nav.View',
 
 
 		'_constructor' : function(/*content, title, short_title*/){

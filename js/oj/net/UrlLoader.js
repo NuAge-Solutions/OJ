@@ -21,7 +21,7 @@ OJ.extendClass(
 			'timeout'     : 10000
 		},
 
-		'_policy' : null,  '_xhr' : null,
+		'_policy' : null,  '_url' : null,  '_xhr' : null,
 
 
 		'_constructor' : function(/*request, async,*/){
@@ -47,9 +47,22 @@ OJ.extendClass(
 
 
 		'_load' : function(){
+			var data,
+				method = this._request.getMethod();
+
+			this._url = this._request.clone();
+
+			if(method != OjUrlRequest.POST && (data = this._request.getData())){
+				var key;
+
+				for(key in data){
+					this._url.setQueryParam(key, data[key]);
+				}
+			}
+
 			// check to see if we have this cached
 			if(!this._request.ignoresCache()){
-				var url = this._request.toString();
+				var url = this._url.toString();
 
 				this._policy = CacheManager.getCacheUrlRequestPolicy(url);
 
@@ -124,20 +137,7 @@ OJ.extendClass(
 		},
 
 		'_xhrOpen' : function(){
-			var data, url = this._request,
-				method = this._request.getMethod();
-
-			if(method != OjUrlRequest.POST && (data = this._request.getData())){
-				var key;
-
-				url = url.clone();
-
-				for(key in data){
-					url.setQueryParam(key, data[key]);
-				}
-			}
-
-			this._xhr.open(method, url.toString(), this._async);
+			this._xhr.open(this._request.getMethod(), this._url, this._async);
 
 			if(this._async){
 				this._xhr.timeout = this._timeout;

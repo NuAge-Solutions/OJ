@@ -9,11 +9,15 @@ OJ.extendClass(
 	OjStyleElement, 'OjComponent',
 	{
 		'_props_' : {
-			'isActive'   : false,
-			'isDisabled' : false
+			'isActive'    : false,
+			'isDisabled'  : false
 		},
 
-		'_fader' : null,  '_is_animated' : false ,  '_template' : null,  '_trans' : null,
+		'_get_props_' : {
+			'isAnimating' : false
+		},
+
+		'_fader' : null, '_template' : null,
 
 
 		'_constructor' : function(){
@@ -149,6 +153,15 @@ OJ.extendClass(
 			}
 		},
 
+		'_setIsAnimating' : function(val){
+			if(this._isAnimating = val){
+				this.addClasses('animating');
+			}
+			else{
+				this.removeClasses('animating');
+			}
+		},
+
 		'_setIsDisplayed' : function(displayed){
 			if(this._is_displayed == displayed){
 				return;
@@ -233,55 +246,55 @@ OJ.extendClass(
 		'_replaceElm' : function(elm, index, new_elm){ },
 
 		'addElm' : function(elm){
-			return this._callElmFunc('addElm', arguments);
+			return this._callElmFunc('addElm', Array.array(arguments));
 		},
 
 		'addElmAt' : function(elm, index){
-			return this._callElmFunc('addElmAt', arguments);
+			return this._callElmFunc('addElmAt', Array.array(arguments));
 		},
 
 		'getElmAt' : function(index){
-			return this._callElmFunc('getElmAt', arguments);
+			return this._callElmFunc('getElmAt', Array.array(arguments));
 		},
 
 		'getElms' : function(){
-			return this._callElmFunc('getElms', arguments);
+			return this._callElmFunc('getElms', Array.array(arguments));
 		},
 
 		'hasElm' : function(elm){
-			return this._callElmFunc('hasElm', arguments);
+			return this._callElmFunc('hasElm', Array.array(arguments));
 		},
 
 		'indexOfElm' : function(elm){
-			return this._callElmFunc('indexOfElm', arguments);
+			return this._callElmFunc('indexOfElm', Array.array(arguments));
 		},
 
 		'moveElm' : function(){
-			return this._callElmFunc('moveElm', arguments);
+			return this._callElmFunc('moveElm', Array.array(arguments));
 		},
 
 		'numElms' : function(){
-			return this._callElmFunc('numElms', arguments);
+			return this._callElmFunc('numElms', Array.array(arguments));
 		},
 
 		'removeAllElms' : function(){
-			return this._callElmFunc('removeAllElms', arguments);
+			return this._callElmFunc('removeAllElms', Array.array(arguments));
 		},
 
 		'removeElm' : function(elm){
-			return this._callElmFunc('removeElm', arguments);
+			return this._callElmFunc('removeElm', Array.array(arguments));
 		},
 
 		'removeElmAt' : function(index){
-			return this._callElmFunc('removeElmAt', arguments);
+			return this._callElmFunc('removeElmAt', Array.array(arguments));
 		},
 
 		'replaceElm' : function(target, replacement){
-			return this._callElmFunc('replaceElm', arguments);
+			return this._callElmFunc('replaceElm', Array.array(arguments));
 		},
 
 		'replaceElmAt' : function(elm, index){
-			return this._callElmFunc('replaceElmAt', arguments);
+			return this._callElmFunc('replaceElmAt', Array.array(arguments));
 		},
 
 
@@ -290,8 +303,10 @@ OJ.extendClass(
 			this.setAlpha(1);
 
 			if(this._fader.getDirection() == OjFade.OUT){
-				this.addClasses('hidden');
+				this.hide();
 			}
+
+			this._setIsAnimating(false);
 
 			this._unset('_fader');
 		},
@@ -307,14 +322,19 @@ OJ.extendClass(
 
 				this._unset('_fader');
 			}
-
-			this.removeClasses('hidden');
+			else if(this.isVisible()){
+				return;
+			}
 
 			var ln = arguments.length;
+
+			this.show();
 
 			this._fader = new OjFade(this, OjFade.IN, ln ? arguments[0] : 250, ln > 1 ? arguments[1] : OjEasing.NONE);
 			this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
 			this._fader.start();
+
+			this._setIsAnimating(true);
 		},
 
 		'fadeOut' : function(){
@@ -327,7 +347,7 @@ OJ.extendClass(
 
 				this._unset('_fader');
 			}
-			else if(this.hasClasses('hidden')){
+			else if(!this.isVisible()){
 				return;
 			}
 
@@ -336,21 +356,8 @@ OJ.extendClass(
 			this._fader = new OjFade(this, OjFade.OUT, ln ? arguments[0] : 250, ln > 1 ? arguments[1] : OjEasing.NONE);
 			this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
 			this._fader.start();
-		},
 
-		'isAnimated' : function(/*val*/){
-			if(arguments.length){
-				if(this._is_animated = arguments[0]){
-					this.addClasses('animated');
-				}
-				else{
-					this.removeClasses('animated');
-
-					OJ.destroy(this._trans, true);
-				}
-			}
-
-			return this._is_animated;
+			this._setIsAnimating(true);
 		},
 
 		'redraw' : function (){

@@ -180,7 +180,7 @@ OJ.extendClass(
 
 				if(attr.substr(0, 3) == 'on-'){
 					// todo: add support for multiple event listeners
-					// todo: add support for nested functions???
+					// todo? add support for nested event listener functions in templates
 					setter = val.split('.');
 					solo = setter.length == 1;
 					target = context;
@@ -198,6 +198,8 @@ OJ.extendClass(
 					}
 
 					this.addEventListener(OJ.attributeToFunc(attr), target, solo ? setter[0] : setter[1]);
+
+					dom.removeAttribute(attr);
 				}
 				else{
 					setter = OjStyleElement.attributeToSetter(attr);

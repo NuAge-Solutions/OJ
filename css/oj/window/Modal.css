@@ -72,7 +72,7 @@
 				border-bottom-right-radius: 5px;
 				border-bottom-left-radius: 5px;
 			}
-				.OjModal > .pane > .content > .container {
+				.OjModal > .pane > .content > .stack {
 					width: 100%;
 					height: 100%;
 

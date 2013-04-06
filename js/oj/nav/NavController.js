@@ -25,12 +25,80 @@ window.OjINavController = {
 	'_onStackChange' : function(evt){},
 
 
+
+	// stack view functions
+	// todo: enable animated flag option for nav stack view functions
+	'addView' : function(view/*, animated = true*/){
+		var s = this._stack;
+
+		return s.addElm.apply(s, arguments);
+	},
+
+	'addViewAt' : function(view, index/*, animated = true*/){
+		var s = this._stack;
+
+		return s.addElmAt.apply(s, arguments);
+	},
+
+	'gotoView' : function(/*view = root, animated = true*/){
+		// if no view is specified we go all the way back to the root
+		var ln = arguments.length,
+			view = ln ? arguments[0] : null;
+
+		return this.gotoViewAt(
+			view ? this.indexOfView(view) : 0,
+			ln > 1 ? arguments[1] : true
+		);
+	},
+
+	'gotoViewAt' : function(index/*, animated = true*/){
+		var s = this._stack;
+
+		return s.setActiveIndex.apply(s, arguments);
+	},
+
+	'hasView' : function(view){
+		return this._stack.hasElm(view);
+	},
+
+	'indexOfView' : function(view){
+		return this._stack.indexOfElm(view);
+	},
+
+	'removeActive' : function(/*animated = true*/){
+		return this.removeViewAt(this._stack.getActiveIndex(), arguments.length ? arguments[0] : true);
+	} ,
+
+	'removeView' : function(view/*, animated = true*/){
+		var s = this._stack;
+
+		return s.removeElm.apply(s, arguments);
+	},
+
+	'removeViewAt' : function(view, index/*, animated = true*/){
+		var s = this._stack;
+
+		return s.removeElmAt(s, arguments);
+	},
+
+	'replaceActive' : function(view/*, animated = true*/){
+
+	},
+
+
+	// getter & setter functions
 	'getActive' : function(){
 		return this._stack.getActive();
+	},
+	'setActive' : function(val){
+		this._stack.setActive(val);
 	},
 
 	'getActiveIndex' : function(){
 		return this._stack.getActiveIndex();
+	},
+	'setActiveIndex' : function(val){
+		this._stack.setActiveIndex(val);
 	},
 
 	'setStack' : function(stack){
@@ -43,6 +111,8 @@ window.OjINavController = {
 		}
 
 		this._stack = stack;
+
+		stack.setController(this);
 
 		this._setupStack();
 	}
@@ -67,76 +137,6 @@ OJ.extendComponent(
 				this._cleanupStack();
 
 				return this._s('OjNavController', '_destructor', arguments);
-			},
-
-
-
-			// stack view functions
-			'addView' : function(view/*, replace_current*/){
-				if(this._stack){
-					if(arguments.length > 1 && arguments[1]){
-						return this._stack.replaceElmAt();
-					}
-
-					return this._stack.addElm(view);
-				}
-
-				throw new Error('No Stack');
-			},
-
-			'addViewAt' : function(view, index){
-				if(this._stack){
-					return this._stack.addElmAt(view, index);
-				}
-
-				throw new Error('No Stack');
-			},
-
-			'gotoView' : function(/*view = root*/){
-				// if no view is specified we go all the way back to the root
-				var view = arguments.length ? arguments[0] : null;
-
-				this.gotoViewAt(view ? this.indexOfView(view) : 0);
-			},
-
-			'gotoViewAt' : function(index){
-				if(this._stack){
-					return this._stack.hasElm(view);
-				}
-
-				throw new Error('No Stack');
-			},
-
-			'hasView' : function(view){
-				if(this._stack){
-					return this._stack.hasElm(view);
-				}
-
-				throw new Error('No Stack');
-			},
-
-			'indexOfView' : function(view){
-				if(this._stack){
-					return this._stack.indexOfElm(view);
-				}
-
-				throw new Error('No Stack');
-			},
-
-			'removeView' : function(view){
-				if(this._stack){
-					return this._stack.removeElm(view);
-				}
-
-				throw new Error('No Stack');
-			},
-
-			'removeViewAt' : function(view, index){
-				if(this._stack){
-					return this._stack.removeElmAt(view, index);
-				}
-
-				throw new Error('No Stack');
 			}
 		}
 	),

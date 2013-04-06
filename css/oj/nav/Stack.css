@@ -5,14 +5,12 @@
 	-webkit-overflow-scrolling: hidden;
 }
 
-	.OjStack.container > *,
-	.OjStack > .container > * {
+	.OjStack > * {
 		position: relative;
 
 		z-index: 1;
 	}
-	.OjStack.animating > *,
-	.OjStack > .container.animating > * {
+	.OjStack.animating > * {
 		position: absolute;
 
 		top: 0px;
@@ -26,4 +24,7 @@
 		box-sizing: border-box;
 
 		overflow: hidden;
+	}
+	.OjStack.animating > *.prev-active {
+		z-index: 3;
 	}

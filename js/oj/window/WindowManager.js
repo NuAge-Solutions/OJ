@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.Iframe');
+OJ.importJs('oj.nav.Iframe');
 OJ.importJs('oj.dom.StyleElement');
 OJ.importJs('oj.events.Actionable');
 OJ.importJs('oj.fx.Fade');
@@ -120,14 +120,16 @@ OJ.extendManager(
 		},
 
 		'browser' : function(url, title/*, width, height */){
-			var ln = arguments.length, iframe = new OjIframe(url);
+			var args = arguments,
+				ln = args.length,
+				iframe = new OjIframe(url);
 
 			iframe.setWidth(100, '%');
 			iframe.setHeight(100, '%');
 
 			var modal = new OjModal(title, iframe);
-			modal.setPaneWidth(ln > 2 ? arguments[2] : this._calcBrowserWidth());
-			modal.setPaneHeight(ln > 3 ? arguments[3] : this._calcBrowserHeight());
+			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
+			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
 
 			return this.show(modal);
 		},

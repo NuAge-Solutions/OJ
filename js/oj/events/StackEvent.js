@@ -7,27 +7,30 @@ OJ.extendClass(
 	OjEvent, 'OjStackEvent',
 	{
 		'_get_props_' : {
-			'index'    : null,
-			'oldIndex' : null,
-			'view'     : null
+			'index'      : null,
+			'oldIndex'   : null,
+			'transition' : null,
+			'view'       : null
 		},
 
 
-		'_constructor' : function(type, view, index/*, old_index, bubbles = true, cancelable = false*/){
+		'_constructor' : function(type, view, transition, index/*, old_index, bubbles = true, cancelable = false*/){
 			var args = [type, true, false], ln = arguments.length;
 
 			this._view = view;
 
+			this._transition = transition;
+
 			this._index = index;
 
-			if(ln > 3){
-				this._oldIndex = arguments[3];
+			if(ln > 4){
+				this._oldIndex = arguments[4];
 
-				if(ln > 4){
-					args[1] = arguments[4];
+				if(ln > 5){
+					args[1] = arguments[5];
 
-					if(ln > 5){
-						args[2] = arguments[5];
+					if(ln > 6){
+						args[2] = arguments[6];
 					}
 				}
 			}

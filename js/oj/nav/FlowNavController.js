@@ -29,6 +29,24 @@ window.OjIFlowNavController = {
 
 
 	// helper functions
+	'_createTrans' : function(elm, amount, duration, easing){
+		if(this._transition == OjStack.NONE){
+			return ;
+		}
+
+		if(this._transition == OjStack.FADE){
+			return new OjFade(elm, amount ? OjFade.IN : OjFade.OUT, duration, easing);
+		}
+
+		if(this._transition == OjStack.SLIDE_HORZ){
+			return new OjMove(elm, OjMove.X, amount, duration, easing);
+		}
+
+		if(this._transition == OjStack.SLIDE_VERT){
+			return new OjMove(elm, OjMove.Y, amount, duration, easing);
+		}
+	},
+
 	'_makeBackButton' : function(view){
 		var btn = new OjButton(view.getShortTitle());
 		btn.addClasses('back-button');
@@ -43,54 +61,18 @@ window.OjIFlowNavController = {
 		return elm;
 	},
 
+	'_update' : function(view, transition, index, old_index){
+		// remove any old animations
+		this._unset('_tween');
 
-	'_update' : function(view, index, old_index){
-		// setup the transition
-		this.addClasses('animating');
-
-		this._unset('tween');
-
-		this._tween = new OjTweenSet();
-
-		// figure out the direction and then update
-		var direction = 0,
-			duration = 250,
-			width = this.getWidth();
-
-		if(old_index != -1){
-			if(old_index > index){
-				direction = width * -.5;
-			}
-			else if(old_index < index){
-				direction = width * .5;
-			}
-		}
-
-		if(direction){
-			// update the display of the controller bar
-			// setup the display
-			this.bottom.setX(0);
-
-			this.top.setX(direction);
-			this.top.setAlpha(0);
-
-			this._tween.addTween(new OjMove(this.bottom, OjMove.X, -1 * direction * .5, duration *.5));
-			this._tween.addTween(new OjMove(this.top, OjMove.X, 0, duration));
-		}
-		else{
-			this.top.setX(0);
-			this.top.setAlpha(0);
-		}
-
-		this._tween.addTween(new OjFade(this.bottom, OjFade.OUT, duration * .5));
-		this._tween.addTween(new OjFade(this.top, OjFade.IN, duration));
-
+		// process the left, title & right components
 		// setup the vars
-		var left = this.topLeft.numChildren() ? this.topLeft.getChildAt(0) : null,
-			center = this.topTitle.numChildren() ? this.topTitle.getChildAt(0) : null,
-			right = this.topRight.numChildren() ? this.topRight.getChildAt(0) : null;
-
-		var action_view = view.getActionView(),
+		var t = this.top, tl = this.topLeft, tt = this.topTitle, tr = this.topRight,
+			b = this.bottom, bl = this.btmLeft, bt = this.btmTitle, br = this.btmRight,
+			left = tl.numChildren() ? this.topLeft.getChildAt(0) : null,
+			center = tt.numChildren() ? tt.getChildAt(0) : null,
+			right = tr.numChildren() ? tr.getChildAt(0) : null,
+			action_view = view.getActionView(),
 			cancel_view  = view.getCancelView(),
 			title_view = view.getTitleView(),
 			title;
@@ -124,33 +106,99 @@ window.OjIFlowNavController = {
 		// figure out the transition
 		if(left != cancel_view){
 			if(left){
-				this.btmLeft.addChild(left);
+				bl.addChild(left);
 			}
 
 			if(cancel_view){
-				this.topLeft.addChild(cancel_view);
+				tl.addChild(cancel_view);
 			}
 		}
 
 		if(right != action_view){
 			if(right){
-				this.btmRight.addChild(right);
+				br.addChild(right);
 			}
 
 			if(action_view){
-				this.topRight.addChild(action_view);
+				tr.addChild(action_view);
 			}
 		}
 
 		if(center != title_view){
 			if(center){
-				this.btmTitle.addChild(center);
+				bt.addChild(center);
 			}
 
 			if(title_view){
-				this.topTitle.addChild(title_view);
+				tt.addChild(title_view);
 			}
 		}
+
+		// setup the top
+		t.setX(0);
+		t.setAlpha(1);
+
+		b.setX(0);
+		b.setAlpha(1);
+
+		// check to see if we should animate or not
+		var e = transition && transition.getEffect() ? transition.getEffect() : OjTransition.DEFAULT;
+
+		if(e == OjTransition.NONE){
+			// remove the animating css class since we aren't anymore
+			this.removeClasses('animating');
+
+			// make the necessary changes to the left, title & right bottom components components
+			t.show();
+
+			b.hide();
+
+			bl.removeAllChildren();
+			bt.removeAllChildren();
+			br.removeAllChildren();
+
+			return;
+		}
+
+		// setup the transition
+		this.addClasses('animating');
+
+		this._tween = new OjTweenSet();
+
+		// figure out the direction and then update
+		var direction = 0,
+			duration = transition.getDuration(),
+			width = this.getWidth();
+
+		if(old_index != -1){
+			if(old_index > index){
+				direction = width * -.5;
+			}
+			else if(old_index < index){
+				direction = width * .5;
+			}
+		}
+
+		if(direction && e != OjTransition.FADE){
+			// todo: OjFlowNavController - add support for multiple transition effects
+			// update the display of the controller bar
+			// setup the display
+			b.setX(0);
+
+			t.setX(direction);
+			t.setAlpha(0);
+
+			this._tween.addTween(new OjMove(b, OjMove.X, -1 * direction * .5, duration *.5));
+			this._tween.addTween(new OjMove(t, OjMove.X, 0, duration));
+		}
+		else{
+
+			t.setAlpha(0);
+		}
+
+		this._tween.addTween(new OjFade(b, OjFade.OUT, duration));
+		this._tween.addTween(new OjFade(t, OjFade.IN, duration));
+
 
 		// start the transition
 		this._tween.addEventListener(OjTweenEvent.COMPLETE, this, '_onTweenComplete');
@@ -175,7 +223,7 @@ window.OjIFlowNavController = {
 	},
 
 	'_onStackChange' : function(evt){
-		this._update(evt.getView(), evt.getIndex(), evt.getOldIndex());
+		this._update(evt.getView(), evt.getTransition(), evt.getIndex(), evt.getOldIndex());
 	},
 
 	'_onTweenComplete' : function(evt){

@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.View');
+OJ.importJs('oj.nav.View');
 OJ.importJs('oj.form.FormError');
 OJ.importJs('oj.list.List');
 
