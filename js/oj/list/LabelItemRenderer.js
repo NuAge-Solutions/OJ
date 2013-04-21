@@ -9,7 +9,7 @@ OJ.extendClass(
 
 
 		'_redrawData' : function(){
-			if(this._s('OjLabelItemRender', '_redrawData', arguments)){
+			if(this._s('OjLabelItemRenderer', '_redrawData', arguments)){
 				this.lbl.setText(this._data);
 
 				return true;

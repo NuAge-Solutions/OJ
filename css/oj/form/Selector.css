@@ -33,21 +33,68 @@
 			padding: 0px;
 			margin: 0px;
 		}
+			.OjSelector > .wrapper > .psuedoInput > .stem {
+				margin: 0px;
+			}
+				.OjSelector > .wrapper > .psuedoInput > .stem > .input {
+					position: relative;
+
+					top: auto;
+					left: auto;
+
+					width: auto;
+					height: auto;
+				}
+					.OjSelector > .wrapper > .psuedoInput > .stem > .input > .items {
+						background: none;
+						border: none;
+
+						-webkit-border-radius: 0px;
+						-moz-border-radius: 0px;
+						border-radius: 0px;
+					}
 
 .OjSelector .options {
 	white-space: normal;
 }
 
 .OjOption {
+	padding: 0px 0px 5px;
+
 	cursor: pointer;
 }
 	.OjOption .indicator {
+		display: block;
+		position: absolute;
+
+		height: 0px;
+
+		left: -50px;
+
 		overflow: hidden;
 	}
-		.OjOption .indicator > .input {
-			position: absolute;
+	.OjCheckedOption .indicator,
+	.OjRadioOption .indicator {
+		display: inline-block;
 
-			height: 0px;
+		position: relative;
 
-			left: -50px;
+		height: auto;
+
+		left: auto;
+
+		margin-right: 5px;
+	}
+
+	.OjOption .container {
+		display: block;
+	}
+	.OjCheckedOption .container,
+	.OjRadioOption .container {
+		display: inline-block;
+	}
+		.OjOption .container .OjItemRenderer {
+			padding: 0px;
+
+			border: none;
 		}

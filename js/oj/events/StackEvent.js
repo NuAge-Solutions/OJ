@@ -14,8 +14,8 @@ OJ.extendClass(
 		},
 
 
-		'_constructor' : function(type, view, transition, index/*, old_index, bubbles = true, cancelable = false*/){
-			var args = [type, true, false], ln = arguments.length;
+		'_constructor' : function(type, view, transition, index/*, old_index, bubbles = false, cancelable = false*/){
+			var args = [type, false, false], ln = arguments.length;
 
 			this._view = view;
 

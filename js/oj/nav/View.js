@@ -23,24 +23,30 @@ OJ.extendComponent(
 			'titleView'  : null
 		},
 
-		'_elm_funcs' : null,  '_template' : 'oj.nav.View',
+		'_elm_funcs' : null,  '_template' : 'oj.nav.View',  '_load_checkpoints' : null,  '_unload_checkpoints' : null,
 
 
 		'_constructor' : function(/*content, title, short_title*/){
-			var ln = arguments.length,
+			this._s('OjView', '_constructor', []);
+
+			// setup vars
+			this._load_checkpoints = {};
+			this._unload_checkpoints = {};
+
+			// process arguments
+			var args = arguments,
+				ln = args.length,
 				short_title = this._static('SHORT_TITLE'),
 				title = this._static('TITLE');
 
-			this._s('OjView', '_constructor', []);
-
 			if(ln){
-				this.setContent(arguments[0]);
+				this.setContent(args[0]);
 
 				if(ln > 1){
-					title = arguments[1];
+					title = args[1];
 
 					if(ln > 2){
-						short_title = arguments[2];
+						short_title = args[2];
 					}
 				}
 			}
@@ -53,10 +59,80 @@ OJ.extendComponent(
 		},
 
 		'_destructor' : function(){
-			this._actionView = OJ.destroy(this._actionView);
-			this._cancelView = OJ.destroy(this._cancelView);
+			this._unset('_actionView');
+			this._unset('_cancelView');
+			this._unset('_titleView');
 
 			return this._s('OjView', '_destructor', arguments);
+		},
+
+
+		'_checkpointsCompleted' : function(checkpoints){
+			var key;
+
+			for(key in checkpoints){
+				if(!checkpoints[key]){
+					return false;
+				}
+			}
+
+			return true;
+		},
+
+		'_load' : function(path, parts){
+			this.redraw();
+
+			this.dispatchEvent(new OjEvent(OjView.LOAD));
+		},
+
+		'_loadCheckpoint' : function(/*checkpoint*/){
+			var args = arguments;
+
+			if(args.length){
+				this._load_checkpoints[args[0]] = true;
+			}
+
+			if(this._checkpointsCompleted(this._load_checkpoints)){
+				this._load();
+			}
+		},
+
+		'_resetCheckpoints' : function(checkpoints){
+			var key;
+
+			for(key in checkpoints){
+				checkpoints[key] = false;
+			}
+		},
+
+		'_unload' : function(){
+			// dispatch the event
+			this.dispatchEvent(new OjEvent(OjView.UNLOAD));
+		},
+
+		'_unloadCheckpoint' : function(/*checkpoint*/){
+			var args = arguments;
+
+			if(args.length){
+				this._unload_checkpoints[args[0]] = true;
+			}
+
+			if(this._checkpointsCompleted(this._unload_checkpoints)){
+				this._unload();
+			}
+		},
+
+
+		'load' : function(){
+			this._resetCheckpoints(this._load_checkpoints);
+
+			this._loadCheckpoint();
+		},
+
+		'unload' : function(){
+			this._resetCheckpoints(this._unload_checkpoints);
+
+			this._unloadCheckpoint();
 		},
 
 
@@ -72,7 +148,7 @@ OJ.extendComponent(
 
 				var ln = content.length;
 
-				for(;ln--;){
+				for(; ln--;){
 					this.addElmAt(content[ln], 0);
 				}
 			}
@@ -140,6 +216,9 @@ OJ.extendComponent(
 		'BOTTOM'     : 'bottom',
 		'LEFT'       : 'left',
 		'RIGHT'      : 'right',
+
+		'LOAD'   : 'onViewLoad',
+		'UNLOAD' : 'onViewUnload',
 
 		'_TAGS' : ['view']
 	}

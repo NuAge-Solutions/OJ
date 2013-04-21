@@ -54,6 +54,17 @@ OJ.extendComponent(
 		},
 
 
+		'_setIsDisplayed' : function(){
+			this._s('OjSpinner', '_setIsDisplayed', arguments);
+
+			if(this._is_displayed){
+				this._timer.start();
+			}
+			else{
+				this._timer.stop();
+			}
+		},
+
 		'_updateTimer' : function(){
 			this._timer.setDuration((this._period * 1000) / this._numBlades);
 		},

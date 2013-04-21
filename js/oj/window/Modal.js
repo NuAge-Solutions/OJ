@@ -12,7 +12,7 @@ OJ.extendClass(
 	OJ.implementInterface(
 		OjINavController,
 		{
-			'_show_bar' : false,  '_show_close' : false,  '_show_underlay' : false,
+			'_show_bar' : true,  '_show_close' : true,  '_show_underlay' : true,  '_show_buttons' : false,
 
 			'_stack' : null, '_template' : 'oj.window.Modal',
 
@@ -26,9 +26,13 @@ OJ.extendClass(
 
 
 				// default the show settings
-				this.showBar(true);
+				this.showBar(this._show_bar);
 
-				this.showClose(true);
+				this.showClose(this._show_close);
+
+				this.showUnderlay(this._show_underlay);
+
+				this.showButtons(this._show_buttons);
 
 				// process arguments
 				var ln = arguments.length;
@@ -39,10 +43,6 @@ OJ.extendClass(
 					}
 
 					this.setTitle(arguments[0]);
-				}
-
-				if(!this.buttons.numChildren()){
-					this.buttons.hide();
 				}
 			},
 
@@ -74,6 +74,21 @@ OJ.extendClass(
 				return this._show_bar;
 			},
 
+			'showButtons' : function(){
+				var args = arguments;
+
+				if(args.length){
+					if(this._show_buttons = args[0]){
+						this.removeClasses('no-buttons');
+					}
+					else{
+						this.addClasses('no-buttons');
+					}
+				}
+
+				return this._show_buttons;
+			},
+
 			'showClose' : function(){
 				if(arguments.length){
 					this.bar.showCancel(arguments[0]);
@@ -102,6 +117,17 @@ OJ.extendClass(
 				return this._show_underlay;
 			},
 
+
+			'setButtons' : function(val){
+				this._s('OjModal', 'setButtons', arguments);
+
+				if(this.buttons.numChildren()){
+					this.buttons.show();
+				}
+				else{
+					this.buttons.hide();
+				}
+			},
 
 			'setTitle' : function(title){
 				this.bar.setTitle(this._title = title);

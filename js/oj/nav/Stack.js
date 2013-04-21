@@ -209,13 +209,16 @@ OJ.extendComponent(
 				if(!this._active){
 					this.setActiveIndex(evt.getIndex());
 				}
+				else{
+					this._current_index = this.indexOfElm(this._active);
+				}
 			},
 
 			'_onItemMove' : function(evt){
 				this.dispatchEvent(new OjStackEvent(OjStackEvent.MOVE, evt.getItem(), this._transition, evt.getIndex()));
 
 				if(this._active == evt.getItem()){
-					this._activeIndex = evt.getIndex();
+					this._current_index = evt.getIndex();
 					// todo: add logic for stack item move current_index
 				}
 			},
@@ -224,12 +227,15 @@ OJ.extendComponent(
 				this.dispatchEvent(new OjStackEvent(OjStackEvent.REMOVE, evt.getItem(), this._transition, evt.getIndex()));
 
 				if(this._active == evt.getItem()){
-					if(this._activeIndex){
-						this.setActiveIndex(this._activeIndex - 1);
+					if(this._current_index){
+						this.setActiveIndex(this._current_index - 1);
 					}
 					else{
 						this.setActiveIndex(this.numElms() - 1);
 					}
+				}
+				else{
+					this._current_index = this.indexOfElm(this._active);
 				}
 			},
 
@@ -303,7 +309,7 @@ OJ.extendComponent(
 					return;
 				}
 
-				// if we are in the middle of an animation then deffer the change until afterware
+				// if we are in the middle of an animation then deffer the change until afterward
 				if(this._trans_in){
 					this._deferred_index = val;
 
@@ -336,6 +342,8 @@ OJ.extendComponent(
 						this._trans_out.addEventListener(OjTweenEvent.COMPLETE, this, '_onTransOut');
 						this._trans_out.start();
 					}
+
+					this._active.unload();
 				}
 				else{
 					this._unset('_trans_out');
@@ -356,6 +364,8 @@ OJ.extendComponent(
 				// set the elm as active and update the stack and controller vars
 				(this._active = elm).setStack(this);
 				elm.setController(this._controller);
+
+				this._active.load();
 
 				this._addActive(elm);
 

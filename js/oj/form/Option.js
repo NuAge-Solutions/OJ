@@ -1,11 +1,11 @@
-OJ.importJs('oj.components.Component');
+OJ.importJs('oj.components.ItemRenderer');
 OJ.importJs('oj.events.MouseEvent');
 
 
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'OjOption',
+	OjItemRenderer, 'OjOption',
 	{
 		'_props_' : {
 			'data'       : null,
@@ -18,34 +18,40 @@ OJ.extendClass(
 		'option' : null,  'indicator' : null,
 
 
-		'_constructor' : function(selector, data){
-			this._s('OjOption', '_constructor', arguments);
+//		'_constructor' : function(/*selector, data*/){
+//			this._s('OjOption', '_constructor', arguments);
+//
+//			// set the selector and the data
+//			var args = arguments,
+//				ln = args.length;
+//
+//			if(ln){
+//				this.setSelector(args[0]);
+//
+//				if(ln > 1){
+//					this.setData(args[1]);
+//				}
+//			}
+//
+//			// setup the event listeners
+//			this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+//		},
 
-			// set the selector and the data
-			this.setData(data);
-			this.setSelector(selector);
 
-			// setup the event listeners
-			this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
-		},
+		'_redrawData' : function(){
+			if(this.option && this._s('OjOption', '_redrawData', arguments)){
+				this.option.setData(this._data);
 
-
-		'_onClick' : function(evt){
-			this._selector.toggleSelection(this);
-		},
-
-
-		'setData' : function(data){
-			if(this._data == data){
-				return;
+				return true;
 			}
 
-			this._data = data;
-
-			if(this.option){
-				this.option.setData(data);
-			}
+			return false;
 		},
+
+
+//		'_onClick' : function(evt){
+//			this._selector.toggleSelection(this);
+//		},
 
 		'setIsSelected' : function(val){
 			if(this._isSelected == val){
@@ -55,12 +61,12 @@ OJ.extendClass(
 			if(this._isSelected = val){
 				this.addClasses('selected');
 
-				this.input.setAttr('checked', 'checked');
+				this.input.dom().checked = true;
 			}
 			else{
 				this.removeClasses('selected')
 
-				this.input.setAttr('checked', null);
+				this.input.dom().checked = false;
 			}
 		},
 
@@ -74,7 +80,7 @@ OJ.extendClass(
 			if(this._selector = slctr){
 				var Cls = slctr.getItemRenderer();
 
-				this.addElm(this.option = new Cls(slctr, this._data));
+				this.addElm(this.option = new Cls(this._group, this._data));
 			}
 			else{
 				this.option = null;

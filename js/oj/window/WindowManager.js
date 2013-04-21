@@ -13,6 +13,11 @@ OJ.importCss('oj.window.Modal');
 OJ.extendManager(
 	'WindowManager', OjActionable, 'OjWindowManager',
 	{
+		'_props_' : {
+			'alertClass' : OjAlert,
+			'modalClass' : OjModal
+		},
+
 		'_modal_holder' : null,  '_modals' : null,
 
 
@@ -60,7 +65,7 @@ OJ.extendManager(
 				cancel_label = 'Cancel';
 			}
 
-			var alrt = new OjAlert(title, message, buttons, cancel_label);
+			var alrt = this.makeAlert(title, message, buttons, cancel_label);
 
 			if(!buttons && !cancel_label){
 				alrt.hideButtons();
@@ -127,7 +132,7 @@ OJ.extendManager(
 			iframe.setWidth(100, '%');
 			iframe.setHeight(100, '%');
 
-			var modal = new OjModal(title, iframe);
+			var modal = this.makeModal(title, iframe);
 			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
 			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
 
@@ -193,6 +198,24 @@ OJ.extendManager(
 			fade.start();
 
 			this._modals.splice(index, 1);
+		},
+
+		'makeAlert' : function(/*title, content*/){
+			var c = this._alertClass;
+
+			var alrt = new c();
+			alrt._constructor.apply(alrt, arguments);
+
+			return alrt;
+		},
+
+		'makeModal' : function(/*title, content*/){
+			var c = this._modalClass;
+
+			var modal = new c();
+			modal._constructor.apply(modal, arguments);
+
+			return modal;
 		},
 
 		'moveToTop' : function(modal){

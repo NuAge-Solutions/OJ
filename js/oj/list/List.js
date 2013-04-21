@@ -50,9 +50,7 @@ OJ.extendComponent(
 
 
 		'_createItem' : function(data, index){
-			var item = new this._itemRenderer();
-
-			item.setGroup(this);
+			var item = new this._itemRenderer(this, data);
 
 			this.addElmAt(item, index);
 
@@ -385,6 +383,8 @@ OJ.extendComponent(
 
 		'setItemRenderer' : function(renderer){
 			this._itemRenderer = isString(renderer) ? window[renderer] : renderer;
+
+			// todo: OjList - make change in item renderer force a redraw of all items
 		}
 	},
 	{

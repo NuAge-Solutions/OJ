@@ -43,7 +43,7 @@
 
 
 /* Image Button CSS */
-.OjImageButton {
+.OjButton.OjImageButton {
 	width: auto;
 	height: auto;
 
@@ -52,6 +52,9 @@
 	background: none;
 
 	border: none;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
 
 	-moz-box-shadow:    none;
 	-webkit-box-shadow: none;

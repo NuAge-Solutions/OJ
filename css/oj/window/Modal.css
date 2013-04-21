@@ -1,5 +1,5 @@
 .OjModal {}
-	.OjAlert.OjModal > .pane {
+	.OjModal > .pane {
 		max-width: 90% !important;
 		max-height: 90% !important;
 
@@ -10,8 +10,13 @@
 		-moz-border-radius: 5px;
 		border-radius: 5px;
 	}
-		.OjAlert.OjModal > .pane > .bar {
-			width: 100%;
+		.OjModal > .pane > .bar {
+			position: absolute;
+
+			top: 0px;
+			left: 0px;
+			right: 0px;
+
 			height: 40px;
 
 			margin: 0px;
@@ -51,18 +56,43 @@
 				text-align: center;
 			}
 
-			.OjModal > .pane > .content {
-				position: absolute;
+		.OjModal > .pane > .content {
+			position: absolute;
 
-				top: 40px;
-				left: 0px;
-				right: 0px;
-				bottom: 0px;
+			top: 40px;
+			left: 0px;
+			right: 0px;
+			bottom: 40px;
 
-				margin: 0px;
-				padding: 0px;
+			margin: 0px;
+			padding: 0px;
 
-				background: none;
+			background: none;
+
+			border: none;
+			-webkit-border-bottom-right-radius: 5px;
+			-webkit-border-bottom-left-radius: 5px;
+			-moz-border-radius-bottomright: 5px;
+			-moz-border-radius-bottomleft: 5px;
+			border-bottom-right-radius: 5px;
+			border-bottom-left-radius: 5px;
+		}
+		.OjModal.no-buttons > .pane > .content {
+			bottom: 0px;
+
+			padding: 0px;
+		}
+			.OjModal > .pane > .content > .stack {
+				width: 100%;
+				height: 100%;
+
+				min-width: 200px;
+				min-height: 100px;
+
+				color: #333;
+				font-size: 14px;
+				text-align: left;
+				text-shadow: none;
 
 				border: none;
 				-webkit-border-bottom-right-radius: 5px;
@@ -72,35 +102,24 @@
 				border-bottom-right-radius: 5px;
 				border-bottom-left-radius: 5px;
 			}
-				.OjModal > .pane > .content > .stack {
-					width: 100%;
-					height: 100%;
 
-					min-width: 200px;
-					min-height: 100px;
+		.OjModal > .pane > .buttons {
+			position: absolute;
 
-					color: #333;
-					font-size: 14px;
-					text-align: left;
-					text-shadow: none;
+			bottom: 40px;
+			left: 0px;
+			right: 0px;
 
-					border: none;
-					-webkit-border-bottom-right-radius: 5px;
-					-webkit-border-bottom-left-radius: 5px;
-					-moz-border-radius-bottomright: 5px;
-					-moz-border-radius-bottomleft: 5px;
-					border-bottom-right-radius: 5px;
-					border-bottom-left-radius: 5px;
-				}
+			height: 40px;
 
-				.OjModal > .pane > .content > .buttons {
-					margin-top: 20px;
-
-					text-align: center;
-				}
-					.OjModal > .window > .content > .buttons > * {
-						margin: 0px 50px;
-					}
+			text-align: center;
+		}
+		.OjModal.no-buttons > .pane > .buttons {
+			display: none;
+		}
+			.OjModal > .window > .pane > .buttons > * {
+				margin: 0px 50px;
+			}
 
 /* Modal Form Customization */
 .OjModal .OjComponent .container {

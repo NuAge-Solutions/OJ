@@ -1,6 +1,9 @@
 .OjStack {
 	display: block;
 
+	overflow: visible;
+}
+.OjStack.animating {
 	overflow: hidden;
 	-webkit-overflow-scrolling: hidden;
 }
@@ -22,8 +25,6 @@
 		-moz-box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 		box-sizing: border-box;
-
-		overflow: hidden;
 	}
 	.OjStack.animating > *.prev-active {
 		z-index: 3;

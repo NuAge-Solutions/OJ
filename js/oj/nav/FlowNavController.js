@@ -29,24 +29,6 @@ window.OjIFlowNavController = {
 
 
 	// helper functions
-	'_createTrans' : function(elm, amount, duration, easing){
-		if(this._transition == OjStack.NONE){
-			return ;
-		}
-
-		if(this._transition == OjStack.FADE){
-			return new OjFade(elm, amount ? OjFade.IN : OjFade.OUT, duration, easing);
-		}
-
-		if(this._transition == OjStack.SLIDE_HORZ){
-			return new OjMove(elm, OjMove.X, amount, duration, easing);
-		}
-
-		if(this._transition == OjStack.SLIDE_VERT){
-			return new OjMove(elm, OjMove.Y, amount, duration, easing);
-		}
-	},
-
 	'_makeBackButton' : function(view){
 		var btn = new OjButton(view.getShortTitle());
 		btn.addClasses('back-button');
@@ -83,24 +65,31 @@ window.OjIFlowNavController = {
 		}
 
 		// figure out default values
+		if(this._back_btn){
+			this._back_btn.removeEventListener(OjMouseEvent.CLICK, this, '_onBackClick');
+		}
+		else if(this._cancel_btn){
+			this._cancel_btn.removeEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
+		}
+
 		if(!cancel_view){
 			if(index > 0){
-				if(this._back_btn){
-					this._back_btn.removeEventListener(OjMouseEvent.CLICK, this, '_onBackClick');
-				}
-
-				cancel_view = this._back_btn = this._makeBackButton(this._stack.getElmAt(index - 1));
-
-				cancel_view.addEventListener(OjMouseEvent.CLICK, this, '_onBackClick');
+				cancel_view =  this._makeBackButton(this._stack.getElmAt(index - 1));
 			}
 			else if(this._show_cancel){
-				if(this._cancel_btn){
-					this._cancel_btn.removeEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
-				}
-
 				cancel_view = this._cancel_btn = new OjButton(this._cancelLabel);
-				cancel_view.addEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
 			}
+		}
+
+		if(index > 0){
+			this._back_btn = cancel_view;
+
+			cancel_view.addEventListener(OjMouseEvent.CLICK, this, '_onBackClick');
+		}
+		else if(this._show_cancel){
+			this._cancel_btn = cancel_view;
+
+			cancel_view.addEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
 		}
 
 		// figure out the transition
@@ -168,6 +157,7 @@ window.OjIFlowNavController = {
 		// figure out the direction and then update
 		var direction = 0,
 			duration = transition.getDuration(),
+			easing = transition.getEasing(),
 			width = this.getWidth();
 
 		if(old_index != -1){
@@ -188,16 +178,15 @@ window.OjIFlowNavController = {
 			t.setX(direction);
 			t.setAlpha(0);
 
-			this._tween.addTween(new OjMove(b, OjMove.X, -1 * direction * .5, duration *.5));
-			this._tween.addTween(new OjMove(t, OjMove.X, 0, duration));
+			this._tween.addTween(new OjMove(b, OjMove.X, -1 * direction * .5, duration *.5), easing[1]);
+			this._tween.addTween(new OjMove(t, OjMove.X, 0, duration, easing[1]));
 		}
 		else{
-
 			t.setAlpha(0);
 		}
 
-		this._tween.addTween(new OjFade(b, OjFade.OUT, duration));
-		this._tween.addTween(new OjFade(t, OjFade.IN, duration));
+		this._tween.addTween(new OjFade(b, OjFade.OUT, duration, easing[1]));
+		this._tween.addTween(new OjFade(t, OjFade.IN, duration, easing[0]));
 
 
 		// start the transition
@@ -283,6 +272,8 @@ OJ.extendComponent(
 
 			'_setupStack' : function(){
 				this._s('OjFlowNavController', '_setupStack', arguments);
+
+				this._stack.setTransition(new OjTransition(OjTransition.SLIDE_HORZ, 250, [OjEasing.IN, OjEasing.OUT]));
 
 				this._stack.addEventListener(OjStackEvent.ADD, this, '_onStackAdd');
 			},

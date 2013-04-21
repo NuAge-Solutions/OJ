@@ -10,9 +10,9 @@ window.OJ = function Oj(){
 
 		'_engine' : null,  '_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
 
-		'_is_tablet' : false,  '_is_touch_capable' : false,  '_library' : null,  '_loaded' : {},  '_metadata' : null,
+		'_is_supported' : true,  '_is_tablet' : false,  '_is_touch_capable' : false,  '_library' : null,  '_loaded' : {},
 
-		'_metas' : null,  '_os' : null,  '_protocol' : 'http', '_root' : null,
+		'_metadata' : null,  '_metas' : null,  '_os' : null,  '_protocol' : 'http', '_root' : null,
 
 		'_settings' : {
 			'assetsPath' : 'assets',
@@ -27,7 +27,14 @@ window.OJ = function Oj(){
 
 			'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
 
-			'waitForCss' : true
+			'waitForCss' : true,
+
+			'supportMessage' : 'Our apologies, however, your browser is currently not supported. ' +
+				'Please try again with a more recent version of <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a>, ' +
+				'<a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a>, ' +
+				'<a href="http://windows.microsoft.com/en-us/internet-explorer/downloads/ie-10/worldwide-languages">Internet Explorer</a> ' +
+				'or <a href="http://www.apple.com/safari/">Safari</a>. ' +
+				'You can easily download the latest version by clicking on the name of the browser you wish to use.'
 		},
 
 		'_script_elm' : null,  '_theme_elm' : null,    '_tween' : null,
@@ -70,7 +77,6 @@ window.OJ = function Oj(){
 		'CHROME_OS' : 'Chrome OS',
 		'LINUX'     : 'Linux',
 		'OSX'       : 'OS X',
-		'UNIX'      : 'UNIX',
 		'WINDOWS'   : 'Windows',
 
 		// mobile OSs
@@ -532,6 +538,10 @@ window.OJ = function Oj(){
 			return this._is_ready;
 		},
 
+		'isSupported' : function(){
+			return this._is_supported;
+		},
+
 		'isTablet' : function(){
 			return this._is_tablet;
 		},
@@ -766,6 +776,10 @@ window.OJ = function Oj(){
 			return this._browser;
 		},
 
+		'getBrowserVersion' : function(){
+			return this._browser_version;
+		},
+
 		'getCssPrefix' : function(){
 			return this._css_prefix;
 		},
@@ -876,6 +890,109 @@ window.OJ = function Oj(){
 		OJ._protocol = window.location.protocol.substring(-1);
 	}
 
+	// detect the broswer, os and version
+	var detector = {
+		'search' : function(data){
+			for(var i = 0; i < data.length; i++){
+				var dataString = data[i].string;
+				var dataProp = data[i].prop;
+
+				this.versionSearchString = data[i].versionSearch || data[i].identity;
+
+				if(dataString){
+					if(dataString.indexOf(data[i].subString) != -1){
+						return data[i].identity;
+					}
+				}
+				else if(dataProp){
+					return data[i].identity;
+				}
+			}
+		},
+
+		'version' : function(str){
+			var index = str.indexOf(this.versionSearchString);
+
+			if(index == -1){
+				return;
+			}
+
+			return str.substring(index + this.versionSearchString.length + 1).split(' ')[0];
+		}
+	};
+
+	OJ._browser = detector.search([
+		{
+			'string' : navigator.userAgent,
+			'subString' : 'Chrome',
+			'identity' : 'Chrome'
+		},
+		{
+			'string' : navigator.userAgent,
+			'subString' : 'OmniWeb',
+			'versionSearch' : 'OmniWeb/',
+			'identity' : 'OmniWeb'
+		},
+		{
+			'string' : navigator.vendor,
+			'subString' : 'Apple',
+			'identity' : 'Safari',
+			'versionSearch' : 'Version'
+		},
+		{
+			'prop' : window.opera,
+			'identity' : 'Opera',
+			'versionSearch' : 'Version'
+		},
+		{
+			'string' : navigator.vendor,
+			'subString' : 'iCab',
+			'identity' : 'iCab'
+		},
+		{
+			'string' : navigator.vendor,
+			'subString' : 'KDE',
+			'identity' : 'Konqueror'
+		},
+		{
+			'string' : navigator.userAgent,
+			'subString' : 'Firefox',
+			'identity' : 'Firefox'
+		},
+		{
+			'string' : navigator.vendor,
+			'subString' : 'Camino',
+			'identity' : 'Camino'
+		},
+		{
+			// for newer Netscapes (6+)
+			'string' : navigator.userAgent,
+			'subString' : 'Netscape',
+			'identity' : 'Netscape'
+		},
+		{
+			'string' : navigator.userAgent,
+			'subString' : 'MSIE',
+			'identity' : 'Internet Explorer',
+			'versionSearch' : 'MSIE'
+		},
+		{
+			'string' : navigator.userAgent,
+			'subString' : 'Gecko',
+			'identity' : 'Mozilla',
+			'versionSearch' : 'rv'
+		},
+		{
+			// for older Netscapes (4-)
+			'string' : navigator.userAgent,
+			'subString' : 'Mozilla',
+			'identity' : 'Netscape',
+			'versionSearch' : 'Mozilla'
+		}
+	]) || null;
+
+	OJ._browser_version = detector.version(navigator.userAgent) || detector.version(navigator.appVersion);
+
 	// detect OS
 	var platform = navigator.platform.substring(0, 3).toLowerCase();
 
@@ -889,41 +1006,54 @@ window.OJ = function Oj(){
 		OJ._is_mobile = (platform != 'ipa');
 		OJ._is_tablet = !OJ._is_mobile;
 	}
-	else if(platform == 'mac'){
-		OJ._os = OJ.OSX;
-	}
-	else if(platform == 'win'){
-		OJ._os = OJ.WINDOWS;
+	else{
+		OJ._os = detector.search([
+			{
+				'string' : navigator.platform,
+				'subString' : 'Win',
+				'identity' : 'Windows'
+			},
+			{
+				'string' : navigator.platform,
+				'subString' : 'Mac',
+				'identity' : 'OS X'
+			},
+			{
+				'string' : navigator.platform,
+				'subString' : 'Linux',
+				'identity' : 'Linux'
+			}
+		]) || null;
 	}
 
 	if(!OJ._is_touch_capable){
 		OJ._is_touch_capable = 'ontouchstart' in window;
 	}
 
-	var agent = navigator.userAgent.toLowerCase();
+	// detect
+	switch(OJ._browser){
+		case OJ.FIREFOX:
+			OJ._engine = OJ.GECKO;
+			OJ._css_prefix = '-moz-';
+		break;
 
-	if(agent.indexOf('firefox') > -1){
-		OJ._browser = OJ.FIREFOX;
-		OJ._engine = OJ.GECKO;
-		OJ._css_prefix = '-moz-';
-	}
-	else if(agent.indexOf('msie') > -1){
-		OJ._browser = OJ.IE;
-		OJ._browser_version = parseFloat(navigator.appVersion.match(/MSIE ([\d.]+)/)[1]);
-		OJ._engine = OJ.TRIDENT;
-		OJ._css_prefix = '-ms-';
-	}
-	else if(agent.indexOf('chrome') > -1){
-		OJ._browser = OJ.CHROME;
-		OJ._engine = OJ.WEBKIT;
-		OJ._css_prefix = '-webkit-';
-	}
-	else if(agent.indexOf('safari') > -1 || agent.indexOf('applewebkit') > -1){
-		OJ._browser = OJ.SAFARI;
-		OJ._engine = OJ.WEBKIT;
-		OJ._css_prefix = '-webkit-';
+		case OJ.IE:
+			OJ._engine = OJ.TRIDENT;
+			OJ._css_prefix = '-ms-';
+		break;
+
+		case OJ.CHROME:
+			OJ._engine = OJ.WEBKIT;
+			OJ._css_prefix = '-webkit-';
+		break;
+
+		case OJ.SAFARI:
+			OJ._engine = OJ.WEBKIT;
+			OJ._css_prefix = '-webkit-';
+		break;
 	}
 
+	// setup browser event listeners
 	window.onresize = function(){
 		if(isFunction(OJ.addClasses)){
 			var vp = OJ._viewport,
@@ -1197,6 +1327,20 @@ Number.prototype.toFormattedString = function(num_digits, num_decimals){
 
 
 // object functions
+if(!Object.create){
+	Object.create = function(o){
+		if(arguments.length > 1){
+			throw new Error('Object.create implementation only accepts the first parameter.');
+		}
+
+		function F() {}
+
+		F.prototype = o;
+
+		return new F();
+	};
+}
+
 if(!Object.keys){
 	Object.keys = function(obj){
 		if(obj !== Object(obj)){
@@ -1264,8 +1408,41 @@ String.prototype.capitalize = function(){
 	return str;
 };
 
+String.prototype.compareVersion = function(v){
+	var i = 0,
+		res = 0,
+		p1 = this.split('.'),
+		p2 = v.split('.'),
+		ln = Math.max(p1.length, p2.length);
+
+	for(; i < ln; i++) {
+		var t1 = (i < p1.length) ? parseInt(p1[i], 10) : 0,
+			t2 = (i < p2.length) ? parseInt(p2[i], 10) : 0;
+
+		if(isNaN(t1)){
+			t1 = 0;
+		}
+
+		if(isNaN(t2)){
+			t2 = 0;
+		}
+
+		if(t1 != t2){
+			res = (t1 > t2) ? 1 : -1;
+
+			break;
+		}
+	}
+
+	return res;
+};
+
 String.prototype.count = function(needle){
 	return (this.match(new RegExp(needle.regexEscape(), 'g')) || []).length;
+};
+
+String.prototype.html = function(){
+	return this.replaceAll(['\n', '\t'], ['<br />', '&nbsp;&nbsp;&nbsp;&nbsp;']);
 };
 
 String.prototype.isEmpty = function(){
@@ -1700,6 +1877,15 @@ function onDomReady(){
 	// set all the content as displayed
 	OJ._setIsDisplayed(true);
 
+	// check if browser is supported
+	OJ._is_supported = !(
+		(OJ.getBrowser() == OJ.IE && OJ.getBrowserVersion().compareVersion('9.0') < 0) ||
+		(OJ.getBrowser() == OJ.FIREFOX && OJ.getBrowserVersion().compareVersion('2.0') < 0) ||
+		(OJ.getBrowser() == OJ.CHROME && OJ.getBrowserVersion().compareVersion('4.0') < 0) ||
+		(OJ.getBrowser() == OJ.SAFARI && OJ.getBrowserVersion().compareVersion('5.0') < 0) ||
+		(OJ.getBrowser() == OJ.OPERA && OJ.getBrowserVersion().compareVersion('10.5') < 0)
+	);
+
 	// timeout offset to allow for css and stuff to settle
 	// this is clearly a hack so deal with it
 	setTimeout(window.onOjReady, 100);
@@ -1729,4 +1915,13 @@ function onOjReady(){
 	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
 
 	traceGroup();
+
+	// detect if the browser is not supported
+	if(!OJ.isSupported()){
+		var alrt = WindowManager.makeAlert('UnSupported Browser', OJ._('supportMessage'));
+		alrt.hideButtons();
+		alrt.setPaneWidth(500);
+
+		WindowManager.show(alrt);
+	}
 }

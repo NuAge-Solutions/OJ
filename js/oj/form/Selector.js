@@ -1,7 +1,9 @@
-OJ.importJs('oj.components.ItemRenderer');
 OJ.importJs('oj.data.Collection');
-OJ.importJs('oj.form.Option');
+OJ.importJs('oj.form.RadioOption');
 OJ.importJs('oj.form.Input');
+OJ.importJs('oj.list.LabelItemRenderer');
+OJ.importJs('oj.list.List');
+OJ.importJs('oj.list.ListEvent');
 
 
 OJ.importCss('oj.form.Selector');
@@ -13,54 +15,75 @@ OJ.extendComponent(
 	OjInput, 'OjSelector',
 	{
 		'_props_' : {
-			'itemRenderer'      : OjItemRenderer,
-			'options'           : null,
+			'itemRenderer'      : OjLabelItemRenderer,
 			'selectionMin'      : 0,
-			'selectionMax'      : 1,
-			'selectionRenderer' : OjOption
+			'selectionMax'      : 1
 		},
+
+		'_template' : 'oj.form.Selector',
 
 		'options' : null,
 
 
 		'_constructor' : function(/*name, label, value, options*/){
-			var ln = arguments.length;
+			var args = arguments,
+				ln = args.length;
 
-			this._s('OjSelector', '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
+			this._s('OjSelector', '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
 
+			// setup the list listeners
+			this.input.addEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
+			this.input.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
+			this.input.addEventListener(OjListEvent.ITEM_MOVE, this, '_onItemMove');
+			this.input.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onItemRemove');
+			this.input.addEventListener(OjListEvent.ITEM_REPLACE, this, '_onItemReplace');
+
+			// default the value
 			this._value = [];
-
-			// setup the options holder
-			this.options = new OjStyleElement();
-			this.options.addClasses('options');
-
-			this.stem.addChild(this.options);
 
 			// set options if available
 			if(ln > 3){
-				this.setOptions(arguments[3]);
+				this.setOptions(args[3]);
 			}
 		},
 
 
-		'_selectOption' : function(option, data){
-			var index = this._value.indexOf(data);
+		'_processDomSourceChild' : function(dom_elm, component){
+			if(OjElement.isTextNode(dom_elm)){
+				return;
+			}
 
-			if(index > -1){
+			this.input.addItem(OjObject.importData(dom_elm.innerText.parseJson()));
+		},
+
+		'_selectOption' : function(option, data){
+			if(this._value.indexOf(data) > -1){
 				return;
 			}
 
 			if(this._selectionMax && this._selectionMax == this._value.length){
-				index = this._options.indexOfItem(this._value.shift());
-
-				this.options.getChildAt(index).setIsSelected(false);
+				this.input.getElmAt(
+					this.input.indexOfItem(this._value.shift())
+				).setIsSelected(false);
 			}
 
 			option.setIsSelected(true);
 
 			this._value.push(data);
 
-			this.dispatchEvent(new OjEvent(OjEvent.CHANGE, true, true));
+			this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+		},
+
+		'_toggleOptionAt' : function(index){
+			var option = this.input.getElmAt(index),
+				data = this.input.getItemAt(index);
+
+			if(option.getIsSelected()){
+				this._unselectOption(option, data);
+			}
+			else{
+				this._selectOption(option, data);
+			}
 		},
 
 		'_unselectOption' : function(option, data){
@@ -74,32 +97,53 @@ OJ.extendComponent(
 
 			this._value.splice(index, 1);
 
-			this.dispatchEvent(new OjEvent(OjEvent.CHANGE, true, true));
+			this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+		},
+
+		'_updateSelection' : function(){
+			// make sure we remove any stale values and replace with fresh if possible
+			var ln = this._value.length;
+
+			for(; ln--;){
+				if(this.input.indexOfItem(this._value[ln]) == -1){
+					this._value.splice(ln, 1);
+				}
+			}
+
+			// make sure we have the at least the min amount selected
+			var i = 0,
+				ln2 = this.input.numItems();
+
+			for(; (ln = this._value.length) < this._selectionMin && i < ln2; i++){
+				this._selectOption(this.input.getElmAt(i), this.input.getItemAt(i));
+			}
 		},
 
 
 		'_onItemAdd' : function(evt){
-			var Cls = this._selectionRenderer;
+			this.input.getElmAt(evt.getIndex()).setSelector(this);
 
-			this.options.addChild(new Cls(this, evt.getItem()));
+			this._updateSelection();
+		},
+
+		'_onItemClick' : function(evt){
+			this._toggleOptionAt(evt.getIndex());
 		},
 
 		'_onItemMove' : function(evt){
+			trace('on item move', this._dom);
 			// todo: implement onItemMove in OjSelector
 		},
 
 		'_onItemRemove' : function(evt){
-			var index;
-
-			if((index = this._value.indexOf(evt.getItem())) > -1){
-				this._value.splice(index, 1);
-			}
-
-			this.options.removeChildAt(evt.getIndex());
+			trace('on item remove', this._dom);
+			this._updateSelection();
 		},
 
 		'_onItemReplace' : function(evt){
-			var index, old_data = this._options.getItemAt(evt.getItemIndex());
+			trace('on item replace', this._dom);
+			return;
+			var index, old_data = this._options.getItemAt(evt.getIndex());
 
 			if((index = this._value.indexOf(old_data)) > -1){
 				this._value.splice(index, 1, evt.getItem());
@@ -109,16 +153,14 @@ OJ.extendComponent(
 		},
 
 
-		'toggleSelection' : function(option){
-			var data = option.getData(),
-				index = this._value.indexOf(data);
+		'redraw' : function(){
+			if(this._s('OjSelector', 'redraw', arguments)){
+				this.input.redraw();
 
-			if(index == -1){
-				this._selectOption(option, data);
+				return true;
 			}
-			else{
-				this._unselectOption(option, data);
-			}
+
+			return false;
 		},
 
 
@@ -132,78 +174,51 @@ OJ.extendComponent(
 			}
 
 			this._itemRenderer = val;
+
+			this.redraw();
 		},
 
+
+		'getOptions' : function(){
+			return this.input.getDataProvider();
+		},
 		'setOptions' : function(val){
-			if(!isObjective(val)){
-				val = new OjCollection(val);
-			}
-			else if(this._options == val){
-				return;
-			}
+			// get the old selected indices
+			var indices = [];
 
-			// get all the vars we need to make the necessary updates/changes
-			var ln = this._value.length,
-				new_ln = val.numItems(),
-				old_ln = this.options.numChildren(),
-				delta = new_ln - old_ln,
-				old_options = this._options,
-				Cls = this._selectionRenderer,
-				i;
+			var ln = this._value.length;
 
-			if(old_options){
-				old_options.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-				old_options.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemMove');
-				old_options.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemRemove');
-				old_options.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemReplace');
+			for(; ln--;){
+				indices.unshift(this.input.indexOfItem(this._value[ln]));
 			}
 
-			// store the new options
-			if(this._options = val){
-				// add the event listeners
-				val.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-				val.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemMove');
-				val.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemRemove');
-				val.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemReplace');
-			}
+			this._value = [];
 
-			// rejigger the display
-			if(delta > 0){
-				for(i = 0; i < delta; i++){
-					this.options.addChild(new Cls(this, val.getItemAt(old_ln + i)));
-				}
-			}
-			else if(delta < 0){
-				while(old_ln-- > new_ln){
-					this.options.removeChildAt(old_ln);
-				}
+			// set the new options
+			this.input.setDataProvider(val);
 
-				old_ln = new_ln;
-			}
+			// get the new options
+			var options = this.getOptions();
 
-			while(old_ln-- > 0){
-				this.options.getChildAt(old_ln).setData(val.getItemAt(old_ln));
-			}
+			ln = options.numItems()
 
-			// make sure we remove any stale values and replace with fresh if possible
-			for(i = 0; i < ln; i++){
-				if(this._options.indexOfItem(this._value[i]) == -1){
-					delta = old_options.indexOfItem(this._value.splice(i, 1)[0]);
+			// try to select previous selected indices
+			var index,
+				ln2 = indices.length;
 
-					if(delta > -1 && delta < new_ln){
-						this._selectOption(this.options.getChildAt(delta), this._options.getItemAt(delta))
-					}
+			for(; ln2--;){
+				if((index = indices[ln2]) < ln){
+					this._selectOption(this.input.getElmAt(index), this.input.getItemAt(index));
 				}
 			}
 
-			// make sure we have the at least the min amount selected
-			i = 0;
-
-			while(this._value.length < this._selectionMin && i < new_ln){
-				this._selectOption(this.options.getChildAt(i), this._options.getItemAt(i));
-
-				i++;
+			// make sure all the option renderers know which selector they belong to
+			for(; ln--;){
+				this.input.getElmAt(ln).setSelector(this);
 			}
+
+			// update the selection
+			this._updateSelection();
 		},
 
 		'setValue' : function(val){
@@ -222,16 +237,11 @@ OJ.extendComponent(
 			}
 		},
 
+		'getSelectionRenderer' : function(){
+			return this.input.getItemRenderer();
+		},
 		'setSelectionRenderer' : function(val){
-			if(isString(val)){
-				val = OJ.stringToClass(val);
-			}
-
-			if(this._selectionRenderer == val){
-				return;
-			}
-
-			this._selectionRenderer = val;
+			this.input.setItemRenderer(val);
 		}
 	},
 	{

@@ -94,24 +94,33 @@ OjObject.prototype = {
 		return this._supers_[context] && this._supers_[context][func] ? this._supers_[context][func].apply(this, args) : null;
 	},
 
-	'_static' : function(key/*, value*/){
-		var context = OJ.stringToClass(this._class_name);
+	'_static' : function(/*key, value*/){
+		var args = arguments,
+			ln = args.length,
+			context = OJ.stringToClass(this._class_name);
 
-		if(arguments.length > 1){
-			return context[key] = arguments[1];
+		if(ln){
+			var key = args[0];
+
+			if(ln > 1){
+				context[key] = args[1];
+			}
+
+			return context[key];
 		}
 
-		return context[key];
+		return context;
 	},
 
 	'_staticCall' : function(func/*, ...args*/){
-		return this._staticApply(func, Array.prototype.slice.call(arguments, 1));
+		return this._staticApply(func, Array.array(arguments).slice(1));
 	},
 
 	'_staticApply' : function(func/*, args*/){
-		var context = OJ.stringToClass(this._class_name);
+		var context = this._static(),
+			args = arguments;
 
-		return context[func].apply(context, arguments.length > 1 ? arguments[1] : []);
+		return context[func].apply(context, args.length > 1 ? args[1] : []);
 	},
 
 	/**

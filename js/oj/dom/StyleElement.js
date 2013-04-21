@@ -776,21 +776,17 @@ OJ.extendClass(
 		},
 
 		'getMinWidth' : function(){
-			return isNull(this._min_width) ? this._min_width = this._getStyleNumber('min-width') : this._min_width;
+			return isNull(this._min_width) ? this._min_width = this._getStyleNumber('minWidth') : this._min_width;
 		},
 		'setMinWidth' : function(min){
-			this._min_width = min;
-
-			this._setStyleNumber('min-width', min);
+			this._setStyleNumber('minWidth', this._min_width = min);
 		},
 
 		'getMaxWidth' : function(){
-			return isNull(this._max_width) ? this._max_width = this._getStyleNumber('max-width') : this._max_width;
+			return isNull(this._max_width) ? this._max_width = this._getStyleNumber('maxWidth') : this._max_width;
 		},
 		'setMaxWidth' : function(max){
-			this._max_width = max;
-
-			this._setStyleNumber('max-width', max);
+			this._setStyleNumber('maxWidth', this._max_width = max);
 		},
 
 		'getInnerHeight' : function(){
@@ -823,21 +819,21 @@ OJ.extendClass(
 		},
 
 		'getMinHeight' : function(){
-			return isNull(this._min_height) ? this._min_height = this._getStyleNumber('min-height') : this._min_height;
+			return isNull(this._min_height) ? this._min_height = this._getStyleNumber('minHeight') : this._min_height;
 		},
 		'setMinHeight' : function(min){
 			this._min_height = min;
 
-			this._setStyleNumber('min-height', min);
+			this._setStyleNumber('minHeight', min);
 		},
 
 		'getMaxHeight' : function(){
-			return isNull(this._max_height) ? this._max_height = this._getStyleNumber('max-height') : this._max_height;
+			return isNull(this._max_height) ? this._max_height = this._getStyleNumber('maxHeight') : this._max_height;
 		},
 		'setMaxHeight' : function(max){
 			this._max_height = max;
 
-			this._setStyleNumber('max-height', max);
+			this._setStyleNumber('maxHeight', max);
 		},
 
 		'setPercentWidth' : function(w){

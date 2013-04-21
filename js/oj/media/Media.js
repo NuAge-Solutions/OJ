@@ -20,9 +20,12 @@ OJ.extendClass(
 		'_constructor' : function(/*source*/){
 			this._s('OjMedia', '_constructor', []);
 
+			this.setVertAlign(OjStyleElement.MIDDLE);
+
 			if((this.media = this._makeMedia()) && isObjective(this.media)){
-				this.addChild(this.media);
 				this.media.addClasses('media');
+
+				this.addChild(this.media);
 			}
 
 			if(arguments.length){
@@ -72,6 +75,12 @@ OJ.extendClass(
 			else{
 				this.media.setHeight('100', '%');
 				this.media.setWidth(OjStyleElement.AUTO);
+
+				var w2 = this.getWidth();
+
+				if(w > w2){
+					this.media.setMarginLeft((w2 - w) / 2);
+				}
 			}
 		},
 

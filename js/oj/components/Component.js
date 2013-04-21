@@ -71,8 +71,33 @@ OJ.extendClass(
 		},
 
 		'_setDomSource' : function(dom_elm, context){
+			var is_body = dom_elm == document.body;
+
+			// we need to copy over the attributes
+			if(!is_body){
+				var attrs = dom_elm.attributes,
+					ln = attrs.length;
+
+				while(ln-- > 0){
+					if(attrs[ln].nodeName == 'class-name' || attrs[ln].nodeName == 'class-path'){
+						continue;
+					}
+
+					if(attrs[ln].nodeName == 'class'){
+						attrs[ln].value += ' ' + this.getAttr('class');
+					}
+
+					this.setAttr(attrs[ln]);
+				}
+			}
+
+			// process attributes
+			this._processAttributes(context);
+
 			// process the dom source children
-			var children = dom_elm.childNodes, ln = children.length, child;
+			var child,
+				children = dom_elm.childNodes,
+				ln = children.length;
 
 			for(; ln--;){
 				if(child = this._processDomSourceChild(children[ln], context)){
@@ -84,7 +109,7 @@ OJ.extendClass(
 
 			// do the switcher-roo
 			if(dom_elm.parentNode){
-				if(dom_elm == document.body){
+				if(is_body){
 					children = this._dom.children;
 					ln = children.length;
 
@@ -97,23 +122,10 @@ OJ.extendClass(
 				}
 			}
 
-			// we need to copy over the attributes
-			var attrs = dom_elm.attributes, ln = attrs.length;
-
-			while(ln-- > 0){
-				if(attrs[ln].nodeName == 'class-name' || attrs[ln].nodeName == 'class-path'){
-					continue;
-				}
-
-				if(attrs[ln].nodeName == 'class'){
-					attrs[ln].value += ' ' + this.getAttr('class');
-				}
-
-				this.setAttr(attrs[ln]);
+			if(is_body){
+				// store the dom
+				this._dom = dom_elm;
 			}
-
-			// process attributes
-			this._processAttributes(context);
 		},
 
 		'_setElmFuncs' : function(container){
