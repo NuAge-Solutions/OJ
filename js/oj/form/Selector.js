@@ -53,7 +53,7 @@ OJ.extendComponent(
 				return;
 			}
 
-			this.input.addItem(OjObject.importData(dom_elm.innerText.parseJson()));
+			this.input.addItemAt(OjObject.importData(dom_elm.innerText.parseJson()), 0);
 		},
 
 		'_selectOption' : function(option, data){
