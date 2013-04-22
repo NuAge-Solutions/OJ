@@ -240,6 +240,10 @@ OJ.extendClass(
 		},
 
 		'_processChild' : function(dom_elm, context){
+			if(!dom_elm){
+				return;
+			}
+
 			var tag = dom_elm.tagName;
 
 			if(!tag || OjElement.isTextNode(dom_elm)){

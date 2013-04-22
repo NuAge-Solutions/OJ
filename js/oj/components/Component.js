@@ -97,11 +97,12 @@ OJ.extendClass(
 			// process the dom source children
 			var child,
 				children = dom_elm.childNodes,
+				i = 0,
 				ln = children.length;
 
-			for(; ln--;){
-				if(child = this._processDomSourceChild(children[ln], context)){
-					this.addElmAt(child, 0);
+			for(; i < ln; i++){
+				if(child = this._processDomSourceChild(children[i], context)){
+					this.addElm(child);
 				}
 			}
 

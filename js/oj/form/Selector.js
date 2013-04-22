@@ -29,6 +29,9 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = args.length;
 
+			// default the value
+			this._value = [];
+
 			this._s('OjSelector', '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
 
 			// setup the list listeners
@@ -37,9 +40,7 @@ OJ.extendComponent(
 			this.input.addEventListener(OjListEvent.ITEM_MOVE, this, '_onItemMove');
 			this.input.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onItemRemove');
 			this.input.addEventListener(OjListEvent.ITEM_REPLACE, this, '_onItemReplace');
-
-			// default the value
-			this._value = [];
+			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
 
 			// set options if available
 			if(ln > 3){
@@ -53,7 +54,7 @@ OJ.extendComponent(
 				return;
 			}
 
-			this.input.addItemAt(OjObject.importData(dom_elm.innerText.parseJson()), 0);
+			this.input.addItem(OjObject.importData(dom_elm.innerText.parseJson()));
 		},
 
 		'_selectOption' : function(option, data){
@@ -118,7 +119,6 @@ OJ.extendComponent(
 				this._selectOption(this.input.getElmAt(i), this.input.getItemAt(i));
 			}
 		},
-
 
 		'_onItemAdd' : function(evt){
 			this.input.getElmAt(evt.getIndex()).setSelector(this);
@@ -242,6 +242,11 @@ OJ.extendComponent(
 		},
 		'setSelectionRenderer' : function(val){
 			this.input.setItemRenderer(val);
+
+			if(this.getSelectionRenderer() == OjRadioOption){
+				this.setSelectionMin(1);
+				this.setSelectionMax(1);
+			}
 		}
 	},
 	{
