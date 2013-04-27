@@ -4,7 +4,7 @@ OJ.extendClass(
 	OjElement, 'OjTextElement',
 	{
 		'_constructor' : function(/*text*/){
-			this._s('OjTextElement', '_constructor', []);
+			this._super('OjTextElement', '_constructor', []);
 
 			if(arguments.length){
 				this.setText(arguments[0]);
@@ -17,7 +17,7 @@ OJ.extendClass(
 			}
 
 			// force text dom elm
-			this._s('OjTextElement', '_setDom', [dom_elm, context]);
+			this._super('OjTextElement', '_setDom', [dom_elm, context]);
 		},
 
 

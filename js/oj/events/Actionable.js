@@ -16,13 +16,17 @@ OJ.extendClass(
 		'_constructor' : function(){
 			this._eventProxy = this;
 
-			this._s('OjActionable', '_constructor', arguments);
+			this._super('OjActionable', '_constructor', arguments);
 		},
 
 		'_destructor' : function(){
-			this.removeAllListeners();
+			if(this._eventProxy){
+				this.removeAllListeners();
 
-			return this._s('OjActionable', '_destructor', arguments);
+				this._eventProxy = null;
+			}
+
+			return this._super('OjActionable', '_destructor', arguments);
 		},
 
 

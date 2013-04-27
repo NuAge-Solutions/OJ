@@ -21,7 +21,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
-			this._s('OjTween', '_constructor', []);
+			this._super('OjTween', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -46,7 +46,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._unset('_timer');
 
-			return this._s('OjTween', '_destructor', arguments);
+			return this._super('OjTween', '_destructor', arguments);
 		},
 
 

@@ -29,7 +29,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjCollectionEvent', '_constructor', args);
+			this._super('OjCollectionEvent', '_constructor', args);
 		}
 	},
 	{

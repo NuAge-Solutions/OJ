@@ -12,16 +12,17 @@ OJ.extendClass(
 	OjComponent, 'OjAlert',
 	{
 		'_props_' : {
-			'buttons' : null,
-			'content' : null,
-			'title'   : null
+			'buttons'      : null,
+			'content'      : null,
+			'selfDestruct' : 0, // OjAlert.NONE
+			'title'        : null
 		},
 
 		'_template' : 'oj.window.Alert',
 
 
 		'_constructor' : function(/*title, content, buttons, cancel_label*/){
-			this._s('OjAlert', '_constructor', []);
+			this._super('OjAlert', '_constructor', []);
 
 			// setup the display
 			if(this.className() == 'OjAlert'){
@@ -53,11 +54,16 @@ OJ.extendClass(
 			}
 		},
 
-		'_destructor' : function(){
-			// remove all the content so it doesn't get destroyed
-			this.container.removeAllChildren();
+		'_destructor' : function(/*depth = 1*/){
+			var args = arguments,
+				depth = args.length ? args[0] : 0;
 
-			return this._s('OjAlert', '_destructor', arguments);
+			if(!depth){
+				// remove all the content so it doesn't get destroyed
+				this.container.removeAllChildren();
+			}
+
+			return this._super('OjAlert', '_destructor', arguments);
 		},
 
 
@@ -73,11 +79,15 @@ OJ.extendClass(
 		},
 
 		'_onCancelClick' : function(evt){
+			this.cancel();
+		},
+
+
+		'cancel' : function(){
 			this.dispatchEvent(new OjEvent(OjEvent.CANCEL));
 
 			WindowManager.hide(this);
 		},
-
 
 		'hideButtons' : function(){
 			this.addClasses('no-buttons');
@@ -167,5 +177,10 @@ OJ.extendClass(
 		'setPaneWidth' : function(val/*, unit*/){
 			this.pane.setWidth.apply(this.pane, arguments);
 		}
+	},
+	{
+		'NONE' : 0,
+		'SHALLOW' : 1,
+		'DEEP' : 2
 	}
 );

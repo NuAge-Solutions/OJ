@@ -35,7 +35,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjStackEvent', '_constructor', args);
+			this._super('OjStackEvent', '_constructor', args);
 		}
 	},
 	{

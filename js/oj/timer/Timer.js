@@ -21,7 +21,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*duration, repeat_count*/){
-			this._s('OjTimer', '_constructor', []);
+			this._super('OjTimer', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -37,7 +37,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			TimerManager.unregisterTimer(this);
 
-			return this._s('OjTimer', '_destructor', arguments);
+			return this._super('OjTimer', '_destructor', arguments);
 		},
 
 

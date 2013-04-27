@@ -10,15 +10,17 @@ OJ.extendClass(
 	OjComponent, 'OjMedia',
 	{
 		'_props_' : {
-			'resizeBy' : 'width',
-			'source'   : null
+			'resizeBy'    : 'width',
+			'source'      : null,
+			'showSpinner' : false,
+			'spinnerTint' : '#333'
 		},
 
 		'_loaded' : false, '_original_w' : null,  '_original_h' : null,  '_source_is_css' : false,
 
 
 		'_constructor' : function(/*source*/){
-			this._s('OjMedia', '_constructor', []);
+			this._super('OjMedia', '_constructor', []);
 
 			this.setVertAlign(OjStyleElement.MIDDLE);
 
@@ -37,7 +39,7 @@ OJ.extendClass(
 			this._unset('media');
 			this._unset('loading');
 
-			return this._s('OjMedia', '_destructor', arguments);
+			return this._super('OjMedia', '_destructor', arguments);
 		},
 
 		'_makeMedia' : function(){ },
@@ -68,7 +70,7 @@ OJ.extendClass(
 
 				this.media.setWidth(OjStyleElement.AUTO);
 			}
-			else if(this._resizeBy == this._static('WIDTH')){
+			else if(this._resizeBy == this._static.WIDTH){
 				this.media.setWidth('100', '%');
 				this.media.setHeight(OjStyleElement.AUTO);
 			}
@@ -120,6 +122,8 @@ OJ.extendClass(
 			}
 
 			this._resize();
+
+			this.dispatchEvent(new OjEvent(OjEvent.LOAD));
 		},
 
 
@@ -130,7 +134,7 @@ OJ.extendClass(
 
 		// Getter & Setter Functions
 		'setHeight' : function(val){
-			this._s('OjMedia', 'setHeight', arguments);
+			this._super('OjMedia', 'setHeight', arguments);
 
 			if(val == OjStyleElement.AUTO || arguments.length > 1){
 				this._resize();
@@ -138,12 +142,12 @@ OJ.extendClass(
 		},
 
 		'setInnerHeight' : function(val){
-			this._s('OjMedia', 'setInnerHeight', arguments);
+			this._super('OjMedia', 'setInnerHeight', arguments);
 
 			this._resize();
 		},
 		'setInnerWidth' : function(val){
-			this._s('OjMedia', 'setInnerWidth', arguments);
+			this._super('OjMedia', 'setInnerWidth', arguments);
 
 			this._resize();
 		},
@@ -169,8 +173,8 @@ OJ.extendClass(
 				return;
 			}
 
-			if(!this.loading){
-				this.addChild(this.loading = new OjSpinner());
+			if(!this.loading && this._showSpinner){
+				this.addChild(this.loading = new OjSpinner(this._spinnerTint));
 			}
 
 			this._setSource(url);
@@ -187,7 +191,7 @@ OJ.extendClass(
 		},
 
 		'setWidth' : function(val){
-			this._s('OjMedia', 'setWidth', arguments);
+			this._super('OjMedia', 'setWidth', arguments);
 
 			if(val == OjStyleElement.AUTO || arguments.length > 1){
 				this._resize();

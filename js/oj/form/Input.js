@@ -22,7 +22,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*name, label, value, validators*/){
-			this._s('OjInput', '_constructor', []);
+			this._super('OjInput', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -89,24 +89,6 @@ OJ.extendClass(
 			return true;
 		},
 
-
-//				'_onDomMouseEvent' : function(evt){
-//					evt.bubbles = false;
-//
-//					if(evt.stopPropagation){
-//						evt.stopPropagation();
-//					}
-//					else{
-//						evt.cancelBubble = true;
-//					}
-//
-//					if(this.ojProxy && this.ojProxy._processEvent(evt)){
-//						this.ojProxy._onMouse(OjMouseEvent.convertDomEvent(evt));
-//					}
-//
-//					return false;
-//				},
-
 		'_onDefaultClick' : function(evt){
 			this.input.focus();
 		},
@@ -145,7 +127,7 @@ OJ.extendClass(
 		},
 
 		'redraw' : function(){
-			if(this._s('OjInput', 'redraw', arguments)){
+			if(this._super('OjInput', 'redraw', arguments)){
 				this._redrawDefault();
 
 				return true;
@@ -253,7 +235,7 @@ OJ.extendClass(
 				}
 
 				if(this._ready){
-					this.dispatchEvent(new OjEvent(OjEvent.CHANGE, true, true));
+					this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
 				}
 			}
 		}

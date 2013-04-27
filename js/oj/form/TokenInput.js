@@ -24,7 +24,7 @@ OJ.extendClass(
 			this._selected = [];
 			this._value = [];
 
-			this._s('OjTokenInput', '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
+			this._super('OjTokenInput', '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
 
 			if(ln > 2){
 				if(ln > 3){
@@ -42,7 +42,7 @@ OJ.extendClass(
 
 
 		'_setDom' : function(dom_elm){
-			this._s('OjTokenInput', '_setDom', arguments);
+			this._super('OjTokenInput', '_setDom', arguments);
 
 			var prnt = this.input.parent();
 

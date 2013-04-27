@@ -1,4 +1,5 @@
 OJ.importJs('oj.components.Component');
+OJ.importJs('oj.components.Overlay');
 
 OJ.importCss('oj.nav.View');
 
@@ -23,11 +24,15 @@ OJ.extendComponent(
 			'titleView'  : null
 		},
 
-		'_elm_funcs' : null,  '_template' : 'oj.nav.View',  '_load_checkpoints' : null,  '_unload_checkpoints' : null,
+		'_elm_funcs' : null,  '_load_checkpoints' : null,  '_loading_icon' : null,  '_loading_msg' : 'Loading',
+
+		'_overlay' : null,  '_template' : 'oj.nav.View',  '_unload_checkpoints' : null,  '_unloading_icon' : null,
+
+		'_unloading_msg' : 'UnLoading',
 
 
 		'_constructor' : function(/*content, title, short_title*/){
-			this._s('OjView', '_constructor', []);
+			this._super('OjView', '_constructor', []);
 
 			// setup vars
 			this._load_checkpoints = {};
@@ -36,8 +41,8 @@ OJ.extendComponent(
 			// process arguments
 			var args = arguments,
 				ln = args.length,
-				short_title = this._static('SHORT_TITLE'),
-				title = this._static('TITLE');
+				short_title = this._static.SHORT_TITLE,
+				title = this._static.TITLE;
 
 			if(ln){
 				this.setContent(args[0]);
@@ -62,8 +67,9 @@ OJ.extendComponent(
 			this._unset('_actionView');
 			this._unset('_cancelView');
 			this._unset('_titleView');
+			this._unset('_overlay');
 
-			return this._s('OjView', '_destructor', arguments);
+			return this._super('OjView', '_destructor', arguments);
 		},
 
 
@@ -79,8 +85,17 @@ OJ.extendComponent(
 			return true;
 		},
 
+		'_hideOverlay' : function(){
+			if(this._overlay){
+				this._overlay.addEventListener(OjEvent.HIDE, this, '_onOverlayHide');
+				this._overlay.hide();
+			}
+		},
+
 		'_load' : function(path, parts){
 			this.redraw();
+
+			this._hideOverlay();
 
 			this.dispatchEvent(new OjEvent(OjView.LOAD));
 		},
@@ -95,6 +110,9 @@ OJ.extendComponent(
 			if(this._checkpointsCompleted(this._load_checkpoints)){
 				this._load();
 			}
+			else{
+				this._showOverlay(this._loading_msg, this._loading_icon);
+			}
 		},
 
 		'_resetCheckpoints' : function(checkpoints){
@@ -105,7 +123,26 @@ OJ.extendComponent(
 			}
 		},
 
+		'_showOverlay' : function(/*msg, icon*/){
+			var args = arguments,
+				ln = args.length,
+				msg = ln ? args[0] : null,
+				icon = ln > 1 ? args[1] : null;
+
+			if(this._overlay){
+				this._overlay.setMessage(msg);
+				this._overlay.setIcon(icon);
+			}
+			else{
+				this._overlay = new OjOverlay(msg, icon);
+			}
+
+			this._overlay.show(this);
+		},
+
 		'_unload' : function(){
+			this._hideOverlay();
+
 			// dispatch the event
 			this.dispatchEvent(new OjEvent(OjView.UNLOAD));
 		},
@@ -120,6 +157,14 @@ OJ.extendComponent(
 			if(this._checkpointsCompleted(this._unload_checkpoints)){
 				this._unload();
 			}
+			else{
+				this._showOverlay(this._unloading_msg, this._unloading_icon);
+			}
+		},
+
+
+		'_onOverlayHide' : function(evt){
+			this._unset('_overlay');
 		},
 
 

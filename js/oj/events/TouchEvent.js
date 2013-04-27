@@ -17,7 +17,7 @@ OJ.extendClass(
 		'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
 			var ln = arguments.length;
 
-			this._s('OjTouchEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
+			this._super('OjTouchEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
 
 			if(ln > 3){
 				this._pageX = arguments[3];
@@ -30,7 +30,7 @@ OJ.extendClass(
 
 
 		'clone' : function(){
-			var clone = this._s('OjTouchEvent', 'clone', arguments);
+			var clone = this._super('OjTouchEvent', 'clone', arguments);
 
 			clone._pageX = this._pageX;
 			clone._pageY = this._pagY;
@@ -55,8 +55,8 @@ OJ.extendClass(
 			}
 
 			var new_evt = new OjTouchEvent(type, evt.bubbles, evt.cancelable, evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
-			new_evt._target = evt.target ? evt.target.ojProxy : null;
-			new_evt._currentTarget = evt.currentTarget ? evt.currentTarget.ojProxy : null;
+			new_evt._target = OjElement.element(evt.target)
+			new_evt._currentTarget = OjElement.element(evt.currentTarget);
 
 			return new_evt;
 		},

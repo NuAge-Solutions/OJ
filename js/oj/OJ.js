@@ -6,7 +6,7 @@
  */
 window.OJ = function Oj(){
 	return {
-		'_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
+		'_analytics' : null,  '_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
 
 		'_engine' : null,  '_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
 
@@ -29,7 +29,7 @@ window.OJ = function Oj(){
 
 			'waitForCss' : true,
 
-			'supportMessage' : 'Our apologies, however, your browser is currently not supported. ' +
+			'supportMessage' : 'Our apologies. Your browser is currently not supported. ' +
 				'Please try again with a more recent version of <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a>, ' +
 				'<a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a>, ' +
 				'<a href="http://windows.microsoft.com/en-us/internet-explorer/downloads/ie-10/worldwide-languages">Internet Explorer</a> ' +
@@ -287,9 +287,11 @@ window.OJ = function Oj(){
 			return undefined;
 		},
 
-		'destroy' : function(obj/*, recursive = false*/){
+		'destroy' : function(obj/*, depth = 0*/){
 			if(obj && isFunction(obj._destructor)){
-				obj._destructor(arguments.length > 1 ? arguments[1] : false);
+				var args = arguments;
+
+				obj._destructor(args.length > 1 ? args[1] : 0);
 			}
 
 			return obj = null;
@@ -361,6 +363,9 @@ window.OJ = function Oj(){
 
 			// add our class name to the class names array
 			proto._class_names.push(ns);
+
+			// setup the static var
+			proto._static = c;
 
 			// setup the supers array
 			proto._supers_[ns] = {};

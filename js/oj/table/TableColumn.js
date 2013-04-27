@@ -24,7 +24,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*header, body_renderer, key, footer, primary*/){
-			this._s('OjTableColumn', '_constructor', []);
+			this._super('OjTableColumn', '_constructor', []);
 
 			var ln = arguments.length;
 

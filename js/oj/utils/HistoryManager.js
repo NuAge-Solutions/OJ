@@ -22,7 +22,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._s('OjHistoryManager', '_constructor', arguments);
+			this._super('OjHistoryManager', '_constructor', arguments);
 
 			this._list = [new OjUrl(window.location.href)];
 
@@ -52,7 +52,7 @@ OJ.extendManager(
 		'_destructor' : function(){
 			OJ.destroy(this._timer);
 
-			return this._s('OjHistoryManager', '_destructor', arguments);
+			return this._super('OjHistoryManager', '_destructor', arguments);
 		},
 
 

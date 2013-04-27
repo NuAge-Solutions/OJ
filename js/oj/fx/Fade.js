@@ -16,7 +16,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*target = null, direction = IN, duration = 250, easing = NONE*/){
-			this._s('OjFade', '_constructor', []);
+			this._super('OjFade', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -43,7 +43,7 @@ OJ.extendClass(
 				this._target.hide();
 			}
 
-			this._s('OjFade', '_onComplete', arguments);
+			this._super('OjFade', '_onComplete', arguments);
 		},
 
 
@@ -74,7 +74,7 @@ OJ.extendClass(
 
 			this._target.show();
 
-			this._s('OjFade', 'start', arguments);
+			this._super('OjFade', 'start', arguments);
 		}
 	},
 	{

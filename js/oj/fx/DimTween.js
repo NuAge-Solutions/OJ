@@ -14,7 +14,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*target, direction, amount, duration, easing*/){
-			this._s('OjDimTween', '_constructor', []);
+			this._super('OjDimTween', '_constructor', []);
 
 			var ln = arguments.length;
 

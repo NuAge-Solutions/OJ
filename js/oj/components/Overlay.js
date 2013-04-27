@@ -11,7 +11,7 @@ OJ.extendComponent(
 	{
 		'_props_' : {
 			'forceIcon'    : true,
-			'forceMessage' : true,
+			'forceMessage' : false,
 			'message'      : null,
 			'icon'         : null
 		},
@@ -20,9 +20,10 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*message, icon*/){
-			this._s('OjOverlay', '_constructor', []);
+			this._super('OjOverlay', '_constructor', []);
 
-			var ln = arguments.length, icon;
+			var ln = arguments.length,
+				icon;
 
 			if(ln){
 				this.setMessage(arguments[0]);
@@ -43,7 +44,7 @@ OJ.extendComponent(
 				this._parent.removeChild(this);
 			}
 
-			this._unset('_fader');
+			this._super('OjOverlay', '_onFadeComplete', arguments);
 		},
 
 

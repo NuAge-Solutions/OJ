@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjHttpStatusEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super('OjHttpStatusEvent', '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

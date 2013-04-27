@@ -13,7 +13,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(){
-			this._s('OjFilterBox', '_constructor', arguments);
+			this._super('OjFilterBox', '_constructor', arguments);
 
 			// setup event listeners
 			this.valueHldr.addEventListener(OjEvent.CHANGE, this, '_onSearch');
@@ -25,7 +25,7 @@ OJ.extendClass(
 
 
 		'_setDom' : function(dom_elm){
-			this._s('OjFilterBox', '_setDom', arguments);
+			this._super('OjFilterBox', '_setDom', arguments);
 
 			var prnt = this.valueHldr.parent();
 			var new_value = new OjTextInput();
@@ -107,11 +107,11 @@ OJ.extendClass(
 		'_showList' : function(){
 			this._redrawList();
 
-			this._s('OjFilterBox', '_showList', arguments);
+			this._super('OjFilterBox', '_showList', arguments);
 		},
 
 		'_hideList' : function(){
-			this._s('OjFilterBox', '_hideList', arguments);
+			this._super('OjFilterBox', '_hideList', arguments);
 
 			this._redrawValue();
 		},

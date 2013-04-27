@@ -19,7 +19,7 @@ OJ.extendClass(
 		'_constructor' : function(/*url, data, content_type, method*/){
 			var ln = arguments.length;
 
-			this._s('OjUrlRequest', '_constructor', ln ? [arguments[0]] : []);
+			this._super('OjUrlRequest', '_constructor', ln ? [arguments[0]] : []);
 
 			this._headers = {};
 

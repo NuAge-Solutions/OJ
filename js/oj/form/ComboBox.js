@@ -23,7 +23,7 @@ OJ.extendClass(
 
 			this._options_index = [];
 
-			this._s('OjComboBox', '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
+			this._super('OjComboBox', '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
 
 			this._list = new OjList();
 			this._list.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
@@ -321,7 +321,7 @@ OJ.extendClass(
 
 				this._redrawValue();
 
-				this._s('OjComboBox', 'setValue', [value]);
+				this._super('OjComboBox', 'setValue', [value]);
 			}
 		}
 	}

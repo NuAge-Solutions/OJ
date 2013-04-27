@@ -10,7 +10,7 @@ OJ.extendClass(
 
 
 		'_setDom' : function(dom_elm){
-			this._s('OjPasswordInput', '_setDom', arguments);
+			this._super('OjPasswordInput', '_setDom', arguments);
 
 			this.input.setAttr('type', 'password');
 		}

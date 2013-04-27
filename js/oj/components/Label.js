@@ -16,7 +16,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(){
-			this._s('OjLabel', '_constructor', []);
+			this._super('OjLabel', '_constructor', []);
 
 			if(arguments.length){
 				this.setText(arguments[0]);
@@ -31,7 +31,7 @@ OJ.extendComponent(
 				return null;
 			}
 
-			return this._s('OjLabel', '_processDomSourceChild', arguments);
+			return this._super('OjLabel', '_processDomSourceChild', arguments);
 		},
 
 		'_redrawText' : function(){
@@ -58,7 +58,7 @@ OJ.extendComponent(
 		},
 
 		'redraw' : function(){
-			if(this._s('OjLabel', 'redraw', arguments)){
+			if(this._super('OjLabel', 'redraw', arguments)){
 				this._redrawText();
 
 				return true;

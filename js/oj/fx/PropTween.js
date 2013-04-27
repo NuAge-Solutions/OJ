@@ -15,7 +15,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*target = null, to = null, duration = 500, easing = NONE*/){
-			this._s('OjPropTween', '_constructor', []);
+			this._super('OjPropTween', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -45,7 +45,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._callback = null;
 
-			return this._s('OjPropTween', '_destructor', arguments);
+			return this._super('OjPropTween', '_destructor', arguments);
 		},
 
 
@@ -95,7 +95,7 @@ OJ.extendClass(
 		'_onComplete' : function(evt){
 			this._isAnimating(false);
 
-			this._s('OjPropTween', '_onComplete', arguments);
+			this._super('OjPropTween', '_onComplete', arguments);
 		},
 
 		'_onWebKitComplete' : function(evt){
@@ -121,7 +121,7 @@ OJ.extendClass(
 		'pause' : function(){
 			this._isAnimating(false);
 
-			this._s('OjPropTween', 'pause', arguments);
+			this._super('OjPropTween', 'pause', arguments);
 		},
 
 		'start' : function(){
@@ -153,14 +153,14 @@ OJ.extendClass(
 				// maybe add fallback timer to trigger event in case something goes wrong...
 			}
 			else{
-				this._s('OjPropTween', 'start', arguments);
+				this._super('OjPropTween', 'start', arguments);
 			}
 		},
 
 		'stop' : function(){
 			this._isAnimating(false);
 
-			this._s('OjPropTween', 'stop', arguments);
+			this._super('OjPropTween', 'stop', arguments);
 		},
 
 

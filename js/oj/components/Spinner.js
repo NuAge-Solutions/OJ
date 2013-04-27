@@ -18,20 +18,19 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*tint, period, num_blades*/){
-			var ln = arguments.length;
-
-			this._s('OjSpinner', '_constructor', []);
-
-			var num_blades = 13;
+			this._super('OjSpinner', '_constructor', []);
+			var args = arguments,
+				ln = args.length,
+				num_blades = 13;
 
 			if(ln){
-				this.setTint(arguments[0]);
+				this.setTint(args[0]);
 
 				if(ln > 1){
-					this.setPeriod(arguments[1]);
+					this.setPeriod(args[1]);
 
 					if(ln > 2){
-						num_blades = arguments[2];
+						num_blades = args[2];
 					}
 				}
 			}
@@ -50,12 +49,12 @@ OJ.extendComponent(
 		'_destructor' : function(){
 			OJ.destroy(this._timer);
 
-			return this._s('OjSpinner', '_destructor', arguments);
+			return this._super('OjSpinner', '_destructor', arguments);
 		},
 
 
 		'_setIsDisplayed' : function(){
-			this._s('OjSpinner', '_setIsDisplayed', arguments);
+			this._super('OjSpinner', '_setIsDisplayed', arguments);
 
 			if(this._is_displayed){
 				this._timer.start();
@@ -83,11 +82,11 @@ OJ.extendComponent(
 		'hide' : function(){
 			this._timer.pause();
 
-			this._s('OjSpinner', 'hide', arguments);
+			this._super('OjSpinner', 'hide', arguments);
 		},
 
 		'redraw' : function(){
-			if(this._s('OjSpinner', 'redraw', arguments)){
+			if(this._super('OjSpinner', 'redraw', arguments)){
 				var ln = this._numBlades, elm, pos;
 
 				while(ln-- > 0){
@@ -114,7 +113,7 @@ OJ.extendComponent(
 				this._timer.start();
 			}
 
-			this._s('OjSpinner', 'show', arguments);
+			this._super('OjSpinner', 'show', arguments);
 		},
 
 		'start' : function(){
@@ -140,7 +139,7 @@ OJ.extendComponent(
 				}
 			}
 
-			this._s('OjSpinner', 'setAlpha', arguments);
+			this._super('OjSpinner', 'setAlpha', arguments);
 		},
 
 		'setNumBlades' : function(val){
@@ -159,6 +158,7 @@ OJ.extendComponent(
 				elm.addClasses('blade');
 				elm.setRotation(section * ln);
 				elm.setTranslate('70%, 0px');
+				elm.setBackgroundColor(this._tint);
 
 				this.wrapper.addChild(elm);
 			}
@@ -188,7 +188,11 @@ OJ.extendComponent(
 
 			this._tint = val;
 
-			this.redraw();
+			var ln = this._numBlades, elm, pos;
+
+			while(ln-- > 0){
+				this.wrapper.getChildAt(ln).setBackgroundColor(this._tint);
+			}
 		}
 	},
 	{

@@ -7,7 +7,7 @@ OJ.extendClass(
 	OjDimTween, 'OjMove',
 	{
 		'setAmount' : function(amount){
-			this._s('OjMove', 'setAmount', arguments);
+			this._super('OjMove', 'setAmount', arguments);
 
 			if(this._direction == OjMove.BOTH){
 				this._to.x = amount[0];

@@ -35,6 +35,8 @@ OjObject.prototype = {
 	 */
 	'_class_name' : 'OjObject',
 
+	'_static' : OjObject,
+
 	'_post_compile_' : [],
 
 	'_propCompile_' : function(context, props){
@@ -90,37 +92,8 @@ OjObject.prototype = {
 	 * @param {arguments|array} args - The parameters to send to the super function
 	 * @return {OjObj} return the this object to allow for chaining
 	 */
-	'_s' : function(context, func, args){
+	'_super' : function(context, func, args){
 		return this._supers_[context] && this._supers_[context][func] ? this._supers_[context][func].apply(this, args) : null;
-	},
-
-	'_static' : function(/*key, value*/){
-		var args = arguments,
-			ln = args.length,
-			context = OJ.stringToClass(this._class_name);
-
-		if(ln){
-			var key = args[0];
-
-			if(ln > 1){
-				context[key] = args[1];
-			}
-
-			return context[key];
-		}
-
-		return context;
-	},
-
-	'_staticCall' : function(func/*, ...args*/){
-		return this._staticApply(func, Array.array(arguments).slice(1));
-	},
-
-	'_staticApply' : function(func/*, args*/){
-		var context = this._static(),
-			args = arguments;
-
-		return context[func].apply(context, args.length > 1 ? args[1] : []);
 	},
 
 	/**
@@ -149,12 +122,14 @@ OjObject.prototype = {
 	 * @this {OjObj}
 	 * @return {null} return null since the object "no longer exists"
 	 */
-	'_destructor' : function(/*recursive = false*/){
+	'_destructor' : function(/*depth = 0*/){
 		return null;
 	},
 
-	'_unset' : function(prop){
-		this[prop] = OJ.destroy(this[prop]);
+	'_unset' : function(prop/*, depth*/){
+		var args = arguments;
+
+		this[prop] = OJ.destroy(this[prop], args.length > 1 ? args[1] : 0);
 	},
 
 	/**
@@ -223,16 +198,12 @@ OjObject.prototype = {
 		}
 	},
 
-	'classObject' : function(){
-		return OJ.stringToClass(this._class_name);
-	},
-
 	'className' : function(){
 		return this._class_name;
 	},
 
 	'clone' : function(){
-		var cls = this.classObject();
+		var cls = this._static;
 
 		return new cls();
 	},
@@ -247,7 +218,9 @@ OjObject.prototype = {
 		return this._id_;
 	},
 
-	'importData' : function(data){},
+	'importData' : function(data){
+		return data;
+	},
 
 	/**
 	 * Inheritance Checker
@@ -262,7 +235,7 @@ OjObject.prototype = {
 			val = OJ.classToString(val);
 		}
 
-		return val == this.className || this._class_names.indexOf(val) != -1;
+		return val == this._class_name || this._class_names.indexOf(val) != -1;
 	},
 
 	'toJson' : function(){

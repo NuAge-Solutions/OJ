@@ -11,7 +11,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._s('OjEventManager', '_constructor', arguments);
+			this._super('OjEventManager', '_constructor', arguments);
 
 			var ready, timer;
 

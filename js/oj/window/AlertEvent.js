@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjAlertEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super('OjAlertEvent', '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

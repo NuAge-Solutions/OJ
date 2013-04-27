@@ -12,13 +12,18 @@ OJ.extendComponent(
 		},
 
 
-		'_constructor' : function(group/*, data*/){
-			this._s('OjItemRenderer', '_constructor', []);
+		'_constructor' : function(/*group, data*/){
+			this._super('OjItemRenderer', '_constructor', []);
 
-			this.setGroup(group);
+			var args = arguments,
+				ln = args.length;
 
-			if(arguments.length > 1){
-				this.setData(arguments[1]);
+			if(ln){
+				this.setGroup(args[0]);
+
+				if(ln > 1){
+					this.setData(args[1]);
+				}
 			}
 		},
 
@@ -29,7 +34,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._s('OjItemRenderer', 'redraw', arguments)){
+			if(this._super('OjItemRenderer', 'redraw', arguments)){
 				this._redrawData();
 
 				return true;

@@ -13,16 +13,16 @@ OJ.extendComponent(
 
 
 		'_setDom' : function(dom_elm){
-			this._s('OjEmailInput', '_setDom', arguments);
+			this._super('OjEmailInput', '_setDom', arguments);
 
-			if(this._static('SUPPORTS_EMAIL_TYPE')){
+			if(this._static.SUPPORTS_EMAIL_TYPE){
 				this.input.setAttr('type', 'email');
 			}
 		},
 
 
 		'isValid' : function(){
-			var valid = this._s('OjEmailInput', 'isValid', arguments);
+			var valid = this._super('OjEmailInput', 'isValid', arguments);
 
 			var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

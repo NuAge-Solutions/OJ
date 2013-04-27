@@ -7,7 +7,7 @@ OJ.extendClass(
 	OjDimTween, 'OjResize',
 	{
 		'setAmount' : function(amount){
-			this._s('OjResize', 'setAmount', arguments);
+			this._super('OjResize', 'setAmount', arguments);
 
 			if(this._direction == OjResize.BOTH){
 				this._to.width = amount[0];

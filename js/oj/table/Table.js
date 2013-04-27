@@ -19,7 +19,7 @@ OJ.extendClass(
 		'_constructor' : function(/*columns, data_provider*/){
 			this._cols = [];
 
-			this._s('OjTable', '_constructor', []);
+			this._super('OjTable', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -38,7 +38,7 @@ OJ.extendClass(
 
 
 		'_setDomSource' : function(dom_elm, context){
-			this._s('OjTable', '_setDomSource', arguments);
+			this._super('OjTable', '_setDomSource', arguments);
 
 			var children = OJ.query('> *', dom_elm), ln = children.length, i, child, tag, columns, cols, ln2;
 
@@ -87,7 +87,7 @@ OJ.extendClass(
 		},
 
 		'_createItem' : function(data, index){
-			var item = this._s('OjTable', '_createItem', arguments), ln = this.numColumns();
+			var item = this._super('OjTable', '_createItem', arguments), ln = this.numColumns();
 
 			while(ln-- > 0){
 				item.addChildAt(this._createCell(this.getColumnAt(ln).getBodyCell(data)), 0)

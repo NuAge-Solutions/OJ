@@ -18,9 +18,11 @@ OJ.extendClass(
 
 
 			'_constructor' : function(/*title, view*/){
-				this._s('OjModal', '_constructor', []);
+				this._super('OjModal', '_constructor', []);
 
 				// setup controller stack relationship
+				this.stack = this.container;
+
 				this.bar.setStack(this.stack);
 				this.setStack(this.stack);
 
@@ -46,8 +48,16 @@ OJ.extendClass(
 				}
 			},
 
-			'_destructor' : function(){
-				return this._s('OjModal', '_destructor', arguments);
+			'_destructor' : function(/*depth = 0*/){
+				var args = arguments,
+					depth = args.length ? args[0] : 0;
+
+				this._unset('bar', depth);
+				this._unset('stack', depth);
+
+				this._stack = null;
+
+				return this._super('OjModal', '_destructor', arguments);
 			},
 
 
@@ -119,7 +129,7 @@ OJ.extendClass(
 
 
 			'setButtons' : function(val){
-				this._s('OjModal', 'setButtons', arguments);
+				this._super('OjModal', 'setButtons', arguments);
 
 				if(this.buttons.numChildren()){
 					this.buttons.show();

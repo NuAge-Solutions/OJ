@@ -18,7 +18,7 @@ OJ.extendComponent(
 		},
 
 		'_setSource' : function(url){
-			this._s('OjAudio', '_setSource', arguments);
+			this._super('OjAudio', '_setSource', arguments);
 
 			if(this.media){
 				this.media.setAttr('src', this._source);

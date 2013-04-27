@@ -9,7 +9,7 @@ OJ.extendClass(
 	OjInput, 'OjTextArea',
 	{
 		'_setDom' : function(dom_elm){
-			this._s('OjTextArea', '_setDom', arguments);
+			this._super('OjTextArea', '_setDom', arguments);
 
 			var prnt = this.input.parent();
 			var new_input = new OjStyleElement('<textarea></textarea>');

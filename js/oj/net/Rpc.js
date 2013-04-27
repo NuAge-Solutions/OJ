@@ -16,7 +16,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(url, method, params/*, content_type, async*/){
-			this._s('OjRpc', '_constructor', []);
+			this._super('OjRpc', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -41,7 +41,7 @@ OJ.extendClass(
 		},
 
 		'load' : function(){
-			return this._s('OjRpc', 'load', []);
+			return this._super('OjRpc', 'load', []);
 		},
 
 

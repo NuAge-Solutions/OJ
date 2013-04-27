@@ -34,7 +34,7 @@ OJ.extendClass(
 			}
 
 			// call super constructor
-			this._s('OjComponent', '_constructor', args);
+			this._super('OjComponent', '_constructor', args);
 
 			// add the class name inheritance as css classes
 			this.addClasses.apply(this, this._class_names.slice(this._class_names.indexOf('OjComponent')));
@@ -46,7 +46,7 @@ OJ.extendClass(
 
 		// override this so that the component gets properly set
 		'_processChild' : function(dom_elm, context){
-			return this._s('OjComponent', '_processChild', [dom_elm, context ? context : this]);
+			return this._super('OjComponent', '_processChild', [dom_elm, context ? context : this]);
 		},
 
 		'_processDomSourceChild' : function(dom_elm, context){
@@ -103,6 +103,11 @@ OJ.extendClass(
 			for(; i < ln; i++){
 				if(child = this._processDomSourceChild(children[i], context)){
 					this.addElm(child);
+
+					// if we add then we need to decrement the counter and length since
+					// a child will have been removed from the child nodes array
+					i--;
+					ln--;
 				}
 			}
 
@@ -180,7 +185,7 @@ OJ.extendClass(
 				return;
 			}
 
-			this._s('OjComponent', '_setIsDisplayed', arguments);
+			this._super('OjComponent', '_setIsDisplayed', arguments);
 
 			if(displayed){
 				this.redraw();
@@ -190,7 +195,7 @@ OJ.extendClass(
 		'_setParent' : function(parent){
 			var prev_parent = this._parent;
 
-			this._s('OjComponent', '_setParent', arguments);
+			this._super('OjComponent', '_setParent', arguments);
 
 			if(prev_parent){
 				if(!this._parent){
@@ -206,12 +211,33 @@ OJ.extendClass(
 		},
 
 
+		'_listeners' : function(type) {
+			return null;
+		},
+
 		'_processEvent' : function(evt){
 			if(this._isDisabled){
 				return false;
 			}
 
-			return this._s('OjComponent', '_processEvent', arguments);
+			return this._super('OjComponent', '_processEvent', arguments);
+		},
+
+		'_updateListeners' : function(action, type){
+			var type = type.ucFirst(),
+				func = action == 'add' ? 'addEventListener' : 'removeEventListener',
+				settings = this._listeners(type),
+				ln = settings ? settings.length : 0;
+
+			if(ln){
+				if(ln > 1){
+					settings[0][func](settings[1], this, '_on' + type);
+				}
+
+				if(ln > 2){
+					settings[0][func](settings[2], this, '_on' + type + 'Fail');
+				}
+			}
 		},
 
 		// Component Management Functions
@@ -317,6 +343,9 @@ OJ.extendClass(
 
 			if(this._fader.getDirection() == OjFade.OUT){
 				this.hide();
+			}
+			else{
+				this.show();
 			}
 
 			this._setIsAnimating(false);

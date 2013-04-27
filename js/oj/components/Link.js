@@ -18,7 +18,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*label, url, target*/){
-			this._s('OjLink', '_constructor', []);
+			this._super('OjLink', '_constructor', []);
 
 			// setup structure
 			this.addClasses('valign-middle');

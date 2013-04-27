@@ -1,7 +1,8 @@
-OJ.importJs('oj.nav.Iframe');
 OJ.importJs('oj.dom.StyleElement');
 OJ.importJs('oj.events.Actionable');
 OJ.importJs('oj.fx.Fade');
+OJ.importJs('oj.nav.Iframe');
+OJ.importJs('oj.media.ImageViewer');
 OJ.importJs('oj.window.Modal');
 OJ.importJs('oj.window.Alert');
 
@@ -22,7 +23,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(manager){
-			this._s('OjWindowManager', '_constructor', []);
+			this._super('OjWindowManager', '_constructor', []);
 
 			if(manager){
 				this._modals = manager._modals;
@@ -107,6 +108,26 @@ OJ.extendManager(
 		},
 
 
+		'_onHide' : function(evt){
+			var tween = evt.getCurrentTarget(),
+				modal = tween.getTarget(),
+				mode = modal.getSelfDestruct();
+
+			this._modal_holder.removeChild(modal);
+
+			OJ.destroy(tween);
+
+			if(!this._modal_holder.numChildren()){
+				this._modal_holder.hide();
+			}
+
+			modal.dispatchEvent(new OjEvent(OjEvent.HIDE));
+
+			if(mode){
+				OJ.destroy(modal, modal.getSelfDestruct());
+			}
+		},
+
 		'_onOjReady' : function(evt){
 			this.removeEventListener(OjEvent.READY, this, '_onOjReady');
 
@@ -133,6 +154,23 @@ OJ.extendManager(
 			iframe.setHeight(100, '%');
 
 			var modal = this.makeModal(title, iframe);
+			modal.setSelfDestruct(OjAlert.DEEP);
+			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
+			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
+
+			return this.show(modal);
+		},
+
+		'image' : function(url, title/*, width, height*/){
+			var args = arguments,
+				ln = args.length,
+				viewer = new OjImageViewer(url);
+
+			viewer.setWidth(100, '%');
+			viewer.setHeight(100, '%');
+
+			var modal = this.makeModal(title, viewer);
+			modal.setSelfDestruct(OjAlert.DEEP);
 			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
 			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
 
@@ -183,17 +221,7 @@ OJ.extendManager(
 
 			var fade = new OjFade(modal, OjFade.NONE);
 
-			fade.addEventListener(OjTweenEvent.COMPLETE, this, function(evt){
-				this._modal_holder.removeChild(modal);
-
-				OJ.destroy(evt.getCurrentTarget());
-
-				if(!this._modal_holder.numChildren()){
-					this._modal_holder.hide();
-				}
-
-				modal.dispatchEvent(new OjEvent(OjEvent.HIDE));
-			});
+			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
 
 			fade.start();
 

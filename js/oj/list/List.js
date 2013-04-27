@@ -21,7 +21,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*data_provider, item_renderer, direction*/){
-			this._s('OjList', '_constructor', []);
+			this._super('OjList', '_constructor', []);
 
 			// setup the display
 			this.addClasses('vertical');
@@ -133,9 +133,6 @@ OJ.extendComponent(
 				class_remove.push('even');
 			}
 
-			class_add.push('item');
-			class_add.push('item-' + index);
-
 			item.addClasses.apply(item, class_add);
 			item.removeClasses.apply(item, class_remove);
 		},
@@ -143,7 +140,7 @@ OJ.extendComponent(
 
 		// render functions
 		'redraw' : function(){
-			if(this._s('OjList', 'redraw', arguments)){
+			if(this._super('OjList', 'redraw', arguments)){
 				this._redrawItems();
 
 				return true;
@@ -224,11 +221,11 @@ OJ.extendComponent(
 				this._item_events[item_evt] = item_callback;
 			}
 
-			return this._s('OjList', 'addEventListener', arguments);
+			return this._super('OjList', 'addEventListener', arguments);
 		},
 
 		'removeEventListener' : function(type, target, func){
-			var rtrn = this._s('OjList', 'removeEventListener', arguments);
+			var rtrn = this._super('OjList', 'removeEventListener', arguments);
 
 			if(!this.hasEventListener(type)){
 				var item_evt, item_callback;

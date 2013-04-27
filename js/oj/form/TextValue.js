@@ -10,7 +10,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*label, value*/){
-			this._s('OjTextValue', '_constructor', []);
+			this._super('OjTextValue', '_constructor', []);
 
 			var ln = arguments.length;
 

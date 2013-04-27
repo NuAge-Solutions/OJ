@@ -39,7 +39,7 @@ OJ.extendComponent(
 
 			// Construction & Destruction Functions
 			'_constructor' : function(/*views, transition*/){
-				this._s('OjStack', '_constructor', arguments);
+				this._super('OjStack', '_constructor', arguments);
 
 				// setup the elm function overrides
 				this._elm_funcs = {
@@ -68,11 +68,49 @@ OJ.extendComponent(
 			},
 
 			'_destructor' : function(){
-				this._unset('_views');
-				this._unset('_trans_in');
-				this._unset('_trans_out');
+				var args = arguments,
+					depth = args.length && args[0];
 
-				this._s('OjStack', '_destructor', arguments);
+				// remove the views listeners
+				this._removeViewsListeners();
+
+				// unset transitions
+				this._unset('_trans_in', true);
+				this._unset('_trans_out', true);
+
+				// unset previous active
+				if(this._prev_active){
+					this._removeActive(this._prev_active);
+
+					this._prev_active.setStack(null);
+					this._prev_active.setController(null);
+
+					this._prev_active = null;
+				}
+
+				// unset current active
+				if(this._active){
+					this._removeActive();
+
+					this._active.setStack(null);
+					this._active.setController(null);
+
+					this._active = null;
+				}
+
+				// unset views
+				if(depth > 1){
+					var ln = this.numElms();
+
+					for(; ln--;){
+						OJ.destroy(this.getElmAt(ln), depth);
+					}
+				}
+
+				// remove object references
+				this._controller = this._transition = this._views = null;
+
+				return this._super('OjStack', '_destructor', arguments);
 			},
 
 
@@ -195,10 +233,20 @@ OJ.extendComponent(
 			},
 
 			'_removeActive' : function(/*elm*/){
-				var elm = arguments.length ? arguments[0] : this.getElmAt(this._activeIndex);
+				var args = arguments,
+					elm = args.length ? args[0] : this.getElmAt(this._activeIndex);
+
 				elm.setIsActive(false);
 
 				this.container.removeChild(elm);
+			},
+
+			'_removeViewsListeners' : function(){
+				// remove the event listeners
+				this._views.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+				this._views.removeEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+				this._views.removeEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+				this._views.removeEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
 			},
 
 
@@ -226,15 +274,27 @@ OJ.extendComponent(
 			'_onItemRemove' : function(evt){
 				this.dispatchEvent(new OjStackEvent(OjStackEvent.REMOVE, evt.getItem(), this._transition, evt.getIndex()));
 
-				if(this._active == evt.getItem()){
+				var item = evt.getItem();
+
+				if(this._active == item){
+					var ln;
+
 					if(this._current_index){
 						this.setActiveIndex(this._current_index - 1);
 					}
+					else if(ln = this.numElms()){
+						this.setActiveIndex(ln - 1);
+					}
 					else{
-						this.setActiveIndex(this.numElms() - 1);
+						this._active = null;
+						this._current_index = -1;
 					}
 				}
 				else{
+					if(this._prev_active == item){
+						this._prev_active = null;
+					}
+
 					this._current_index = this.indexOfElm(this._active);
 				}
 			},
@@ -270,6 +330,8 @@ OJ.extendComponent(
 
 				this._prev_active.setWidth(OjStyleElement.AUTO);
 				this._prev_active.setHeight(OjStyleElement.AUTO);
+				this._prev_active.setStack(null);
+				this._prev_active.setController(null);
 
 				this._unset('_trans_out');
 				this._prev_active = null;
@@ -439,11 +501,7 @@ OJ.extendComponent(
 				}
 
 				if(this._views){
-					// remove the event listeners
-					this._views.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-					this._views.removeEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-					this._views.removeEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-					this._views.removeEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
+					this._removeViewsListeners();
 				}
 
 				// set the new views collection

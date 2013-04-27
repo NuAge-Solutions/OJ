@@ -1,5 +1,7 @@
-OJ.importJs('oj.components.ItemRenderer');
+OJ.importJs('oj.list.LabelItemRenderer');
 OJ.importJs('oj.events.MouseEvent');
+
+OJ.importCss('oj.form.Option');
 
 
 'use strict';
@@ -8,38 +10,57 @@ OJ.extendClass(
 	OjItemRenderer, 'OjOption',
 	{
 		'_props_' : {
-			'data'       : null,
-			'isSelected' : false,
-			'selector'   : null
+			'dataRenderer' : null,
+			'isSelected'   : false
 		},
 
-		'_template' : 'oj.form.Option',
-
-		'option' : null,  'indicator' : null,
+		'_selector' : null,  '_template' : 'oj.form.Option',
 
 
-//		'_constructor' : function(/*selector, data*/){
-//			this._s('OjOption', '_constructor', arguments);
-//
-//			// set the selector and the data
-//			var args = arguments,
-//				ln = args.length;
-//
-//			if(ln){
-//				this.setSelector(args[0]);
-//
-//				if(ln > 1){
-//					this.setData(args[1]);
-//				}
-//			}
-//
-//			// setup the event listeners
-//			this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
-//		},
+		'_constructor' : function(/*group|dataRenderer, data*/){
+			// process the arguments
+			var args = arguments,
+				ln = args.length,
+				renderer = OjLabelItemRenderer;
 
+			if(ln > 1){
+				var tmp = args[1];
+
+				if(isString(tmp) || tmp.is('OjItemRenderer')){
+					renderer = tmp;
+
+					args[1] = null;
+				}
+			}
+
+			this._super('OjOption', '_constructor', arguments);
+
+			if(!this._selector){
+				this.setDataRenderer(renderer);
+
+				this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+			}
+		},
+
+		'_destructor' : function(){
+			this._selector = this._dataRenderer = null;
+
+			return this._super('OjOption', '_destructor', arguments);
+		},
+
+
+		'_processDomSourceChild' : function(dom_elm, component){
+			if(!isEmpty(dom_elm.nodeValue)){
+				this.setData((this._data ? this._data : '') + dom_elm.nodeValue);
+
+				return null;
+			}
+
+			return this._super('OjOption', '_processDomSourceChild', arguments);
+		},
 
 		'_redrawData' : function(){
-			if(this.option && this._s('OjOption', '_redrawData', arguments)){
+			if(this.option && this._super('OjOption', '_redrawData', arguments)){
 				this.option.setData(this._data);
 
 				return true;
@@ -49,9 +70,51 @@ OJ.extendClass(
 		},
 
 
-//		'_onClick' : function(evt){
-//			this._selector.toggleSelection(this);
-//		},
+		'_onClick' : function(evt){
+			this.setIsSelected(!this.getIsSelected());
+		},
+
+
+		'setDataRenderer' : function(val){
+			if(isString(val)){
+				val = OJ.stringToClass(val);
+			}
+
+			if(this._dataRenderer == val){
+				return;
+			}
+
+			this._unset('option');
+
+			this._dataRenderer = val;
+
+			this.addElm(this.option = new val(this._group, this._data));
+		},
+
+		'setGroup' : function(group){
+			if(this._group == group){
+				return;
+			}
+
+			this._super('OjOption', 'setGroup', arguments);
+
+			var owner;
+
+			if(this._group && (owner = this._group.getOwner()) && owner.is('OjSelector')){
+				this._selector = owner;
+
+				this.setDataRenderer(owner.getItemRenderer());
+
+				this.removeEventListener(OjMouseEvent.CLICK, this, '_onClick');
+			}
+			else{
+				this._selector = null;
+
+				this.setDataRenderer(OjLabelItemRenderer);
+
+				this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+			}
+		},
 
 		'setIsSelected' : function(val){
 			if(this._isSelected == val){
@@ -68,23 +131,8 @@ OJ.extendClass(
 
 				this.input.dom().checked = false;
 			}
-		},
 
-		'setSelector' : function(slctr){
-			if(this._selector == slctr){
-				return;
-			}
-
-			this.removeAllElms();
-
-			if(this._selector = slctr){
-				var Cls = slctr.getItemRenderer();
-
-				this.addElm(this.option = new Cls(this._group, this._data));
-			}
-			else{
-				this.option = null;
-			}
+			this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
 		}
 	}
 );

@@ -15,7 +15,7 @@ OJ.extendComponent(
 
 			this._callback = null;
 
-			return this._s('OjImage', '_destructor', arguments);
+			return this._super('OjImage', '_destructor', arguments);
 		},
 
 		'_makeMedia' : function(){
@@ -30,7 +30,7 @@ OJ.extendComponent(
 
 
 		'_onMediaLoad' : function(evt){
-			var rtrn = this._s('OjImage', '_onMediaLoad', arguments);
+			var rtrn = this._super('OjImage', '_onMediaLoad', arguments);
 
 			this.media.show();
 
@@ -44,7 +44,7 @@ OJ.extendComponent(
 				this.media.removeClasses(this._source.substring(1));
 			}
 
-			this._s('OjImage', '_setSource', arguments);
+			this._super('OjImage', '_setSource', arguments);
 
 			this._loaded = false;
 

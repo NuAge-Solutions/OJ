@@ -14,7 +14,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*source, target*/){
-			this._s('OjIframe', '_constructor', []);
+			this._super('OjIframe', '_constructor', []);
 
 			var ln = arguments.length;
 

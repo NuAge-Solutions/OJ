@@ -30,7 +30,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjErrorEvent', '_constructor', [type, text, bubbles, cancelable]);
+			this._super('OjErrorEvent', '_constructor', [type, text, bubbles, cancelable]);
 		}
 	},
 	{

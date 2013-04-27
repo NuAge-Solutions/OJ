@@ -14,7 +14,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*effect, duration, easing*/){
-			this._s('OjTransition', '_constructor', []);
+			this._super('OjTransition', '_constructor', []);
 
 			// default the easing property
 			this._easing = [OjEasing.NONE, OjEasing.NONE];

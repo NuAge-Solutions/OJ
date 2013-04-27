@@ -18,7 +18,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*content, positioning, parent_menu*/){
-			this._s('OjMenu', '_constructor', []);
+			this._super('OjMenu', '_constructor', []);
 
 			// process arguments
 			var ln = arguments.length;
@@ -48,7 +48,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._content = null;
 
-			return this._s('OjMenu', '_destructor', arguments);
+			return this._super('OjMenu', '_destructor', arguments);
 		},
 
 

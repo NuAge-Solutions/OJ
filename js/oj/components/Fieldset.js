@@ -24,7 +24,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*title*/){
-			this._s('OjFieldset', '_constructor', []);
+			this._super('OjFieldset', '_constructor', []);
 
 			// remove the actuator
 			this.actuator.addEventListener(OjMouseEvent.CLICK, this, '_onActuatorClick');
@@ -167,7 +167,7 @@ OJ.extendComponent(
 		},
 
 		'redraw' : function(){
-			if(this._s('OjFieldset', 'redraw', arguments)){
+			if(this._super('OjFieldset', 'redraw', arguments)){
 				this._redrawActuator();
 
 				this._redrawLegend();
@@ -246,12 +246,12 @@ OJ.extendComponent(
 			if(this._isCollapsed = val){
 				this.addClasses('collapsed');
 
-				this.dispatchEvent(new OjEvent(this._static('COLLAPSE')));
+				this.dispatchEvent(new OjEvent(this._static.COLLAPSE));
 			}
 			else{
 				this.removeClasses('collapsed');
 
-				this.dispatchEvent(new OjEvent(this._static('EXPAND')));
+				this.dispatchEvent(new OjEvent(this._static.EXPAND));
 			}
 		},
 

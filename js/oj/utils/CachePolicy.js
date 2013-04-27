@@ -11,7 +11,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(url/*, action, lifespan*/){
-			this._s('OjCachePolicy', '_constructor', arguments);
+			this._super('OjCachePolicy', '_constructor', arguments);
 
 			var ln = arguments.length > 2;
 

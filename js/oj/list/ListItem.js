@@ -16,7 +16,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*data*/){
-			this._s('OjListItem', '_constructor', []);
+			this._super('OjListItem', '_constructor', []);
 
 			this.addChild(this.accessory = new OjStyleElement('<div class="-accessory valign-middle"></div>'));
 			this.addChild(this.icon = new OjImage());
@@ -29,14 +29,14 @@ OJ.extendComponent(
 			}
 		},
 
-		'_destructor' : function(/*recursive*/){
+		'_destructor' : function(/*depth = 0*/){
 			if(this._data && this._data.is && this._data.is('OjActionable')){
 				this._data.removeEventListener(OjEvent.CHANGE, this, '_onDataChange');
 			}
 
 			this._list = this._data = null;
 
-			return this._s('OjListItem', '_destructor', arguments);
+			return this._super('OjListItem', '_destructor', arguments);
 		},
 
 
@@ -64,7 +64,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._s('OjListItem', 'redraw', arguments)){
+			if(this._super('OjListItem', 'redraw', arguments)){
 				this._redrawData();
 
 				this._redrawAccessory();

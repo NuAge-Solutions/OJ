@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjTweenEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super('OjTweenEvent', '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

@@ -20,7 +20,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*assets*/){
-			this._s('OjLibrary', '_constructor', []);
+			this._super('OjLibrary', '_constructor', []);
 
 			this.setAssets(arguments.length ? arguments[0] : {});
 

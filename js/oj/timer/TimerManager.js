@@ -11,7 +11,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._s('OjTimerManager', '_constructor', arguments);
+			this._super('OjTimerManager', '_constructor', arguments);
 
 			this._callback = this._tick.bind(this);
 		},
@@ -19,7 +19,7 @@ OJ.extendManager(
 		'_destructor' : function(){
 			this._callback = null;
 
-			return this._s('OjTimerManager', '_destructor', arguments);
+			return this._super('OjTimerManager', '_destructor', arguments);
 		},
 
 

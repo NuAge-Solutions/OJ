@@ -46,7 +46,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*url*/){
-			this._s('OjUrl', '_constructor', []);
+			this._super('OjUrl', '_constructor', []);
 
 			this._query_vars = {};
 			this._hash_vars = {};

@@ -9,7 +9,7 @@ OJ.extendComponent(
 	OjLink, 'OjButton',
 	{
 		'_constructor' : function(/*label, icon*/){
-			this._s('OjButton', '_constructor', []);
+			this._super('OjButton', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -29,7 +29,7 @@ OJ.extendComponent(
 
 
 		'removeEventListener' : function(type, context, callback){
-			this._s('OjButton', 'removeEventListener', arguments);
+			this._super('OjButton', 'removeEventListener', arguments);
 
 			this._proxy.onclick = this._onDomMouseEvent;
 		},
@@ -43,7 +43,7 @@ OJ.extendComponent(
 		},
 
 		'setIsActive' : function(active){
-			this._s('OjButton', 'setIsActive', arguments);
+			this._super('OjButton', 'setIsActive', arguments);
 
 			if(this._icon){
 				this._icon.setIsActive(active);

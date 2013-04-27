@@ -3,7 +3,10 @@ OJ.importJs('oj.form.Option');
 
 'use strict';
 
-OJ.extendClass(
+OJ.extendComponent(
 	OjOption, 'OjCheckedOption',
-	{}
+	{},
+	{
+		'_TAGS' : ['checkbox']
+	}
 );

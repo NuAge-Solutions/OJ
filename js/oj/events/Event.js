@@ -19,7 +19,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(type/*, bubbles = false, cancelable = false*/){
-			this._s('OjEvent', '_constructor', []);
+			this._super('OjEvent', '_constructor', []);
 
 			var ln = arguments.length;
 

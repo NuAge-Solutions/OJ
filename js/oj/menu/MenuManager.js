@@ -14,7 +14,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._s('OjMenuManager', '_constructor', arguments);
+			this._super('OjMenuManager', '_constructor', arguments);
 
 			this._menus = {};
 			this._active = {};

@@ -24,7 +24,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._s('OjCacheManager', '_constructor', arguments);
+			this._super('OjCacheManager', '_constructor', arguments);
 
 			// check to see if local storage is supported
 			try{

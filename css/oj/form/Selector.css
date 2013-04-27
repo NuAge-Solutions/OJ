@@ -53,48 +53,10 @@
 						-moz-border-radius: 0px;
 						border-radius: 0px;
 					}
+						.OjSelector > .wrapper > .psuedoInput > .stem > .input > .items > .OjItemRenderer {
+							padding: 5px 0px;
+						}
 
 .OjSelector .options {
 	white-space: normal;
 }
-
-.OjOption {
-	padding: 0px 0px 5px;
-
-	cursor: pointer;
-}
-	.OjOption .indicator {
-		display: block;
-		position: absolute;
-
-		height: 0px;
-
-		left: -50px;
-
-		overflow: hidden;
-	}
-	.OjCheckedOption .indicator,
-	.OjRadioOption .indicator {
-		display: inline-block;
-
-		position: relative;
-
-		height: auto;
-
-		left: auto;
-
-		margin-right: 5px;
-	}
-
-	.OjOption .container {
-		display: block;
-	}
-	.OjCheckedOption .container,
-	.OjRadioOption .container {
-		display: inline-block;
-	}
-		.OjOption .container .OjItemRenderer {
-			padding: 0px;
-
-			border: none;
-		}

@@ -11,7 +11,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*data*/){
-			this._s('OjToken', '_constructor', arguments);
+			this._super('OjToken', '_constructor', arguments);
 
 			this.removeBtn.addEventListener(OjMouseEvent.CLICK, this, '_onRemoveClick');
 		},

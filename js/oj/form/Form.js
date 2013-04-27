@@ -28,7 +28,7 @@ OJ.extendComponent(
 
 			this._errors = [];
 
-			this._s('OjForm', '_constructor', arguments);
+			this._super('OjForm', '_constructor', arguments);
 
 			this.errors.hide();
 
@@ -131,7 +131,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._s('OjForm', 'redraw', arguments)){
+			if(this._super('OjForm', 'redraw', arguments)){
 				this._redraw();
 
 				return true;
@@ -177,13 +177,13 @@ OJ.extendComponent(
 				this._inputs[elm.id()] = elm;
 			}
 
-			this._s('OjForm', '_addElm', arguments);
+			this._super('OjForm', '_addElm', arguments);
 		},
 
 		'_removeElm' : function(elm){
 			delete this._inputs[elm.id()];
 
-			this._s('OjForm', '_removeElm', arguments)
+			this._super('OjForm', '_removeElm', arguments)
 		},
 
 

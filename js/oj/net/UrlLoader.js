@@ -25,7 +25,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*request, async,*/){
-			this._s('OjUrlLoader', '_constructor', []);
+			this._super('OjUrlLoader', '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -39,10 +39,15 @@ OJ.extendClass(
 		},
 
 		'_destructor' : function(){
+			if(this._xhr){
+				this._xhr.onreadystatechange = null;
+				this._xhr.ontimeout = null;
+			}
+
 			this._xhr = null;
 			this._request = null;
 
-			return this._s('OjUrlLoader', '_destructor', arguments);
+			return this._super('OjUrlLoader', '_destructor', arguments);
 		},
 
 
@@ -171,7 +176,13 @@ OJ.extendClass(
 
 
 		'_onReadyStateChange' : function(){
-			var status = this._xhr.status, state = this._xhr.readyState;
+			if(!this._xhr){
+				trace(this);
+				return;
+			}
+
+			var status = this._xhr.status,
+				state = this._xhr.readyState;
 
 			// add header processing
 			this.dispatchEvent(new OjHttpStatusEvent(OjHttpStatusEvent.HTTP_STATUS, status));

@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjProgressEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super('OjProgressEvent', '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

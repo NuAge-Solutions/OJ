@@ -24,7 +24,7 @@ OJ.extendClass(
 				args.unshift(type);
 			}
 
-			this._s('OjListEvent', '_constructor', args);
+			this._super('OjListEvent', '_constructor', args);
 		}
 	},
 	{

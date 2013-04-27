@@ -10,7 +10,7 @@ OJ.extendClass(
 	OjTextInput, 'OjDateInput',
 	{
 		'_onFocusIn' : function(evt){
-			this._s('OjDateInput', '_onFocusIn', arguments);
+			this._super('OjDateInput', '_onFocusIn', arguments);
 
 			//showCalendarControl(this.dom());
 

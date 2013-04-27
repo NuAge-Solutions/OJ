@@ -19,7 +19,7 @@ OJ.extendClass(
 
 			args.unshift(type);
 
-			this._s('OjTransformEvent', '_constructor', args);
+			this._super('OjTransformEvent', '_constructor', args);
 
 			this._deltaX = deltaX;
 			this._deltaY = deltaY;
@@ -30,7 +30,7 @@ OJ.extendClass(
 
 
 		'clone' : function(){
-			var clone = this._s('OjTransformEvent', 'clone', arguments);
+			var clone = this._super('OjTransformEvent', 'clone', arguments);
 
 			clone._deltaX = this._deltaX;
 			clone._deltaY = this._deltaY;

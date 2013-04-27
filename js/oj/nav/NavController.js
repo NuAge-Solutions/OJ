@@ -41,14 +41,24 @@ window.OjINavController = {
 	},
 
 	'gotoView' : function(/*view = root, animated = true*/){
-		// if no view is specified we go all the way back to the root
-		var ln = arguments.length,
-			view = ln ? arguments[0] : null;
+		var args = arguments,
+			ln = args.length, index,
+			view = ln ? args[0] : null,
+			animated = ln > 1 ? args[1] : true;
 
-		return this.gotoViewAt(
-			view ? this.indexOfView(view) : 0,
-			ln > 1 ? arguments[1] : true
-		);
+		// if no view is specified we go all the way back to the root
+		// if a new view is specified we go all the way back to root and replace with new view
+		if(!view || (index = this.indexOfView(view)) > -1){
+			return this.gotoViewAt(index, animated);
+		}
+
+		if(index = this.getActiveIndex()){
+			this.replaceViewAt(0, view);
+
+			return this.gotoViewAt(0);
+		}
+
+		this.replaceActive(view, animated);
 	},
 
 	'gotoViewAt' : function(index/*, animated = true*/){
@@ -78,11 +88,26 @@ window.OjINavController = {
 	'removeViewAt' : function(view, index/*, animated = true*/){
 		var s = this._stack;
 
-		return s.removeElmAt(s, arguments);
+		return s.removeElmAt.apply(s, arguments);
 	},
 
 	'replaceActive' : function(view/*, animated = true*/){
+		var s = this._stack,
+			args = arguments;
 
+		return s.replaceElmAt(this.getActiveIndex(), view, args.length > 1 ? args[0] : true);
+	},
+
+	'replaceView' : function(oldView, newView/*, animated = true*/){
+		var s = this._stack;
+
+		return s.replaceElm.apply(s, arguments);
+	},
+
+	'replaceViewAt' : function(index, newView/*, animated = true*/){
+		var s = this._stack;
+
+		return s.replaceElmAt.apply(s, arguments);
 	},
 
 
@@ -125,7 +150,7 @@ OJ.extendComponent(
 		OjINavController,
 		{
 			'_constructor' : function(/*stack*/){
-				this._s('OjNavController', '_constructor', []);
+				this._super('OjNavController', '_constructor', []);
 
 				// process the arguments
 				if(arguments.length){
@@ -136,7 +161,7 @@ OJ.extendComponent(
 			'_destructor' : function(){
 				this._cleanupStack();
 
-				return this._s('OjNavController', '_destructor', arguments);
+				return this._super('OjNavController', '_destructor', arguments);
 			}
 		}
 	),

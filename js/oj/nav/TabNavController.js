@@ -43,7 +43,7 @@ OJ.extendClass(
 				this._stack.removeEventListener(OjStackEvent.REPLACE, this, '_onStackViewReplace');
 			}
 
-			this._s('OjTabNavController', 'setStack', arguments);
+			this._super('OjTabNavController', 'setStack', arguments);
 
 			if(stack){
 				stack.addEventListener(OjStackEvent.ADD, this, '_onStackViewAdd');

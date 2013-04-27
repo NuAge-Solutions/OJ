@@ -12,7 +12,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(xml){
-			this._s('OjXml', '_constructor', []);
+			this._super('OjXml', '_constructor', []);
 
 			this.setXml(xml);
 		},

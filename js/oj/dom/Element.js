@@ -21,7 +21,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*source, context*/){
-			this._s('OjElement', '_constructor', []);
+			this._super('OjElement', '_constructor', []);
 
 			var args = arguments,
 				ln = args.length,
@@ -31,37 +31,34 @@ OJ.extendClass(
 			// set the dom
 			// if no source present then create one
 			this._setDom(source, context);
+
+			OjElement.register(this);
 		},
 
-		'_destructor' : function(/*recursive = false*/){
+		'_destructor' : function(/*depth = 0*/){
+			OjElement.unregister(this);
+
 			// remove from parent
 			if(this._parent){
 				this._parent.removeChild(this);
 			}
 
-			// remove the children
-			if(this._children){
-				var ln = this._children.length;
+			if(this._dom){
+				delete this._dom.ojElm;
 
-				while(ln-- > 0){
-					OJ.destroy(this._children[ln]);
-				}
+				// release the vars
+				this._dom = this._parent = this._proxy = null;
 			}
 
-			delete this._dom.ojElm;
-
-			// release the vars
-			this._dom = this._children = this._parent = this._proxy = null;
-
 			// continue on with the destruction
-			return this._s('OjElement', '_destructor', arguments);
+			return this._super('OjElement', '_destructor', arguments);
 		},
 
 
 		'_setDom' : function(dom_elm, context){
 			this._setProxy(this._dom = dom_elm);
 
-			this._dom.ojElm = this;
+			this._dom.ojElm = this.id();
 		},
 
 		'_setProxy' : function(dom_elm){
@@ -71,7 +68,7 @@ OJ.extendClass(
 
 			this._proxy = dom_elm;
 
-			dom_elm.ojProxy = this;
+			dom_elm.ojProxy = this.id();
 		},
 
 		'_isDisplayed' : function(){ },
@@ -82,7 +79,7 @@ OJ.extendClass(
 			// because js natively calls the event functions on the context of the dom element
 			// we just get the attached oj element from it to get into the proper context to dispatch
 			// the event
-			if(evt.currentTarget.ojProxy != this || evt.dispatched){
+			if(OjElement.element(evt.currentTarget) != this || evt.dispatched){
 				return false;
 			}
 
@@ -92,40 +89,42 @@ OJ.extendClass(
 		},
 
 		'_onDomEvent' : function(evt){
-			if(this.ojProxy && this.ojProxy._processEvent(evt)){
-				this.ojProxy._onEvent(OjDomEvent.convertDomEvent(evt));
-			}
+			var proxy = OjElement.element(this);
 
-			return false;
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjDomEvent.convertDomEvent(evt));
+			}
 		},
 
 		'_onDomMouseEvent' : function(evt){
-			if(this.ojProxy && this.ojProxy._processEvent(evt)){
-				this.ojProxy._onMouse(OjMouseEvent.convertDomEvent(evt));
-			}
+			var proxy = OjElement.element(this);
 
-			return false;
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onMouse(OjMouseEvent.convertDomEvent(evt));
+			}
 		},
 
 		'_onDomKeyboardEvent' : function(evt){
-			if(this.ojProxy && this.ojProxy._processEvent(evt)){
-				this.ojProxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
-			}
+			var proxy = OjElement.byId(this.ojProxy);
 
-			return false;
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
+			}
 		},
 
 		'_onDomFocusEvent' : function(evt){
-			if(this.ojProxy && this.ojProxy._processEvent(evt)){
-				this.ojProxy._onEvent(OjFocusEvent.convertDomEvent(evt));
-			}
+			var proxy = OjElement.byId(this.ojProxy);
 
-			return false;
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjFocusEvent.convertDomEvent(evt));
+			}
 		},
 
 		'_onDomTouchEvent' : function(evt){
-			if(this.ojProxy && this.ojProxy._processEvent(evt)){
-				return this.ojProxy._onTouch(OjTouchEvent.convertDomEvent(evt));
+			var proxy = OjElement.byId(this.ojProxy);
+
+			if(proxy && proxy._processEvent(evt)){
+				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
 
 			return false;
@@ -239,7 +238,7 @@ OJ.extendClass(
 		// event listener overrides
 		// customize this functionality for dom events so that they work
 		'addEventListener' : function(type){
-			this._s('OjElement', 'addEventListener', arguments);
+			this._super('OjElement', 'addEventListener', arguments);
 
 			// mouse events
 			if(type == OjMouseEvent.CLICK){
@@ -333,7 +332,7 @@ OJ.extendClass(
 		},
 
 		'removeEventListener' : function(type, context, callback){
-			this._s('OjElement', 'removeEventListener', arguments);
+			this._super('OjElement', 'removeEventListener', arguments);
 
 			// mouse events
 			if(type == OjMouseEvent.CLICK){
@@ -493,10 +492,16 @@ OJ.extendClass(
 		}
 	},
 	{
+		'_elms' : {},
+
 		'byId' : function(id){
+			if(this._elms[id]){
+				return this._elms[id];
+			}
+
 			var elm = document.getElementById(id);
 
-			return elm.ojElm ? elm.ojElm : null;
+			return elm.ojElm ? this._elms[elm.ojElm] : null;
 		},
 
 		'elm' : function(tag){
@@ -504,10 +509,15 @@ OJ.extendClass(
 		},
 
 		'element' : function(obj){
-			if(isDomElement(obj)){
-				return obj.ojElm ? obj.ojElm : null;
+			if(!obj){
+				return null;
 			}
-			else if(isObjective(obj)){
+
+			if(isDomElement(obj)){
+				return this.byId(obj.ojElm);;
+			}
+
+			if(isObjective(obj)){
 				return obj;
 			}
 
@@ -542,14 +552,24 @@ OJ.extendClass(
 			while(elm){
 				parent = elm.parentNode;
 
-				if(parent && isComponent(parent.ojElm)){
-					return parent.ojElm;
+				if(parent && (elm = this.element(parent)) && isComponent(elm)){
+					return elm;
 				}
 
 				elm = parent;
 			}
 
 			return null;
+		},
+
+		'register' : function(elm){
+			this._elms[elm.id()] = elm;
+//			trace(Object.keys(this._elms).length);
+		},
+
+		'unregister' : function(elm){
+			delete this._elms[elm.id()];
+//			trace(Object.keys(this._elms).length);
 		}
 	}
 );

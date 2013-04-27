@@ -32,7 +32,7 @@ OJ.extendComponent(
 			// default the value
 			this._value = [];
 
-			this._s('OjSelector', '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
+			this._super('OjSelector', '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
 
 			// setup the list listeners
 			this.input.addEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
@@ -121,8 +121,6 @@ OJ.extendComponent(
 		},
 
 		'_onItemAdd' : function(evt){
-			this.input.getElmAt(evt.getIndex()).setSelector(this);
-
 			this._updateSelection();
 		},
 
@@ -131,17 +129,16 @@ OJ.extendComponent(
 		},
 
 		'_onItemMove' : function(evt){
-			trace('on item move', this._dom);
 			// todo: implement onItemMove in OjSelector
 		},
 
 		'_onItemRemove' : function(evt){
-			trace('on item remove', this._dom);
+			// todo: implement onItemRemove in OjSelector
 			this._updateSelection();
 		},
 
 		'_onItemReplace' : function(evt){
-			trace('on item replace', this._dom);
+			// todo: implement onItemReplace in OjSelector
 			return;
 			var index, old_data = this._options.getItemAt(evt.getIndex());
 
@@ -154,8 +151,11 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._s('OjSelector', 'redraw', arguments)){
+			if(this._super('OjSelector', 'redraw', arguments)){
 				this.input.redraw();
+
+				// update the selection
+				this._updateSelection();
 
 				return true;
 			}
@@ -183,6 +183,11 @@ OJ.extendComponent(
 			return this.input.getDataProvider();
 		},
 		'setOptions' : function(val){
+			// check to make sure we don't do extra work
+			if(val == this.getOptions()){
+				return;
+			}
+
 			// get the old selected indices
 			var indices = [];
 
@@ -212,13 +217,7 @@ OJ.extendComponent(
 				}
 			}
 
-			// make sure all the option renderers know which selector they belong to
-			for(; ln--;){
-				this.input.getElmAt(ln).setSelector(this);
-			}
-
-			// update the selection
-			this._updateSelection();
+			this.redraw();
 		},
 
 		'setValue' : function(val){

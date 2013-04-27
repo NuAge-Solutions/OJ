@@ -13,21 +13,21 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*name, label, value, validators*/){
-			this._s('OjTextInput', '_constructor', arguments);
+			this._super('OjTextInput', '_constructor', arguments);
 
 			this.input.addEventListener(OjKeyboardEvent.UP, this, '_onChange');
 		},
 
 
 		'_setDom' : function(dom_elm){
-			this._s('OjTextInput', '_setDom', arguments);
+			this._super('OjTextInput', '_setDom', arguments);
 
 			this.input.setAttr('type', 'text');
 		},
 
 
 		'isValid' : function(){
-			var valid = this._s('OjTextInput', 'isValid', arguments);
+			var valid = this._super('OjTextInput', 'isValid', arguments);
 
 			var ln = this._value.length;
 
@@ -53,7 +53,7 @@ OJ.extendComponent(
 				return;
 			}
 
-			return this._s('OjTextInput', 'setValue', arguments);
+			return this._super('OjTextInput', 'setValue', arguments);
 		}
 	},
 	{

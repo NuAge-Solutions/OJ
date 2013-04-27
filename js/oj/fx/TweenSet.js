@@ -15,7 +15,7 @@ OJ.extendClass(
 
 			this._completed = [];
 
-			this._s('OjTweenSet', '_constructor', []);
+			this._super('OjTweenSet', '_constructor', []);
 
 			if(arguments.length){
 				if(isArray(arguments[0])){
@@ -27,14 +27,16 @@ OJ.extendClass(
 			}
 		},
 
-		'_destructor' : function(/*recursive = false*/){
-			var ln = this._tweens.length;
+		'_destructor' : function(/*depth = 0*/){
+			var ln = this._tweens.length,
+				args = arguments,
+				depth = args.length ? args[0] : 0;
 
 			this.stop();
 
-			if(arguments.length && arguments[0]){
+			if(depth){
 				while(ln-- > 0){
-					OJ.destroy(this._tweens[ln]);
+					OJ.destroy(this._tweens[ln], depth);
 				}
 			}
 			else{
@@ -43,7 +45,7 @@ OJ.extendClass(
 				}
 			}
 
-			return this._s('OjTweenSet', '_destructor', arguments);
+			return this._super('OjTweenSet', '_destructor', arguments);
 		},
 
 

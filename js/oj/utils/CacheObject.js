@@ -13,7 +13,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*data, expiration*/){
-			this._s('OjCacheObject', '_constructor', []);
+			this._super('OjCacheObject', '_constructor', []);
 
 			this.setCreated(new Date());
 
@@ -29,7 +29,7 @@ OJ.extendClass(
 		},
 
 		'exportData' : function(){
-			var obj = this._s('OjCacheObject', 'exportData', arguments);
+			var obj = this._super('OjCacheObject', 'exportData', arguments);
 
 			obj.created    = this._created;
 			obj.data       = this._data ? OjObject.exportData(this._data) : null;

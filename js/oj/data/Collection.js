@@ -14,13 +14,19 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*items*/){
-			this._s('OjCollection', '_constructor', []);
+			this._super('OjCollection', '_constructor', []);
 
 			this._items = [];
 
 			if(arguments.length){
 				this.setItems(arguments[0]);
 			}
+		},
+
+		'_destructor' : function(){
+			this._items = null;
+
+			return this._super('OjCollection', '_destructor', arguments);
 		},
 
 
@@ -79,6 +85,18 @@ OJ.extendClass(
 			this.dispatchEvent(new OjCollectionEvent(OjCollectionEvent.ITEM_REMOVE, item, index));
 
 			return item;
+		},
+
+		'replaceItem' : function(oldItem, newItem){
+			return this.replaceItemAt(this.indexOfItem(oldItem), newItem);
+		},
+
+		'replaceItemAt' : function(index, newItem){
+			if(index > -1 && index < this.numItems()){
+				return this._items.splice(index, 1, newItem)[0];
+			}
+
+			return null;
 		},
 
 		'reverse' : function(){

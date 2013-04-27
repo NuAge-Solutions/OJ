@@ -10,7 +10,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*content*/){
-			this._s('OjTableCell', '_constructor', []);
+			this._super('OjTableCell', '_constructor', []);
 
 			if(arguments.length){
 				this.setContent(arguments[0]);

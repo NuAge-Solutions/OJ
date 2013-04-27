@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjTextEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super('OjTextEvent', '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

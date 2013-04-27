@@ -4,8 +4,9 @@ OJ.extendClass(
 	OjElement, 'OjStyleElement',
 	{
 		'_props_' : {
-			'id'   : null,
-			'name' : null
+			'id'    : null,
+			'name'  : null,
+			'owner' : null
 		},
 
 		'_classes' : null,
@@ -135,7 +136,27 @@ OJ.extendClass(
 				}
 			}
 
-			this._s('OjStyleElement', '_constructor', [source, context]);
+			this._super('OjStyleElement', '_constructor', [source, context]);
+		},
+
+		'_destructor' : function(/*depth = 0*/){
+			var args = arguments,
+				depth = args.length ? args[0] : 0;
+
+			// remove the children
+			if(this._children && depth){
+				var ln = this._children.length;
+
+				while(ln-- > 0){
+					OJ.destroy(this._children[ln], depth);
+				}
+			}
+
+			// release the vars
+			this._children = this._owner = null;
+
+			// continue on with the destruction
+			return this._super('OjStyleElement', '_destructor', arguments);
 		},
 
 
@@ -157,6 +178,8 @@ OJ.extendClass(
 			if(val = dom.getAttribute(attr = 'var')){
 				if(!isEmpty(val) && context){
 					(context[val] = this).addClasses(val);
+
+					this.setOwner(context);
 				}
 
 				dom.removeAttribute(attr);
@@ -293,7 +316,7 @@ OJ.extendClass(
 		'_setDom' : function(dom_elm, context){
 			// todo: re-evaluate the pre-render functionality of dom
 
-			this._s('OjStyleElement', '_setDom', arguments);
+			this._super('OjStyleElement', '_setDom', arguments);
 
 			// process the attributes
 			this._processAttributes(context);
@@ -322,7 +345,7 @@ OJ.extendClass(
 				return;
 			}
 
-			this._s('OjStyleElement', '_setIsDisplayed', arguments);
+			this._super('OjStyleElement', '_setIsDisplayed', arguments);
 
 			var ln = this.numChildren();
 
@@ -474,6 +497,8 @@ OJ.extendClass(
 
 		'hide' : function(){
 			this.addClasses('hidden');
+
+			this.dispatchEvent(new OjEvent(OjEvent.HIDE));
 		},
 
 		'isVisible' : function(){
@@ -483,6 +508,8 @@ OJ.extendClass(
 
 		'show' : function(){
 			this.removeClasses('hidden');
+
+			this.dispatchEvent(new OjEvent(OjEvent.SHOW));
 		},
 
 
@@ -919,6 +946,13 @@ OJ.extendClass(
 		},
 		'setAlpha' : function(alpha){
 			this._alpha = this._setStyle('opacity', alpha);
+		},
+
+		'getBackgroundColor' : function(){
+			return this._getStyle('background-color');
+		},
+		'setBackgroundColor' : function(color){
+			this._setStyle('background-color', color);
 		},
 
 		'getDepth' : function(){

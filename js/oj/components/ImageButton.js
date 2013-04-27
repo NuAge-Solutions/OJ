@@ -10,7 +10,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*image*/){
-			this._s('OjImageButton', '_constructor', []);
+			this._super('OjImageButton', '_constructor', []);
 
 			if(arguments.length){
 				this.setIcon(arguments[0]);
