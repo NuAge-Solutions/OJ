@@ -55,7 +55,7 @@ OJ.extendComponent(
 			}
 
 			var txt = dom_elm.innerText;
-			
+
 			if(txt){
 				this.input.addItem(OjObject.importData(txt.parseJson()));
 			}

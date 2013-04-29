@@ -197,7 +197,7 @@ OJ.extendClass(
 			if(evt.getType() == OjTouchEvent.END){
 				var dom_elm = document.elementFromPoint(evt.getPageX(), evt.getPageY());
 
-				if(OjElement.hasDomElement(this._proxy, dom_elm)){
+				if(dom_elm && OjElement.hasDomElement(this._proxy, dom_elm)){
 					if(this.hasEventListener(OjMouseEvent.UP)){
 						this._onMouse(new OjMouseEvent(OjMouseEvent.UP, evt.getBubbles(), evt.getCancelable(), evt.getPageX(), evt.getPageY()));
 					}
