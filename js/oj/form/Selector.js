@@ -54,7 +54,11 @@ OJ.extendComponent(
 				return;
 			}
 
-			this.input.addItem(OjObject.importData(dom_elm.innerText.parseJson()));
+			var txt = dom_elm.innerText;
+			
+			if(txt){
+				this.input.addItem(OjObject.importData(txt.parseJson()));
+			}
 		},
 
 		'_selectOption' : function(option, data){
