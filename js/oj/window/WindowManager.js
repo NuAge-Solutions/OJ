@@ -72,10 +72,6 @@ OJ.extendManager(
 				alrt.hideButtons();
 			}
 
-			alrt.addEventListener(OjEvent.HIDE, this, function(){
-				OJ.destroy(alrt);
-			});
-
 			return alrt;
 		},
 
