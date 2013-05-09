@@ -23,7 +23,7 @@ window.OJ = function Oj(){
 
 			'jsPath' : 'js',  'jsExt' : '.js',  'lazyLoad' : true,  'mode' : 'loading',
 
-			'separator' : '/',  'target' : '#OJ',  'theme' : 'oj',  'themePath' : 'themes',
+			'target' : '#OJ',  'theme' : 'oj',  'themePath' : 'themes',
 
 			'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
 
@@ -37,7 +37,7 @@ window.OJ = function Oj(){
 				'You can easily download the latest version by clicking on the name of the browser you wish to use.'
 		},
 
-		'_script_elm' : null,  '_theme_elm' : null,    '_tween' : null,
+		'_theme_elm' : null,    '_tween' : null,
 
 		'_viewport' : {
 			'top'    : 0,
@@ -101,7 +101,7 @@ window.OJ = function Oj(){
 		},
 
 		'_getClassPath' : function(css){
-			return css.replace(/\./g, this._('separator'));
+			return css.replace(/\./g, '/');
 		},
 
 		'_getCssImportPath' : function(path){
@@ -109,7 +109,7 @@ window.OJ = function Oj(){
 				return path;
 			}
 
-			return this._root + this._('cssPath') + this._('separator') +
+			return this._root + this._('cssPath') + '/' +
 				this._getClassPath(path) + this._('cssExt') + this.getVersionQuery();
 		},
 
@@ -118,7 +118,7 @@ window.OJ = function Oj(){
 				return path;
 			}
 
-			return this._root + this._('jsPath') + this._('separator') +
+			return this._root + this._('jsPath') + '/' +
 				this._getClassPath(path) + this._('jsExt') + this.getVersionQuery();
 		},
 
@@ -127,7 +127,7 @@ window.OJ = function Oj(){
 				return path;
 			}
 
-			return this._root + this._('tplPath') + this._('separator') +
+			return this._root + this._('tplPath') + '/' +
 				this._getClassPath(path) + this._('tplExt') + this.getVersionQuery();
 		},
 
@@ -235,7 +235,7 @@ window.OJ = function Oj(){
 
 					document.getElementsByTagName('head')[0].appendChild(elm);
 
-					return;
+					return elm;
 				}
 			}
 			catch(e){}
@@ -289,9 +289,14 @@ window.OJ = function Oj(){
 
 		'destroy' : function(obj/*, depth = 0*/){
 			if(obj && isFunction(obj._destructor)){
-				var args = arguments;
+				if(!obj._destroyed_){
+					var args = arguments;
 
-				obj._destructor(args.length > 1 ? args[1] : 0);
+					obj._destructor(args.length > 1 ? args[1] : 0);
+				}
+				else{
+					trace('Called destroy multiple times on: ' + obj.id());
+				}
 			}
 
 			return obj = null;
@@ -663,6 +668,16 @@ window.OJ = function Oj(){
 			}
 		},
 
+		'pageTitle' : function(){
+			var d = document;
+
+			return d ? d.title : null;
+		},
+
+		'pageDescription' : function(){
+			return this.meta('description');
+		},
+
 		'pluralize' : function(str){
 			var c = str.slice(-1),
 				c2 = str.slice(-2),
@@ -685,9 +700,9 @@ window.OJ = function Oj(){
 			this._handleEvent('remove', type, context, func);
 		},
 
-		'render' : function(dom_elm){
+		'render' : function(elm){
 			if(this.renderer){
-				this.renderer.dom().appendChild(dom_elm);
+				this.renderer.dom().appendChild(isObjective(elm) ? elm.dom() : elm);
 			}
 		},
 
@@ -699,7 +714,7 @@ window.OJ = function Oj(){
 			var val = arguments[1];
 
 			if(key == 'theme'){
-				var sep = this._('separator'),
+				var sep = '/',
 					old_path = this._compiled_theme_path,
 					path = this._root + this._('themePath') + sep + val + this._('cssExt') + this.getVersionQuery();
 
@@ -774,7 +789,7 @@ window.OJ = function Oj(){
 
 		// getter & setters
 		'getAssetPath' : function(path){
-			return this._root + this._('assetsPath') + this._('separator') + path + this.getVersionQuery();
+			return this._root + this._('assetsPath') + '/' + path + this.getVersionQuery();
 		},
 
 		'getBrowser' : function(){
@@ -813,7 +828,7 @@ window.OJ = function Oj(){
 			return this._root;
 		},
 		'setRoot' : function(root){
-			this._root = isEmpty(root) && this._protocol == this.FILE ? '' : (root + this._('separator'));
+			this._root = isEmpty(root) && this._protocol == this.FILE ? '' : (root + '/');
 		},
 
 		'getScrollLeft' : function(){
@@ -869,30 +884,31 @@ window.OJ = function Oj(){
  */
 (function(){
 	// detect script element
-	var script_elms = document.getElementsByTagName('script');
-	var ln = script_elms.length;
+	var script_elms = document.getElementsByTagName('script'),
+		ln = script_elms.length,
+		src, index;
 
 	for(; ln--;){
-		if(script_elms[ln].src.toLowerCase().indexOf('/oj.js') != -1){
-			OJ._script_elm = script_elms[ln];
+		src = script_elms[ln].getAttribute('src');
+
+		if((index = src.indexOf('/js/')) != -1){
+			src = src.substr(0, index);
+
+			// detect file mode
+			var protocol_index = src.indexOf('//');
+
+			if(protocol_index > 0){
+				OJ._protocol = src.substring(0, protocol_index - 1);
+			}
+			else{
+				OJ._protocol = window.location.protocol.substring(-1);
+			}
+
+			// detect the root
+			OJ.setRoot(src);
 
 			break;
 		}
-	}
-
-	// detect the root
-	var path = OJ._script_elm.getAttribute('src').split('?')[0];
-
-	OJ.setRoot(path.split('/').slice(0, -3).join('/'));
-
-	// detect file mode
-	var protocol_index = OJ._script_elm.src.indexOf('://');
-
-	if(protocol_index > -1){
-		OJ._protocol = OJ._script_elm.src.substring(0, protocol_index);
-	}
-	else{
-		OJ._protocol = window.location.protocol.substring(-1);
 	}
 
 	// detect the broswer, os and version
@@ -1003,7 +1019,8 @@ window.OJ = function Oj(){
 
 	if(platform == 'and'){
 		OJ._os = OJ.ANDROID;
-		OJ._is_mobile = true;
+		OJ._is_mobile = (navigator.userAgent.indexOf('Mobile') > -1);
+		OJ._is_tablet = !OJ._is_mobile;
 		OJ._is_touch_capable = true;
 	}
 	else if(platform == 'iph' || platform == 'ipa' || platform == 'ipo'){
@@ -1390,6 +1407,14 @@ Object.clone = function(obj){
 
 
 // string functions
+String.string = function(val){
+	if(!val){
+		return '';
+	}
+
+	return isObject(val) ? val.toString() : String(val);
+};
+
 String.prototype.lcFirst = function(){
 	return this.charAt(0).toLowerCase() + this.slice(1);
 };
@@ -1444,6 +1469,14 @@ String.prototype.compareVersion = function(v){
 
 String.prototype.count = function(needle){
 	return (this.match(new RegExp(needle.regexEscape(), 'g')) || []).length;
+};
+
+String.prototype.decodeUri = function(){
+	return decodeURIComponent(this);
+};
+
+String.prototype.encodeUri = function(){
+	return encodeURIComponent(this);
 };
 
 String.prototype.html = function(){
@@ -1721,21 +1754,21 @@ if(!isSet(console.group) || !isFunction(console.group)){
  */
 traceGroup('Picking the oranges.', true);
 
-OJ.importJs('oj.data.Object');
+OJ.importJs('oj.data.OjObject');
 
-OJ.importJs('oj.utils.QueryString');
-OJ.importJs('oj.utils.Json');
+OJ.importJs('oj.utils.OjQueryString');
+OJ.importJs('oj.utils.OjJson');
 
-OJ.importJs('oj.events.Actionable');
-OJ.importJs('oj.events.EventManager');
-OJ.importJs('oj.events.TextEvent');
-OJ.importJs('oj.events.ErrorEvent');
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.events.OjEventManager');
+OJ.importJs('oj.events.OjTextEvent');
+OJ.importJs('oj.events.OjErrorEvent');
 
-OJ.importJs('oj.net.Url');
-OJ.importJs('oj.net.UrlRequest');
-OJ.importJs('oj.net.UrlLoader');
+OJ.importJs('oj.net.OjUrl');
+OJ.importJs('oj.net.OjUrlRequest');
+OJ.importJs('oj.net.OjUrlLoader');
 
-OJ.importJs('oj.utils.Library');
+OJ.importJs('oj.utils.OjLibrary');
 
 
 // on dom ready event handler
@@ -1792,15 +1825,15 @@ function onDomReady(){
 	OJ._library = new OjLibrary(OJ._loaded);
 
 	// import the required classes
-	OJ.importJs('oj.dom.Element');
-	OJ.importJs('oj.timer.TimerManager');
-	OJ.importJs('oj.utils.HistoryManager');
-	OJ.importJs('oj.window.WindowManager');
-	OJ.importJs('oj.nav.View');
-	OJ.importJs('oj.events.TransformEvent');
-	OJ.importJs('oj.fx.Fade');
-	OJ.importJs('oj.fx.TweenSet');
-	OJ.importJs('oj.components.Spinner');
+	OJ.importJs('oj.dom.OjElement');
+	OJ.importJs('oj.timer.OjTimerManager');
+	OJ.importJs('oj.utils.OjHistoryManager');
+	OJ.importJs('oj.window.OjWindowManager');
+	OJ.importJs('oj.nav.OjView');
+	OJ.importJs('oj.events.OjTransformEvent');
+	OJ.importJs('oj.fx.OjFade');
+	OJ.importJs('oj.fx.OjTweenSet');
+	OJ.importJs('oj.components.OjSpinner');
 
 	// create the OJ component
 	var tmp = new OjView();
