@@ -52,7 +52,7 @@ window.OJ = function Oj(){
 		// modes
 		'DEV'           : 'development',
 		'LOADING'       : 'loading',
-		'PRODUCTION'    : 'production',
+		'PROD'          : 'production',
 
 		// protocols
 		'FILE'          : 'file',
@@ -100,8 +100,10 @@ window.OJ = function Oj(){
 			return this._settings[key];
 		},
 
-		'_getClassPath' : function(css){
-			return css.replace(/\./g, '/');
+		'_getClassPath' : function(type, cls, ext){
+			var parts = cls.split('.');
+
+			return parts.shift() + '/' + (type ? type + '/' : '') + parts.join('/') + ext;
 		},
 
 		'_getCssImportPath' : function(path){
@@ -109,8 +111,7 @@ window.OJ = function Oj(){
 				return path;
 			}
 
-			return this._root + this._('cssPath') + '/' +
-				this._getClassPath(path) + this._('cssExt') + this.getVersionQuery();
+			return this._root + this._getClassPath(this._('cssPath'), path, this._('cssExt')) + this.getVersionQuery();
 		},
 
 		'_getJsImportPath' : function(path){
@@ -118,8 +119,7 @@ window.OJ = function Oj(){
 				return path;
 			}
 
-			return this._root + this._('jsPath') + '/' +
-				this._getClassPath(path) + this._('jsExt') + this.getVersionQuery();
+			return this._root + this._getClassPath(this._('jsPath'), path, this._('jsExt')) + this.getVersionQuery();
 		},
 
 		'_getTemplateImportPath' : function(path){
@@ -127,8 +127,26 @@ window.OJ = function Oj(){
 				return path;
 			}
 
-			return this._root + this._('tplPath') + '/' +
-				this._getClassPath(path) + this._('tplExt') + this.getVersionQuery();
+			return this._root + this._getClassPath(this._('tplPath'), path, this._('tplExt')) + this.getVersionQuery();
+		},
+
+		'_getThemePath' : function(path){
+			if(path.indexOf('/') != -1){
+				return path;
+			}
+
+			var parts = path.split('.'),
+				prefix = parts.length == 1 ? path + '.' : '',
+				type = this._('themePath');
+
+
+			if(this._('mode') != this.DEV){
+				path += '-theme';
+
+				type = null;
+			}
+
+			return this._root + this._getClassPath(type, prefix + path, this._('cssExt')) + this.getVersionQuery();
 		},
 
 		'_handleEvent' : function(action, type, context, func){
@@ -692,16 +710,17 @@ window.OJ = function Oj(){
 			if(key == 'theme'){
 				var sep = '/',
 					old_path = this._compiled_theme_path,
-					path = this._root + this._('themePath') + sep + val + this._('cssExt') + this.getVersionQuery();
+					path = this._getThemePath(val);
 
 				// check for change
 				if(path.indexOf(old_path) > -1){
 					return;
 				}
 
-				var elms = document.getElementsByTagName('link'), ln = elms.length;
+				var elms = document.getElementsByTagName('link'),
+					ln = elms.length;
 
-				this._compiled_theme_path = this._root + this._('themePath') + sep + val + sep;
+				this._compiled_theme_path = this._path;
 
 				for(; ln--;){
 					if(elms[ln].getAttribute('href').indexOf(old_path)> -1){
@@ -764,8 +783,8 @@ window.OJ = function Oj(){
 		},
 
 		// getter & setters
-		'getAssetPath' : function(path){
-			return this._root + this._('assetsPath') + '/' + path + this.getVersionQuery();
+		'getAssetPath' : function(pkg, path){
+			return this._root + pkg + '/' + this._('assetsPath') + '/' + path + this.getVersionQuery();
 		},
 
 		'getBrowser' : function(){
@@ -867,7 +886,7 @@ window.OJ = function Oj(){
 	for(; ln--;){
 		src = script_elms[ln].getAttribute('src');
 
-		if((index = src.indexOf('/js/')) != -1){
+		if((index = src.indexOf('/oj/')) != -1){
 			src = src.substr(0, index);
 
 			// detect file mode
@@ -1684,7 +1703,7 @@ function isTrue(obj){
  * Framework Logging Functions
  */
 function trace(obj/*, ...objs*/){
-	if(OJ._('mode') == OJ.PRODUCTION){
+	if(OJ._('mode') != OJ.DEV){
 		return;
 	}
 
@@ -1801,7 +1820,7 @@ function onDomReady(){
 
 	// process the mode
 	if(OJ._('mode') == OJ.LOADING){
-		OJ.setting('mode', OJ.PRODUCTION);
+		OJ.setting('mode', OJ.PROD);
 	}
 
 	// updated the loaded assets with the appropriate query string

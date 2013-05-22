@@ -58,7 +58,7 @@ OJ.extendComponent(
 				if(this._source_is_css){
 					this.media.addClasses(url.substring(1));
 
-					this.media.setAttr('src', OJ.getAssetPath('oj/empty.png'));
+					this.media.setAttr('src', OJ.getAssetPath('oj', 'empty.png'));
 
 					this._onMediaLoad(null);
 				}
