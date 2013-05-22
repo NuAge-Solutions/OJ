@@ -160,8 +160,9 @@ OJ.extendClass(
 		},
 
 
-		'_processAttributes' : function(context){
-			var dom = this._dom,
+		'_processAttributes' : function(context/*, dom*/){
+			var args = arguments,
+				dom = args.length > 1 ? args[1] : this._dom,
 				attr, val;
 
 			// process known attributes
@@ -496,11 +497,9 @@ OJ.extendClass(
 		},
 
 		'hide' : function(){
-			if(!this.hasClasses('hidden')){
-				this.addClasses('hidden');
+			this.addClasses('hidden');
 
-				this.dispatchEvent(new OjEvent(OjEvent.HIDE));
-			}
+			this.dispatchEvent(new OjEvent(OjEvent.HIDE));
 		},
 
 		'isVisible' : function(){
@@ -509,17 +508,9 @@ OJ.extendClass(
 		},
 
 		'show' : function(){
-//			trace(this, 'show');
-			if(!this.isVisible()){
-				if(this._alpha === 0){
-					this.setAlpha(1);
-				}
-				else{
-					this.removeClasses('hidden');
+			this.removeClasses('hidden');
 
-					this.dispatchEvent(new OjEvent(OjEvent.SHOW));
-				}
-			}
+			this.dispatchEvent(new OjEvent(OjEvent.SHOW));
 		},
 
 
@@ -709,6 +700,10 @@ OJ.extendClass(
 			}
 
 			return true;
+		},
+
+		'hasFocus' : function(){
+			return this._dom.hasFocus;
 		},
 
 		'hitTest' : function(elm){

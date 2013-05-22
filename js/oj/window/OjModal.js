@@ -1,8 +1,8 @@
-OJ.importJs('oj.nav.OjView');
-OJ.importJs('oj.nav.OjStack');
 OJ.importJs('oj.events.OjDragEvent');
-OJ.importJs('oj.window.OjAlert');
 OJ.importJs('oj.nav.OjFlowNavController');
+OJ.importJs('oj.nav.OjNavStack');
+OJ.importJs('oj.nav.OjView');
+OJ.importJs('oj.window.OjAlert');
 
 
 'use strict';
@@ -66,6 +66,18 @@ OJ.extendClass(
 				this.pane.setY(this.pane.getY() + evt.getDeltaY());
 			},
 
+			'_onStackChange' : function(evt){
+				// todo: OjModal - rethink how to autosize the modal to content
+//				if(!this.getPaneWidth()){
+//					trace(evt.getView().getWidth());
+//					this.setPaneWidth(evt.getView().getWidth());
+//				}
+//
+//				if(!this.getPaneHeight()){
+//					this.setPaneWidth(evt.getView().getWidth());
+//				}
+			},
+
 
 			'showBar' : function(){
 				if(arguments.length){
@@ -100,10 +112,12 @@ OJ.extendClass(
 			},
 
 			'showClose' : function(){
-				if(arguments.length){
-					this.bar.showCancel(arguments[0]);
+				var args = arguments;
 
-					if(arguments[0]){
+				if(args.length){
+					this.bar.showCancel(args[0]);
+
+					if(args[0]){
 						this.bar.addEventListener(OjEvent.CANCEL, this, '_onCancelClick');
 					}
 					else{

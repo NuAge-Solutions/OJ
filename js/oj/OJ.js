@@ -644,30 +644,6 @@ window.OJ = function Oj(){
 			return OJ.merge({}, this._metadata);
 		},
 
-		'open' : function(url/*, target*/){
-			if(arguments.length > 1){
-				var target = arguments[1];
-
-				if(target != '_blank'){
-					// do something here not sure what
-				}
-
-				window.open(url.toString(), target);
-			}
-			else{
-				// the toString in case it is a url object and not a string
-				url = url.toString();
-
-				// if the url is the same minus the hash and their is no hash
-				// then we force a hash to prevent a reload
-				if(window.location.href.indexOf(url) != -1 && url.indexOf('#') == -1){
-					url += '#';
-				}
-
-				window.location.href = url;
-			}
-		},
-
 		'pageTitle' : function(){
 			var d = document;
 
@@ -1271,6 +1247,12 @@ if(!Date.time){
 	};
 }
 
+if(!Date.prototype.isEqual){
+	Date.prototype.isEqual = function(date){
+		return isDate(date) && this.getTime() == date.getTime();
+	};
+}
+
 
 // function functions
 if(!Function.prototype.bind){
@@ -1316,6 +1298,12 @@ if(!Math.signedFloor){
 		}
 
 		return Math.floor(num);
+	}
+}
+
+if(!Math.bounds){
+	Math.bounds = function(num, min, max){
+		return Math.min(Math.max(min, num), max)
 	}
 }
 

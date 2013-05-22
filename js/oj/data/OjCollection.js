@@ -176,12 +176,12 @@ OJ.extendClass(
 				}
 			}
 
-			while(ln-- > 0){
-				if(ln >= old_ln){
-					this.addItemAt(items[ln], 0);
+			for(var i = 0; i < ln; i++){
+				if(i < old_ln){
+					this.setItemAt(items[i], i);
 				}
 				else{
-					this.setItemAt(items[ln], ln);
+					this.addItem(items[i]);
 				}
 			}
 		}
@@ -200,7 +200,7 @@ window.OjICollection = {
 			return;
 		}
 
-		this._items = new OjCollection();
+		return this._items = new OjCollection();
 	},
 
 	'addItem' : function(item){

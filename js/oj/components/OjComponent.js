@@ -68,6 +68,10 @@ OJ.extendClass(
 		},
 
 		'_processDomSourceChild' : function(dom_elm, context){
+			if(OjElement.isCommentNode(dom_elm)){
+				return false;
+			}
+
 			return this._processChild(dom_elm, context);
 		},
 
@@ -89,28 +93,36 @@ OJ.extendClass(
 		},
 
 		'_setDomSource' : function(dom_elm, context){
-			var is_body = dom_elm == document.body;
+			// prevent events from dipatching while we are setting everything up
+			this._prevent_dispatch = true;
+
+			var ln, is_body = dom_elm == document.body;
 
 			// we need to copy over the attributes
-			if(!is_body){
-				var attrs = dom_elm.attributes,
+//			if(!is_body){
+				var attrs = this._dom.attributes,
+					sep, nm, val,
 					ln = attrs.length;
 
-				while(ln-- > 0){
-					if(attrs[ln].nodeName == 'class-name' || attrs[ln].nodeName == 'class-path'){
+				for(; ln--;){
+					nm = attrs[ln].nodeName;
+
+					if(nm == 'class-name' || nm == 'class-path'){
 						continue;
 					}
 
-					if(attrs[ln].nodeName == 'class'){
-						attrs[ln].value += ' ' + this.getAttr('class');
+					if(!isEmpty(val = dom_elm.getAttribute(nm))){
+						sep = ' ';
+
+						attrs[ln].value = val + sep + attrs[ln].value;
 					}
 
-					this.setAttr(attrs[ln]);
+					dom_elm.setAttribute(nm, attrs[ln].value);
 				}
-			}
+//			}
 
 			// process attributes
-			this._processAttributes(context);
+			this._processAttributes(context, dom_elm);
 
 			// process the dom source children
 			this._processDomSource(dom_elm, context);
@@ -132,6 +144,9 @@ OJ.extendClass(
 					dom_elm.parentNode.replaceChild(this._dom, dom_elm);
 				}
 			}
+
+			// reengage event dispatching now that everything is setup
+			this._prevent_dispatch = false;
 
 			if(is_body){
 				// store the dom
@@ -177,6 +192,10 @@ OJ.extendClass(
 		},
 
 		'_setIsAnimating' : function(val){
+			if(this._isAnimating == val){
+				return;
+			}
+
 			if(this._isAnimating = val){
 				this.addClasses('animating');
 			}

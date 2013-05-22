@@ -74,6 +74,8 @@ OJ.extendClass(
 				}
 			}
 
+			this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+
 			this._ready = true;
 		},
 
@@ -113,6 +115,11 @@ OJ.extendClass(
 			this.setValue(this.input._dom.value);
 		},
 
+		'_onClick' : function(evt){
+			if(!this.input.hasFocus()){
+				this.focus();
+			}
+		},
 
 		'blur' : function(){
 			this.input.blur();

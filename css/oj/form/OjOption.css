@@ -24,6 +24,8 @@
 		left: auto;
 
 		margin-right: 5px;
+
+		overflow:visible;
 	}
 
 	.OjOption .OjItemRenderer {

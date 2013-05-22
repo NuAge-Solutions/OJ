@@ -64,6 +64,8 @@ OJ.extendComponent(
 		},
 
 		'_destructor' : function(){
+			this.unload();
+
 			this._unset('_actionView');
 			this._unset('_cancelView');
 			this._unset('_titleView');

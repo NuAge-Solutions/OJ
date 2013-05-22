@@ -169,6 +169,10 @@ OJ.extendClass(
 		},
 		'setPaneHeight' : function(val/*, unit*/){
 			this.pane.setHeight.apply(this.pane, arguments);
+
+			if(this._is_displayed){
+				WindowManager.center(this);
+			}
 		},
 
 		'getPaneWidth' : function(){
@@ -176,6 +180,10 @@ OJ.extendClass(
 		},
 		'setPaneWidth' : function(val/*, unit*/){
 			this.pane.setWidth.apply(this.pane, arguments);
+
+			if(this._is_displayed){
+				WindowManager.center(this);
+			}
 		}
 	},
 	{

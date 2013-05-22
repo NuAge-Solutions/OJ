@@ -14,6 +14,14 @@ OJ.importCss('oj.window.OjModal');
 OJ.extendManager(
 	'WindowManager', OjActionable, 'OjWindowManager',
 	{
+		'NEW'    : '_blank',
+		'PARENT' : '_parent',
+		'SELF'   : '_self',
+		'TOP'    : '_top',
+
+		'HIDE' : 'onWindowHide',
+		'SHOW' : 'onWindowShow',
+
 		'_props_' : {
 			'alertClass' : OjAlert,
 			'modalClass' : OjModal
@@ -86,7 +94,7 @@ OJ.extendManager(
 				return 540;
 			}
 
-			return Math.round(vp.width * .75);
+			return Math.round(vp.width * .85);
 		},
 
 		'_calcBrowserHeight' : function(){
@@ -100,26 +108,42 @@ OJ.extendManager(
 				return 620;
 			}
 
-			return Math.round(vp.height * .75);
+			return Math.round(vp.height * .85);
+		},
+
+		'_onShow' : function(evt){
+			var tween = evt.getCurrentTarget(),
+				modal = tween.getTarget();
+
+			// destroy tween
+			tween = OJ.destroy(tween);
+
+			// dispatch show event
+			modal.dispatchEvent(new OjEvent(this.SHOW));
 		},
 
 
 		'_onHide' : function(evt){
 			var tween = evt.getCurrentTarget(),
-				modal = tween.getTarget(),
-				mode = modal.getSelfDestruct();
+				modal = tween.getTarget();
 
+			// remove the modal from the holder
 			this._modal_holder.removeChild(modal);
 
-			OJ.destroy(tween);
+			// destroy the tween
+			tween = OJ.destroy(tween);
 
+			// check to see if the modal holder is empty
+			// if it is empty then hide it since there is nothing more to show
 			if(!this._modal_holder.numChildren()){
 				this._modal_holder.hide();
 			}
 
-			modal.dispatchEvent(new OjEvent(OjEvent.HIDE));
+			// dispatch hide event
+			modal.dispatchEvent(new OjEvent(this.HIDE));
 
-			if(mode){
+			// check to see if this modal is self destructing
+			if(modal.getSelfDestruct()){
 				OJ.destroy(modal, modal.getSelfDestruct());
 			}
 		},
@@ -157,6 +181,17 @@ OJ.extendManager(
 			return this.show(modal);
 		},
 
+		'center' : function(modal){
+			// position the modal
+			var w = modal.getWidth(),
+				h = modal.getHeight(),
+				w2 = modal.getPaneWidth(),
+				h2 = modal.getPaneHeight();
+
+			modal.pane.setX((w - w2) / 2);
+			modal.pane.setY(((h - h2) / 2) * .75);
+		},
+
 		'image' : function(url, title/*, width, height*/){
 			var args = arguments,
 				ln = args.length,
@@ -173,6 +208,30 @@ OJ.extendManager(
 			return this.show(modal);
 		},
 
+		'open' : function(url/*, target*/){
+			if(arguments.length > 1){
+				var target = arguments[1];
+
+				if(target != this.NEW){
+					// do something here not sure what
+				}
+
+				window.open(String.string(url), target);
+			}
+			else{
+				// the toString in case it is a url object and not a string
+				url = url.toString();
+
+				// if the url is the same minus the hash and their is no hash
+				// then we force a hash to prevent a reload
+				if(window.location.href.indexOf(url) != -1 && url.indexOf('#') == -1){
+					url += '#';
+				}
+
+				window.location.href = url;
+			}
+		},
+
 		'show' : function(modal){
 			// store the modal
 			this._modals.push(modal);
@@ -183,28 +242,17 @@ OJ.extendManager(
 			}
 
 			// prep the modal
-			modal.setAlpha(0);
 			modal.show();
+			modal.setAlpha(0);
 
 			// add the modal
 			this._modal_holder.addChild(modal);
 
-			// position the modal
-			var w = modal.getWidth(), h = modal.getHeight();
-			var w2 = modal.pane.getWidth(), h2 = modal.pane.getHeight();
-
-			modal.pane.setX((w - w2) / 2);
-			modal.pane.setY(((h - h2) / 2) * .75);
+			this.center(modal);
 
 			// transition the modal
 			var fade = new OjFade(modal, OjFade.IN);
-
-			fade.addEventListener(OjTweenEvent.COMPLETE, this, function(evt){
-				fade = OJ.destroy(fade);
-
-//				modal.dispatchEvent(new OjEvent(OjEvent.SHOW));
-			});
-
+			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
 			fade.start();
 		},
 
@@ -215,13 +263,11 @@ OJ.extendManager(
 				return;
 			}
 
-			var fade = new OjFade(modal, OjFade.NONE);
-
-			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
-
-			fade.start();
-
 			this._modals.splice(index, 1);
+
+			var fade = new OjFade(modal, OjFade.OUT);
+			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
+			fade.start();
 		},
 
 		'makeAlert' : function(/*title, content*/){

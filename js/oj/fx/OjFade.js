@@ -78,8 +78,8 @@ OJ.extendClass(
 		}
 	},
 	{
-		'IN'   : 'fadeIn',
-		'NONE' : 'fadeNone',
-		'OUT'  : 'fadeOut'
+		'IN'   : 'onFadeIn',
+		'NONE' : 'onFadeNone',
+		'OUT'  : 'onFadeOut'
 	}
 );

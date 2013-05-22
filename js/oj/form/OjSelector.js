@@ -22,8 +22,6 @@ OJ.extendComponent(
 
 		'_template' : 'oj.form.OjSelector',
 
-		'options' : null,
-
 
 		'_constructor' : function(/*name, label, value, options*/){
 			var args = arguments,
@@ -54,7 +52,7 @@ OJ.extendComponent(
 				return;
 			}
 
-			var txt = dom_elm.innerText;
+			var txt = dom_elm.innerHTML;
 
 			if(txt){
 				this.input.addItem(OjObject.importData(txt.parseJson()));
@@ -228,15 +226,16 @@ OJ.extendComponent(
 			val = Array.array(val);
 
 			if(this._value != val){
-				if((this._value = val) && this._options){
-					var ln = this._options.length;
+				if(this._value = val){
+					var options = this.getOptions(),
+						ln = options.numItems();
 
 					for(; ln--;){
-						this.options.getChildAt(ln).setIsSelected(val.indexOf(this._options[ln]) > -1);
+						this.input.getElmAt(ln).setIsSelected(val.indexOf(options.getItemAt(ln)) > -1);
 					}
 				}
 
-				this.dispatchEvent(new OjEvent(OjEvent.CHANGE, true, true));
+				this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
 			}
 		},
 

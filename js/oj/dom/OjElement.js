@@ -469,7 +469,9 @@ OJ.extendClass(
 		},
 
 		'_setParent' : function(parent){
-			this._parent = parent;
+			if(!(this._parent = parent) && this._dom.parentNode){
+				this._dom.parentNode.removeChild(this._dom);
+			}
 
 			this._setIsDisplayed(parent ? parent._is_displayed : false);
 		},
@@ -536,6 +538,10 @@ OJ.extendClass(
 			}
 
 			return false;
+		},
+
+		'isCommentNode' : function(dom_elm){
+			return dom_elm.nodeName.toLowerCase() == '#comment';
 		},
 
 		'isTextNode' : function(dom_elm){

@@ -29,7 +29,7 @@ OJ.extendComponent(
 		'isValid' : function(){
 			var valid = this._super('OjTextInput', 'isValid', arguments);
 
-			var ln = this._value.length;
+			var ln = this._value ? this._value.length : 0;
 
 			if(this._minLength && ln < this._minLength){
 				this._errors.push(OJ.tokenReplace(OjTextInput.MIN_LENGTH_ERROR, 'MIN', this._minLength));

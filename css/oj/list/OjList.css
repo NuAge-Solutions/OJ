@@ -43,35 +43,32 @@
 	/*-webkit-box-shadow: inset 0px 1px 0px 0px #DDDDDD;*/
 	/*box-shadow:         inset 0px 1px 0px 0px #DDDDDD;*/
 /*}*/
-	.OjList > .items > .OjItemRenderer {
-		display: block;
+	/*.OjList > .items > .OjItemRenderer {*/
+		/*display: block;*/
 
-		padding: 15px;
+		/*padding: 15px;*/
 
-		background: none;
+		/**/
+	/*}*/
+	/*.OjList > .items.horizontal > .OjItemRenderer {*/
+		/*display: inline-block;*/
 
-		border-top: 1px solid #FFFFFF;
-		border-bottom: 1px solid #BBBBBB;
-	}
-	.OjList > .items.horizontal > .OjItemRenderer {
-		display: inline-block;
+		/*padding: 0px;*/
+		/*margin: 15px 20px;*/
 
-		padding: 0px;
-		margin: 15px 20px;
+		/*border: none;*/
+	/*}*/
+		/*.OjList > .items > .OjItemRenderer.first {*/
+			/*border-top: none;*/
+		/*}*/
+		/*.OjList > .items > .OjItemRenderer.last {*/
+			/*border-bottom: none;*/
+		/*}*/
+			/*.OjList > .items > .OjItemRenderer > .accessory {*/
+				/*float: left;*/
 
-		border: none;
-	}
-		.OjList > .items > .OjItemRenderer.first {
-			border-top: none;
-		}
-		.OjList > .items > .OjItemRenderer.last {
-			border-bottom: none;
-		}
-			.OjList > .items > .OjItemRenderer > .accessory {
-				float: left;
-
-				height: 100%;
-			}
-			.OjList > .items > .OjItemRenderer > .content {
-				text-align: left;
-			}
+				/*height: 100%;*/
+			/*}*/
+			/*.OjList > .items > .OjItemRenderer > .content {*/
+				/*text-align: left;*/
+			/*}*/

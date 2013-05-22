@@ -42,15 +42,18 @@ OJ.extendClass(
 			var type = type.ucFirst(),
 				func = action == 'add' ? 'addEventListener' : 'removeEventListener',
 				settings = this._listeners(type),
-				ln = settings ? settings.length : 0;
+				ln = settings ? settings.length : 0,
+				obj;
 
 			if(ln){
-				if(ln > 1){
-					settings[0][func](settings[1], this, '_on' + type);
-				}
+				if((obj = settings[0]) && obj[func]){
+					if(ln > 1){
+						obj[func](settings[1], this, '_on' + type);
+					}
 
-				if(ln > 2){
-					settings[0][func](settings[2], this, '_on' + type + 'Fail');
+					if(ln > 2){
+						obj[func](settings[2], this, '_on' + type + 'Fail');
+					}
 				}
 			}
 		},
