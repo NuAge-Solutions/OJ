@@ -144,27 +144,30 @@
 				$start = $index + 11;
 				$end = min(strpos($file, '"', $start), strpos($file, ',', $start), strpos($file, '}', $start));
 
-				$path = str_replace('.', DS, substr($file, $start, $end - $start));
+				$parts = explode('.', substr($file, $start, $end - $start));
 
-				// weed out null template
-				if($path != 'ull'){
-					$path = mkPath($destination, 'templates', $path . '.html');
+				$ns = array_shift($parts);
 
-					// if the file doesn't exist then skip it
-					if(file_exists($path)){
-						$template = file_get_contents($path);
+				// weed out null and out of scope templates
+				if($parts[0] == 'ull' && $namespace != $ns){
+					// move the index forward so we don't get caught in a loop
+					$index = $end;
 
-						// put the template in
-//						$file = substr_replace($file, json_encode($template), $start - 1, ($end - $start) + 2);
-						$file = substr_replace($file, '"' . str_replace('"', '\\"', $template) . '"', $start - 1, ($end - $start) + 2);
+					continue;
+				}
 
-						// move the index forward so we don't get caught in a loop
-						$index = $index + strlen($template);
-					}
-					else{
-						// move the index forward so we don't get caught in a loop
-						$index = $end;
-					}
+				$path = mkPath($destination, 'templates', implode(DS, $parts) . '.html');
+
+				// if the file doesn't exist then skip it
+				if(file_exists($path)){
+					$template = file_get_contents($path);
+
+					// put the template in
+//				    $file = substr_replace($file, json_encode($template), $start - 1, ($end - $start) + 2);
+					$file = substr_replace($file, '"' . str_replace('"', '\\"', $template) . '"', $start - 1, ($end - $start) + 2);
+
+					// move the index forward so we don't get caught in a loop
+					$index = $index + strlen($template);
 				}
 				else{
 					// move the index forward so we don't get caught in a loop
@@ -520,5 +523,3 @@
 
 	// All done
 	endScript('All Done, enjoy!');
-
-?>
