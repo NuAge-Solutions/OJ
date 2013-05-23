@@ -59,28 +59,29 @@
 				// raw include path
 				$class_path = explode('.', substr($js, $start, $end - $start));
 
+				if(count($class_path) < 2){
+					// move the index forward so we don't get stuck in a loop
+					$index = $end;
+
+					continue;
+				}
+
+				$ns = array_shift($class_path);
+
+				$js = substr_replace($js, '', $index, min($paren + 2, strlen($js)) - $index);
+
+				if($namespace != $ns){
+					continue;
+				}
+
 				$include = mkPath($destination, 'css', implode(DS, $class_path) . '.css');
 
 				// make sure this isn't a programmatic import
 				// which we want to leave alone
 				if(file_exists($include) && !isExcluded($include)){
-					$js = substr_replace(
-						$js,
-						'',
-						$index,
-						min($paren + 2, strlen($js)) - $index
-					);
+					$tmp = NULL;
 
-					// add the css
-					if($class_path[0] == $namespace){
-						$tmp = NULL;
-
-						$str .= compileCss($include, $tmp, $namespace);
-					}
-				}
-				else{
-					// move the index forward so we don't get stuck in a loop
-					$index = $end;
+					$str .= compileCss($include, $tmp, $namespace);
 				}
 			}
 		}
@@ -185,9 +186,7 @@
 				// raw include path
 				$class_path = explode('.', substr($file, $start, $end - $start));
 
-				$include = mkPath($destination, 'js', implode(DS, $class_path) . '.js');
-
-				// repurpose end
+				// re-purpose end
 				$ln = strlen($file);
 
 				if($file[$paren + 1] == ';'){
@@ -197,22 +196,27 @@
 					$end = min($paren + 1, $ln);
 				}
 
+				if(count($class_path) < 2){
+					$index = $end;
+
+					continue;
+				}
+
+				$ns = array_shift($class_path);
+
+				$file = substr_replace($file, '', $index, $end - $index);
+
+				// if this file is not part of the namespace then skip
+				// this prevents us from cross compiling namespace dependencies
+				if($ns != $namespace){
+					continue;
+				}
+
+				$include = mkPath($destination, 'js', implode(DS, $class_path) . '.js');
+
 				// make sure this isn't a programmatic import
 				// which we want to leave alone
 				if(file_exists($include) && !isExcluded($include)){
-					$file = substr_replace(
-						$file,
-						'',
-						$index,
-						$end - $index
-					);
-
-					// if this file is not part of the namespace then skip
-					// this prevents us from cross compiling namespace dependencies
-					if($class_path[0] != $namespace){
-						continue;
-					}
-
 					$import = compileJs($include, $namespace);
 
 					if($index < $cutoff){
@@ -221,9 +225,6 @@
 					else{
 						$appends .= $import;
 					}
-				}
-				else{
-					$index = $end;
 				}
 			}
 
@@ -388,16 +389,6 @@
 
 			$included_paths[] = str_replace('.', DS, $arg);
 		}
-	}
-
-	// confirm to continue
-	trace('Are you sure you want to compile the project at: ' . $source . ' to ' . $destination . ' for namespaces: ' .
-		implode($includes, ', ') . ' excluding namespaces: ' . implode($excludes, ', ') . '?');
-
-	$confirm = strtolower(trim(fgets(STDIN)));
-
-	if(($confirm != 'yes' && $confirm != 'y') || $confirm == '0'){
-		endScript('Exiting compiler script without executing.');
 	}
 
 
