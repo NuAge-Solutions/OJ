@@ -87,6 +87,7 @@ OJ.extendComponent(
 
 		'redraw' : function(){
 			if(this._super('OjSpinner', 'redraw', arguments)){
+
 				var ln = this._numBlades, elm, pos;
 
 				while(ln-- > 0){

@@ -130,7 +130,12 @@ OJ.extendClass(
 		'setQueryParam' : function(key, value){
 			this._query_vars = this.getQueryParams();
 
-			this._query_vars[key] = value;
+			if(isSet(value)){
+				this._query_vars[key] = value;
+			}
+			else{
+				delete this._query_vars[key];
+			}
 
 			this._dirty['query'] = true;
 		},

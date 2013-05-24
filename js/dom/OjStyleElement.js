@@ -1170,7 +1170,7 @@ OJ.extendClass(
 		'registerComponentTag' : function(tag, component){
 			this.COMPONENT_TAGS[tag] = component;
 
-			if(this._browser == this.IE && this._browser_version < 9){
+			if(OJ.getBrowser() == OJ.IE && OJ.getBrowserVersion().compareVersion('9.0.0') < 0){
 				document.createElement(tag);
 			}
 		}

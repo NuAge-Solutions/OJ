@@ -550,6 +550,10 @@ window.OJ = function Oj(){
 			return template_data;
 		},
 
+		'isComputer' : function(){
+			return !this._is_mobile && !this._is_tablet;
+		},
+
 		'isLandscape' : function(){
 			return this._is_landscape;
 		},
@@ -909,101 +913,103 @@ window.OJ = function Oj(){
 	// detect the broswer, os and version
 	var detector = {
 		'search' : function(data){
-			for(var i = 0; i < data.length; i++){
-				var dataString = data[i].string;
-				var dataProp = data[i].prop;
+			var ln = data.length;
 
-				this.versionSearchString = data[i].versionSearch || data[i].identity;
+			for(; ln--;){
+				var dataString = data[ln].s,
+					dataProp = data[ln].p;
+
+				this.v = data[ln].v || data[ln].id;
 
 				if(dataString){
-					if(dataString.indexOf(data[i].subString) != -1){
-						return data[i].identity;
+					if(dataString.indexOf(data[ln].sub) != -1){
+						return data[ln].id;
 					}
 				}
 				else if(dataProp){
-					return data[i].identity;
+					return data[ln].id;
 				}
 			}
 		},
 
 		'version' : function(str){
-			var index = str.indexOf(this.versionSearchString);
+			var index = str.indexOf(this.v);
 
 			if(index == -1){
 				return;
 			}
 
-			return str.substring(index + this.versionSearchString.length + 1).split(' ')[0];
+			return str.substring(index + this.v.length + 1).split(' ')[0];
 		}
 	};
 
 	OJ._browser = detector.search([
 		{
-			'string' : navigator.userAgent,
-			'subString' : 'Chrome',
-			'identity' : 'Chrome'
+			's'   : navigator.userAgent,
+			'sub' : 'Chrome',
+			'id'  : 'Chrome'
 		},
 		{
-			'string' : navigator.userAgent,
-			'subString' : 'OmniWeb',
-			'versionSearch' : 'OmniWeb/',
-			'identity' : 'OmniWeb'
+			's'   : navigator.userAgent,
+			'sub' : 'OmniWeb',
+			'v'   : 'OmniWeb/',
+			'id'  : 'OmniWeb'
 		},
 		{
-			'string' : navigator.vendor,
-			'subString' : 'Apple',
-			'identity' : 'Safari',
-			'versionSearch' : 'Version'
+			's'   : navigator.vendor,
+			'sub' : 'Apple',
+			'id'  : 'Safari',
+			'v'   : 'Version'
 		},
 		{
-			'prop' : window.opera,
-			'identity' : 'Opera',
-			'versionSearch' : 'Version'
+			'p'  : window.opera,
+			'id' : 'Opera',
+			'v'  : 'Version'
 		},
 		{
-			'string' : navigator.vendor,
-			'subString' : 'iCab',
-			'identity' : 'iCab'
+			's'   : navigator.vendor,
+			'sub' : 'iCab',
+			'id'  : 'iCab'
 		},
 		{
-			'string' : navigator.vendor,
-			'subString' : 'KDE',
-			'identity' : 'Konqueror'
+			's'   : navigator.vendor,
+			'sub' : 'KDE',
+			'id'  : 'Konqueror'
 		},
 		{
-			'string' : navigator.userAgent,
-			'subString' : 'Firefox',
-			'identity' : 'Firefox'
+			's'   : navigator.userAgent,
+			'sub' : 'Firefox',
+			'id'  : 'Firefox'
 		},
 		{
-			'string' : navigator.vendor,
-			'subString' : 'Camino',
-			'identity' : 'Camino'
+			's'   : navigator.vendor,
+			'sub' : 'Camino',
+			'id'  : 'Camino'
 		},
 		{
 			// for newer Netscapes (6+)
-			'string' : navigator.userAgent,
-			'subString' : 'Netscape',
-			'identity' : 'Netscape'
+			's'   : navigator.userAgent,
+			'sub' : 'Netscape',
+			'id'  : 'Netscape'
 		},
 		{
-			'string' : navigator.userAgent,
-			'subString' : 'MSIE',
-			'identity' : 'Internet Explorer',
-			'versionSearch' : 'MSIE'
+			's'   : navigator.userAgent,
+			'sub' : 'MSIE',
+			'id'  : 'Internet Explorer',
+			'v'   : 'MSIE'
 		},
 		{
-			'string' : navigator.userAgent,
-			'subString' : 'Gecko',
-			'identity' : 'Mozilla',
-			'versionSearch' : 'rv'
+			's'   : navigator.userAgent,
+			'sub' : 'Gecko',
+			'id'  : 'Mozilla',
+			'v'   : 'rv'
 		},
 		{
 			// for older Netscapes (4-)
-			'string' : navigator.userAgent,
-			'subString' : 'Mozilla',
-			'identity' : 'Netscape',
-			'versionSearch' : 'Mozilla'
+			's'   : navigator.userAgent,
+			'sub' : 'Mozilla',
+			'id'  : 'Netscape',
+			'v'   : 'Mozilla'
 		}
 	]) || null;
 
@@ -1015,33 +1021,38 @@ window.OJ = function Oj(){
 	if(platform == 'and'){
 		OJ._os = OJ.ANDROID;
 		OJ._is_mobile = (navigator.userAgent.indexOf('Mobile') > -1);
-		OJ._is_tablet = !OJ._is_mobile;
 		OJ._is_touch_capable = true;
 	}
 	else if(platform == 'iph' || platform == 'ipa' || platform == 'ipo'){
 		OJ._os = OJ.IOS;
 		OJ._is_mobile = (platform != 'ipa');
-		OJ._is_tablet = !OJ._is_mobile;
+
+		// check for in app
+		if(!OJ._browser_version){
+			OJ._browser_version = 'in-app';
+		}
 	}
 	else{
 		OJ._os = detector.search([
 			{
-				'string' : navigator.platform,
-				'subString' : 'Win',
-				'identity' : 'Windows'
+				's'   : navigator.platform,
+				'sub' : 'Win',
+				'id'  : 'Windows'
 			},
 			{
-				'string' : navigator.platform,
-				'subString' : 'Mac',
-				'identity' : 'OS X'
+				's'   : navigator.platform,
+				'sub' : 'Mac',
+				'id'  : 'OS X'
 			},
 			{
-				'string' : navigator.platform,
-				'subString' : 'Linux',
-				'identity' : 'Linux'
+				's'   : navigator.platform,
+				'sub' : 'Linux',
+				'id'  : 'Linux'
 			}
 		]) || null;
 	}
+
+	OJ._is_tablet = !OJ._is_mobile;
 
 	if(!OJ._is_touch_capable){
 		OJ._is_touch_capable = 'ontouchstart' in window;
@@ -1923,17 +1934,25 @@ function onDomReady(){
 	OJ._setIsDisplayed(true);
 
 	// check if browser is supported
-	OJ._is_supported = !(
-		(OJ.getBrowser() == OJ.IE && OJ.getBrowserVersion().compareVersion('9.0') < 0) ||
-		(OJ.getBrowser() == OJ.FIREFOX && OJ.getBrowserVersion().compareVersion('2.0') < 0) ||
-		(OJ.getBrowser() == OJ.CHROME && OJ.getBrowserVersion().compareVersion('4.0') < 0) ||
-		(OJ.getBrowser() == OJ.SAFARI && OJ.getBrowserVersion().compareVersion('5.0') < 0) ||
-		(OJ.getBrowser() == OJ.OPERA && OJ.getBrowserVersion().compareVersion('10.5') < 0)
-	);
+	try{
+		var browser = OJ.getBrowser(),
+			version = OJ.getBrowserVersion();
+
+		OJ._is_supported = !(OJ.isComputer() && (
+			(browser == OJ.IE && version.compareVersion('9.0') < 0) ||
+			(browser == OJ.FIREFOX && version.compareVersion('2.0') < 0) ||
+			(browser == OJ.CHROME && version.compareVersion('4.0') < 0) ||
+			(browser == OJ.SAFARI && version.compareVersion('5.0') < 0) ||
+			(browser == OJ.OPERA && version.compareVersion('10.5') < 0)
+		));
+	}
+	catch(e){
+		OJ._is_supported = false;
+	}
 
 	// timeout offset to allow for css and stuff to settle
 	// this is clearly a hack so deal with it
-	setTimeout(window.onOjReady, 100);
+	setTimeout(window.onOjReady, 99);
 }
 
 // on oj ready event handler
