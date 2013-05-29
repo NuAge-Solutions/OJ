@@ -31,14 +31,14 @@ window.OjIFlowNavController = {
 	// helper functions
 	'_makeBackButton' : function(view){
 		var btn = new OjButton(view.getShortTitle());
-		btn.addClasses('back-button');
+		btn.addCss('back-button');
 
 		return btn;
 	},
 
 	'_makeTitle' : function(title){
 		var elm = new OjLabel(title);
-		elm.addClasses('valign-middle');
+		elm.addCss('valign-middle');
 
 		return elm;
 	},
@@ -135,7 +135,7 @@ window.OjIFlowNavController = {
 
 		if(e == OjTransition.NONE){
 			// remove the animating css class since we aren't anymore
-			this.removeClasses('animating');
+			this.removeCss(['animating']);
 
 			// make the necessary changes to the left, title & right bottom components components
 			t.show();
@@ -150,7 +150,7 @@ window.OjIFlowNavController = {
 		}
 
 		// setup the transition
-		this.addClasses('animating');
+		this.addCss('animating');
 
 		this._tween = new OjTweenSet();
 
@@ -222,7 +222,7 @@ window.OjIFlowNavController = {
 		this.btmTitle.removeAllChildren();
 		this.btmRight.removeAllChildren();
 
-		this.removeClasses('animating');
+		this.removeCss(['animating']);
 	},
 
 

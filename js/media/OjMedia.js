@@ -25,7 +25,7 @@ OJ.extendClass(
 			this.setVertAlign(OjStyleElement.MIDDLE);
 
 			if((this.media = this._makeMedia()) && isObjective(this.media)){
-				this.media.addClasses('media');
+				this.media.addCss('media');
 
 				this.addChild(this.media);
 			}

@@ -13,7 +13,7 @@ OJ.importJs('oj.events.OjTransformEvent');
 OJ.extendClass(
 	OjActionable, 'OjElement',
 	{
-		'_children' : null,  '_dom' : null,  '_parent' : null, '_proxy' : null,
+		'_dom' : null,  '_proxy' : null,
 
 		'_move_timer' : null,  '_page_x' : null,  '_page_y' : null,
 
@@ -31,23 +31,20 @@ OJ.extendClass(
 			// set the dom
 			// if no source present then create one
 			this._setDom(source, context);
-
-			OjElement.register(this);
 		},
 
 		'_destructor' : function(/*depth = 0*/){
 			OjElement.unregister(this);
 
 			// remove from parent
-			if(this._parent){
-				this._parent.removeChild(this);
-			}
+			this.setParent(null);
 
 			if(this._dom){
 				delete this._dom.ojElm;
+				delete this._dom.ojProxy;
 
 				// release the vars
-				this._dom = this._parent = this._proxy = null;
+				this._dom = this._proxy = null;
 			}
 
 			// continue on with the destruction
@@ -55,7 +52,7 @@ OJ.extendClass(
 		},
 
 
-		'_setDom' : function(dom_elm, context){
+		'_setDom' : function(dom_elm){
 			this._setProxy(this._dom = dom_elm);
 
 			this._dom.ojElm = this.id();
@@ -465,15 +462,19 @@ OJ.extendClass(
 		},
 
 		'parent' : function(){
-			return this._parent;
+			return OjElement.element(this._dom.parentNode);
 		},
 
-		'_setParent' : function(parent){
-			if(!(this._parent = parent) && this._dom.parentNode){
-				this._dom.parentNode.removeChild(this._dom);
+		'getParent' : function(){
+			return OjElement.element(this._dom.parentNode);
+		},
+		'setParent' : function(parent){
+			if(parent){
+				parent.addChild(this);
 			}
-
-			this._setIsDisplayed(parent ? parent._is_displayed : false);
+			else if(parent = this.parent()){
+				parent.removeChild(this);
+			}
 		},
 
 		'_setIsDisplayed' : function(displayed){
@@ -516,7 +517,7 @@ OJ.extendClass(
 			}
 
 			if(isDomElement(obj)){
-				return this.byId(obj.ojElm);
+				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.ojElm);
 			}
 
 			if(isObjective(obj)){

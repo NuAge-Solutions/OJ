@@ -66,7 +66,7 @@ OJ.extendClass(
 				ln = this._class_names.length;
 
 				while(ln-- > 0){
-					this.addClasses(this._class_names[ln]);
+					this.addCss(this._class_names[ln]);
 
 					if(this._class_names[ln] == 'OjInput'){
 						break;
@@ -82,10 +82,10 @@ OJ.extendClass(
 
 		'_redrawDefault' : function(){
 			if(isEmpty(this._default) || !isEmpty(this._value)){
-				this.addClasses('no-default');
+				this.addCss(['no-default']);
 			}
 			else{
-				this.removeClasses('no-default');
+				this.removeCss(['no-default']);
 			}
 
 			return true;
@@ -96,7 +96,7 @@ OJ.extendClass(
 		},
 
 		'_onFocusIn' : function(evt){
-			this.addClasses('focus');
+			this.addCss(['focus']);
 		},
 
 		'_onFocusOut' : function(evt){
@@ -106,9 +106,9 @@ OJ.extendClass(
 //				classes.push('no-default');
 //			}
 //
-//			this.removeClasses.apply(this, classes);
+//			this.removeCss(classes);
 
-			this.removeClasses('focus');
+			this.removeCss(['focus']);
 		},
 
 		'_onChange' : function(evt){
@@ -147,12 +147,12 @@ OJ.extendClass(
 
 		'validate' : function(){
 			if(this.isValid()){
-				this.removeClasses('error');
+				this.removeCss(['error']);
 
 				return true;
 			}
 
-			this.addClasses('error');
+			this.addCss(['error']);
 
 			return false;
 		},
@@ -183,10 +183,10 @@ OJ.extendClass(
 			this.label.setText(this._label = lbl);
 
 			if(isEmpty(this._label)){
-				this.addClasses('no-label');
+				this.addCss(['no-label']);
 			}
 			else{
-				this.removeClasses('no-label');
+				this.removeCss(['no-label']);
 			}
 		},
 

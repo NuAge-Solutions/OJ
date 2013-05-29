@@ -54,10 +54,10 @@ OJ.extendComponent(
 		'_onActionButtonClick' : function(evt){
 			var button = evt.getCurrentTarget();
 
-			if(button.hasClasses('submit-button')){
+			if(button.hasCss(['submit-button'])){
 				this._onSubmit(evt);
 			}
-			else if(button.hasClasses('cancel-button')){
+			else if(button.hasCss(['cancel-button'])){
 				this._onCancel(evt);
 			}
 		},

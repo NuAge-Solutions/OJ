@@ -40,8 +40,8 @@ OJ.extendComponent(
 
 
 		'_onFadeComplete' : function(evt){
-			if(this._fader.getDirection() == OjFade.OUT && this._parent){
-				this._parent.removeChild(this);
+			if(this._fader.getDirection() == OjFade.OUT && this.getParent()){
+				this.getParent().removeChild(this);
 			}
 
 			this._super('OjOverlay', '_onFadeComplete', arguments);
@@ -49,7 +49,7 @@ OJ.extendComponent(
 
 
 		'hide' : function(){
-			if(!this._parent){
+			if(!this.getParent()){
 				return;
 			}
 
@@ -57,7 +57,7 @@ OJ.extendComponent(
 		},
 
 		'show' : function(target){
-			if(!target || this._parent == target){
+			if(!target || this.getParent() == target){
 				return;
 			}
 
@@ -75,10 +75,10 @@ OJ.extendComponent(
 			}
 
 			if(isEmpty(msg)){
-				this.addClasses('no-message');
+				this.addCss(['no-message']);
 			}
 			else{
-				this.removeClasses('no-message');
+				this.removeCss(['no-message']);
 			}
 
 			this.message.setText(msg);
@@ -94,12 +94,12 @@ OJ.extendComponent(
 					icon.setHeight(40);
 				}
 
-				this.removeClasses('no-icon');
+				this.removeCss(['no-icon']);
 
 				this.icon.addChild(icon);
 			}
 			else{
-				this.addClasses('no-icon');
+				this.addCss(['no-icon']);
 			}
 		}
 	},

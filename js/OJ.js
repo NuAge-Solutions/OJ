@@ -198,7 +198,7 @@ window.OJ = function Oj(){
 				this._handleEvent('add', type, context, func);
 			},
 
-		'addCss' : function(css/*, is_path*/){
+		'addCssFile' : function(css/*, is_path*/){
 			var elm;
 
 			if(arguments.length > 1 && arguments[1]){
@@ -235,7 +235,7 @@ window.OJ = function Oj(){
 		},
 
 		// dynamically add js to page
-		'addJs' : function(js/*, is_path*/){
+		'addJsFile' : function(js/*, is_path*/){
 			var is_path = arguments.length > 1 ? arguments[1] : false;
 
 			try{
@@ -489,13 +489,13 @@ window.OJ = function Oj(){
 						this._('lazyLoad') && this._protocol != this.FILE &&
 							(this._('waitForCss') || (ln > 2 && arguments[2]))
 						){
-						elm = this.addCss(this._library.load(css_path));
+						elm = this.addCssFile(this._library.load(css_path));
 					}
 					else if(isFunction(document.createStyleSheet)){
 						elm = document.createStyleSheet(css_path);
 					}
 					else{
-						elm = this.addCss(css_path, true);
+						elm = this.addCssFile(css_path, true);
 					}
 
 					this._library.setAsset(css_path, true);
@@ -507,7 +507,7 @@ window.OJ = function Oj(){
 			if(!this._loaded[css_path]){
 				this._loaded[css_path] = true;
 
-				return this.addCss(css_path, true);
+				return this.addCssFile(css_path, true);
 			}
 
 			return null;
@@ -521,10 +521,10 @@ window.OJ = function Oj(){
 
 				if(!was_loaded){
 					if(this._('lazyLoad') && this._protocol != this.FILE){
-						this.addJs(arguments.length > 1 ? arguments[1] : this._library.load(js_path));
+						this.addJsFile(arguments.length > 1 ? arguments[1] : this._library.load(js_path));
 					}
 					else{
-						this.addJs(js_path, true);
+						this.addJsFile(js_path, true);
 					}
 
 					this._library.setAsset(js_path, true);
@@ -536,7 +536,7 @@ window.OJ = function Oj(){
 			if(!this._loaded[js_path]){
 				this._loaded[js_path] = true;
 
-				this.addJs(js_path, true);
+				this.addJsFile(js_path, true);
 			}
 		},
 
@@ -945,21 +945,17 @@ window.OJ = function Oj(){
 
 	OJ._browser = detector.search([
 		{
+			// for older Netscapes (4-)
 			's'   : navigator.userAgent,
-			'sub' : 'Chrome',
-			'id'  : 'Chrome'
+			'sub' : 'Mozilla',
+			'id'  : 'Netscape',
+			'v'   : 'Mozilla'
 		},
 		{
 			's'   : navigator.userAgent,
 			'sub' : 'OmniWeb',
 			'v'   : 'OmniWeb/',
 			'id'  : 'OmniWeb'
-		},
-		{
-			's'   : navigator.vendor,
-			'sub' : 'Apple',
-			'id'  : 'Safari',
-			'v'   : 'Version'
 		},
 		{
 			'p'  : window.opera,
@@ -977,11 +973,6 @@ window.OJ = function Oj(){
 			'id'  : 'Konqueror'
 		},
 		{
-			's'   : navigator.userAgent,
-			'sub' : 'Firefox',
-			'id'  : 'Firefox'
-		},
-		{
 			's'   : navigator.vendor,
 			'sub' : 'Camino',
 			'id'  : 'Camino'
@@ -994,22 +985,31 @@ window.OJ = function Oj(){
 		},
 		{
 			's'   : navigator.userAgent,
-			'sub' : 'MSIE',
-			'id'  : 'Internet Explorer',
-			'v'   : 'MSIE'
-		},
-		{
-			's'   : navigator.userAgent,
 			'sub' : 'Gecko',
 			'id'  : 'Mozilla',
 			'v'   : 'rv'
 		},
 		{
-			// for older Netscapes (4-)
 			's'   : navigator.userAgent,
-			'sub' : 'Mozilla',
-			'id'  : 'Netscape',
-			'v'   : 'Mozilla'
+			'sub' : 'MSIE',
+			'id'  : 'Internet Explorer',
+			'v'   : 'MSIE'
+		},
+		{
+			's'   : navigator.vendor,
+			'sub' : 'Apple',
+			'id'  : 'Safari',
+			'v'   : 'Version'
+		},
+		{
+			's'   : navigator.userAgent,
+			'sub' : 'Firefox',
+			'id'  : 'Firefox'
+		},
+		{
+			's'   : navigator.userAgent,
+			'sub' : 'Chrome',
+			'id'  : 'Chrome'
 		}
 	]) || null;
 
@@ -1071,19 +1071,14 @@ window.OJ = function Oj(){
 		break;
 
 		case OJ.CHROME:
-			OJ._engine = OJ.WEBKIT;
-			OJ._css_prefix = '-webkit-';
-		break;
-
 		case OJ.SAFARI:
 			OJ._engine = OJ.WEBKIT;
 			OJ._css_prefix = '-webkit-';
-		break;
 	}
 
 	// setup browser event listeners
 	window.onresize = function(){
-		if(isFunction(OJ.addClasses)){
+		if(isFunction(OJ.addCss)){
 			var vp = OJ._viewport,
 				w = window.innerWidth ? window.innerWidth : document.body.clientWidth,
 				h = window.innerHeight ? window.innerHeight : document.body.clientHeight,
@@ -1098,14 +1093,14 @@ window.OJ = function Oj(){
 			if(vp.width > vp.height){
 				OJ._is_landscape = true;
 
-				OJ.addClasses('is-landscape');
-				OJ.removeClasses('is-portrait');
+				OJ.addCss(['is-landscape']);
+				OJ.removeCss(['is-portrait']);
 			}
 			else{
 				OJ._is_landscape = false;
 
-				OJ.addClasses('is-portrait');
-				OJ.removeClasses('is-landscape');
+				OJ.addCss(['is-portrait']);
+				OJ.removeCss(['is-landscape']);
 			}
 
 			OJ.dispatchEvent(new OjTransformEvent(OjTransformEvent.RESIZE, vp.top, vp.left, delta_x, delta_y));
@@ -1714,7 +1709,7 @@ function isTrue(obj){
  * Framework Logging Functions
  */
 function trace(obj/*, ...objs*/){
-	if(OJ._('mode') != OJ.DEV){
+	if(OJ._('mode') == OJ.PROD){
 		return;
 	}
 
@@ -1883,7 +1878,7 @@ function onDomReady(){
 	// merge OJ with component
 	tmp.bulkSet(OJ);
 
-	tmp.addClasses('OJ');
+	tmp.addCss('OJ');
 
 	window.OJ = tmp;
 
@@ -1911,23 +1906,23 @@ function onDomReady(){
 	window.onscroll();
 
 	if(OJ.isMobile()){
-		OJ.addClasses('is-mobile');
+		OJ.addCss('is-mobile');
 	}
 
 	if(OJ.isTablet()){
-		OJ.addClasses('is-tablet');
+		OJ.addCss('is-tablet');
 	}
 
 	var scale = OJ.getPixelRatio();
 
 	if(scale <= .75){
-		OJ.addClasses('ld'); // low-density
+		OJ.addCss('ld'); // low-density
 	}
 	else if(scale >= 1.5){
-		OJ.addClasses('hd'); // high-density
+		OJ.addCss('hd'); // high-density
 	}
 	else{
-		OJ.addClasses('sd'); // standard-density
+		OJ.addCss('sd'); // standard-density
 	}
 
 	// set all the content as displayed

@@ -37,7 +37,7 @@ OJ.extendClass(
 			this._super('OjComponent', '_constructor', args);
 
 			// add the class name inheritance as css classes
-			this.addClasses.apply(this, this._class_names.slice(this._class_names.indexOf('OjComponent')));
+			this.addCss(this._class_names.slice(this._class_names.indexOf('OjComponent')));
 
 			// setup the container
 			this._setContainer(this.container ? this.container : this);
@@ -58,18 +58,21 @@ OJ.extendClass(
 			for(; i < ln; i++){
 				if(child = this._processDomSourceChild(children[i], context)){
 					this.addElm(child);
-
-					// if we add then we need to decrement the counter and length since
-					// a child will have been removed from the child nodes array
-					i--;
-					ln--;
 				}
+				else{
+					dom_elm.removeChild(children[i]);
+				}
+
+				// if we add then we need to decrement the counter and length since
+				// a child will have been removed from the child nodes array
+				i--;
+				ln--;
 			}
 		},
 
 		'_processDomSourceChild' : function(dom_elm, context){
 			if(OjElement.isCommentNode(dom_elm)){
-				return false;
+				return null;
 			}
 
 			return this._processChild(dom_elm, context);
@@ -84,45 +87,45 @@ OJ.extendClass(
 			}
 
 			if(this.container){
-				this.container.removeClasses('container');
+				this.container.removeCss(['container']);
 			}
 
 			if((this.container = container) != this){
-				this.container.addClasses('container');
+				this.container.addCss(['container']);
 			}
 		},
 
 		'_setDomSource' : function(dom_elm, context){
-			// prevent events from dipatching while we are setting everything up
+			// prevent events from dispatching while we are setting everything up
 			this._prevent_dispatch = true;
 
-			var ln, is_body = dom_elm == document.body;
+			// setup our vars
+			var sep, nm, val,
+				is_body = (dom_elm == document.body),
+				source = is_body ? this._dom : dom_elm,
+				target = is_body ? dom_elm : this._dom,
+				attrs = source.attributes,
+				ln = attrs.length;
 
 			// we need to copy over the attributes
-//			if(!is_body){
-				var attrs = this._dom.attributes,
-					sep, nm, val,
-					ln = attrs.length;
+			for(; ln--;){
+				nm = attrs[ln].nodeName;
 
-				for(; ln--;){
-					nm = attrs[ln].nodeName;
-
-					if(nm == 'class-name' || nm == 'class-path'){
-						continue;
-					}
-
-					if(!isEmpty(val = dom_elm.getAttribute(nm))){
-						sep = ' ';
-
-						attrs[ln].value = val + sep + attrs[ln].value;
-					}
-
-					dom_elm.setAttribute(nm, attrs[ln].value);
+				if(nm == 'class-name' || nm == 'class-path'){
+					continue;
 				}
-//			}
+
+				if(!isEmpty(val = target.getAttribute(nm))){
+					sep = ' ';
+
+					attrs[ln].value = val + sep + attrs[ln].value;
+				}
+
+				target.setAttribute(nm, attrs[ln].value);
+			}
 
 			// process attributes
-			this._processAttributes(context, dom_elm);
+			this._processAttributes(context, source);
 
 			// process the dom source children
 			this._processDomSource(dom_elm, context);
@@ -132,26 +135,25 @@ OJ.extendClass(
 			// do the switcher-roo
 			if(dom_elm.parentNode){
 				if(is_body){
-					var children = this._dom.children, i = 0;
+					var children = source.children,
+						i = 0;
 
 					ln = children.length;
 
 					for(; i < ln; i++){
-						dom_elm.appendChild(children[0]);
+						target.appendChild(children[0]);
 					}
 				}
 				else{
-					dom_elm.parentNode.replaceChild(this._dom, dom_elm);
+					source.parentNode.replaceChild(target, source);
 				}
 			}
 
 			// reengage event dispatching now that everything is setup
 			this._prevent_dispatch = false;
 
-			if(is_body){
-				// store the dom
-				this._dom = dom_elm;
-			}
+			// update our dom var to the target
+			this._dom = target;
 		},
 
 		'_setElmFuncs' : function(container){
@@ -197,10 +199,10 @@ OJ.extendClass(
 			}
 
 			if(this._isAnimating = val){
-				this.addClasses('animating');
+				this.addCss(['animating']);
 			}
 			else{
-				this.removeClasses('animating');
+				this.removeCss(['animating']);
 			}
 		},
 
@@ -213,24 +215,6 @@ OJ.extendClass(
 
 			if(displayed){
 				this.redraw();
-			}
-		},
-
-		'_setParent' : function(parent){
-			var prev_parent = this._parent;
-
-			this._super('OjComponent', '_setParent', arguments);
-
-			if(prev_parent){
-				if(!this._parent){
-					this.dispatchEvent(new OjEvent(OjEvent.REMOVED));
-				}
-				else if(prev_parent != this._parent){
-					this.dispatchEvent(new OjEvent(OjEvent.ADDED));
-				}
-			}
-			else if(this._parent){
-				this.dispatchEvent(new OjEvent(OjEvent.ADDED));
 			}
 		},
 
@@ -417,10 +401,10 @@ OJ.extendClass(
 		'setIsActive' : function(val){
 			if(this._isActive != val){
 				if(this._isActive = val){
-					this.addClasses('active');
+					this.addCss(['active']);
 				}
 				else{
-					this.removeClasses('active');
+					this.removeCss(['active']);
 				}
 			}
 		},
@@ -428,10 +412,10 @@ OJ.extendClass(
 		'setIsDisabled' : function(val){
 			if(this._isDisabled != val){
 				if(this._isDisabled = val){
-					this.addClasses('disabled');
+					this.addCss(['disabled']);
 				}
 				else{
-					this.removeClasses('disabled');
+					this.removeCss(['disabled']);
 				}
 			}
 		}

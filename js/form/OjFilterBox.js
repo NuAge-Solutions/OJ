@@ -29,7 +29,7 @@ OJ.extendClass(
 
 			var prnt = this.valueHldr.parent();
 			var new_value = new OjTextInput();
-			new_value.addClasses('value');
+			new_value.addCss('value');
 			new_value.addEventListener(OjFocusEvent.IN, this, '_onValueFocus');
 
 			prnt.replaceChild(this.valueHldr, new_value);

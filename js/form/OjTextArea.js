@@ -13,7 +13,7 @@ OJ.extendClass(
 
 			var prnt = this.input.parent();
 			var new_input = new OjStyleElement('<textarea></textarea>');
-			new_input.addClasses('input');
+			new_input.addCss('input');
 
 			prnt.replaceChild(this.input, new_input);
 

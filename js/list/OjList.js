@@ -24,8 +24,8 @@ OJ.extendComponent(
 			this._super('OjList', '_constructor', []);
 
 			// setup the display
-			this.addClasses('vertical');
-			this.container.addClasses('items', 'cf');
+			this.addCss('vertical');
+			this.container.addCss('items', 'cf');
 
 			// process arguments
 			this._item_events = {};
@@ -133,8 +133,8 @@ OJ.extendComponent(
 				class_remove.push('even');
 			}
 
-			item.addClasses.apply(item, class_add);
-			item.removeClasses.apply(item, class_remove);
+			item.addCss(class_add);
+			item.removeCss(class_remove);
 		},
 
 
@@ -371,10 +371,10 @@ OJ.extendComponent(
 		'setDirection' : function(direction){
 			if(this._direction != direction){
 				if(this._direction){
-					this.container.removeClasses(this._direction);
+					this.container.removeCss([this._direction]);
 				}
 
-				this.container.addClasses(this._direction = direction);
+				this.container.addCss([this._direction = direction]);
 			}
 		},
 

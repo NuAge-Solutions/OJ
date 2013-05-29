@@ -122,12 +122,12 @@ OJ.extendClass(
 			}
 
 			if(this._isSelected = val){
-				this.addClasses('selected');
+				this.addCss(['selected']);
 
 				this.input.dom().checked = true;
 			}
 			else{
-				this.removeClasses('selected')
+				this.removeCss(['selected'])
 
 				this.input.dom().checked = false;
 			}

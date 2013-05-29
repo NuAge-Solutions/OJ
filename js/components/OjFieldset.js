@@ -131,11 +131,11 @@ OJ.extendComponent(
 		},
 
 		'_onExpand' : function(evt){
-			this.removeClasses('collapsed');
+			this.removeCss(['collapsed']);
 
 			this.setHeight(OjStyleElement.AUTO);
 
-			OJ.destroy(evt.getTarget());
+			OJ.destroy(evt);
 		},
 
 
@@ -244,12 +244,12 @@ OJ.extendComponent(
 			}
 
 			if(this._isCollapsed = val){
-				this.addClasses('collapsed');
+				this.addCss(['collapsed']);
 
 				this.dispatchEvent(new OjEvent(this._static.COLLAPSE));
 			}
 			else{
-				this.removeClasses('collapsed');
+				this.removeCss(['collapsed']);
 
 				this.dispatchEvent(new OjEvent(this._static.EXPAND));
 			}

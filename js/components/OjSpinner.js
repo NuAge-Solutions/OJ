@@ -156,7 +156,7 @@ OJ.extendComponent(
 
 			for(; ln--;){
 				elm = new OjStyleElement();
-				elm.addClasses('blade');
+				elm.addCss('blade');
 				elm.setRotation(section * ln);
 				elm.setTranslate('70%, 0px');
 				elm.setBackgroundColor(this._tint);

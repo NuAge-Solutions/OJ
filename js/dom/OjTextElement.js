@@ -4,20 +4,24 @@ OJ.extendClass(
 	OjElement, 'OjTextElement',
 	{
 		'_constructor' : function(/*text*/){
-			this._super('OjTextElement', '_constructor', []);
+			var args = arguments,
+				ln = args.length,
+				is_dom = ln && isDomElement(args[0]);
 
-			if(arguments.length){
-				this.setText(arguments[0]);
+			this._super('OjTextElement', '_constructor', is_dom ? [args[0]] : []);
+
+			if(ln && !is_dom){
+				this.setText(args[0]);
 			}
 		},
 
 		'_setDom' : function(dom_elm, context){
+			// force text dom elm
 			if(dom_elm.nodeName != "#text"){
 				dom_elm = document.createTextNode(dom_elm.innerText);
 			}
 
-			// force text dom elm
-			this._super('OjTextElement', '_setDom', [dom_elm, context]);
+			this._super('OjTextElement', '_setDom', [dom_elm]);
 		},
 
 

@@ -50,14 +50,14 @@ OJ.extendClass(
 			this.filterBox = new OjFilterBox();
 			this.filterBox.setAllowNone(true);
 			this.filterBox.setValue(null);
-			this.filterBox.addClasses('filter', 'grey');
+			this.filterBox.addCss('filter', 'grey');
 
 			prnt.addChildAt(this.filterBox, prnt.indexOfChild(this.input) + 1);
 
 			// customize the value holder
 			this.valueHldr = new OjList();
 			this.valueHldr.setItemRenderer(OjToken);
-			this.valueHldr.addClasses('value');
+			this.valueHldr.addCss('value');
 
 			this.inputWrpr.addChild(this.valueHldr);
 		},

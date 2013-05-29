@@ -101,10 +101,10 @@ OJ.extendClass(
 
 				if(args.length){
 					if(this._show_buttons = args[0]){
-						this.removeClasses('no-buttons');
+						this.removeCss(['no-buttons']);
 					}
 					else{
-						this.addClasses('no-buttons');
+						this.addCss(['no-buttons']);
 					}
 				}
 

@@ -21,7 +21,7 @@ OJ.extendComponent(
 			this._super('OjLink', '_constructor', []);
 
 			// setup structure
-			this.addClasses('valign-middle');
+			this.addCss('valign-middle');
 
 			// process arguments
 			var ln = arguments.length;
@@ -50,19 +50,19 @@ OJ.extendComponent(
 
 
 		'_onMouseOver' : function(evt){
-			this.addClasses('mouse-hover');
+			this.addCss(['mouse-hover']);
 		},
 
 		'_onMouseOut' : function(evt){
-			this.removeClasses('mouse-hover');
+			this.removeCss(['mouse-hover']);
 		},
 
 		'_onMouseDown' : function(evt){
-			this.addClasses('mouse-press');
+			this.addCss(['mouse-press']);
 		},
 
 		'_onMouseUp' : function(evt){
-			this.removeClasses('mouse-press');
+			this.removeCss(['mouse-press']);
 		},
 
 

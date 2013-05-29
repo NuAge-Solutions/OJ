@@ -41,7 +41,7 @@ OJ.extendComponent(
 		'_setSource' : function(url){
 			// remove any old source css classes
 			if(this._source_is_css){
-				this.media.removeClasses(this._source.substring(1));
+				this.media.removeCss([this._source.substring(1)]);
 			}
 
 			this._super('OjImage', '_setSource', arguments);
@@ -56,7 +56,7 @@ OJ.extendComponent(
 
 				// check to see if this is a css class
 				if(this._source_is_css){
-					this.media.addClasses(url.substring(1));
+					this.media.addCss([url.substring(1)]);
 
 					this.media.setAttr('src', OJ.getAssetPath('oj', 'empty.png'));
 

@@ -22,7 +22,7 @@ OJ.extendComponent(
 			this.addChild(this.icon = new OjImage());
 			this.addChild(this.content = new OjStyleElement('<div class="-content valign-middle"></div>'));
 
-			this.icon.addClasses('-icon');
+			this.icon.addCss('-icon');
 
 			if(arguments.length){
 				this.setData(arguments[0]);
@@ -42,10 +42,10 @@ OJ.extendComponent(
 
 		'_redrawAccessory' : function(){
 			if(this._showAccessory){
-				this.removeClasses('no-accessory');
+				this.removeCss(['no-accessory']);
 			}
 			else{
-				this.addClasses('no-accessory');
+				this.addCss(['no-accessory']);
 			}
 		},
 
@@ -55,10 +55,10 @@ OJ.extendComponent(
 
 		'_redrawIcon' : function(){
 			if(this._showIcon){
-				this.removeClasses('no-icon');
+				this.removeCss(['no-icon']);
 			}
 			else{
-				this.addClasses('no-icon');
+				this.addCss(['no-icon']);
 			}
 		},
 

@@ -201,7 +201,7 @@ OJ.extendComponent(
 						}
 						// force no parent
 						else{
-							child._setParent(null);
+							child.setParent(null);
 						}
 
 						// add the child to our stack
@@ -301,7 +301,7 @@ OJ.extendComponent(
 
 
 				if(this._trans_out = this._transition.make(elm, OjTransition.OUT, amount)){
-					elm.addClasses('prev-active');
+					elm.addCss('prev-active');
 
 					this._trans_out.addEventListener(OjTweenEvent.COMPLETE, this, '_onTransOut');
 					this._trans_out.start();
@@ -389,7 +389,7 @@ OJ.extendComponent(
 				// remove the elm from the display
 				this.container.removeChild(elm);
 
-				elm.removeClasses('prev-active');
+				elm.removeCss(['prev-active']);
 				elm.setWidth(OjStyleElement.AUTO);
 				elm.setHeight(OjStyleElement.AUTO);
 

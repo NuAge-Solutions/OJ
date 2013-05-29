@@ -48,7 +48,7 @@ OJ.extendManager(
 				this._modals = [];
 
 				this._modal_holder = new OjStyleElement();
-				this._modal_holder.addClasses('WindowManager');
+				this._modal_holder.addCss('WindowManager');
 
 				this._modal_holder.hide();
 

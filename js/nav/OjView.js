@@ -203,11 +203,11 @@ OJ.extendComponent(
 
 		'setFooter' : function(val){
 			if(this._footer = val){
-				this.removeClasses('no-footer');
+				this.removeCss(['no-footer']);
 
 				if(!this.footer){
 					this.footer = new OjStyleElement();
-					this.footer.addClasses('footer');
+					this.footer.addCss('footer');
 
 					this.addChildAt(this.footer, 0);
 				}
@@ -219,17 +219,17 @@ OJ.extendComponent(
 			else{
 				this._unset('footer');
 
-				this.addClasses('no-footer');
+				this.addCss(['no-footer']);
 			}
 		},
 
 		'setHeader' : function(val){
 			if(this._header = val){
-				this.removeClasses('no-header');
+				this.removeCss(['no-header']);
 
 				if(!this.header){
 					this.header = new OjStyleElement();
-					this.header.addClasses('header');
+					this.header.addCss(['header']);
 
 					this.addChildAt(this.header, 0);
 				}
@@ -241,7 +241,7 @@ OJ.extendComponent(
 			else{
 				this._unset('header');
 
-				this.addClasses('no-header');
+				this.addCss(['no-header']);
 			}
 		},
 

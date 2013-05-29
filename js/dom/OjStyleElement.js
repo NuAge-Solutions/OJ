@@ -137,6 +137,8 @@ OJ.extendClass(
 			}
 
 			this._super('OjStyleElement', '_constructor', [source, context]);
+
+			OjElement.register(this);
 		},
 
 		'_destructor' : function(/*depth = 0*/){
@@ -144,16 +146,14 @@ OJ.extendClass(
 				depth = args.length ? args[0] : 0;
 
 			// remove the children
-			if(this._children && depth){
-				var ln = this._children.length;
+			var ln = this.numChildren();
 
-				while(ln-- > 0){
-					OJ.destroy(this._children[ln], depth);
-				}
+			for(; ln--;){
+				OJ.destroy(this.getChildAt(ln), depth);
 			}
 
 			// release the vars
-			this._children = this._owner = null;
+			this._owner = null;
 
 			// continue on with the destruction
 			return this._super('OjStyleElement', '_destructor', arguments);
@@ -165,20 +165,10 @@ OJ.extendClass(
 				dom = args.length > 1 ? args[1] : this._dom,
 				attr, val;
 
-			// process known attributes
-			// css classes
-			this._classes = [];
-
-			if(val = dom.getAttribute(attr = 'class')){
-				dom.removeAttribute(attr);
-
-				this.addClass(val);
-			}
-
 			// variable reference
 			if(val = dom.getAttribute(attr = 'var')){
 				if(!isEmpty(val) && context){
-					(context[val] = this).addClasses(val);
+					(context[val] = this).addCss(val);
 
 					this.setOwner(context);
 				}
@@ -191,7 +181,6 @@ OJ.extendClass(
 
 			// class path
 			dom.removeAttribute('class-path');
-
 
 			// process the other attributes
 			var attrs = dom.attributes,
@@ -245,25 +234,18 @@ OJ.extendClass(
 		},
 
 		'_processChildren' : function(context){
-			var children = this._dom.childNodes, ln = children.length, child;
+			var children = this._dom.childNodes,
+				ln = children.length;
 
-			this._children = [];
-
-			while(ln-- > 0){
-				child = this._processChild(children[ln], context);
-
-				if(child){
-					child._setParent(this);
-
-					this._children.unshift(child);
-				}
-				else if(isNull(child) && children[ln]){
+			for(; ln--;){
+				if(!this._processChild(children[ln], context) && children[ln]){
 					this._dom.removeChild(children[ln]);
 				}
 			}
 		},
 
 		'_processChild' : function(dom_elm, context){
+			// make sure we have something to process
 			if(!dom_elm){
 				return;
 			}
@@ -317,16 +299,13 @@ OJ.extendClass(
 		'_setDom' : function(dom_elm, context){
 			// todo: re-evaluate the pre-render functionality of dom
 
-			this._super('OjStyleElement', '_setDom', arguments);
+			this._super('OjStyleElement', '_setDom', [dom_elm]);
 
 			// process the attributes
 			this._processAttributes(context);
 
 			// process the children
 			this._processChildren(context);
-
-			// setup the css classes
-			this._classes = dom_elm.className.split(' ');
 
 			// setup the alignment
 			var h_align = this._getStyle('text-align');
@@ -348,10 +327,13 @@ OJ.extendClass(
 
 			this._super('OjStyleElement', '_setIsDisplayed', arguments);
 
-			var ln = this.numChildren();
+			var ln = this.numChildren(),
+				child;
 
 			for(; ln--;){
-				this.getChildAt(ln)._setIsDisplayed(this._is_displayed);
+				if(child = this.getChildAt(ln)){
+					child._setIsDisplayed(this._is_displayed);
+				}
 			}
 		},
 
@@ -362,97 +344,87 @@ OJ.extendClass(
 		},
 
 		'addChildAt' : function(child, index){
-			if(this.hasChild(child)){
+			if(!child || this.hasChild(child)){
 				return child;
 			}
 
-			if(child._parent){
-				child._parent.removeChild(child);
-			}
-
 			if(index >= this.numChildren()){
-				index = this.numChildren();
-
 				this._dom.appendChild(child._dom);
 			}
 			else{
 				this._dom.insertBefore(child._dom, this._dom.childNodes[index]);
 			}
 
-			this._children.splice(index, 0, child)
-
-			child._setParent(this);
+			// update the display state
+			child._setIsDisplayed(this._is_displayed);
 
 			return child;
 		},
 
 		'getChildAt' : function(index){
-			return this._children[index];
+			return OjElement.element(this._dom.childNodes[index]);
 		},
 
 		'getChildren' : function(){
-			return this._children.clone()
+			var ary = [],
+				ln = this.numChildren();
+
+			for(; ln--;){
+				ary.unshift(this.getChildAt(ln));
+			}
+
+			return ary;
 		},
 
 		'indexOfChild' : function(child){
-			return this._children.indexOf(child);
+			return Array.array(this._dom.childNodes).indexOf(child._dom);
 		},
 
 		'hasChild' : function(child){
-			return child._parent == this;
+			return child.parent() == this;
 		},
 
 		'numChildren' : function(){
-			return this._children.length;
+			return this._dom.childNodes.length;
 		},
 
 		'moveChild' : function(child, index){
 			if(this.hasChild(child)){
-				var orig_index = this.indexOfChild(child);
+				this._dom.insertBefore(child._dom, this.getChildAt(index)._dom);
 
-				this._children.splice(orig_index, 1);
-
-				this._dom.removeChild(child._dom);
-
-				this._dom.insertBefore(child._dom, this._children[index]._dom);
-
-				this._children.splice(index, 0, child);
-
-				return;
+				return child;
 			}
 
 			// throw an error here
 		},
 
 		'removeAllChildren' : function(){
-			var ln = this._children.length, rtrn = [];
+			var ln = this.numChildren(),
+				ary = [];
 
-			while(ln-- > 0){
-				rtrn.unshift(this.removeChildAt(ln));
+			for(; ln--;){
+				ary.unshift(this.removeChildAt(ln));
 			}
 
-			return rtrn;
+			return ary;
 		},
 
 		'removeChild' : function(child){
-			return this.removeChildAt(this.indexOfChild(child));
+			if(child){
+				this._dom.removeChild(child._dom);
+
+				child._setIsDisplayed(false);
+			}
+
+			return child;
 		},
 
 		'removeChildAt' : function(index){
-			if(index < 0){
+			if(index < 0 || index >= this.numChildren()){
 				return null;
 			}
 
-			var child = this._children.splice(index, 1)[0];;
-
-			try{
-				this._dom.removeChild(child._dom);
-
-				child._setParent(null);
-			}
-			catch(e){}
-
-			return child;
+			return this.removeChild(this.getChildAt(index));
 		},
 
 		'replaceChild' : function(target, replacement){
@@ -497,7 +469,7 @@ OJ.extendClass(
 		},
 
 		'hide' : function(){
-			this.addClasses('hidden');
+			this.addCss('hidden');
 
 			this.dispatchEvent(new OjEvent(OjEvent.HIDE));
 		},
@@ -508,7 +480,7 @@ OJ.extendClass(
 		},
 
 		'show' : function(){
-			this.removeClasses('hidden');
+			this.removeCss(['hidden']);
 
 			this.dispatchEvent(new OjEvent(OjEvent.SHOW));
 		},
@@ -660,48 +632,85 @@ OJ.extendClass(
 		},
 
 		// Css Functions
-		'addClass' : function(class_str){
-			this.addClasses.apply(this, class_str.split(' '));
-		},
+		'_makeCssList' : function(args){
+			if(isArray(args[0])){
+				return args[0];
+			}
 
-		'addClasses' : function(classes/*... args*/){
-			var ln = arguments.length, val;
+			var ln = args.length,
+				list = [];
 
 			for(; ln--;){
-				if(!isEmpty(val = arguments[ln].trim()) && this._classes.indexOf(val) == -1){
-					this._classes.push(val);
+				list = list.concat(args[ln].trim().split(' '));
+			}
+
+			return list;
+		},
+
+		'_processCssList' : function(args, action){
+			var css = this.getCssList(),
+				list = this._makeCssList(args),
+				ln = list.length,
+				cls, index;
+
+			for(; ln--;){
+				index = css.indexOf(cls = list[ln]);
+
+				if(index == -1){
+					switch(action){
+						case 'has':
+							return false;
+
+						case 'add':
+						case 'toggle':
+							css.push(cls);
+					}
+				}
+				else{
+					switch(action){
+						case 'remove':
+						case 'toggle':
+							css.splice(index, 1);
+					}
 				}
 			}
 
-			this._proxy.className = this._classes.join(' ');
-		},
-
-		'getClasses' : function(){
-			return this._classes.clone();
-		},
-
-		'setClasses' : function(classes){
-			this._classes = classes.clone();
-
-			this._proxy.className = this._classes.join(' ');
-		},
-
-		'hasClass' : function(class_str){
-			this.hasClasses.apply(this, class_str.split(' '));
-		},
-
-		'hasClasses' : function(classes/*... args*/){
-			var ln = arguments.length;
-
-			while(ln-- > 0){
-				if(this._classes.indexOf(arguments[ln]) == -1){
-					return false;
-				}
+			if(action == 'has'){
+				return true;
 			}
 
-			return true;
+			return this.setCss(css);
 		},
 
+		'addCss' : function(css/*...css | array*/){
+			return this._processCssList(arguments, 'add');
+		},
+
+		'getCss' : function(){
+			return this._proxy.className.trim();
+		},
+
+		'getCssList' : function(){
+			return this.getCss().split(' ');
+		},
+
+		'hasCss' : function(css/*...css | array*/){
+			return this._processCssList(arguments, 'has');
+		},
+
+		'removeCss' : function(css/*... css | array*/){
+			return this._processCssList(arguments, 'remove');
+		},
+
+		'setCss' : function(css){
+			return this._proxy.className = isArray(css) ? css.join(' ') : css.trim();
+		},
+
+		'toggleCss' : function(css/*...css | array*/){
+			return this._processCssList(arguments, 'toggle');
+		},
+
+		// Focus Functions
 		'hasFocus' : function(){
 			return this._dom.hasFocus;
 		},
@@ -737,45 +746,7 @@ OJ.extendClass(
 			return global_y - this.getPageY();
 		},
 
-		'removeClass' : function(class_str){
-			this.removeClasses.apply(this, class_str.split(' '));
-		},
 
-		'removeClasses' : function(classes/*... args*/){
-			var ln = arguments.length, index;
-
-			while(ln-- > 0){
-				if((index = this._classes.indexOf(arguments[ln])) != -1){
-					this._classes.splice(index, 1);
-				}
-			}
-
-			this._proxy.className = this._classes.join(' ');
-		},
-
-		'toggleClass' : function(class_str){
-			this.toggleClasses.apply(this.class_str.slit(' '));
-		},
-		'toggleClasses' : function(classes/*... args*/){
-			var ln = arguments.length, add = [], remove = [];
-
-			while(ln-- > 0){
-				if(this._classes.indexOf(arguments[ln]) == -1){
-					add.push(arguments[ln]);
-				}
-				else{
-					remove.push(arguments[ln]);
-				}
-			}
-
-			if(add.length){
-				this.addClasses(add);
-			}
-
-			if(remove.length){
-				this.removeClasses(remove);
-			}
-		},
 
 
 		// Dimensional Getter & Setter Functions
@@ -989,14 +960,14 @@ OJ.extendClass(
 			}
 
 			if(this._h_align){
-				this.removeClasses('halign-' + this._h_align);
+				this.removeCss(['halign-' + this._h_align]);
 			}
 
 			if((this._h_align = align) == OjStyleElement.LEFT){
 				return;
 			}
 
-			this.addClasses('halign-' + this._h_align);
+			this.addCss(['halign-' + this._h_align]);
 		},
 
 		'getOverflow' : function(){
@@ -1052,14 +1023,14 @@ OJ.extendClass(
 			}
 
 			if(this._v_align){
-				this.removeClasses('valign-' + this._v_align);
+				this.removeCss(['valign-' + this._v_align]);
 			}
 
 			if((this._v_align = align) == OjStyleElement.TOP){
 				return;
 			}
 
-			this.addClasses('valign-' + this._v_align);
+			this.addCss(['valign-' + this._v_align]);
 		},
 
 
@@ -1068,6 +1039,7 @@ OJ.extendClass(
 			var transform = 'rotate(' + this._rotation + 'deg) translate(' + this._translate + ')';
 
 			var prefix = OJ.getCssPrefix();
+//			trace(prefix);
 
 			if(prefix == '-moz-'){
 				this._setStyle('MozTransform', transform);

@@ -90,13 +90,13 @@ OJ.extendClass(
 		},
 
 		'hideButtons' : function(){
-			this.addClasses('no-buttons');
+			this.addCss(['no-buttons']);
 
 			this.buttons.hide();
 		},
 
 		'showButtons' : function(){
-			this.removeClasses('no-buttons');
+			this.removeCss(['no-buttons']);
 
 			this.buttons.show();
 		},
