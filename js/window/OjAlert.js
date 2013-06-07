@@ -25,7 +25,7 @@ OJ.extendClass(
 			this._super('OjAlert', '_constructor', []);
 
 			// setup the display
-			if(this.className() == 'OjAlert'){
+			if(this.className().indexOf('Alert') > -1){
 				this.buttons.addChild(this.cancelBtn = new OjButton('Ok'));
 
 				this.cancelBtn.addEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');

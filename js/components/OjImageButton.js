@@ -6,7 +6,7 @@ OJ.importJs('oj.components.OjButton');
 OJ.extendComponent(
 	OjButton, 'OjImageButton',
 	{
-		'_label' : null,
+		'_v_align' : OjStyleElement.TOP,
 
 
 		'_constructor' : function(/*image*/){
@@ -21,7 +21,7 @@ OJ.extendComponent(
 			this.removeChild(this.label);
 		},
 
-		'_processDomSource' : function(dom_elm, component){
+		'_processDomSourceChildren' : function(dom_elm, component){
 			var txt = dom_elm.innerHTML;
 
 			if(!isEmpty(txt)){
@@ -30,7 +30,7 @@ OJ.extendComponent(
 				return null;
 			}
 
-			return this._super('OjImageButton', '_processDomSource', arguments);
+			return this._super('OjImageButton', '_processDomSourceChildren', arguments);
 		},
 
 

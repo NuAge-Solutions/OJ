@@ -16,7 +16,7 @@ OJ.extendComponent(
 			this.addChildAt(btn, index);
 		},
 
-		'_processDomSource' : function(dom_elm, context){
+		'_processDomSourceChildren' : function(dom, context){
 			return;
 		},
 

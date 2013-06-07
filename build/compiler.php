@@ -339,6 +339,46 @@
 		}
 	}
 
+	function gzip($path){
+		// gzip the files
+		// Open the gz file (w9 is the highest compression)
+		$f = gzopen($path . '.gz', 'w9');
+
+		// Compress the file
+		gzwrite($f, file_get_contents($path));
+
+		// Close the gz file and we are done
+		gzclose($f);
+	}
+
+	function gzipDirFiles($path){
+		$files = scandir($path);
+
+		if(sizeof($files) > 0){
+			foreach($files as $file){
+				// skip all system and hidden files
+				if($file[0] == '.'){
+					continue;
+				}
+
+				$file_path = mkPath($path, $file);
+
+				// if directory then recursively call gzip func
+				if(is_dir($file_path)){
+					gzipDirFiles($file_path);
+				}
+				else{
+					$allowed = array('css', 'html', 'htm', 'js', 'ttf');
+					$ext = pathinfo($file, PATHINFO_EXTENSION);
+
+					if(in_array($ext, $allowed)){
+						gzip($file_path);
+					}
+				}
+			}
+		}
+	}
+
 	function isExcluded($path){
 		global $destination, $excluded_paths;
 
@@ -466,7 +506,9 @@
 		if(!$file->isDot()){
 			$info = pathinfo($path = $file->getPathName());
 
-			copy($path, mkpath($source, str_replace('.' . $info['extension'], '', $info['basename']) . '-theme.css'));
+			copy($path, $target = mkpath($source, str_replace('.' . $info['extension'], '', $info['basename']) . '-theme.css'));
+
+			gzip($target);
 		}
 	}
 
@@ -480,7 +522,9 @@
 	$js = compileJs(mkPath($destination, 'js'), $namespace);
 
 	// compile the css
-	file_put_contents(mkPath($source, $namespace . '.css'), compileCss(mkPath($destination, 'css'), $js, $namespace));
+	file_put_contents($path = mkPath($source, $namespace . '.css'), compileCss(mkPath($destination, 'css'), $js, $namespace));
+
+	gzip($path);
 
 	// write the compiled js to its final location
 	// add one use strict for all the code
@@ -488,7 +532,7 @@
 	// remove all the extra use stricts
 	// and perform code replacement optimizations
 	file_put_contents(
-		mkPath($source, $namespace . '.js'),
+		$path = mkPath($source, $namespace . '.js'),
 		'"use strict";' . str_replace(
 			array(
 			     '"_constructor"', '_constructor:', '._constructor',
@@ -517,6 +561,15 @@
 			$js
 		)
 	);
+
+	gzip($path);
+
+
+
+
+	// gzip all assets
+	gzipDirFiles(mkPath($source, 'assets'));
+
 
 
 

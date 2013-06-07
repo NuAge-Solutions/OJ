@@ -24,9 +24,7 @@ OJ.extendComponent(
 		'isValid' : function(){
 			var valid = this._super('OjEmailInput', 'isValid', arguments);
 
-			var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-			if(!isEmpty(this._value) && !regex.test(this.getValue())){
+			if(!isEmpty(this._value) && !this._static.isValidEmail(this._value)){
 				this._errors.push(OJ.tokenReplace(OjEmailInput.INVALID_ERROR, 'EMAIL', this._value));
 
 				valid = false;
@@ -48,6 +46,10 @@ OJ.extendComponent(
 		'INVALID_ERROR' : '[%EMAIL] is not a valid email address.',
 
 		'SUPPORTS_EMAIL_TYPE' : OjInput.supportsInputType('email'),
+
+		'isValidEmail' : function(val){
+			return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(val)
+		},
 
 		'_TAGS' : ['emailinput']
 	}

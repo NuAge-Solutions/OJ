@@ -7,9 +7,6 @@ OJ.importJs('oj.media.OjMedia');
 OJ.extendComponent(
 	OjMedia, 'OjImage',
 	{
-		'_callback' : null,
-
-
 		'_destructor' : function(){
 			this.media.dom().removeEventListener('load', this._callback);
 

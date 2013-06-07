@@ -8,6 +8,9 @@ OJ.importCss('oj.components.OjButton');
 OJ.extendComponent(
 	OjLink, 'OjButton',
 	{
+		'_default_h_align' : OjStyleElement.CENTER,
+
+
 		'_constructor' : function(/*label, icon*/){
 			this._super('OjButton', '_constructor', []);
 
@@ -22,9 +25,6 @@ OJ.extendComponent(
 			}
 
 			this._proxy.onclick = this._onDomMouseEvent;
-
-			this.setHorzAlign(OjStyleElement.CENTER);
-			this.setVertAlign(OjStyleElement.MIDDLE);
 		},
 
 

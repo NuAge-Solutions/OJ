@@ -16,13 +16,14 @@ OJ.extendClass(
 			'spinnerTint' : '#333'
 		},
 
-		'_loaded' : false, '_original_w' : null,  '_original_h' : null,  '_source_is_css' : false,
+		'_loaded' : false,  '_source_is_css' : false,
+
+		'_h_align' : OjStyleElement.CENTER,
+		'_v_align' : OjStyleElement.MIDDLE,
 
 
 		'_constructor' : function(/*source*/){
 			this._super('OjMedia', '_constructor', []);
-
-			this.setVertAlign(OjStyleElement.MIDDLE);
 
 			if((this.media = this._makeMedia()) && isObjective(this.media)){
 				this.media.addCss('media');

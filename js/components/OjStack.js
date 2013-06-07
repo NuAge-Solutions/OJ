@@ -187,7 +187,7 @@ OJ.extendComponent(
 				return this._super('OjStack', '_processDomSourceChild', arguments);
 			},
 
-			'_processDomSource' : function(dom_elm, context){
+			'_processDomSourceChildren' : function(dom_elm, context){
 				var child, parent,
 					children = dom_elm.childNodes,
 					i = 0,

@@ -19,13 +19,15 @@ OJ.extendClass(
 
 
 		'_setter' : function(prop, prefix, value, suffix/*, default */){
+			var args = arguments;
+
 			if(!this._cache[prop] || this['_' + prop] != value){
 				this['_' + prop] = value;
 
 				this._cache[prop] = '';
 
 				if(isEmpty(value)){
-					this['_' + prop] = arguments.length > 4 ? arguments[4] : null;
+					this['_' + prop] = args.length > 4 ? args[4] : null;
 				}
 				else{
 					this._cache[prop] = prefix + value + suffix;
@@ -82,7 +84,7 @@ OJ.extendClass(
 				path = '/' + path;
 			}
 
-			this._setter('path', '', path, '');
+			this._setter('path', '', path, '', '/');
 		},
 
 		'getQuery' : function(){

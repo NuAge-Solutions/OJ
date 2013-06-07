@@ -1,3 +1,19 @@
 .OjLink {
 	cursor: pointer;
+	line-height: normal;
+
+	overflow: auto;
+	text-overflow: clip;
 }
+	.OjLink > .label {
+		display: inline-block;
+
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.OjLink > .icon {
+		display: inline-block;
+
+		vertical-align: middle;
+	}

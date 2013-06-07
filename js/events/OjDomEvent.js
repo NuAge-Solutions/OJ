@@ -46,6 +46,7 @@ OJ.extendClass(
 		'MOUSE_OVER'   : 'mouseover',
 		'MOUSE_OUT'    : 'mouseout',
 		'MOUSE_UP'     : 'mouseup',
+		'MOUSE_WHEEL'  : 'mousewheel',
 
 		// keyboard events
 		'KEY_DOWN'  : 'keydown',
@@ -58,6 +59,9 @@ OJ.extendClass(
 
 		// form events
 		'CHANGE' : 'change',
+
+		// scroll events
+		'SCROLL' : 'scroll',
 
 		// touch events
 		'TOUCH_START' : 'touchstart',

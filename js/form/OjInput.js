@@ -14,6 +14,7 @@ OJ.extendClass(
 			'prefix'     : null,
 			'required'   : false,
 			'suffix'     : null,
+			'title'      : null,
 			'validators' : null,
 			'value'      : null
 		},

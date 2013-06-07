@@ -1,6 +1,4 @@
 .OjButton {
-    height: 23px;
-
     padding: 2px 10px;
 
 	background: #ADB2B8; /* Old browsers */
@@ -36,11 +34,6 @@
 		text-shadow: 0px -1px 1px #666666;
 		vertical-align: middle;
     }
-
-	.OjButton > .icon,
-	.OjButton > .icon > .OjComponent {
-		vertical-align: middle;
-	}
 
 
 /* Image Button CSS */

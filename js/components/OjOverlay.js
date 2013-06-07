@@ -16,6 +16,8 @@ OJ.extendComponent(
 			'icon'         : null
 		},
 
+		'_v_align' : OjStyleElement.MIDDLE,
+
 		'_template' : 'oj.components.OjOverlay',
 
 
@@ -32,8 +34,6 @@ OJ.extendComponent(
 					icon = arguments[1];
 				}
 			}
-
-			this.setVertAlign(OjStyleElement.MIDDLE);
 
 			this.setIcon(icon);
 		},

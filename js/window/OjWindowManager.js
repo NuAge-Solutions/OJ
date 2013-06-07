@@ -27,15 +27,13 @@ OJ.extendManager(
 			'modalClass' : OjModal
 		},
 
-		'_modal_holder' : null,  '_modals' : null,
-
-
 		'_constructor' : function(manager){
 			this._super('OjWindowManager', '_constructor', []);
 
 			if(manager){
 				this._modals = manager._modals;
 				this._modal_holder = manager._modal_holder;
+				this._overlay = manager._overlay;
 
 				if(!OJ.isReady()){
 					OJ.removeEventListener(OjEvent.READY, manager, '_onOjReady');
@@ -79,6 +77,8 @@ OJ.extendManager(
 			if(!buttons && !cancel_label){
 				alrt.hideButtons();
 			}
+
+			alrt.setPaneWidth(400);
 
 			return alrt;
 		},
@@ -175,6 +175,7 @@ OJ.extendManager(
 
 			var modal = this.makeModal(title, iframe);
 			modal.setSelfDestruct(OjAlert.DEEP);
+
 			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
 			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
 
@@ -256,6 +257,22 @@ OJ.extendManager(
 			fade.start();
 		},
 
+		'showLoading' : function(/*message, icon*/){
+			if(!this._overlay){
+				this._overlay = new OjOverlay();
+			}
+
+			var args = arguments,
+				ln = args.length,
+				msg = ln ? args[0] : null,
+				icon = ln > 1 ? args[1] : null;
+
+			this._overlay.setMessage(msg);
+			this._overlay.setIcon(icon);
+
+			this._overlay.show(this._modal_holder);
+		},
+
 		'hide' : function(modal){
 			var index;
 
@@ -268,6 +285,12 @@ OJ.extendManager(
 			var fade = new OjFade(modal, OjFade.OUT);
 			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
 			fade.start();
+		},
+
+		'hideLoading' : function(){
+			if(this._overlay){
+				this._overlay.hide();
+			}
 		},
 
 		'makeAlert' : function(/*title, content*/){

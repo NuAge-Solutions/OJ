@@ -90,17 +90,18 @@
 			overflow: visible;
 		}
 		.OjAlert > .pane > .content {
+			display: block;
+
 			padding: 20px 10px 10px;
+
+			color: #FFFFFF;
+			font-size: 16px;
+			text-align: center;
+			text-shadow: 0px -1px 1px #000000;
 		}
 		.OjAlert.no-buttons > .pane > .content {
 			padding-bottom: 20px;
 		}
-			.OjAlert > .pane > .content > .container {
-				color: #FFFFFF;
-				font-size: 16px;
-				text-align: center;
-				text-shadow: 0px -1px 1px #000000;
-			}
 
 		.OjAlert > .pane > .buttons {
 			padding: 10px 0px 20px;

@@ -9,15 +9,12 @@ OJ.extendClass(
 			'owner' : null
 		},
 
-		'_classes' : null,
-
-		'_min_width' : null,  '_max_width' : null,  '_min_height' : null,  '_max_height' : null,
-
-		'_borderSize' : null,  '_margin' : null,  '_padding' : null, '_alpha' : 1,  '_depth' : 0,  '_overflow' : null,
+		'_alpha' : 1,  '_depth' : 0,
 
 		'_origin' : '0px 0px',  '_rotation' : 0,  '_translate' : '0px 0px',
 
-		'_h_align' : null,  '_v_align' : null,
+		'_h_align' : 'l', // OjStyleElement.LEFT
+		'_v_align' : 't', // OjStyleElement.TOP
 
 
 		'_compile_' : function(def){
@@ -139,6 +136,9 @@ OJ.extendClass(
 			this._super('OjStyleElement', '_constructor', [source, context]);
 
 			OjElement.register(this);
+
+			this.setHAlign(this._h_align);
+			this.setVAlign(this._v_align);
 		},
 
 		'_destructor' : function(/*depth = 0*/){
@@ -160,20 +160,82 @@ OJ.extendClass(
 		},
 
 
-		'_processAttributes' : function(context/*, dom*/){
-			var args = arguments,
-				dom = args.length > 1 ? args[1] : this._dom,
-				attr, val;
+		'_processAttribute' : function(dom, attr, context){
+			var setter, solo, target,
+			nm = attr.nodeName,
+			val = attr.value;
 
-			// variable reference
-			if(val = dom.getAttribute(attr = 'var')){
+			if(nm.substr(0, 3) == 'on-'){
+				// todo: add support for multiple event listeners
+				// todo? add support for nested event listener functions in templates
+				setter = val.split('.');
+				solo = setter.length == 1;
+				target = context;
+
+				if(!solo){
+					switch(setter[0]){
+						case 'this':
+							target = this;
+						break;
+
+						case 'window':
+							target = window;
+						break;
+					}
+				}
+
+				this.addEventListener(OJ.attributeToFunc(nm), target, solo ? setter[0] : setter[1]);
+
+				return true;
+			}
+			else if(nm == 'id'){
+				this.setId(val);
+			}
+			else if(nm == 'var'){
 				if(!isEmpty(val) && context){
 					(context[val] = this).addCss(val);
 
 					this.setOwner(context);
 				}
 
-				dom.removeAttribute(attr);
+				return true;
+			}
+			else if(nm != 'class'){
+				setter = OjStyleElement.attributeToSetter(nm);
+
+				if(isFunction(this[setter])){
+					var lower;
+
+					if(val == ''){
+						val = null;
+					}
+					else if(isNumeric(val)){
+						val = parseFloat(val);
+					}
+					else if((lower = val.toLowerCase()) == 'true'){
+						val = true;
+					}
+					else if(lower == 'false'){
+						val = false;
+					}
+
+					this[setter](val);
+
+					// if the nm is v-align or h-align we want to return false so that the attribute isn't destroyed
+					return nm.indexOf('-align') == -1;
+				}
+			}
+
+			return false;
+		},
+
+		'_processAttributes' : function(dom, context){
+			var attrs = dom.attributes,
+				attr;
+
+			// variable reference
+			if((attr = dom.attributes['var']) && this._processAttribute(dom, attr, context)){
+				dom.removeAttribute('var');
 			}
 
 			// class name
@@ -183,81 +245,47 @@ OJ.extendClass(
 			dom.removeAttribute('class-path');
 
 			// process the other attributes
-			var attrs = dom.attributes,
-				ln = attrs.length,
-				setter, solo, target;
+			var ln = attrs.length;
 
 			for(; ln--;){
-				attr = attrs[ln].nodeName;
-				val = attrs[ln].value;
+				attr = attrs[ln];
 
-				if(attr.substr(0, 3) == 'on-'){
-					// todo: add support for multiple event listeners
-					// todo? add support for nested event listener functions in templates
-					setter = val.split('.');
-					solo = setter.length == 1;
-					target = context;
-
-					if(!solo){
-						switch(setter[0]){
-							case 'this':
-								target = this;
-							break;
-
-							case 'window':
-								target = window;
-							break;
-						}
-					}
-
-					this.addEventListener(OJ.attributeToFunc(attr), target, solo ? setter[0] : setter[1]);
-
-					dom.removeAttribute(attr);
-				}
-				else{
-					setter = OjStyleElement.attributeToSetter(attr);
-
-					if(isFunction(this[setter])){
-						dom.removeAttribute(attr);
-
-						if(val == ''){
-							val = null;
-						}
-						else if(isNumeric(val)){
-							val = parseFloat(val);
-						}
-
-						this[setter](val);
-					}
+				if(this._processAttribute(dom, attr, context)){
+					dom.removeAttribute(attr.nodeName);
 				}
 			}
 		},
 
-		'_processChildren' : function(context){
-			var children = this._dom.childNodes,
+		'_processChildren' : function(dom, context){
+			// make sure we have something to process
+			if(!dom){
+				return;
+			}
+
+			var children = dom.childNodes,
 				ln = children.length;
 
 			for(; ln--;){
 				if(!this._processChild(children[ln], context) && children[ln]){
-					this._dom.removeChild(children[ln]);
+					dom.removeChild(children[ln]);
 				}
 			}
 		},
 
-		'_processChild' : function(dom_elm, context){
+		'_processChild' : function(dom, context){
 			// make sure we have something to process
-			if(!dom_elm){
+			if(!dom){
 				return;
 			}
 
-			var tag = dom_elm.tagName;
+			var tag = dom.tagName;
 
-			if(!tag || OjElement.isTextNode(dom_elm)){
-				return isEmpty(dom_elm.nodeValue) ? null : new OjTextElement(dom_elm);
+			if(!tag || OjElement.isTextNode(dom)){
+				return isEmpty(dom.nodeValue) ? null : new OjTextElement(dom);
 			}
 
 			var child,
-				cls = dom_elm.getAttribute('class-name');
+				cls = dom.getAttribute('class-name');
 
 			tag = tag.toLowerCase();
 
@@ -269,7 +297,7 @@ OJ.extendClass(
 			// load the class if we need to
 			var cls_path;
 
-			if(!window[cls] && (cls_path = dom_elm.getAttribute('class-path'))){
+			if(!window[cls] && (cls_path = dom.getAttribute('class-path'))){
 				OJ.importJs(cls_path);
 			}
 
@@ -281,38 +309,31 @@ OJ.extendClass(
 			// process the class
 			if(cls){
 				if(isFunction(cls)){
-					child = cls(dom_elm);
+					child = cls(dom);
 				}
 				else{
 					child = new window[cls]();
 				}
 
-				child._setDomSource(dom_elm, context);
+				child._setDomSource(dom, context);
 			}
 			else{
-				child = new OjStyleElement(dom_elm, context);
+				child = new OjStyleElement(dom, context);
 			}
 
 			return child;
 		},
 
-		'_setDom' : function(dom_elm, context){
+		'_setDom' : function(dom, context){
 			// todo: re-evaluate the pre-render functionality of dom
 
-			this._super('OjStyleElement', '_setDom', [dom_elm]);
+			this._super('OjStyleElement', '_setDom', [dom]);
 
 			// process the attributes
-			this._processAttributes(context);
+			this._processAttributes(dom, context);
 
 			// process the children
-			this._processChildren(context);
-
-			// setup the alignment
-			var h_align = this._getStyle('text-align');
-			var v_align = this._getStyle('vertical-align');
-
-			this.setHorzAlign(isEmpty(h_align) ? OjStyleElement.LEFT : h_align);
-			this.setVertAlign(isEmpty(v_align) ? OjStyleElement.TOP : v_align);
+			this._processChildren(dom, context);
 
 			// setup the dom id if there isn't one already
 			if(!this._id){
@@ -703,7 +724,7 @@ OJ.extendClass(
 		},
 
 		'setCss' : function(css){
-			return this._proxy.className = isArray(css) ? css.join(' ') : css.trim();
+			return this._proxy.className = (isArray(css) ? css.join(' ') : css).trim();
 		},
 
 		'toggleCss' : function(css/*...css | array*/){
@@ -951,25 +972,6 @@ OJ.extendClass(
 			this._depth = this._setStyle('zIndex', depth);
 		},
 
-		'getHorzAlign' : function(){
-			return this._h_align;
-		},
-		'setHorzAlign' : function(align){
-			if(this._h_align == align){
-				return;
-			}
-
-			if(this._h_align){
-				this.removeCss(['halign-' + this._h_align]);
-			}
-
-			if((this._h_align = align) == OjStyleElement.LEFT){
-				return;
-			}
-
-			this.addCss(['halign-' + this._h_align]);
-		},
-
 		'getOverflow' : function(){
 			return this._overflow;
 		},
@@ -1014,23 +1016,34 @@ OJ.extendClass(
 			this._proxy.scrollTop = val;
 		},
 
-		'getVertAlign' : function(){
-			return this._v_align;
+
+		// alignment getter & setters
+		'_getAlign' : function(type, dflt){
+			var align = this.getAttr(type + '-align');
+
+			return align ? align : dflt;
 		},
-		'setVertAlign' : function(align){
-			if(this._v_align == align){
-				return;
+
+		'_setAlign' : function(type, val, dflt){
+			if(val == dflt){
+				val = null;
 			}
 
-			if(this._v_align){
-				this.removeCss(['valign-' + this._v_align]);
-			}
+			this.setAttr(type + '-align', this['_' + type + '_align'] = val);
+		},
 
-			if((this._v_align = align) == OjStyleElement.TOP){
-				return;
-			}
+		'getHAlign' : function(){
+			return this._getAlign('h', OjStyleElement.LEFT);
+		},
+		'setHAlign' : function(val){
+			return this._setAlign('h', val, OjStyleElement.LEFT);
+		},
 
-			this.addCss(['valign-' + this._v_align]);
+		'getVAlign' : function(){
+			return this._getAlign('v', OjStyleElement.TOP);
+		},
+		'setVAlign' : function(val){
+			return this._setAlign('v', val, OjStyleElement.TOP);
 		},
 
 
@@ -1039,7 +1052,6 @@ OJ.extendClass(
 			var transform = 'rotate(' + this._rotation + 'deg) translate(' + this._translate + ')';
 
 			var prefix = OJ.getCssPrefix();
-//			trace(prefix);
 
 			if(prefix == '-moz-'){
 				this._setStyle('MozTransform', transform);
@@ -1114,13 +1126,13 @@ OJ.extendClass(
 		'SCROLL'  : 'scroll',
 		'VISIBLE' : 'visible',
 
-		'LEFT'   : 'left',
-		'CENTER' : 'center',
-		'RIGHT'  : 'right',
+		'LEFT'   : 'l',
+		'CENTER' : 'c',
+		'RIGHT'  : 'r',
 
-		'TOP'    : 'top',
-		'MIDDLE' : 'middle',
-		'BOTTOM' : 'bottom',
+		'TOP'    : 't',
+		'MIDDLE' : 'm',
+		'BOTTOM' : 'b',
 
 
 		'attributeToGetter' : function(attr){
@@ -1145,6 +1157,18 @@ OJ.extendClass(
 			if(OJ.getBrowser() == OJ.IE && OJ.getBrowserVersion().compareVersion('9.0.0') < 0){
 				document.createElement(tag);
 			}
+		},
+
+		'getStyle' : function(dom, style){
+			if(this.STYLE_MODE == this.STYLE_IE){
+				return dom.currentStyle[style];
+			}
+
+			if(this.STYLE_MODE == this.STYLE_BACKUP){
+				return dom.style[style];
+			}
+
+			return document.defaultView.getComputedStyle(dom, null)[style];
 		}
 	}
 );

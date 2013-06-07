@@ -14,14 +14,13 @@ OJ.extendComponent(
 			'target'   : null
 		},
 
+		'_v_align' : OjStyleElement.MIDDLE,
+
 		'_template' : 'oj.components.OjLink',
 
 
 		'_constructor' : function(/*label, url, target*/){
 			this._super('OjLink', '_constructor', []);
-
-			// setup structure
-			this.addCss('valign-middle');
 
 			// process arguments
 			var ln = arguments.length;
@@ -39,6 +38,13 @@ OJ.extendComponent(
 			}
 		},
 
+		'setCss' : function(val){
+			if(val.indexOf('ssl') > -1){
+//				debugger;
+			}
+
+			this._super('OjLink', 'setCss', arguments);
+		},
 
 		'_redrawText' : function(){
 			this.label.setText(

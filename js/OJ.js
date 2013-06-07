@@ -63,6 +63,7 @@ window.OJ = function Oj(){
 		'CHROME'    : 'Chrome',
 		'FIREFOX'   : 'Firefox',
 		'IE'        : 'Internet Explorer',
+		'IN_APP'    : 'in-app',
 		'MOZILLA'   : 'Mozilla',
 		'OPERA'     : 'Opera',
 		'SAFARI'    : 'Safari',
@@ -138,7 +139,6 @@ window.OJ = function Oj(){
 			var parts = path.split('.'),
 				prefix = parts.length == 1 ? path + '.' : '',
 				type = this._('themePath');
-
 
 			if(this._('mode') != this.DEV){
 				path += '-theme';
@@ -235,14 +235,21 @@ window.OJ = function Oj(){
 		},
 
 		// dynamically add js to page
-		'addJsFile' : function(js/*, is_path*/){
-			var is_path = arguments.length > 1 ? arguments[1] : false;
+		'addJsFile' : function(js/*, is_path=false, async=false*/){
+			var args = arguments,
+				ln = args.length,
+				is_path = ln > 1 ? args[1] : false,
+				is_async = ln > 2 ? args[2] : false;
 
 			try{
-				if(this._('mode') != this.LOADING){
+				if(this._('mode') != this.LOADING || is_async){
 					var elm = document.createElement('script');
 					elm.setAttribute('type', 'text/javascript');
 					elm.setAttribute('language', 'javascript');
+
+					if(is_async){
+						elm.setAttribute('async', 'true');
+					}
 
 					if(is_path){
 						elm.setAttribute('src', js);
@@ -410,6 +417,10 @@ window.OJ = function Oj(){
 			for(key in def){
 				// skip private funcs
 				if(key.charAt(0) == '_' && key.slice(-1) == '_'){
+					if(key == '_interface_'){
+						proto._class_names.splice(-1, 0, def[key]);
+					}
+
 					continue;
 				}
 
@@ -462,6 +473,15 @@ window.OJ = function Oj(){
 
 			for(; i < ln; i++){
 				intrfc = arguments[i];
+
+				// process strings as potential interfaces
+				// then automatically setup the private interface var for css purposes
+				if(isString(intrfc)){
+					var cls = OJ.stringToClass(intrfc)
+					cls._interface_ = intrfc;
+
+					intrfc = cls;
+				}
 
 				for(key in intrfc){
 					if(isUndefined(def[key])){
@@ -845,11 +865,13 @@ window.OJ = function Oj(){
 		},
 
 		'getVersionQuery' : function(){
-			if(this._('mode') == this.LOADING || this._protocol == this.FILE){
+			var v;
+
+			if(this._('mode') == this.LOADING || this._protocol == this.FILE || isEmpty(v = this._('version'))){
 				return '';
 			}
 
-			return '?v=' + this._('version');
+			return '?v=' + v;
 		},
 
 		'getViewport' : function(){
@@ -1020,16 +1042,16 @@ window.OJ = function Oj(){
 
 	if(platform == 'and'){
 		OJ._os = OJ.ANDROID;
-		OJ._is_mobile = (navigator.userAgent.indexOf('Mobile') > -1);
+		OJ._is_tablet = !(OJ._is_mobile = (navigator.userAgent.indexOf('Mobile') > -1));
 		OJ._is_touch_capable = true;
 	}
 	else if(platform == 'iph' || platform == 'ipa' || platform == 'ipo'){
 		OJ._os = OJ.IOS;
-		OJ._is_mobile = (platform != 'ipa');
+		OJ._is_tablet = !(OJ._is_mobile = (platform != 'ipa'));
 
 		// check for in app
 		if(!OJ._browser_version){
-			OJ._browser_version = 'in-app';
+			OJ._browser_version = OJ.IN_APP;
 		}
 	}
 	else{
@@ -1051,8 +1073,6 @@ window.OJ = function Oj(){
 			}
 		]) || null;
 	}
-
-	OJ._is_tablet = !OJ._is_mobile;
 
 	if(!OJ._is_touch_capable){
 		OJ._is_touch_capable = 'ontouchstart' in window;
@@ -1159,7 +1179,7 @@ Array.array = function(obj){
 	else if(Array.isArray(obj)){
 		return obj;
 	}
-	else if(isObject(obj) && !isUndefined(obj.length)){
+	else if((isObject(obj) || isFunction(obj)) && !isUndefined(obj.length)){
 		return [].slice.call(obj, 0);
 	}
 
@@ -1611,7 +1631,7 @@ function isNumber(obj){
 
 // true when obj is the meta-type object
 function isObject(obj){
-	return isSet(obj) && typeof obj === 'object' && !isArray(obj);
+	return isSet(obj) && obj instanceof Object && !isArray(obj);
 }
 
 // true when obj is of the meta-type string
@@ -1807,24 +1827,38 @@ function onDomReady(){
 		// process the target attributes
 		// as settings
 		var attrs = target.attributes, attr,
-			ln = attrs.length;
+			special = ['mode', 'version'],
+			ln = special.length;
+
+		// process order sensitive settings first
+		for(; ln--;){
+			if((attr = special[ln]) && attrs[attr]){
+				OJ.setting(attr, attrs[attr].value)
+
+				target.removeAttribute(attr);
+			}
+		}
+
+		// process the rest of the settings
+		ln = attrs.length;
 
 		for(; ln--;){
 			attr = attrs[ln].nodeName;
 
-			// disregard the id or events
-			if(attr == 'id' || attr.substr(0, 3) == 'on-'){
+			// disregard the id, class and event attributes since they are not settings
+			if(attr == 'id' || attr == 'class' || attr.substr(0, 3) == 'on-'){
 				continue;
 			}
 
-			// all other attrs are settings
-			OJ.setting(OJ.attributeToFunc(attr), attrs[ln].nodeValue);
+			// all other attributes are settings
+			OJ.setting(OJ.attributeToFunc(attr), attrs[ln].value);
 
 			target.removeAttribute(attr);
 		}
 	}
 
 	// process the mode
+	// if no mode has been specified then push us into production mode by default
 	if(OJ._('mode') == OJ.LOADING){
 		OJ.setting('mode', OJ.PROD);
 	}
@@ -1846,10 +1880,10 @@ function onDomReady(){
 	OJ.importJs('oj.events.OjTransformEvent');
 	OJ.importJs('oj.fx.OjFade');
 	OJ.importJs('oj.fx.OjTweenSet');
-	OJ.importJs('oj.components.OjSpinner');
 
 	// create the OJ component
 	var tmp = new OjView();
+	tmp.setAlpha(0);
 
 	// add the rendering div
 	tmp.addChild(tmp.renderer = new OjStyleElement('<div class="renderer"></div>'));
@@ -1882,9 +1916,6 @@ function onDomReady(){
 
 	window.OJ = tmp;
 
-	// dispatch load event
-	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
-
 	// place OJ component in the DOM
 	if(target){
 		OJ._setDomSource(target, tmp);
@@ -1892,6 +1923,9 @@ function onDomReady(){
 	else{
 		document.body.appendChild(OJ.dom());
 	}
+
+	// dispatch load event
+	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
 
 	// setup the dom event proxy
 	OJ._setProxy(document.body);
@@ -1947,11 +1981,17 @@ function onDomReady(){
 
 	// timeout offset to allow for css and stuff to settle
 	// this is clearly a hack so deal with it
-	setTimeout(window.onOjReady, 99);
+	OJ._interval = setInterval(window.onOjReady, 100);
 }
 
 // on oj ready event handler
 function onOjReady(){
+	if(isEmpty(OjStyleElement.getStyle(document.body, 'minWidth'))){
+		return;
+	}
+
+	clearInterval(OJ._interval);
+
 	// close up the loading group logs
 	traceGroup();
 
@@ -1971,16 +2011,20 @@ function onOjReady(){
 
 	OJ._is_ready = true;
 
-	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
-
-	traceGroup();
+	OJ.fadeIn();
 
 	// detect if the browser is not supported
 	if(!OJ.isSupported()){
 		var alrt = WindowManager.makeAlert('UnSupported Browser', OJ._('supportMessage'));
 		alrt.hideButtons();
-		alrt.setPaneWidth(500);
+		alrt.setPaneWidth(425);
 
 		WindowManager.show(alrt);
+
+		return;
 	}
+
+	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
+
+	traceGroup();
 }

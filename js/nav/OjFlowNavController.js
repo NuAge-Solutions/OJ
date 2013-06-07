@@ -38,7 +38,7 @@ window.OjIFlowNavController = {
 
 	'_makeTitle' : function(title){
 		var elm = new OjLabel(title);
-		elm.addCss('valign-middle');
+		elm.setVAlign(OjStyleElement.MIDDLE);
 
 		return elm;
 	},

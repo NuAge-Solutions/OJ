@@ -14,7 +14,11 @@ OJ.extendClass(
 			'isSelected'   : false
 		},
 
-		'_selector' : null,  '_template' : 'oj.form.OjOption',
+//		'_selector' : null,
+
+		'_v_align' : OjStyleElement.MIDDLE,
+
+		'_template' : 'oj.form.OjOption',
 
 
 		'_constructor' : function(/*group|dataRenderer, data*/){

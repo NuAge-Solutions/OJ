@@ -1,4 +1,6 @@
 .OjLabel {
+	line-height: normal;
+
 	text-overflow: ellipsis;
 	overflow: hidden;
 }

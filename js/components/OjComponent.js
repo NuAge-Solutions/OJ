@@ -17,8 +17,6 @@ OJ.extendClass(
 			'isAnimating' : false
 		},
 
-		'_fader' : null, '_template' : null,
-
 
 		'_constructor' : function(){
 			var args = [null, this];
@@ -43,31 +41,27 @@ OJ.extendClass(
 			this._setContainer(this.container ? this.container : this);
 		},
 
-
 		// override this so that the component gets properly set
-		'_processChild' : function(dom_elm, context){
-			return this._super('OjComponent', '_processChild', [dom_elm, context ? context : this]);
+		'_processChild' : function(dom, context){
+			return this._super('OjComponent', '_processChild', [dom, context ? context : this]);
 		},
 
-		'_processDomSource' : function(dom_elm, context){
-			var child,
-				children = dom_elm.childNodes,
-				i = 0,
-				ln = children.length;
-
-			for(; i < ln; i++){
-				if(child = this._processDomSourceChild(children[i], context)){
-					this.addElm(child);
-				}
-				else{
-					dom_elm.removeChild(children[i]);
-				}
-
-				// if we add then we need to decrement the counter and length since
-				// a child will have been removed from the child nodes array
-				i--;
-				ln--;
-			}
+		'_processDomSourceAttributes' : function(dom, context){
+			this._processAttributes(dom, context);
+//
+//			var attrs = dom.attributes,
+//				ln = attrs.length,
+//				attr, nm, val;
+//
+//			for(; ln--;){
+//				attr = attrs[ln];
+//				nm = attr.nodeName;
+//				val = attr.value;
+//
+//				if(this._processAttribute(attr, context)){
+//					dom.removeAttribute(nm);
+//				}
+//			}
 		},
 
 		'_processDomSourceChild' : function(dom_elm, context){
@@ -76,6 +70,27 @@ OJ.extendClass(
 			}
 
 			return this._processChild(dom_elm, context);
+		},
+
+		'_processDomSourceChildren' : function(dom, context){
+			var child,
+				children = dom.childNodes,
+				i = 0,
+				ln = children.length;
+
+			for(; i < ln; i++){
+				if(child = this._processDomSourceChild(children[i], context)){
+					this.addElm(child);
+				}
+				else{
+					dom.removeChild(children[i]);
+				}
+
+				// if we add then we need to decrement the counter and length since
+				// a child will have been removed from the child nodes array
+				i--;
+				ln--;
+			}
 		},
 
 
@@ -95,53 +110,51 @@ OJ.extendClass(
 			}
 		},
 
-		'_setDomSource' : function(dom_elm, context){
+		'_setDomSource' : function(dom, context){
 			// prevent events from dispatching while we are setting everything up
 			this._prevent_dispatch = true;
 
 			// setup our vars
-			var sep, nm, val,
-				is_body = (dom_elm == document.body),
-				source = is_body ? this._dom : dom_elm,
-				target = is_body ? dom_elm : this._dom,
-				attrs = source.attributes,
-				ln = attrs.length;
+			var ary, prev, nm, val, ln, i,
+				is_body = (dom == document.body),
+				source = is_body ? this._dom : dom,
+				target = is_body ? dom : this._dom;
 
-			// we need to copy over the attributes
+			// process dom attributes
+			this._processDomSourceAttributes(dom, context);
+
+			// copy over attributes
+			ln = (ary = source.attributes).length;
+
 			for(; ln--;){
-				nm = attrs[ln].nodeName;
+				i = ary[ln];
+				nm = i.nodeName;
+				val = i.value;
 
-				if(nm == 'class-name' || nm == 'class-path'){
-					continue;
+				if(nm == 'class'){
+					prev = target.getAttribute(nm);
+
+					target.className = (String.string(prev) + ' ' + val).trim();
 				}
-
-				if(!isEmpty(val = target.getAttribute(nm))){
-					sep = ' ';
-
-					attrs[ln].value = val + sep + attrs[ln].value;
+				else if(nm == 'id'){
+					target.id = val;
 				}
-
-				target.setAttribute(nm, attrs[ln].value);
+				else{
+					target.setAttribute(nm, val);
+				}
 			}
 
-			// process attributes
-			this._processAttributes(context, source);
+			// process the dom children
+			this._processDomSourceChildren(dom, context);
 
-			// process the dom source children
-			this._processDomSource(dom_elm, context);
-
-			// process the dom source attributes
-
-			// do the switcher-roo
-			if(dom_elm.parentNode){
+			// copy over the children
+			if(dom.parentNode){
 				if(is_body){
-					var children = source.children,
-						i = 0;
-
-					ln = children.length;
+					ln = (ary = source.children).length;
+					i = 0;
 
 					for(; i < ln; i++){
-						target.appendChild(children[0]);
+						target.appendChild(ary[0]);
 					}
 				}
 				else{

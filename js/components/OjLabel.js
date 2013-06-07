@@ -24,7 +24,7 @@ OJ.extendComponent(
 		},
 
 
-		'_processDomSource' : function(dom_elm, component){
+		'_processDomSourceChildren' : function(dom_elm, component){
 			var txt = dom_elm.innerHTML;
 
 			if(!isEmpty(txt)){
@@ -33,7 +33,7 @@ OJ.extendComponent(
 				return null;
 			}
 
-			return this._super('OjLabel', '_processDomSource', arguments);
+			return this._super('OjLabel', '_processDomSourceChildren', arguments);
 		},
 
 		'_redrawText' : function(){
