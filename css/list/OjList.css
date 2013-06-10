@@ -3,72 +3,7 @@
 
 	width: 100%;
 	height: 100%;
-
-	background: #F7F7F7;
-
-	border: 1px solid #BBBBBB;
-	border-top-color: #AAAAAA;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-
-	-moz-box-shadow:    0px 1px 0px 0px #FFFFFF;
-	-webkit-box-shadow: 0px 1px 0px 0px #FFFFFF;
-	box-shadow:         0px 1px 0px 0px #FFFFFF;
-	
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
 }
 .OjList > .items.horizontal {
 	white-space: nowrap;
 }
-
-/*.OjList > .items > .shadow{*/
-	/*position: absolute;*/
-
-	/*top: 0px;*/
-	/*left: 0px;*/
-
-	/*width: 100%;*/
-	/*height: 9px;*/
-
-	/*background: none;*/
-
-	/*-webkit-border-radius: 20px 20px 0px 0px;*/
-	/*-moz-border-radius: 20px 20px 0px 0px;*/
-	/*border-radius: 20px 20px 0px 0px;*/
-
-	/*-moz-box-shadow:    inset 0px 1px 0px 0px #DDDDDD;*/
-	/*-webkit-box-shadow: inset 0px 1px 0px 0px #DDDDDD;*/
-	/*box-shadow:         inset 0px 1px 0px 0px #DDDDDD;*/
-/*}*/
-	/*.OjList > .items > .OjItemRenderer {*/
-		/*display: block;*/
-
-		/*padding: 15px;*/
-
-		/**/
-	/*}*/
-	/*.OjList > .items.horizontal > .OjItemRenderer {*/
-		/*display: inline-block;*/
-
-		/*padding: 0px;*/
-		/*margin: 15px 20px;*/
-
-		/*border: none;*/
-	/*}*/
-		/*.OjList > .items > .OjItemRenderer.first {*/
-			/*border-top: none;*/
-		/*}*/
-		/*.OjList > .items > .OjItemRenderer.last {*/
-			/*border-bottom: none;*/
-		/*}*/
-			/*.OjList > .items > .OjItemRenderer > .accessory {*/
-				/*float: left;*/
-
-				/*height: 100%;*/
-			/*}*/
-			/*.OjList > .items > .OjItemRenderer > .content {*/
-				/*text-align: left;*/
-			/*}*/

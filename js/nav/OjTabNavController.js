@@ -10,7 +10,8 @@ OJ.extendComponent(
 
 
 		'_addViewButton' : function(view, index){
-			var btn = new OjButton(view.getShortTitle());
+			var btn = new OjButton(view.getShortTitle(), view.getIcon());
+			btn.setVAlign(OjStyleElement.TOP);
 			btn.addEventListener(OjMouseEvent.CLICK, this, '_onTabClick');
 
 			this.addChildAt(btn, index);
@@ -25,11 +26,11 @@ OJ.extendComponent(
 		},
 
 		'_updateActiveBtn' : function(){
-			if(this._prev_active){
-				this._prev_active.setIsActive(false);
-			}
-
-			(this._prev_active = this.getChildAt(this._stack.getActiveIndex())).setIsActive(true);
+//			if(this._prev_active){
+//				this._prev_active.setIsActive(false);
+//			}
+//
+//			(this._prev_active = this.getChildAt(this._stack.getActiveIndex())).setIsActive(true);
 		},
 
 		// event listener callbacks

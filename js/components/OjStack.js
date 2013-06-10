@@ -188,29 +188,23 @@ OJ.extendComponent(
 			},
 
 			'_processDomSourceChildren' : function(dom_elm, context){
-				var child, parent,
-					children = dom_elm.childNodes,
-					i = 0,
-					ln = children.length;
+				var children = dom_elm.childNodes,
+					ln = children.length,
+					i = 0, child;
+
 
 				for(; i < ln; i++){
 					if(child = this._processDomSourceChild(children[i], context)){
-						// remove the child from the dom
-						if(parent = child.parent()){
-							parent.removeChild(child);
-						}
-						// force no parent
-						else{
-							child.setParent(null);
-						}
+						// remove the child from the dom source
+						child.setParent(null);
 
 						// add the child to our stack
 						this.addElm(child);
 
 						// if we add then we need to decrement the counter and length since
 						// a child will have been removed from the child nodes array
-						i--;
-						ln--;
+						i += children.length - ln;
+						ln = children.length;
 					}
 				}
 			},

@@ -1,0 +1,18 @@
+/* OjList */
+.OjList > .items {
+	background: #F7F7F7;
+
+	border: 1px solid #BBBBBB;
+	border-top-color: #AAAAAA;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+
+	-moz-box-shadow:    0px 1px 0px 0px #FFFFFF;
+	-webkit-box-shadow: 0px 1px 0px 0px #FFFFFF;
+	box-shadow:         0px 1px 0px 0px #FFFFFF;
+
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}

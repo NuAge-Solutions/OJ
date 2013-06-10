@@ -13,6 +13,7 @@ OJ.extendComponent(
 			'controller'  : null,
 			'footer'      : null,
 			'header'      : null,
+			'icon'        : null,
 			'shortTitle'  : null,
 			'stack'       : null,
 			'title'       : null
