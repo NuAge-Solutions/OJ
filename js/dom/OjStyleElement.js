@@ -1,3 +1,6 @@
+OJ.importJs('oj.dom.OjCssTranslate');
+
+
 'use strict';
 
 OJ.extendClass(
@@ -11,7 +14,7 @@ OJ.extendClass(
 
 		'_alpha' : 1,  '_depth' : 0,
 
-		'_origin' : '0px 0px',  '_rotation' : 0,  '_translate' : '0px 0px',
+		'_origin' : '0px, 0px',  '_rotation' : 0,  '_translate' : '0px, 0px',
 
 		'_h_align' : 'l', // OjStyleElement.LEFT
 		'_v_align' : 't', // OjStyleElement.TOP
@@ -33,57 +36,65 @@ OJ.extendClass(
 		},
 
 		'_style_funcs_' : function(style, u_style){
-			this['get' + u_style] = function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
+			var g = 'get',
+				s = 'set',
+				bottom = 'Bottom',
+				left = 'Left',
+				right = 'Right',
+				top = 'Top';
+
+			this[g + u_style] = function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
 				return this._getStyler(style, arguments);
 			};
 
-			this['set' + u_style] = function(val/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
+			this[s + u_style] = function(val/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
 				this._setStyler(style, arguments);
 			};
 
-			this['get' + u_style + 'Bottom'] = function(){
-				return this['get' + u_style](2);
+			this[g + u_style + bottom] = function(){
+				return this[g + u_style](2);
 			};
 
-			this['set' + u_style + 'Bottom'] = function(val){
-				this['set' + u_style](null, null, val, null);
+			this[s + u_style + bottom] = function(val){
+				this[s + u_style](null, null, val, null);
 			};
 
-			this['get' + u_style + 'Left'] = function(){
-				return this['get' + u_style](3);
+			this[g + u_style + left] = function(){
+				return this[g + u_style](3);
 			};
 
-			this['set' + u_style + 'Left'] = function(val){
-				this['set' + u_style](null, null, null, val);
+			this[s + u_style + left] = function(val){
+				this[s + u_style](null, null, null, val);
 			};
 
-			this['get' + u_style + 'Right'] = function(){
-				return this['get' + u_style](1);
+			this[g + u_style + right] = function(){
+				return this[g + u_style](1);
 			};
 
-			this['set' + u_style + 'Right'] = function(val){
-				this['set' + u_style](null, val, null, null);
+			this[s + u_style + right] = function(val){
+				this[s + u_style](null, val, null, null);
 			};
 
-			this['get' + u_style + 'Top'] = function(){
-				return this['get' + u_style](0);
+			this[g + u_style + top] = function(){
+				return this[g + u_style](0);
 			};
 
-			this['set' + u_style + 'Top'] = function(val){
-				this['set' + u_style](val, null, null, null);
+			this[s + u_style + top] = function(val){
+				this[s + u_style](val, null, null, null);
 			};
 		},
 
 
 		'_constructor' : function(/*source, context*/){
 			// default the context and source
-			var source, context,
-				ln = arguments.length;
+			var args = arguments,
+				ln = args.length,
+				source, context, tmp;
 
-			if(ln && (source = arguments[0])){
+			if(ln && (source = args[0])){
 				// set the context if any
 				if(ln > 1){
-					context = arguments[1];
+					context = args[1];
 				}
 
 				// set the source
@@ -95,8 +106,6 @@ OJ.extendClass(
 					}
 					// if its a string then we need to make sure its html and handle it accordingly
 					else if(isString(source)){
-						var tmp;
-
 						source = source.trim();
 
 						if(source.charAt(0) == '<' && source.slice(-1) == '>' && source.length >= 5){
@@ -143,11 +152,10 @@ OJ.extendClass(
 
 		'_destructor' : function(/*depth = 0*/){
 			var args = arguments,
-				depth = args.length ? args[0] : 0;
+				depth = args.length ? args[0] : 0,
+				ln = this.numChildren();
 
 			// remove the children
-			var ln = this.numChildren();
-
 			for(; ln--;){
 				OJ.destroy(this.getChildAt(ln), depth);
 			}
@@ -161,9 +169,9 @@ OJ.extendClass(
 
 
 		'_processAttribute' : function(dom, attr, context){
-			var setter, solo, target,
-			nm = attr.nodeName,
-			val = attr.value;
+			var setter, solo, target, lower,
+				nm = attr.nodeName,
+				val = attr.value;
 
 			if(nm.substr(0, 3) == 'on-'){
 				// todo: add support for multiple event listeners
@@ -204,8 +212,6 @@ OJ.extendClass(
 				setter = OjStyleElement.attributeToSetter(nm);
 
 				if(isFunction(this[setter])){
-					var lower;
-
 					if(val == ''){
 						val = null;
 					}
@@ -231,6 +237,7 @@ OJ.extendClass(
 
 		'_processAttributes' : function(dom, context){
 			var attrs = dom.attributes,
+				ln = attrs.length,
 				attr;
 
 			// variable reference
@@ -245,8 +252,6 @@ OJ.extendClass(
 			dom.removeAttribute('class-path');
 
 			// process the other attributes
-			var ln = attrs.length;
-
 			for(; ln--;){
 				attr = attrs[ln];
 
@@ -284,7 +289,7 @@ OJ.extendClass(
 				return isEmpty(dom.nodeValue) ? null : new OjTextElement(dom);
 			}
 
-			var child,
+			var child, cls_path,
 				cls = dom.getAttribute('class-name');
 
 			tag = tag.toLowerCase();
@@ -295,8 +300,6 @@ OJ.extendClass(
 			}
 
 			// load the class if we need to
-			var cls_path;
-
 			if(!window[cls] && (cls_path = dom.getAttribute('class-path'))){
 				OJ.importJs(cls_path);
 			}
@@ -326,7 +329,6 @@ OJ.extendClass(
 
 		'_setDom' : function(dom, context){
 			// todo: re-evaluate the pre-render functionality of dom
-
 			this._super('OjStyleElement', '_setDom', [dom]);
 
 			// process the attributes
@@ -342,16 +344,15 @@ OJ.extendClass(
 		},
 
 		'_setIsDisplayed' : function(displayed){
+			var ln, child;
+
 			if(this._is_displayed == displayed){
 				return;
 			}
 
 			this._super('OjStyleElement', '_setIsDisplayed', arguments);
 
-			var ln = this.numChildren(),
-				child;
-
-			for(; ln--;){
+			for(ln = this.numChildren(); ln--;){
 				if(child = this.getChildAt(ln)){
 					child._setIsDisplayed(this._is_displayed);
 				}
@@ -365,15 +366,17 @@ OJ.extendClass(
 		},
 
 		'addChildAt' : function(child, index){
+			var dom = this._dom;
+
 			if(!child || this.hasChild(child)){
 				return child;
 			}
 
 			if(index >= this.numChildren()){
-				this._dom.appendChild(child._dom);
+				dom.appendChild(child._dom);
 			}
 			else{
-				this._dom.insertBefore(child._dom, this._dom.childNodes[index]);
+				dom.insertBefore(child._dom, dom.childNodes[index]);
 			}
 
 			// update the display state
@@ -448,6 +451,14 @@ OJ.extendClass(
 			return this.removeChild(this.getChildAt(index));
 		},
 
+		'removeChildren' : function(children){
+			var ln = children.length;
+
+			for(; ln--;){
+				this.removeChild(children[ln]);
+			}
+		},
+
 		'replaceChild' : function(target, replacement){
 			return this.replaceChildAt(replacement, this.indexOfChild(target));
 		},
@@ -490,14 +501,16 @@ OJ.extendClass(
 		},
 
 		'hide' : function(){
-			this.addCss('hidden');
+			this.addCss(['hidden']);
 
 			this.dispatchEvent(new OjEvent(OjEvent.HIDE));
 		},
 
 		'isVisible' : function(){
-			return this._getStyle('display') != OjStyleElement.NONE && this._getStyle('visibility') != 'hidden' &&
-				this._alpha > 0 && this.getWidth() > 0 && this.getHeight() > 0;
+			return this._getStyle('display') != OjStyleElement.NONE &&
+				this._getStyle('visibility') != 'hidden' &&
+				this._alpha > 0 &&
+				this.getWidth() > 0 && this.getHeight() > 0;
 		},
 
 		'show' : function(){
@@ -535,14 +548,16 @@ OJ.extendClass(
 		},
 
 		'_setStyleNumber' : function(prop, val/*, unit*/){
-			this._setStyle(prop, val + (arguments.length > 2 ? arguments[2] : this._getStyleUnit(prop)));
+			var args = arguments;
+
+			this._setStyle(prop, val + (args.length > 2 ? args[2] : this._getStyleUnit(prop)));
 		},
 
 		// Bulk Style Getter & Setter Functions
 		'_getStyler' : function(prop, args){
-			if(!this['_' + prop]){
-				var unit = prop == 'font' || prop  =='line' ? OJ.setting('fontUnit') : OJ.setting('dimUnit');
+			var unit = prop == 'font' || prop  =='line' ? OJ.setting('fontUnit') : OJ.setting('dimUnit');
 
+			if(!this['_' + prop]){
 				this['_' + prop] = [
 					this._getStyle(prop + 'Top').replaceAll(unit, ''),
 					this._getStyle(prop + 'Right').replaceAll(unit, ''),
@@ -555,15 +570,14 @@ OJ.extendClass(
 		},
 
 		'_setStyler' : function(prop, vals){
-			this._getStyler(prop);
-
-			var val, str = '',
+			var str = '',
 				ln = vals.length,
+				val = vals[0],
 				unit = this._getStyleUnit(prop);
 
-			// fill out the vals array so that there is always the 4 values
-			val = vals[0];
+			this._getStyler(prop);
 
+			// fill out the vals array so that there is always the 4 values
 			if(ln == 1){
 				vals = [val, val, val, val];
 			}
@@ -575,9 +589,7 @@ OJ.extendClass(
 			}
 
 			// substitute current values for null values
-			ln = 4
-
-			for(; ln--;){
+			for(ln = 4; ln--;){
 				val = vals[ln];
 
 				if(isNull(val)){
@@ -741,18 +753,18 @@ OJ.extendClass(
 		},
 
 		'hitTestRect' : function(rect){
-			var self = this.getRect();
+			var r = this.getRect();
 
-			return (rect.top >= self.top && rect.top <= self.bottom && rect.left >= self.left && rect.left <= self.right) ||
-				(rect.top >= self.top && rect.top <= self.bottom && rect.right >= self.left && rect.right <= self.right) ||
-				(rect.bottom >= self.top && rect.bottom <= self.bottom && rect.left >= self.left && rect.left <= self.right) ||
-				(rect.bottom >= self.top && rect.bottom <= self.bottom && rect.right >= self.left && rect.right <= self.right);
+			return (rect.top >= r.top && rect.top <= r.bottom && rect.left >= r.left && rect.left <= r.right) ||
+				(rect.top >= r.top && rect.top <= r.bottom && rect.right >= r.left && rect.right <= r.right) ||
+				(rect.bottom >= r.top && rect.bottom <= r.bottom && rect.left >= r.left && rect.left <= r.right) ||
+				(rect.bottom >= r.top && rect.bottom <= r.bottom && rect.right >= r.left && rect.right <= r.right);
 		},
 
 		'hitTestPoint' : function(x, y){
-			var self = this.getRect();
+			var r = this.getRect();
 
-			return x >= self.left && x <= self.right && y >= self.top && y <= self.bottom;
+			return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 		},
 
 		'localPoint' : function(global_point){
@@ -792,11 +804,13 @@ OJ.extendClass(
 			return this._proxy.offsetWidth || this._getStyleNumber('width');
 		},
 		'setWidth' : function(w/*, unit*/){
+			var args = arguments;
+
 			if(w == OjStyleElement.AUTO){
 				this._setStyle('width', null);
 			}
-			else if(arguments.length > 1){
-				this._setStyle('width', w + (isString(arguments[1]) ? arguments[1] : '%'));
+			else if(args.length > 1){
+				this._setStyle('width', w + (isString(args[1]) ? args[1] : '%'));
 			}
 			else{
 				this.setInnerWidth(w - this.getPaddingLeft() - this.getPaddingRight());
@@ -920,8 +934,10 @@ OJ.extendClass(
 
 			// add backup solution
 		},
-		'setX' : function(val){
-			this._setStyleNumber('left', val);
+		'setX' : function(val/*, unit=px*/){
+			var args = arguments;
+
+			this._setStyleNumber('left', val, args.length > 1 ? args[1] : OJ.setting('dimUnit'));
 		},
 
 		'getY' : function(){
@@ -934,23 +950,24 @@ OJ.extendClass(
 
 			// add backup solution
 		},
-		'setY' : function(val){
-			this._setStyleNumber('top', val);
+		'setY' : function(val/*, unit=px*/){
+			var args = arguments;
+
+			this._setStyleNumber('top', val, args.length > 1 ? args[1] : OJ.setting('dimUnit'));
 		},
 
 		'getAlpha' : function(){
 			return this._alpha;
 		},
 		'setAlpha' : function(alpha){
-			if(this._alpha == alpha){
+			var old_alpha = this._alpha;
+
+
+			if(old_alpha == alpha){
 				return;
 			}
 
-			var old_alpha = this._alpha;
-
-			this._alpha = this._setStyle('opacity', alpha);
-
-			if(old_alpha === 0 && alpha){
+			if((alpha = this._alpha = this._setStyle('opacity', alpha)) && old_alpha === 0){
 				this.dispatchEvent(new OjEvent(OjEvent.SHOW));
 			}
 			else if(!alpha){
@@ -1049,9 +1066,10 @@ OJ.extendClass(
 
 		// Transform Setter & Getters
 		'_updateTransform' : function(){
-			var transform = 'rotate(' + this._rotation + 'deg) translate(' + this._translate + ')';
-
-			var prefix = OJ.getCssPrefix();
+			var rotate = this._rotation ? 'rotate(' + this._rotation + 'deg) ' : '',
+				translate = this._translate ? this._translate.toString() : '',
+				transform = rotate + (isEmpty(translate) ? '' : 'translate(' + translate + ')'),
+				prefix = OJ.getCssPrefix();
 
 			if(prefix == '-moz-'){
 				this._setStyle('MozTransform', transform);
@@ -1089,7 +1107,7 @@ OJ.extendClass(
 			return this._translate;
 		},
 		'setTranslate' : function(val){
-			if(this._translate == val){
+			if(val.isEqualTo(this._translate)){
 				return ;
 			}
 

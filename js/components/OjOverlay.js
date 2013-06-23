@@ -22,16 +22,17 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*message, icon*/){
-			this._super('OjOverlay', '_constructor', []);
-
-			var ln = arguments.length,
+			var args = arguments,
+				ln = arguments.length,
 				icon;
 
+			this._super('OjOverlay', '_constructor', []);
+
 			if(ln){
-				this.setMessage(arguments[0]);
+				this.setMessage(args[0]);
 
 				if(ln > 1){
-					icon = arguments[1];
+					icon = args[1];
 				}
 			}
 

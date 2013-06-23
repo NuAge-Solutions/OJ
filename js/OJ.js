@@ -6,13 +6,17 @@
  */
 window.OJ = function Oj(){
 	return {
-		'_analytics' : null,  '_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
+//		'_analytics' : null,  '_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
+//
+//		'_engine' : null,  '_library' : null,  '_metadata' : null,  '_metas' : null,  '_os' : null,  '_root' : null,
+//
+//		'_theme_elm' : null,    '_tween' : null,
 
-		'_engine' : null,  '_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
+		'_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
 
-		'_is_supported' : true,  '_is_tablet' : false,  '_is_touch_capable' : false,  '_library' : null,  '_loaded' : {},
+		'_is_supported' : true,  '_is_tablet' : false,  '_is_touch_capable' : false,  '_loaded' : {},
 
-		'_metadata' : null,  '_metas' : null,  '_os' : null,  '_protocol' : 'http', '_root' : null,
+		'_protocol' : 'http',
 
 		'_settings' : {
 			'assetsPath' : 'assets',
@@ -36,8 +40,6 @@ window.OJ = function Oj(){
 				'or <a href="http://www.apple.com/safari/">Safari</a>. ' +
 				'You can easily download the latest version by clicking on the name of the browser you wish to use.'
 		},
-
-		'_theme_elm' : null,    '_tween' : null,
 
 		'_viewport' : {
 			'top'    : 0,
@@ -1038,11 +1040,12 @@ window.OJ = function Oj(){
 	OJ._browser_version = detector.version(navigator.userAgent) || detector.version(navigator.appVersion);
 
 	// detect OS
-	var platform = navigator.platform.substring(0, 3).toLowerCase();
+	var platform = navigator.platform.substring(0, 3).toLowerCase(),
+		user_agent =  navigator.userAgent.toLowerCase();
 
-	if(platform == 'and'){
+	if(user_agent.indexOf('android') > -1){
 		OJ._os = OJ.ANDROID;
-		OJ._is_tablet = !(OJ._is_mobile = (navigator.userAgent.indexOf('Mobile') > -1));
+		OJ._is_tablet = !(OJ._is_mobile = (user_agent.indexOf('mobile') > -1));
 		OJ._is_touch_capable = true;
 	}
 	else if(platform == 'iph' || platform == 'ipa' || platform == 'ipo'){
@@ -1096,8 +1099,7 @@ window.OJ = function Oj(){
 			OJ._css_prefix = '-webkit-';
 	}
 
-	// setup browser event listeners
-	window.onresize = function(){
+	OJ._onResize = function(){
 		if(isFunction(OJ.addCss)){
 			var vp = OJ._viewport,
 				w = window.innerWidth ? window.innerWidth : document.body.clientWidth,
@@ -1127,15 +1129,29 @@ window.OJ = function Oj(){
 		}
 	};
 
-	window.onscroll = function(evt){
-		if(OJ){
-			var vp = OJ._viewport;
-			vp.top = window.pageYOffset ? window.pageYOffset : document.body.scrollTop;
-			vp.left = window.pageXOffset ? window.pageXOffset : document.body.scrollLeft;
-			vp.bottom = vp.top + vp.height;
-			vp.right = vp.left + vp.width;
-		}
+	OJ._onScroll = function(evt){
+		var vp = OJ._viewport;
+		vp.top = window.pageYOffset ? window.pageYOffset : document.body.scrollTop;
+		vp.left = window.pageXOffset ? window.pageXOffset : document.body.scrollLeft;
+		vp.bottom = vp.top + vp.height;
+		vp.right = vp.left + vp.width;
 	};
+
+	OJ._onOrientationChange = function(evt){
+		OJ.dispatchEvent(OjOrientationEvent.convertDomEvent(evt));
+	};
+
+	// setup browser event listeners
+	if(window.addEventListener){
+		window.addEventListener('resize', OJ._onResize, false);
+		window.addEventListener('scroll', OJ._onScroll, false);
+		window.addEventListener('orientationchange', OJ._onOrientationChange, false);
+	}
+	else{
+		window.attachEvent('onresize', OJ._onResize, false);
+		window.attachEvent('onscroll', OJ._onScroll, false);
+		window.attachEvent('onorientationchange', OJ._onOrientationChange, false);
+	}
 })();
 
 
@@ -1936,8 +1952,8 @@ function onDomReady(){
 	}
 
 	// setup the css classes for special displays
-	window.onresize();
-	window.onscroll();
+	OJ._onResize(null);
+	OJ._onScroll(null);
 
 	if(OJ.isMobile()){
 		OJ.addCss('is-mobile');

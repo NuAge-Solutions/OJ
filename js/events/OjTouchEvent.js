@@ -7,8 +7,6 @@ OJ.extendClass(
 	OjDomEvent, 'OjTouchEvent',
 	{
 		'_get_props_' : {
-			'layerX'  : NaN,
-			'layerY'  : NaN,
 			'pageX'   : NaN,
 			'pageY'   : NaN
 		},
@@ -33,7 +31,7 @@ OJ.extendClass(
 			var clone = this._super('OjTouchEvent', 'clone', arguments);
 
 			clone._pageX = this._pageX;
-			clone._pageY = this._pagY;
+			clone._pageY = this._pageY;
 
 			return clone;
 		}

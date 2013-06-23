@@ -38,11 +38,11 @@ OJ.extendClass(
 	},
 	{
 		'isDragEvent' : function(type){
-			return type == OjDragEvent.DRAG || type == OjDragEvent.DRAG_END || type == OjDragEvent.DRAG_INIT;
+			return type == OjDragEvent.DRAG || type == OjDragEvent.END || type == OjDragEvent.START;
 		},
 
-		'DRAG'      : 'onDrag',
-		'DRAG_END'  : 'onDragEnd',
-		'DRAG_INIT' : 'onDragInit'
+		'END'   : 'onDragEnd',
+		'MOVE'  : 'onDrag',
+		'START' : 'onDragStart'
 	}
 );

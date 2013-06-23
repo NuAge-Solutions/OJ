@@ -16,10 +16,12 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(){
+			var args = arguments;
+
 			this._super('OjLabel', '_constructor', []);
 
-			if(arguments.length){
-				this.setText(arguments[0]);
+			if(args.length){
+				this.setText(args[0]);
 			}
 		},
 
@@ -30,7 +32,7 @@ OJ.extendComponent(
 			if(!isEmpty(txt)){
 				this.setText(String.string(this._text) + String.string(txt));
 
-				return null;
+				return;
 			}
 
 			return this._super('OjLabel', '_processDomSourceChildren', arguments);

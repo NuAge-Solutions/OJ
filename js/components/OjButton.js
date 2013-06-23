@@ -12,18 +12,20 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*label, icon*/){
+			var args = arguments,
+				ln = args.length;
+
 			this._super('OjButton', '_constructor', []);
 
-			var ln = arguments.length;
-
 			if(ln){
-				this.setText(arguments[0]);
+				this.setText(args[0]);
 
 				if(ln > 1){
-					this.setIcon(arguments[1]);
+					this.setIcon(args[1]);
 				}
 			}
 
+			// force to always listen for click
 			this._proxy.onclick = this._onDomMouseEvent;
 		},
 
@@ -31,6 +33,7 @@ OJ.extendComponent(
 		'removeEventListener' : function(type, context, callback){
 			this._super('OjButton', 'removeEventListener', arguments);
 
+			// force to always listen for click
 			this._proxy.onclick = this._onDomMouseEvent;
 		},
 

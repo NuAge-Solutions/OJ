@@ -171,7 +171,7 @@ OJ.extendClass(
 			this.pane.setHeight.apply(this.pane, arguments);
 
 			if(this._is_displayed){
-				WindowManager.center(this);
+				WindowManager.position(this);
 			}
 		},
 
@@ -182,7 +182,7 @@ OJ.extendClass(
 			this.pane.setWidth.apply(this.pane, arguments);
 
 			if(this._is_displayed){
-				WindowManager.center(this);
+				WindowManager.position(this);
 			}
 		}
 	},

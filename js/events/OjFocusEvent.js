@@ -12,8 +12,12 @@ OJ.extendClass(
 
 			evt = OjDomEvent.normalizeDomEvent(evt);
 
-			if(evt.type == OjDomEvent.FOCUS_IN){ type = OjFocusEvent.IN; }
-			else if(evt.type == OjDomEvent.FOCUS_OUT){ type = OjFocusEvent.OUT; }
+			if(evt.type == OjDomEvent.FOCUS_IN){
+				type = OjFocusEvent.IN;
+			}
+			else if(evt.type == OjDomEvent.FOCUS_OUT){
+				type = OjFocusEvent.OUT;
+			}
 
 			return new OjFocusEvent(type, true, true);
 		},

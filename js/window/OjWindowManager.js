@@ -46,7 +46,7 @@ OJ.extendManager(
 				this._modals = [];
 
 				this._modal_holder = new OjStyleElement();
-				this._modal_holder.addCss('WindowManager');
+				this._modal_holder.addCss(['WindowManager']);
 
 				this._modal_holder.hide();
 
@@ -61,18 +61,20 @@ OJ.extendManager(
 
 
 		'_alert' : function(title, message/*, buttons, cancel_label*/){
-			var ln = arguments.length,
-				buttons = ln > 2 ? arguments[2] : [],
-				cancel_label = 'Ok';
+			var args = arguments,
+				ln = args.length,
+				buttons = ln > 2 ? args[2] : [],
+				cancel_label = 'Ok',
+				alrt;
 
 			if(ln > 3){
-				cancel_label = arguments[3];
+				cancel_label = args[3];
 			}
 			else if(ln > 2){
 				cancel_label = 'Cancel';
 			}
 
-			var alrt = this.makeAlert(title, message, buttons, cancel_label);
+			alrt = this.makeAlert(title, message, buttons, cancel_label);
 
 			if(!buttons && !cancel_label){
 				alrt.hideButtons();
@@ -111,12 +113,55 @@ OJ.extendManager(
 			return Math.round(vp.height * .85);
 		},
 
+		'_isMobileModal' : function(modal){
+			return modal.is('OjModal') && OJ.isMobile()
+		},
+
+		'_transIn' : function(modal){
+			var anim  = new OjFade(modal, OjFade.IN),
+				pane = modal.pane,
+				h, y;
+
+			// transition the alert/modal
+			anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
+			anim.start();
+
+			if(this._isMobileModal(modal)){
+				h = pane.getHeight();
+				y = pane.getY();
+
+				pane.setY(y + h);
+
+				// transition the modal
+				anim = new OjMove(pane, OjMove.Y, y, 250, OjEasing.OUT);
+				anim.start();
+			}
+		},
+
+		'_transOut' : function(modal){
+			var anim = new OjFade(modal, OjFade.OUT),
+				pane = modal.pane,
+				h, y;
+
+			// transition the alert/modal
+			anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
+			anim.start();
+
+			if(this._isMobileAC(modal)){
+				h = pane.getHeight();
+				y = pane.getY();
+
+				// transition the modal
+				anim = new OjMove(modal.pane, OjMove.Y, y + h, 250, OjEasing.OUT);
+				anim.start();
+			}
+		},
+
 		'_onShow' : function(evt){
-			var tween = evt.getCurrentTarget(),
-				modal = tween.getTarget();
+			var modal = evt.getCurrentTarget().getTarget();
 
 			// destroy tween
-			tween = OJ.destroy(tween);
+			evt = OJ.destroy(evt);
 
 			// dispatch show event
 			modal.dispatchEvent(new OjEvent(this.SHOW));
@@ -124,19 +169,19 @@ OJ.extendManager(
 
 
 		'_onHide' : function(evt){
-			var tween = evt.getCurrentTarget(),
-				modal = tween.getTarget();
+			var holder = this._modal_holder,
+				modal = evt.getCurrentTarget().getTarget();
 
 			// remove the modal from the holder
-			this._modal_holder.removeChild(modal);
+			holder.removeChild(modal);
 
 			// destroy the tween
-			tween = OJ.destroy(tween);
+			evt = OJ.destroy(evt);
 
 			// check to see if the modal holder is empty
 			// if it is empty then hide it since there is nothing more to show
-			if(!this._modal_holder.numChildren()){
-				this._modal_holder.hide();
+			if(!holder.numChildren()){
+				holder.hide();
 			}
 
 			// dispatch hide event
@@ -151,7 +196,7 @@ OJ.extendManager(
 		'_onOjReady' : function(evt){
 			this.removeEventListener(OjEvent.READY, this, '_onOjReady');
 
-			document.body.appendChild(this._modal_holder._dom);
+			document.body.appendChild(this._modal_holder.dom());
 
 			this._modal_holder._setIsDisplayed(true);
 		},
@@ -168,21 +213,21 @@ OJ.extendManager(
 		'browser' : function(url, title/*, width, height */){
 			var args = arguments,
 				ln = args.length,
-				iframe = new OjIframe(url);
+				iframe = new OjIframe(url),
+				modal = this.makeModal(title, iframe);
 
 			iframe.setWidth(100, '%');
 			iframe.setHeight(100, '%');
 
-			var modal = this.makeModal(title, iframe);
+			modal.addCss(['browser']);
 			modal.setSelfDestruct(OjAlert.DEEP);
-
 			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
 			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
 
 			return this.show(modal);
 		},
 
-		'center' : function(modal){
+		'position' : function(modal){
 			// position the modal
 			var w = modal.getWidth(),
 				h = modal.getHeight(),
@@ -193,15 +238,37 @@ OJ.extendManager(
 			modal.pane.setY(((h - h2) / 2) * .75);
 		},
 
+		'hide' : function(modal){
+			var modals = this._modals,
+				index;
+
+			if((index = modals.indexOf(modal)) == -1){
+				return;
+			}
+
+			modals.splice(index, 1);
+
+			this._transOut(modal);
+		},
+
+		'hideLoading' : function(/*overlay*/){
+			var args = arguments,
+				overlay = args.length ? args[0] : this._overlay;
+
+			if(overlay){
+				overlay.hide();
+			}
+		},
+
 		'image' : function(url, title/*, width, height*/){
 			var args = arguments,
 				ln = args.length,
-				viewer = new OjImageViewer(url);
+				viewer = new OjImageViewer(url),
+				modal = this.makeModal(title, viewer);
 
 			viewer.setWidth(100, '%');
 			viewer.setHeight(100, '%');
 
-			var modal = this.makeModal(title, viewer);
 			modal.setSelfDestruct(OjAlert.DEEP);
 			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
 			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
@@ -209,9 +276,24 @@ OJ.extendManager(
 			return this.show(modal);
 		},
 
+		'makeAlert' : function(/*title, content*/){
+			return this._alertClass.makeNew(arguments);
+		},
+
+		'makeModal' : function(/*title, content*/){
+			return this._modalClass.makeNew(arguments);
+		},
+
+		'moveToTop' : function(modal){
+			this._modal_holder.moveChild(modal, this._modal_holder.numChildren() - 1);
+		},
+
 		'open' : function(url/*, target*/){
-			if(arguments.length > 1){
-				var target = arguments[1];
+			var args = arguments,
+				target;
+
+			if(args.length > 1){
+				target = args[1];
 
 				if(target != this.NEW){
 					// do something here not sure what
@@ -234,12 +316,14 @@ OJ.extendManager(
 		},
 
 		'show' : function(modal){
+			var holder = this._modal_holder;
+
 			// store the modal
 			this._modals.push(modal);
 
 			// make sure the holder is visible
-			if(!this._modal_holder.isVisible()){
-				this._modal_holder.show();
+			if(!holder.isVisible()){
+				holder.show();
 			}
 
 			// prep the modal
@@ -247,72 +331,30 @@ OJ.extendManager(
 			modal.setAlpha(0);
 
 			// add the modal
-			this._modal_holder.addChild(modal);
+			holder.addChild(modal);
 
-			this.center(modal);
+			this.position(modal);
 
-			// transition the modal
-			var fade = new OjFade(modal, OjFade.IN);
-			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
-			fade.start();
+			this._transIn(modal);
 		},
 
 		'showLoading' : function(/*message, icon*/){
-			if(!this._overlay){
-				this._overlay = new OjOverlay();
-			}
-
 			var args = arguments,
 				ln = args.length,
 				msg = ln ? args[0] : null,
-				icon = ln > 1 ? args[1] : null;
+				icon = ln > 1 ? args[1] : null,
+				overlay = this._overlay;
 
-			this._overlay.setMessage(msg);
-			this._overlay.setIcon(icon);
-
-			this._overlay.show(this._modal_holder);
-		},
-
-		'hide' : function(modal){
-			var index;
-
-			if((index = this._modals.indexOf(modal)) == -1){
-				return;
+			if(!overlay){
+				overlay = this._overlay = new OjOverlay();
 			}
 
-			this._modals.splice(index, 1);
+			overlay.setMessage(msg);
+			overlay.setIcon(icon);
 
-			var fade = new OjFade(modal, OjFade.OUT);
-			fade.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
-			fade.start();
-		},
+			overlay.show(this._modal_holder);
 
-		'hideLoading' : function(){
-			if(this._overlay){
-				this._overlay.hide();
-			}
-		},
-
-		'makeAlert' : function(/*title, content*/){
-			var c = this._alertClass;
-
-			var alrt = new c();
-			alrt._constructor.apply(alrt, arguments);
-
-			return alrt;
-		},
-
-		'makeModal' : function(/*title, content*/){
-			var c = this._modalClass;
-
-			var modal = new c();
-			modal._constructor.apply(modal, arguments);
-
-			return modal;
-		},
-
-		'moveToTop' : function(modal){
-			this._modal_holder.moveChild(modal, this._modal_holder.numChildren() - 1);
+			return overlay;
 		},
 
 

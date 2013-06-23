@@ -14,22 +14,24 @@ OJ.extendClass(
 
 
 		'_constructor' : function(type, item, index/*, old_item, bubbles, cancelable*/){
-			var args = [type], ln = arguments.length;
+			var params = [type],
+				args = arguments,
+				ln = args.length;
 
 			this._item = item;
 
 			this._index = index;
 
 			if(ln > 3){
-				this._oldItem = arguments[3];
+				this._oldItem = args[3];
 
 				if(ln > 4){
-					args = Array.array(arguments);
-					args.splice(1, 3);
+					params = Array.array(args);
+					params.splice(1, 3);
 				}
 			}
 
-			this._super('OjCollectionEvent', '_constructor', args);
+			this._super('OjCollectionEvent', '_constructor', params);
 		}
 	},
 	{

@@ -3,3 +3,6 @@
 
 	overflow: auto;
 }
+.OjView.loading {
+	overflow: hidden;
+}

@@ -13,20 +13,20 @@ OJ.importJs('oj.events.OjTransformEvent');
 OJ.extendClass(
 	OjActionable, 'OjElement',
 	{
-		'_dom' : null,  '_proxy' : null,
+//		'_dom' : null,  '_proxy' : null,
+//
+//		'_move_timer' : null,  '_page_x' : null,  '_page_y' : null,
 
-		'_move_timer' : null,  '_page_x' : null,  '_page_y' : null,
-
-		'_draggable' : false,  '_dragX' : 0,  '_dragY' : 0,
+		'_draggable' : false,  '_dragX' : 0,  '_dragY' : 0,  '_did_drag' : false,
 
 
 		'_constructor' : function(/*source, context*/){
-			this._super('OjElement', '_constructor', []);
-
 			var args = arguments,
 				ln = args.length,
 				source = ln && args[0] ? args[0] : OjElement.elm('div'),
 				context = ln > 1 ? args[1] : null;
+
+			this._super('OjElement', '_constructor', []);
 
 			// set the dom
 			// if no source present then create one
@@ -128,6 +128,8 @@ OJ.extendClass(
 		},
 
 		'_onDrag' : function(evt){
+			this._did_drag = true;
+
 			this.dispatchEvent(
 				new OjDragEvent(
 					OjDragEvent.DRAG,
@@ -137,21 +139,50 @@ OJ.extendClass(
 				)
 			);
 
-			this._dragX = evt.getPageX();
-			this._dragY = evt.getPageY();
+			if(!OJ.isTouchCapable()){
+				this._dragX = evt.getPageX();
+				this._dragY = evt.getPageY();
+			}
 		},
 
 		'_onDragEnd' : function(evt){
-			OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onDrag');
-			OJ.removeEventListener(OjMouseEvent.UP, this, '_onDragEnd');
+			if(!this._did_drag){
+				return;
+			}
+
+			this._did_drag = false;
+
+			if(!OJ.isTouchCapable()){
+				OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onDrag');
+				OJ.removeEventListener(OjMouseEvent.UP, this, '_onDragEnd');
+			}
 
 			this.dispatchEvent(
 				new OjDragEvent(
-					OjDragEvent.DRAG_END,
+					OjDragEvent.END,
 					evt.getPageX() - this._dragX,
 					evt.getPageY() - this._dragY,
 					evt, false, false
 				)
+			);
+		},
+
+		'_onDragStart' : function(evt){
+			this._dragX = evt.getPageX();
+			this._dragY = evt.getPageY();
+
+			if(!OJ.isTouchCapable()){
+				if(this.hasEventListener(OjDragEvent.DRAG)){
+					OJ.addEventListener(OjMouseEvent.MOVE, this, '_onDrag');
+				}
+
+				OJ.addEventListener(OjMouseEvent.UP, this, '_onDragEnd');
+			}
+
+			this.dispatchEvent(new OjDragEvent(OjDragEvent.START, 0, 0, evt, false, false));
+
+			this.dispatchEvent(
+				new OjDragEvent(OjDragEvent.START, 0, 0, evt, false, false)
 			);
 		},
 
@@ -163,24 +194,17 @@ OJ.extendClass(
 
 		'_onMouse' : function(evt){
 			if(evt.getType() == OjMouseEvent.DOWN && this._draggable){
-				this._dragX = evt.getPageX();
-				this._dragY = evt.getPageY();
-
-				if(this.hasEventListener(OjDragEvent.DRAG)){
-					OJ.addEventListener(OjMouseEvent.MOVE, this, '_onDrag');
-				}
-
-				OJ.addEventListener(OjMouseEvent.UP, this, '_onDragEnd');
-
-				this.dispatchEvent(new OjDragEvent(OjDragEvent.DRAG_INIT, 0, 0, evt, false, false));
+				this._onDragStart(evt);
 			}
 
 			return this._onEvent(evt);
 		},
 
 		'_onMoveTick' : function(evt){
-			var page_x = this.getPageX(), page_y = this.getPageY();
-			var delta_x = this._page_x - page_x, delta_y = this._page_y - page_y;
+			var page_x = this.getPageX(),
+				page_y = this.getPageY(),
+				delta_x = this._page_x - page_x,
+				delta_y = this._page_y - page_y;
 
 			if(delta_x || delta_y){
 				this.dispatchEvent(new OjTransformEvent(OjTransformEvent.MOVE, page_x, page_y, delta_x, delta_y));
@@ -191,123 +215,172 @@ OJ.extendClass(
 		},
 
 		'_onTouch' : function(evt){
-			if(evt.getType() == OjTouchEvent.END){
-				var dom_elm = document.elementFromPoint(evt.getPageX(), evt.getPageY());
+			var bubbles = evt.getBubbles(),
+				cancelable = evt.getCancelable(),
+				x = evt.getPageX(),
+				y = evt.getPageY(),
+				type = evt.getType(),
+				dom_elm = document.elementFromPoint(x, y);
 
+			if(type == OjTouchEvent.END){
 				if(dom_elm && OjElement.hasDomElement(this._proxy, dom_elm)){
 					if(this.hasEventListener(OjMouseEvent.UP)){
-						this._onMouse(new OjMouseEvent(OjMouseEvent.UP, evt.getBubbles(), evt.getCancelable(), evt.getPageX(), evt.getPageY()));
+						this._onMouse(new OjMouseEvent(OjMouseEvent.UP, bubbles, cancelable, x, y));
 					}
 
-					if(
-						this.hasEventListener(OjMouseEvent.CLICK) &&
-							evt.getPageX() == this._dragX && evt.getPageY() == this._dragY
-						){
-						this._onMouse(new OjMouseEvent(OjMouseEvent.CLICK, evt.getBubbles(), evt.getCancelable(), evt.getPageX(), evt.getPageY()));
+					if(this.hasEventListener(OjMouseEvent.CLICK) && x == this._dragX && y == this._dragY){
+						this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, bubbles, cancelable, x, y));
 					}
 				}
-			}
-			else if(evt.getType() == OjTouchEvent.START){
-				// store the start so we know on the end if its a move or click
-				this._dragX = evt.getPageX();
-				this._dragY = evt.getPageY();
 
-				// allow this event to go through
+				if(this._draggable){
+					this._onDragEnd(evt);
+				}
+			}
+			else if(type == OjTouchEvent.START){
+				// store the start so we know on the end if its a move or click
+				this._dragX = x;
+				this._dragY = y;
+
+				this._onEvent(new OjMouseEvent(OjMouseEvent.DOWN, bubbles, cancelable, x, y));
+
+				if(this._draggable){
+					this._onDragStart(evt);
+				}
+
+				// always allow this event to go through
 				return true;
 			}
-//				if(evt.getType() == OjMouseEvent.DOWN && this._draggable){
-//					this._dragX = evt.getPageX();
-//					this._dragY = evt.getPageY();
-//
-//					if(this.hasEventListener(OjDragEvent.DRAG)){
-//						OJ.addEventListener(OjMouseEvent.MOVE, this, '_onDrag');
-//					}
-//
-//					OJ.addEventListener(OjMouseEvent.UP, this, '_onDragEnd');
-//
-//					this.dispatchEvent(new OjDragEvent(OjDragEvent.DRAG_INIT, 0, 0, evt, false, false));
-//				}
-//
+			else if(type == OjTouchEvent.MOVE){
+				this._onEvent(new OjMouseEvent(OjMouseEvent.MOVE, bubbles, cancelable, x, y));
+
+				if(this._draggable){
+					this._onDrag(evt);
+				}
+			}
+
 			return this._onEvent(evt);
 		},
 
 
 		// event listener overrides
 		// customize this functionality for dom events so that they work
+		'_updateTouchStartListeners' : function(){
+			var dragEvent = OjDragEvent,
+				mouseEvent = OjMouseEvent;
+
+			if(!this.hasEventListeners(mouseEvent.DOWN, mouseEvent.CLICK, dragEvent.START, dragEvent.DRAG, dragEvent.END)){
+				this._proxy.ontouchstart = null;
+			}
+		},
+
+		'_updateTouchMoveListeners' : function(){
+			var dragEvent = OjDragEvent;
+
+			if(!this.hasEventListeners(OjMouseEvent.MOVE, dragEvent.START, dragEvent.DRAG, dragEvent.END)){
+				this._proxy.ontouchmove = null;
+			}
+		},
+
+		'_updateTouchEndListeners' : function(){
+			var dragEvent = OjDragEvent;
+
+			if(!this.hasEventListeners(OjMouseEvent.UP, dragEvent.START, dragEvent.DRAG, dragEvent.END)){
+				this._proxy.ontouchend = null;
+			}
+		},
+
 		'addEventListener' : function(type){
+			var domEvent = OjDomEvent,
+				dragEvent = OjDragEvent,
+				focusEvent = OjFocusEvent,
+				is_touch = OJ.isTouchCapable(),
+				keyboardEvent = OjKeyboardEvent,
+				mouseEvent = OjMouseEvent,
+				proxy = this._proxy,
+				transformEvent = OjTransformEvent;
+
 			this._super('OjElement', 'addEventListener', arguments);
 
 			// mouse events
-			if(type == OjMouseEvent.CLICK){
-				this._proxy.onclick = this._onDomMouseEvent;
-
-				if(OJ.isTouchCapable()){
-					this._proxy.ontouchstart = this._onDomTouchEvent;
-					this._proxy.ontouchend = this._onDomTouchEvent;
+			if(type == mouseEvent.CLICK){
+				if(is_touch){
+					proxy.ontouchstart = this._onDomTouchEvent;
+					proxy.ontouchend = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onclick = this._onDomMouseEvent;
 				}
 			}
-			else if(type == OjMouseEvent.DOUBLE_CLICK){
-				this._proxy.ondblclick = this._onDomMouseEvent;
+			else if(type == mouseEvent.DOUBLE_CLICK){
+				proxy.ondblclick = this._onDomMouseEvent;
 			}
-			else if(type == OjMouseEvent.DOWN){
-				this._proxy.onmousedown = this._onDomMouseEvent;
-
-				if(OJ.isTouchCapable()){
-					this._proxy.ontouchstart = this._onDomTouchEvent;
+			else if(type == mouseEvent.DOWN){
+				if(is_touch){
+					proxy.ontouchstart = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousedown = this._onDomMouseEvent;
 				}
 			}
-			else if(type == OjMouseEvent.MOVE){
-				this._proxy.onmousemove = this._onDomMouseEvent;
-
-				if(OJ.isTouchCapable()){
-					this._proxy.ontouchmove = this._onDomTouchEvent;
+			else if(type == mouseEvent.MOVE){
+				if(is_touch){
+					proxy.ontouchmove = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousemove = this._onDomMouseEvent;
 				}
 			}
-			else if(type == OjMouseEvent.OUT){
-				this._proxy.onmouseout = this._onDomMouseEvent;
+			else if(type == mouseEvent.OUT){
+				proxy.onmouseout = this._onDomMouseEvent;
 			}
-			else if(type == OjMouseEvent.OVER){
-				this._proxy.onmouseover = this._onDomMouseEvent;
+			else if(type == mouseEvent.OVER){
+				proxy.onmouseover = this._onDomMouseEvent;
 			}
-			else if(type == OjMouseEvent.UP){
-				this._proxy.onmouseup = this._onDomMouseEvent;
-
-				if(OJ.isTouchCapable()){
-					this._proxy.ontouchend = this._onDomTouchEvent;
+			else if(type == mouseEvent.UP){
+				if(is_touch){
+					proxy.ontouchend = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmouseup = this._onDomMouseEvent;
 				}
 			}
 
-			else if(OjDragEvent.isDragEvent(type)){
+			// drag events
+			else if(dragEvent.isDragEvent(type)){
 				this._draggable = true;
 
-				this._proxy.onmousedown = this._onDomMouseEvent;
-
-				if(OJ.isTouchCapable()){
-					this._proxy.ontouchstart = this._onDomTouchEvent;
+				if(is_touch){
+					proxy.ontouchstart = this._onDomTouchEvent;
+					proxy.ontouchmove = this._onDomTouchEvent;
+					proxy.ontouchend = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousedown = this._onDomMouseEvent;
 				}
 			}
 
 			// keyboard events
-			else if(type == OjKeyboardEvent.DOWN){
-				this._proxy.onkeydown = this._onDomKeyboardEvent;
+			else if(type == keyboardEvent.DOWN){
+				proxy.onkeydown = this._onDomKeyboardEvent;
 			}
-			else if(type == OjKeyboardEvent.PRESS){
-				this._proxy.onkeypress = this._onDomKeyboardEvent;
+			else if(type == keyboardEvent.PRESS){
+				proxy.onkeypress = this._onDomKeyboardEvent;
 			}
-			else if(type == OjKeyboardEvent.UP){
-				this._proxy.onkeyup = this._onDomKeyboardEvent;
+			else if(type == keyboardEvent.UP){
+				proxy.onkeyup = this._onDomKeyboardEvent;
 			}
 
 			// focus events
-			else if(type == OjFocusEvent.IN){
-				this._proxy.onfocus = this._onDomFocusEvent;
+			else if(type == focusEvent.IN){
+				proxy.onfocus = this._onDomFocusEvent;
 			}
-			else if(type == OjFocusEvent.OUT){
-				this._proxy.onblur = this._onDomFocusEvent;
+			else if(type == focusEvent.OUT){
+				proxy.onblur = this._onDomFocusEvent;
 			}
 
 			// transform events
-			else if(type == OjTransformEvent.MOVE){
+			else if(type == transformEvent.MOVE){
 				if(!this._move_timer){
 					this._move_timer = new OjTimer(250, 0);
 					this._move_timer.addEventListener(OjTimer.TICK, this, '_onMoveTick');
@@ -318,131 +391,136 @@ OJ.extendClass(
 					this._move_timer.start();
 				}
 			}
-			else if(type == OjTransformEvent.RESIZE && this._proxy != document.body){
-				this._proxy.onresize = this._onDomEvent;
+			else if(type == transformEvent.RESIZE && this._proxy != document.body){
+				proxy.onresize = this._onDomEvent;
 			}
 
 			// misc dom events
-			else if(type == OjDomEvent.CHANGE){
-				this._proxy.onchange = this._onDomEvent;
+			else if(type == domEvent.CHANGE){
+				proxy.onchange = this._onDomEvent;
 			}
 		},
 
 		'removeEventListener' : function(type, context, callback){
+			var domEvent = OjDomEvent,
+				dragEvent = OjDragEvent,
+				focusEvent = OjFocusEvent,
+				keyboardEvent = OjKeyboardEvent,
+				mouseEvent = OjMouseEvent,
+				proxy = this._proxy,
+				transformEvent = OjTransformEvent;
+
 			this._super('OjElement', 'removeEventListener', arguments);
 
 			// mouse events
-			if(type == OjMouseEvent.CLICK){
-				if(!this.hasEventListener(OjMouseEvent.CLICK)){
-					this._proxy.onclick = null;
+			if(type == mouseEvent.CLICK){
+				if(!this.hasEventListener(mouseEvent.CLICK)){
+					proxy.onclick = null;
 
-					if(OJ.isTouchCapable() && !this.hasEventListener(OjMouseEvent.UP)){
-						this._proxy.ontouchend = null;
-					}
+					this._updateTouchStartListeners();
+					this._updateTouchEndListeners();
 				}
 			}
-			else if(type == OjMouseEvent.DOUBLE_CLICK){
-				if(!this.hasEventListener(OjMouseEvent.DOUBLE_CLICK)){
-					this._proxy.ondblclick = null;
-				}
-			}
-			else if(type == OjMouseEvent.DOWN){
-				if(!this.hasEventListener(OjMouseEvent.DOWN) && !this.hasEventListener(OjDragEvent.DRAG)){
-					this._proxy.onmousedown = null;
+			else if(type == mouseEvent.DOUBLE_CLICK){
+				if(!this.hasEventListener(mouseEvent.DOUBLE_CLICK)){
+					proxy.ondblclick = null;
 
-					if(OJ.isTouchCapable()){
-						this._proxy.ontouchstart = null;
-					}
+					this._updateTouchStartListeners();
+					this._updateTouchEndListeners();
 				}
 			}
-			else if(type == OjMouseEvent.MOVE){
-				if(!this.hasEventListener(OjMouseEvent.MOVE)){
-					this._proxy.onmousemove = null;
+			else if(type == mouseEvent.DOWN){
+				if(!this.hasEventListeners(mouseEvent.DOWN, dragEvent.DRAG)){
+					proxy.onmousedown = null;
 
-					if(OJ.isTouchCapable()){
-						this._proxy.ontouchmove = null;
-					}
+					this._updateTouchStartListeners();
 				}
 			}
-			else if(type == OjMouseEvent.OUT){
-				if(!this.hasEventListener(OjMouseEvent.OUT)){
-					this._proxy.onmouseout = null;
-				}
-			}
-			else if(type == OjMouseEvent.OVER){
-				if(!this.hasEventListener(OjMouseEvent.OVER)){
-					this._proxy.onmouseover = null;
-				}
-			}
-			else if(type == OjMouseEvent.UP){
-				if(!this.hasEventListener(OjMouseEvent.UP)){
-					this._proxy.onmouseup = null;
+			else if(type == mouseEvent.MOVE){
+				if(!this.hasEventListener(mouseEvent.MOVE)){
+					proxy.onmousemove = null;
 
-					if(OJ.isTouchCapable() && !this.hasEventListener(OjMouseEvent.CLICK)){
-						this._proxy.ontouchend = null;
-					}
+					this._updateTouchListeners();
+				}
+			}
+			else if(type == mouseEvent.OUT){
+				if(!this.hasEventListener(mouseEvent.OUT)){
+					proxy.onmouseout = null;
+				}
+			}
+			else if(type == mouseEvent.OVER){
+				if(!this.hasEventListener(mouseEvent.OVER)){
+					proxy.onmouseover = null;
+				}
+			}
+			else if(type == mouseEvent.UP){
+				if(!this.hasEventListener(mouseEvent.UP)){
+					proxy.onmouseup = null;
+
+					this._updateTouchEndListeners();
 				}
 			}
 
-			else if(OjDragEvent.isDragEvent(type)){
-				if(
-					!this.hasEventListener(OjDragEvent.DRAG) &&
-						!this.hasEventListener(OjDragEvent.DRAG_END) &&
-						!this.hasEventListener(OjDragEvent.DRAG_INIT)
-					){
+			// drag events
+			else if(dragEvent.isDragEvent(type)){
+				if(!this.hasEventListeners(dragEvent.DRAG, dragEvent.END, dragEvent.START)){
 					this._draggable = false;
 
-					if(!this.hasEventListener(OjMouseEvent.DOWN)){
-						this._proxy.onmousedown = null;
+					if(!this.hasEventListener(mouseEvent.DOWN)){
+						proxy.onmousedown = null;
 					}
+
+					this._updateTouchStartListeners();
+					this._updateTouchMoveListeners();
+					this._updateTouchEndListeners();
 				}
 			}
 
 			// keyboard events
-			else if(type == OjKeyboardEvent.DOWN){
-				if(!this.hasEventListener(OjKeyboardEvent.DOWN)){
-					this._proxy.onkeydown = null;
+			else if(type == keyboardEvent.DOWN){
+				if(!this.hasEventListener(keyboardEvent.DOWN)){
+					proxy.onkeydown = null;
 				}
 			}
-			else if(type == OjKeyboardEvent.PRESS){
-				if(!this.hasEventListener(OjKeyboardEvent.PRESS)){
-					this._proxy.onkeypress = null;
+			else if(type == keyboardEvent.PRESS){
+				if(!this.hasEventListener(keyboardEvent.PRESS)){
+					proxy.onkeypress = null;
 				}
 			}
-			else if(type == OjKeyboardEvent.UP){
-				if(!this.hasEventListener(OjKeyboardEvent.UP)){
-					this._proxy.onkeyup = null;
+			else if(type == keyboardEvent.UP){
+				if(!this.hasEventListener(keyboardEvent.UP)){
+					proxy.onkeyup = null;
 				}
 			}
 
 			// focus events
-			else if(type == OjFocusEvent.IN){
-				if(!this.hasEventListener(OjFocusEvent.IN)){
-					this._proxy.onfocus = null;
+			else if(type == focusEvent.IN){
+				if(!this.hasEventListener(focusEvent.IN)){
+					proxy.onfocus = null;
 				}
 			}
-			else if(type == OjFocusEvent.OUT){
-				if(!this.hasEventListener(OjFocusEvent.OUT)){
-					this._proxy.onblur = null;
+			else if(type == focusEvent.OUT){
+				if(!this.hasEventListener(focusEvent.OUT)){
+					proxy.onblur = null;
 				}
 			}
 
 			// transform event
-			else if(type == OjTransformEvent.MOVE){
-				if(!this.hasEventListener(OjTransformEvent.MOVE)){
-					OJ.destroy(this._move_timer);
+			else if(type == transformEvent.MOVE){
+				if(!this.hasEventListener(transformEvent.MOVE)){
+					this._unset('_move_timer');
 				}
 			}
-			else if(type == OjTransformEvent.RESIZE){
-				if(!this.hasEventListener(OjTransformEvent.RESIZE)){
-					this._proxy.onresize = null;
+			else if(type == transformEvent.RESIZE){
+				if(!this.hasEventListener(transformEvent.RESIZE)){
+					proxy.onresize = null;
 				}
 			}
 
 			// misc dom events
-			else if(type == OjDomEvent.CHANGE){
-				if(!this.hasEventListener(OjDomEvent.CHANGE)){
-					this._proxy.onchange = null;
+			else if(type == domEvent.CHANGE){
+				if(!this.hasEventListener(domEvent.CHANGE)){
+					proxy.onchange = null;
 				}
 			}
 		},
@@ -454,7 +532,9 @@ OJ.extendClass(
 		},
 
 		'inDom' : function(){
-			return this._dom.ownerDocument && isObject(this._dom.ownerDocument) && this._dom.parentNode ? true : false;
+			var dom = this._dom;
+
+			return dom.ownerDocument && isObject(dom.ownerDocument) && dom.parentNode ? true : false;
 		},
 
 		'hasDomElement' : function(dom_elm){
@@ -498,13 +578,14 @@ OJ.extendClass(
 		'_elms' : {},
 
 		'byId' : function(id){
-			if(this._elms[id]){
-				return this._elms[id];
+			var elms = this._elms,
+				elm;
+
+			if(elms[id]){
+				return elms[id];
 			}
 
-			var elm = document.getElementById(id);
-
-			return elm && elm.ojElm ? this._elms[elm.ojElm] : null;
+			return (elm = document.getElementById(id)) && elm.ojElm ? elms[elm.ojElm] : null;
 		},
 
 		'elm' : function(tag){

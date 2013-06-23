@@ -9,7 +9,7 @@ OJ.importJs('oj.fx.OjEasing');
 OJ.importJs('oj.fx.OjFade');
 OJ.importJs('oj.fx.OjMove');
 OJ.importJs('oj.fx.OjResize');
-OJ.importJs('oj.fx.Ojtransition');
+OJ.importJs('oj.fx.OjTransition');
 OJ.importJs('oj.fx.OjTweenSet');
 
 OJ.importCss('oj.components.OjStack');
@@ -35,13 +35,18 @@ OJ.extendComponent(
 				'transition'     : null
 			},
 
-			'_active_elm' : null,  '_current_index' : 0,  '_deferred_active' : null,
+//			'_active_elm' : null,  '_deferred_active' : null,  '_prev_active' : null,
+//
+//			'_trans_in' : null,  '_trans_out' : null,
 
-			'_prev_active' : null,  '_prev_index' : -1,  '_trans_in' : null,  '_trans_out' : null,
+			'_current_index' : 0,  '_prev_index' : -1,
 
 
 			// Construction & Destruction Functions
 			'_constructor' : function(/*items, transition, item_renderer*/){
+				var args = arguments,
+					ln = args.length;
+
 				this._super('OjStack', '_constructor', []);
 
 				// setup the elm function overrides
@@ -62,9 +67,6 @@ OJ.extendComponent(
 				};
 
 				// set the default transition mode
-				var args = arguments,
-					ln = args.length;
-
 				if(ln > 2){
 					this.setItemRenderer(args[2]);
 				}
@@ -75,7 +77,8 @@ OJ.extendComponent(
 			},
 
 			'_destructor' : function(){
-				var args = arguments,
+				var ln,
+					args = arguments,
 					depth = args.length && args[0];
 
 				// unset transitions
@@ -98,7 +101,7 @@ OJ.extendComponent(
 
 				// unset views
 				if(depth > 1){
-					var ln = this.numElms();
+					ln = this.numElms();
 
 					for(; ln--;){
 						OJ.destroy(this.getElmAt(ln), depth);
@@ -110,7 +113,7 @@ OJ.extendComponent(
 				// remove object references
 				this._controller = this._transition = this._items = null;
 
-				return this._super('OjStack', '_destructor', arguments);
+				return this._super('OjStack', '_destructor', args);
 			},
 
 
@@ -118,15 +121,15 @@ OJ.extendComponent(
 			'_setElmFuncs' : function(container){ },
 
 			'_callElmFunc' : function(func, args){
+				var trans = this._transition,
+					ln = args.length,
+					index = -1;
+
 				if(!this._elm_funcs[func]){
 					return;
 				}
 
 				// detect transition flag
-				var trans = this._transition,
-					ln = args.length,
-					index = -1;
-
 				switch(func){
 					case 'removeAllElms':
 						index = 0;
@@ -146,15 +149,15 @@ OJ.extendComponent(
 						if(ln > 1){
 							args[1] = this._processIndex(args[1]);
 						}
+
 					case 'moveElm':
 					case 'replaceElm':
-
 						index = 2;
 					break;
 
 					case 'getElmAt':
 						if(ln){
-							args[0] = this._processIndex(args[0]);
+							this[0] = this._processIndex(args[0]);
 						}
 					break;
 				}
@@ -192,7 +195,6 @@ OJ.extendComponent(
 					ln = children.length,
 					i = 0, child;
 
-
 				for(; i < ln; i++){
 					if(child = this._processDomSourceChild(children[i], context)){
 						// remove the child from the dom source
@@ -211,8 +213,6 @@ OJ.extendComponent(
 
 			// Helper Functions
 			'_addActive' : function(item, index){
-				var renderer = this._itemRenderer;
-
 				this._active = item;
 				this._activeIndex = index;
 
@@ -234,16 +234,18 @@ OJ.extendComponent(
 			},
 
 			'_makeTransIn' : function(direction){
+				var amount = 0, elm,
+					container = this.container;
+
 				this._unset('_trans_in');
 
 				if(!direction){
 					return null;
 				}
 
-				var amount = 0,
-					elm = this.container.getChildAt(
-						Math.bounds(this.container.numChildren() - 1, 0, 1)
-					);
+				elm = container.getChildAt(
+					Math.bounds(container.numChildren() - 1, 0, 1)
+				);
 
 				switch(this._transition.getEffect()){
 					case OjTransition.FADE:
@@ -255,11 +257,11 @@ OJ.extendComponent(
 					break;
 
 					case OjTransition.SLIDE_HORZ:
-						elm.setX(-1 * direction * this.container.getWidth());
+						elm.setX(-1 * direction * container.getWidth());
 					break;
 
 					case OjTransition.SLIDE_VERT:
-						elm.setY(-1 * direction * this.container.getHeight());
+						elm.setY(-1 * direction * container.getHeight());
 					break;
 				}
 
@@ -278,18 +280,19 @@ OJ.extendComponent(
 			},
 
 			'_makeTransOut' : function(direction){
-				this._unset('_trans_out');
-
 				var amount = 0,
-					elm = this.container.getChildAt(0);
+					container = this.container,
+					elm = container.getChildAt(0);
+
+				this._unset('_trans_out');
 
 				switch(this._transition.getEffect()){
 					case OjTransition.SLIDE_HORZ:
-						amount = elm.getX() + (direction * this.container.getWidth());
+						amount = elm.getX() + (direction * container.getWidth());
 					break;
 
 					case OjTransition.SLIDE_VERT:
-						amount = elm.getY() + (direction * this.container.getHeight());
+						amount = elm.getY() + (direction * container.getHeight());
 					break;
 				}
 
@@ -327,11 +330,13 @@ OJ.extendComponent(
 			},
 
 			'_prepareItems' : function(){
+				var items;
+
 				if(this._items){
 					return;
 				}
 
-				var items = (this._items = new OjCollection());
+				items = (this._items = new OjCollection());
 
 				items.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
 				items.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
@@ -355,11 +360,13 @@ OJ.extendComponent(
 
 			'_removeActive' : function(/*item*/){
 				var args = arguments,
+					renderer, elm,
 					item = args.length ? args[0] : this.getItemAt(this._activeIndex);
 
 				if(item){
-					var renderer = this._itemRenderer,
-						elm = item;
+					renderer = this._itemRenderer;
+
+					elm = item;
 
 					// find the matching elm
 					if(renderer){
@@ -425,14 +432,13 @@ OJ.extendComponent(
 			},
 
 			'_onItemRemove' : function(evt){
-				var item = evt.getItem(),
+				var ln,
+					item = evt.getItem(),
 					index = evt.getIndex();
 
 				this.dispatchEvent(new OjStackEvent(OjStackEvent.REMOVE, item, this._transition, index));
 
 				if(this._active == item){
-					var ln;
-
 					if(this._current_index){
 						this.setActiveIndex(this._current_index - 1);
 					}
@@ -531,6 +537,8 @@ OJ.extendComponent(
 
 			// Getter & Setter Functions
 			'setActiveIndex' : function(val/*, transition = true*/){
+				var trans, trans_diff, item, direction, evt;
+
 				// check for change
 				if(this._current_index == val && this._active){
 					return;
@@ -544,8 +552,8 @@ OJ.extendComponent(
 				}
 
 				// handle custom transition if it exists
-				var trans = this._transition,
-					trans_diff = arguments.length > 1;
+				trans = this._transition;
+				trans_diff = arguments.length > 1;
 
 				if(trans_diff){
 					this.setTransition(this._processTransParam(arguments[1]));
@@ -553,8 +561,7 @@ OJ.extendComponent(
 
 				this._deferred_active = null;
 
-				var item,
-					direction = this._alwaysTrans ? 1 : 0;
+				direction = this._alwaysTrans ? 1 : 0;
 
 				this._current_index = val;
 				this._prev_index = -1;
@@ -581,7 +588,7 @@ OJ.extendComponent(
 				val = this._processIndex(val);
 
 				// create the change event
-				var evt = new OjStackEvent(OjStackEvent.CHANGE, item = this.getItemAt(val), this._transition, val, this._prev_index);
+				evt = new OjStackEvent(OjStackEvent.CHANGE, item = this.getItemAt(val), this._transition, val, this._prev_index);
 
 				this._addActive(item, val);
 

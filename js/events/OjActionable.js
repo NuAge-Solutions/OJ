@@ -67,6 +67,32 @@ OJ.extendClass(
 			return EventManager.hasEventListener(this._eventProxy, type);
 		},
 
+		'hasEventListeners' : function(type/*|types, type*/){
+			var args = arguments,
+				ln = args.length;
+
+			if(ln == 1){
+				if(isArray(args[0])){
+					args = args[0];
+
+					ln = args.length;
+				}
+				else{
+					args = [args[0]];
+
+					ln = 1;
+				}
+			}
+
+			for(; ln--;){
+				if(!EventManager.hasEventListener(this._eventProxy, args[ln])){
+					return false;
+				}
+			}
+
+			return true;
+		},
+
 		'removeAllListeners' : function(){
 			return EventManager.removeAllListeners(this._eventProxy);
 		},

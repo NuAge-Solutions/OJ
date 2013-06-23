@@ -31,8 +31,6 @@ OJ.extendClass(
 		},
 
 		'convertDomEvent' : function(evt){
-			var type;
-
 			evt = OjDomEvent.normalizeDomEvent(evt);
 
 			return new OjDomEvent(evt.type, true, true);
@@ -66,6 +64,9 @@ OJ.extendClass(
 		// touch events
 		'TOUCH_START' : 'touchstart',
 		'TOUCH_MOVE'  : 'touchmove',
-		'TOUCH_END'   : 'touchend'
+		'TOUCH_END'   : 'touchend',
+
+		// orientation events
+		'ORIENTATION_CHANGE' : 'orientationchange'
 	}
 );

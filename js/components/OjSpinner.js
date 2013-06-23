@@ -1,3 +1,6 @@
+OJ.importJs('oj.dom.OjCssTranslate');
+OJ.importJs('oj.timer.OjTimer');
+
 OJ.importCss('oj.components.OjSpinner');
 
 
@@ -14,14 +17,13 @@ OJ.extendComponent(
 
 		'_position' : 0,  '_template' : 'oj.components.OjSpinner',
 
-		'_timer' : null,  '_running' : false,
-
 
 		'_constructor' : function(/*tint, period, num_blades*/){
-			this._super('OjSpinner', '_constructor', []);
 			var args = arguments,
 				ln = args.length,
 				num_blades = 13;
+
+			this._super('OjSpinner', '_constructor', []);
 
 			if(ln){
 				this.setTint(args[0]);
@@ -35,6 +37,8 @@ OJ.extendComponent(
 				}
 			}
 
+			this._translate = new OjCssTranslate(70, 0, '%');
+
 			// setup the timer
 			this._timer = new OjTimer(1000, 0);
 			this._timer.addEventListener(OjTimer.TICK, this, '_onTimer');
@@ -47,20 +51,19 @@ OJ.extendComponent(
 		},
 
 		'_destructor' : function(){
-			OJ.destroy(this._timer);
+			this._unset('_timer');
 
 			return this._super('OjSpinner', '_destructor', arguments);
 		},
 
 
 		'_setIsDisplayed' : function(){
+			var timer = this._timer;
+
 			this._super('OjSpinner', '_setIsDisplayed', arguments);
 
-			if(this._is_displayed){
-				this._timer.start();
-			}
-			else{
-				this._timer.stop();
+			if(timer){
+				timer[this._is_displayed ? 'start' : 'stop']();
 			}
 		},
 
@@ -90,7 +93,7 @@ OJ.extendComponent(
 
 				var ln = this._numBlades, elm, pos;
 
-				while(ln-- > 0){
+				for(; ln--;){
 					elm = this.wrapper.getChildAt(ln);
 
 					// calculate the translated position
@@ -144,6 +147,8 @@ OJ.extendComponent(
 		},
 
 		'setNumBlades' : function(val){
+			var ln, elm, section;
+
 			if(this._numBlades == val){
 				return;
 			}
@@ -151,14 +156,14 @@ OJ.extendComponent(
 			this._numBlades = val;
 
 			// redraw the blades
-			var ln = this._numBlades, section = 360 / ln;
-			var elm;
+			ln = this._numBlades;
+			section = 360 / ln;
 
 			for(; ln--;){
 				elm = new OjStyleElement();
 				elm.addCss('blade');
 				elm.setRotation(section * ln);
-				elm.setTranslate('70%, 0px');
+				elm.setTranslate(this._translate);
 				elm.setBackgroundColor(this._tint);
 
 				this.wrapper.addChild(elm);
@@ -183,15 +188,17 @@ OJ.extendComponent(
 		},
 
 		'setTint' : function(val){
+			var ln;
+
 			if(this._tint == val){
 				return;
 			}
 
 			this._tint = val;
 
-			var ln = this._numBlades, elm, pos;
+			ln = this._numBlades;
 
-			while(ln-- > 0){
+			for(; ln--;){
 				this.wrapper.getChildAt(ln).setBackgroundColor(this._tint);
 			}
 		}

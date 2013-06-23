@@ -19,8 +19,10 @@ OJ.extendClass(
 
 
 		'attr' : function(attr /*, val*/){
-			if(arguments.length > 1){
-				this._xml.setAttribute(attr, arguments[1]);
+			var args = arguments;
+
+			if(args.length > 1){
+				this._xml.setAttribute(attr, args[1]);
 
 				return val;
 			}
@@ -29,14 +31,16 @@ OJ.extendClass(
 		},
 
 		'query' : function(xpath /*, limit=0*/){
-			var i = 0, limit = arguments.length > 1 ? arguments[1] : 0;
-			var result, results = [];
+			var args = arguments,
+				i = 0, ln, xresult,
+				limit = args.length > 1 ? args[1] : 0,
+				result, results = [];
 
 			// ie implementation
 			if(!window.DOMParser){
 				results = this._xml.selectNodes(xpath);
 
-				var ln = results.length;
+				ln = results.length;
 
 				for(; i < ln && (!limit || i < limit); i++){
 					results[i] = new OjXml(results[i]);
@@ -46,13 +50,13 @@ OJ.extendClass(
 			}
 
 			// all other browser implementations
-			var xresult = (this._xml.ownerDocument ? this._xml.ownerDocument : this._xml).evaluate('.' + xpath, this._xml, null, XPathResult.ANY_TYPE, null);
+			xresult = (this._xml.ownerDocument ? this._xml.ownerDocument : this._xml).evaluate('.' + xpath, this._xml, null, XPathResult.ANY_TYPE, null);
 
 			if(
 				xresult.resultType == XPathResult.ORDERED_NODE_ITERATOR_TYPE ||
 				xresult.resultType == XPathResult.UNORDERED_NODE_ITERATOR_TYPE
 			){
-				while((result = xresult.iterateNext()) && (!limit || i++ < limit)){
+				for(; (result = xresult.iterateNext()) && (!limit || i++ < limit);){
 					results.push(new OjXml(result));
 				}
 
@@ -75,10 +79,11 @@ OJ.extendClass(
 		},
 
 		'value' : function(/*xpath, value*/){
-			if(arguments.length){
-				var xpath = arguments[0];
+			var args = arguments,
+				result;
 
-				var result = this.query('/' + xpath, 1);
+			if(args.length){
+				result = this.query('/' + args[0], 1);
 
 				return result ? result.value() : null;
 			}

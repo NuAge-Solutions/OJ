@@ -17,31 +17,32 @@ OJ.extendComponent(
 			'itemRenderer' : OjListItem
 		},
 
-		'_item_events' : null,
+//		'_item_events' : null,
 
 
 		'_constructor' : function(/*data_provider, item_renderer, direction*/){
+			var args = arguments,
+				ln = arguments.length;
+
 			this._super('OjList', '_constructor', []);
 
 			// setup the display
-			this.addCss('vertical');
-			this.container.addCss('items', 'cf');
+			this.addCss(['vertical']);
+			this.container.addCss(['items', 'cf']);
 
 			// process arguments
 			this._item_events = {};
 
-			var ln = arguments.length;
-
 			if(ln){
 				if(ln > 1){
-					this.setItemRenderer(arguments[1]);
+					this.setItemRenderer(args[1]);
 
 					if(ln > 2){
-						this.setDirection(arguments[2]);
+						this.setDirection(args[2]);
 					}
 				}
 
-				this.setDataProvider(arguments[0]);
+				this.setDataProvider(args[0]);
 			}
 			else{
 				this.setDataProvider(new OjCollection());
@@ -50,13 +51,12 @@ OJ.extendComponent(
 
 
 		'_createItem' : function(data, index){
-			var item = new this._itemRenderer(this, data);
+			var key,
+				item = new this._itemRenderer(this, data);
 
 			this.addElmAt(item, index);
 
 			// add event listeners that have been added to the others
-			var key;
-
 			for(key in this._item_events){
 				item.addEventListener(key, this, this._item_events[key]);
 			}
@@ -65,9 +65,7 @@ OJ.extendComponent(
 		},
 
 		'_destroyItem' : function(index){
-			OJ.destroy(
-				this.removeElmAt(index), true
-			);
+			OJ.destroy(this.removeElmAt(index), true);
 		},
 
 		'_redrawItem' : function(item, data, index){
@@ -83,7 +81,10 @@ OJ.extendComponent(
 		},
 
 		'_redrawItems' : function(){
-			var new_ln = this.numItems(), old_ln = this.numElms(), delta = new_ln - old_ln, i;
+			var new_ln = this.numItems(),
+				old_ln = this.numElms(),
+				delta = new_ln - old_ln,
+				i;
 
 			if(delta > 0){
 				for(i = 0; i < delta; i++){
@@ -91,14 +92,14 @@ OJ.extendComponent(
 				}
 			}
 			else if(delta < 0){
-				while(old_ln-- > new_ln){
+				for(; old_ln-- > new_ln;){
 					this._destroyItem(old_ln);
 				}
 
 				old_ln = new_ln;
 			}
 
-			while(old_ln-- > 0){
+			for(; old_ln--;){
 				this._redrawItem(this.getElmAt(old_ln), this.getItemAt(old_ln), old_ln);
 			}
 		},
@@ -196,7 +197,8 @@ OJ.extendComponent(
 
 		// event listener functions
 		'addEventListener' : function(type, target, func){
-			var item_evt, item_callback;
+			var ln,
+				item_evt, item_callback;
 
 			if(type == OjListEvent.ITEM_CLICK){
 				item_evt = OjMouseEvent.CLICK;
@@ -212,9 +214,8 @@ OJ.extendComponent(
 			}
 
 			if(item_evt && !this._item_events[item_evt]){
-				var ln = this.numItems();
-
-				while(ln-- > 0){
+				ln = this.numItems();
+				for(; ln--;){
 					this.getElmAt(ln).addEventListener(item_evt, this, item_callback);
 				}
 
@@ -274,7 +275,7 @@ OJ.extendComponent(
 		'_onItemMove' : function(evt){
 			var ln = this.numItems(), i, item;
 
-			while(ln-- > 0){
+			for(; ln--;){
 				item = this.getElmAt(ln);
 
 				if(item.getData() == evt.getItem()){
@@ -289,7 +290,7 @@ OJ.extendComponent(
 						ln = evt.getIndex();
 					}
 
-					while(ln-- > i){
+					for(; ln-- > i;){
 						this._updateClasses(this.getElmAt(ln), ln);
 					}
 
@@ -364,7 +365,7 @@ OJ.extendComponent(
 			this._dataProvider.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
 			this._dataProvider.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
 
-			this.redraw();
+			this.redraw(true);
 		},
 
 

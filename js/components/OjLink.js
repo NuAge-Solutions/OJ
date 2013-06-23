@@ -20,19 +20,20 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*label, url, target*/){
+			var args = arguments,
+				ln = args.length;
+
 			this._super('OjLink', '_constructor', []);
 
 			// process arguments
-			var ln = arguments.length;
-
 			if(ln){
-				this.setText(arguments[0]);
+				this.setText(args[0]);
 
 				if(ln > 1){
-					this.setUrl(arguments[1]);
+					this.setUrl(args[1]);
 
 					if(ln > 2){
-						this.setTarget(arguments[2]);
+						this.setTarget(args[2]);
 					}
 				}
 			}

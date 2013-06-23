@@ -18,6 +18,9 @@ OJ.extendClass(
 
 
 			'_constructor' : function(/*title, view*/){
+				var args = arguments,
+					ln = args.length;
+
 				this._super('OjModal', '_constructor', []);
 
 				// setup controller stack relationship
@@ -37,14 +40,16 @@ OJ.extendClass(
 				this.showButtons(this._show_buttons);
 
 				// process arguments
-				var ln = arguments.length;
-
 				if(ln){
 					if(ln > 1){
-						this.addView(arguments[1]);
+						this.addView(args[1]);
 					}
 
-					this.setTitle(arguments[0]);
+					this.setTitle(args[0]);
+				}
+
+				if(OJ.isMobile()){
+					this.bar.setCancelLabel('&#10006');
 				}
 			},
 

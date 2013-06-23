@@ -253,6 +253,18 @@ window.OjIFlowNavController = {
 		}
 
 		this.title.setText(this._title = title);
+	},
+
+	'setCancelLabel' : function(val){
+		if(this._cancelLabel == val){
+			return;
+		}
+
+		this._cancelLabel = val;
+
+		if(this._cancel_btn){
+			this._cancel_btn.setLabel(val);
+		}
 	}
 };
 

@@ -48,20 +48,6 @@ OJ.extendClass(
 
 		'_processDomSourceAttributes' : function(dom, context){
 			this._processAttributes(dom, context);
-//
-//			var attrs = dom.attributes,
-//				ln = attrs.length,
-//				attr, nm, val;
-//
-//			for(; ln--;){
-//				attr = attrs[ln];
-//				nm = attr.nodeName;
-//				val = attr.value;
-//
-//				if(this._processAttribute(attr, context)){
-//					dom.removeAttribute(nm);
-//				}
-//			}
 		},
 
 		'_processDomSourceChild' : function(dom_elm, context){
@@ -111,14 +97,14 @@ OJ.extendClass(
 		},
 
 		'_setDomSource' : function(dom, context){
-			// prevent events from dispatching while we are setting everything up
-			this._prevent_dispatch = true;
-
 			// setup our vars
 			var ary, prev, nm, val, ln, i,
 				is_body = (dom == document.body),
 				source = is_body ? this._dom : dom,
 				target = is_body ? dom : this._dom;
+
+			// prevent events from dispatching while we are setting everything up
+			this._prevent_dispatch = true;
 
 			// process dom attributes
 			this._processDomSourceAttributes(dom, context);
@@ -243,6 +229,8 @@ OJ.extendClass(
 
 		// Component Management Functions
 		'_callElmFunc' : function(func, args){
+			var container = this.container;
+
 			if(!this._elm_funcs[func]){
 				return;
 			}
@@ -272,7 +260,7 @@ OJ.extendClass(
 				this._removeAllElms();
 			}
 
-			return this.container[this._elm_funcs[func]].apply(this.container, args);
+			return container[this._elm_funcs[func]].apply(container, args);
 		},
 
 		'_addElm' : function(elm, index){ },
@@ -356,6 +344,9 @@ OJ.extendClass(
 
 
 		'fadeIn' : function(/*duration, easing*/){
+			var args = arguments,
+				ln = args.length;
+
 			if(this._fader){
 				if(this._fader.getDirection() == OjFade.IN){
 					return;
@@ -369,11 +360,9 @@ OJ.extendClass(
 				return;
 			}
 
-			var ln = arguments.length;
-
 			this.show();
 
-			this._fader = new OjFade(this, OjFade.IN, ln ? arguments[0] : 250, ln > 1 ? arguments[1] : OjEasing.NONE);
+			this._fader = new OjFade(this, OjFade.IN, ln ? args[0] : 250, ln > 1 ? args[1] : OjEasing.NONE);
 			this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
 			this._fader.start();
 
@@ -381,6 +370,9 @@ OJ.extendClass(
 		},
 
 		'fadeOut' : function(){
+			var args = arguments,
+				ln = args.length;
+
 			if(this._fader){
 				if(this._fader.getDirection() == OjFade.OUT){
 					return;
@@ -394,17 +386,17 @@ OJ.extendClass(
 				return;
 			}
 
-			var ln = arguments.length;
-
-			this._fader = new OjFade(this, OjFade.OUT, ln ? arguments[0] : 250, ln > 1 ? arguments[1] : OjEasing.NONE);
+			this._fader = new OjFade(this, OjFade.OUT, ln ? args[0] : 250, ln > 1 ? args[1] : OjEasing.NONE);
 			this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
 			this._fader.start();
 
 			this._setIsAnimating(true);
 		},
 
-		'redraw' : function (){
-			return this._is_displayed;
+		'redraw' : function (/*force=false*/){
+			var args = arguments;
+
+			return this._is_displayed || (args.length && args[0]);
 		},
 
 		'getTargetId' : function(){
@@ -437,68 +429,70 @@ OJ.extendClass(
 		'_TAGS' : [],
 
 		'load' : function(source){
-			// determine what action to take based on the extension of the src
-			// default action is to request the uri and then load the contents into the widgets
-			// however we can also display flash, videos, audio and images
-			var widget, type = OJ.getFileType(source);
-
-			this.empty();
-
-			if(type == OJ.HTML){
-				// load the file and put the html into the container
-			}
-			else{
-				var w, h;
-
-				if(type == OJ.IMAGE){
-					OJ.importJs('oj.media.OjImage');
-
-					widget = new OjImage();
-				}
-				else if(type == OJ.FLASH){
-					OJ.importJs('oj.media.OjFlash');
-
-					widget = new OjFlash();
-
-					w = '100%';
-					h = 300;
-				}
-				else if(type == OJ.VIDEO || type == OJ.AUDIO || type == OJ.STREAMING){
-					OJ.importJs('oj.media.OjMediaPlayer');
-
-					widget = new OjMediaPlayer();
-
-					w = '100%';
-					h = '100%';
-				}
-				else{
-					importJs('oj.widgets.Container');
-
-					widget = new OjView();
-				}
-
-				widget.source(_source);
-
-				if(isNull(w)){
-					w = widget.width();
-				}
-
-				if(isNull(h)){
-					h = widget.height();
-				}
-
-				if((isEmpty(this.css('width')) || this.css('width') == 'auto') && w){
-					this.width(w);
-				}
-
-				if((isEmpty(this.css('height')) || this.css('height') == 'auto') && h){
-					this.height(h);
-				}
-
-				this.add(widget);
-			}
-
-			return source;
+// todo: refactor load media function
+//			// determine what action to take based on the extension of the src
+//			// default action is to request the uri and then load the contents into the widgets
+//			// however we can also display flash, videos, audio and images
+//			var widget,
+//				type = OJ.getFileType(source);
+//
+//			this.empty();
+//
+//			if(type == OJ.HTML){
+//				// load the file and put the html into the container
+//			}
+//			else{
+//				var w, h;
+//
+//				if(type == OJ.IMAGE){
+//					OJ.importJs('oj.media.OjImage');
+//
+//					widget = new OjImage();
+//				}
+//				else if(type == OJ.FLASH){
+//					OJ.importJs('oj.media.OjFlash');
+//
+//					widget = new OjFlash();
+//
+//					w = '100%';
+//					h = 300;
+//				}
+//				else if(type == OJ.VIDEO || type == OJ.AUDIO || type == OJ.STREAMING){
+//					OJ.importJs('oj.media.OjMediaPlayer');
+//
+//					widget = new OjMediaPlayer();
+//
+//					w = '100%';
+//					h = '100%';
+//				}
+//				else{
+//					importJs('oj.widgets.Container');
+//
+//					widget = new OjView();
+//				}
+//
+//				widget.source(_source);
+//
+//				if(isNull(w)){
+//					w = widget.width();
+//				}
+//
+//				if(isNull(h)){
+//					h = widget.height();
+//				}
+//
+//				if((isEmpty(this.css('width')) || this.css('width') == 'auto') && w){
+//					this.width(w);
+//				}
+//
+//				if((isEmpty(this.css('height')) || this.css('height') == 'auto') && h){
+//					this.height(h);
+//				}
+//
+//				this.add(widget);
+//			}
+//
+//			return source;
 		}
 	}
 );

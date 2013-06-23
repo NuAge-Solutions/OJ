@@ -25,9 +25,11 @@ OJ.extendComponent(
 			'titleView'  : null
 		},
 
-		'_elm_funcs' : null,  '_load_checkpoints' : null,  '_loading_icon' : null,  '_loading_msg' : 'Loading',
+//		'_elm_funcs' : null,  '_load_checkpoints' : null,  '_loading_icon' : null,
+//
+//		'_overlay' : null,  '_unload_checkpoints' : null,  '_unloading_icon' : null,
 
-		'_overlay' : null,  '_template' : 'oj.nav.OjView',  '_unload_checkpoints' : null,  '_unloading_icon' : null,
+		'_loading_msg' : 'Loading',  '_template' : 'oj.nav.OjView',  '_loaded' : false,
 
 		'_unloading_msg' : 'UnLoading',
 
@@ -89,13 +91,19 @@ OJ.extendComponent(
 		},
 
 		'_hideOverlay' : function(){
-			if(this._overlay){
-				this._overlay.addEventListener(OjEvent.HIDE, this, '_onOverlayHide');
-				this._overlay.hide();
+			var overlay = this._overlay;
+
+			if(overlay){
+				overlay.addEventListener(OjEvent.HIDE, this, '_onOverlayHide');
+				overlay.hide();
 			}
 		},
 
-		'_load' : function(path, parts){
+		'_load' : function(){
+			this._loaded = true;
+
+			this.removeCss(['loading']);
+
 			this.redraw();
 
 			this._hideOverlay();
@@ -130,20 +138,23 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = args.length,
 				msg = ln ? args[0] : null,
-				icon = ln > 1 ? args[1] : null;
+				icon = ln > 1 ? args[1] : null,
+				overlay = this._overlay;
 
-			if(this._overlay){
-				this._overlay.setMessage(msg);
-				this._overlay.setIcon(icon);
+			if(overlay){
+				overlay.setMessage(msg);
+				overlay.setIcon(icon);
 			}
 			else{
-				this._overlay = new OjOverlay(msg, icon);
+				overlay = this._overlay = new OjOverlay(msg, icon);
 			}
 
-			this._overlay.show(this);
+			overlay.show(this);
 		},
 
 		'_unload' : function(){
+			this._loaded = true;
+
 			this._hideOverlay();
 
 			// dispatch the event
@@ -172,6 +183,8 @@ OJ.extendComponent(
 
 
 		'load' : function(){
+			this.addCss(['loading']);
+
 			this._resetCheckpoints(this._load_checkpoints);
 
 			this._loadCheckpoint();

@@ -12,16 +12,19 @@ OJ.extendClass(
 
 
 		'_constructor' : function(type/*, status = 0, bubbles = false, cancelable = false*/){
-			var bubbles = false, cancelable = false, ln = arguments.length;
+			var bubbles = false,
+				cancelable = false,
+				args = arguments,
+				ln = args.length;
 
 			if(ln > 1){
-				this._status = arguments[1];
+				this._status = args[1];
 
 				if(ln > 2){
-					bubbles = arguments[2];
+					bubbles = args[2];
 
 					if(ln > 3){
-						cancelable = arguments[3];
+						cancelable = args[3];
 					}
 				}
 			}

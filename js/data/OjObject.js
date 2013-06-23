@@ -42,18 +42,17 @@ OjObject.prototype = {
 	'_post_compile_' : [],
 
 	'_propCompile_' : function(context, props){
-		var key;
-		var is_getter = props == '_props_' || props == '_get_props_' ? true : false;
-		var is_setter = props == '_props_' || props == '_set_props_' ? true : false;
+		var key, u_key, get_func, set_func,
+			is_getter = props == '_props_' || props == '_get_props_' ? true : false,
+			is_setter = props == '_props_' || props == '_set_props_' ? true : false;
 
 		if(isFunction(context['_processProp_'])){
 			this._processProp_ = context['_processProp_'];
 		}
 
 		for(key in context[props]){
-			var u_key = key.ucFirst();
-			var get_func = 'get' + u_key;
-			var set_func = 'set' + u_key;
+			get_func = 'get' + (u_key = key.ucFirst());
+			set_func = 'set' + u_key;
 
 			this._processProp_(
 				key, context[props][key],
@@ -95,7 +94,9 @@ OjObject.prototype = {
 	 * @return {OjObj} return the this object to allow for chaining
 	 */
 	'_super' : function(context, func, args){
-		return this._supers_[context] && this._supers_[context][func] ? this._supers_[context][func].apply(this, args) : null;
+		var supers = this._supers_[context];
+
+		return supers && supers[func] ? supers[func].apply(this, args) : null;
 	},
 
 	/**
@@ -107,8 +108,10 @@ OjObject.prototype = {
 	 * @return {OjObj} return the this object to allow for chaining
 	 */
 	'_constructor' : function(/*obj*/){
-		if(arguments.length && isObject(arguments[0])){
-			this.bulkSet(arguments[0]);
+		var args = arguments;
+
+		if(args.length && isObject(args[0])){
+			this.bulkSet(args[0]);
 		}
 
 		this._id_ = OJ.guid(this);
@@ -126,14 +129,25 @@ OjObject.prototype = {
 	 */
 	'_destructor' : function(/*depth = 0*/){
 		this._destroyed_ = true;
-
-		return null;
 	},
 
-	'_unset' : function(prop/*, depth*/){
-		var args = arguments;
+	'_unset' : function(prop/*|props, depth*/){
+		var args = arguments,
+			ln = args.length, props;
 
-		this[prop] = OJ.destroy(this[prop], args.length > 1 ? args[1] : 0);
+		if(isArray(args[0])){
+			ln = (props = args[0]).length;
+
+			for(; ln--;){
+				args[0] = props[ln];
+
+				this._unset.apply(this, args);
+			}
+
+			return;
+		}
+
+		this[prop] = OJ.destroy(this[prop], ln > 1 ? args[1] : 0);
 	},
 
 	/**
@@ -145,26 +159,28 @@ OjObject.prototype = {
 	 * @return {object} A key:value pair object of the requested properties and their values
 	 */
 	'bulkGet' : function(props){
-		var key;
+		var key, getter_func, obj = {};
 
 		for(key in props){
 			if(this[key]){
 				if(isFunction(this[key])){
-					this[key](props[key]);
+					obj[key] = this[key]();
 				}
 				else{
-					this[key] = props[key];
+					obj[key] = props[key];
 				}
 
 				continue;
 			}
 
-			var setter_func = 'set' + key.charAt(0).toUpperCase() + key.substr(1);
+			getter_func = 'set' + key.ucFirst();
 
-			if(this[setter_func] && isFunction(this[setter_func])){
-				this[setter_func](props[key]);
+			if(this[getter_func] && isFunction(this[getter_func])){
+				obj[key] = this[getter_func]();
 			}
 		}
+
+		return obj;
 	},
 
 	/**
@@ -176,7 +192,7 @@ OjObject.prototype = {
 	 * @return {undefined}
 	 */
 	'bulkSet' : function(props){
-		var key;
+		var key, setter_func;
 
 		for(key in props){
 			if(this[key]){
@@ -190,7 +206,7 @@ OjObject.prototype = {
 				continue;
 			}
 
-			var setter_func = 'set' + key.ucFirst();
+			setter_func = 'set' + key.ucFirst();
 
 			if(this[setter_func] && isFunction(this[setter_func])){
 				this[setter_func](props[key]);
@@ -242,6 +258,10 @@ OjObject.prototype = {
 		return val == this._class_name || this._class_names.indexOf(val) != -1;
 	},
 
+	'isEqualTo' : function(obj){
+		return this == obj;
+	},
+
 	'toJson' : function(){
 		return JSON.stringify(this);
 	},
@@ -254,14 +274,16 @@ OjObject.prototype = {
 
 // setup static functions
 OjObject.importData = function(data){
+	var i, c, obj, key;
+
 	if(isArray(data)){
-		for(var i = data.length; i--;){
+		for(i = data.length; i--;){
 			data[i] = OjObject.importData(data[i]);
 		}
 	}
 	else if(isObject(data)){
 		if(data._class_name){
-			var c = OJ.stringToClass(data._class_name);
+			c = OJ.stringToClass(data._class_name);
 
 			if(!c && data._class_path){
 				OJ.importJs(data._class_path);
@@ -270,15 +292,13 @@ OjObject.importData = function(data){
 			}
 
 			if(c){
-				var obj = new c();
+				obj = new c();
 
 				obj.importData(data);
 
 				return obj;
 			}
 		}
-
-		var key;
 
 		for(key in data){
 			data[key] = OjObject.importData(data[key]);
@@ -289,8 +309,10 @@ OjObject.importData = function(data){
 };
 
 OjObject.exportData = function(obj){
+	var i, key;
+
 	if(isArray(obj)){
-		for(var i = obj.length; i--;){
+		for(i = obj.length; i--;){
 			obj[i] = OjObject.exportData(obj[i]);
 		}
 	}
@@ -299,12 +321,22 @@ OjObject.exportData = function(obj){
 			return obj.exportData();
 		}
 
-		var key;
-
 		for(key in obj){
 			obj[key] = OjObject.exportData(obj[key]);
 		}
 	}
 
 	return obj;
+};
+
+OjObject.makeNew = function(args){
+	var constructor = this;
+
+	function F() {
+		return constructor.apply(this, args);
+	}
+
+	F.prototype = constructor.prototype;
+
+	return new F();
 };

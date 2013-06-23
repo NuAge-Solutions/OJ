@@ -14,12 +14,14 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*items*/){
+			var args = arguments;
+
 			this._super('OjCollection', '_constructor', []);
 
 			this._items = [];
 
-			if(arguments.length){
-				this.setItems(arguments[0]);
+			if(args.length){
+				this.setItems(args[0]);
 			}
 		},
 
@@ -66,7 +68,7 @@ OJ.extendClass(
 		'removeAllItems' : function(){
 			var ln = this.numItems();
 
-			while(ln-- > 0){
+			for(; ln--;){
 				this.removeItemAt(ln);
 			}
 		},
@@ -104,18 +106,19 @@ OJ.extendClass(
 		},
 
 		'sort' : function(/*sort_func*/){
-			var orig = this._items.clone();
+			var args = arguments, ln,
+				orig = this._items.clone();
 
-			if(arguments.length){
-				this._items.sort(arguments[0]);
+			if(args.length){
+				this._items.sort(args[0]);
 			}
 			else{
 				this._items.sort();
 			}
 
-			var ln = this._items.length;
+			ln = this._items.length;
 
-			while(ln-- > 0){
+			for(; ln--;){
 				if(this._items[ln] != orig[ln]){
 					this.dispatchEvent(new OjCollectionEvent(OjCollectionEvent.ITEM_MOVE, this._items[ln], ln));
 				}
@@ -123,12 +126,14 @@ OJ.extendClass(
 		},
 
 		'setItemAt' : function(item, index){
+			var old_item;
+
 			if(!this._allowDuplicate && this.hasItem(item)){
 				// throw warning of duplicate
 				return;
 			}
 
-			var old_item = this._items.splice(index, 1, item)[0];
+			old_item = this._items.splice(index, 1, item)[0];
 
 			// if no change don't do anything
 			if(old_item == item){
@@ -146,16 +151,19 @@ OJ.extendClass(
 		},
 
 		'setItems' : function(items){
-			var ln, old_ln = this._items.length, diff;
+			var key, ary, diff,
+				i = 0,
+				ln,
+				old_ln = this._items.length;
 
 			if(isObject(items)){
 				if(isObjective(items) && items.is('OjCollection')){
 					items = items.getItems();
 				}
 				else{
-					var ary = [];
+					ary = [];
 
-					for(var key in items){
+					for(key in items){
 						ary.push(items[key]);
 					}
 
@@ -171,12 +179,12 @@ OJ.extendClass(
 			if(old_ln > ln){
 				diff = old_ln - ln;
 
-				while(diff-- > 0){
+				for(; diff--;){
 					this.removeItemAt(--old_ln);
 				}
 			}
 
-			for(var i = 0; i < ln; i++){
+			for(; i < ln; i++){
 				if(i < old_ln){
 					this.setItemAt(items[i], i);
 				}
@@ -216,28 +224,40 @@ window.OjICollection = {
 	},
 
 	'getItemAt' : function(index){
-		return this._items ? this._items.getItemAt(index) : null;
+		var items = this._items;
+
+		return items ? items.getItemAt(index) : null;
 	},
 
 	'getItems' : function(){
-		return this._items ? this._items.getItems() : [];
+		var items = this._items;
+
+		return items ? items.getItems() : [];
 	},
 
 	'hasItem' : function(item){
-		return this._items ? this._items.hasItem(item) : false;
+		var items = this._items;
+
+		return items ? items.hasItem(item) : false;
 	},
 
 	'indexOfItem' : function(item){
-		return this._items ? this._items.indexOfItem(item) : -1;
+		var items = this._items;
+
+		return items ? items.indexOfItem(item) : -1;
 	},
 
 	'numItems' : function(){
-		return this._items ? this._items.numItems() : 0;
+		var items = this._items;
+
+		return items ? items.numItems() : 0;
 	},
 
 	'removeAllItems' : function(){
-		if(this._items){
-			this._items.removeAll();
+		var items = this._items;
+
+		if(items){
+			items.removeAll();
 		}
 	},
 
@@ -248,20 +268,26 @@ window.OjICollection = {
 	},
 
 	'removeItemAt' : function(index){
-		if(this._items){
-			this._items.removeItemAt(index);
+		var items = this._items;
+
+		if(items){
+			items.removeItemAt(index);
 		}
 	},
 
 	'reverse' : function(){
-		if(this._items){
-			this._items.reverse();
+		var items = this._items;
+
+		if(items){
+			items.reverse();
 		}
 	},
 
 	'sort' : function(/*sort_func*/){
-		if(this._items){
-			this._items.sort.apply(this._items, arguments);
+		var items = this._items;
+
+		if(items){
+			items.sort.apply(items, arguments);
 		}
 	},
 

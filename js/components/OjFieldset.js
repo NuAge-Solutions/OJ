@@ -24,6 +24,9 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*title*/){
+			var args = arguments,
+				ln = args.length;
+
 			this._super('OjFieldset', '_constructor', []);
 
 			// remove the actuator
@@ -32,10 +35,8 @@ OJ.extendComponent(
 			this.removeChild(this.actuator);
 
 			// process arguments
-			var ln = arguments.length;
-
 			if(ln){
-				this.setTitle(arguments[0]);
+				this.setTitle(args[0]);
 			}
 		},
 
@@ -140,26 +141,30 @@ OJ.extendComponent(
 
 
 		'collapse' : function(){
+			var tween;
+
 			if(this._isCollapsed){
 				return;
 			}
 
 			this.setIsCollapsed(true);
 
-			var tween = new OjResize(this, OjResize.HEIGHT, this.legend.getHeight(), 250, OjEasing.OUT);
+			tween = new OjResize(this, OjResize.HEIGHT, this.legend.getHeight(), 250, OjEasing.OUT);
 			tween.start();
 
 			this._redrawActuator();
 		},
 
 		'expand' : function(){
+			var tween;
+
 			if(!this._isCollapsed){
 				return;
 			}
 
 			this.setIsCollapsed(false);
 
-			var tween = new OjResize(this, OjResize.HEIGHT, this.legend.getHeight() + this.container.getHeight(), 250, OjEasing.OUT);
+			tween = new OjResize(this, OjResize.HEIGHT, this.legend.getHeight() + this.container.getHeight(), 250, OjEasing.OUT);
 			tween.addEventListener(OjTweenEvent.COMPLETE, this, '_onExpand');
 			tween.start();
 
@@ -174,6 +179,7 @@ OJ.extendComponent(
 
 				return true;
 			}
+
 			return false;
 		},
 
