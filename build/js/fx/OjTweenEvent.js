@@ -1,0 +1,1 @@
+OJ.importJs("oj.events.OjEvent");"use strict";OJ.extendClass(OjEvent,"OjTweenEvent",{_get_props_:{progress:0,value:0},_constructor:function(d,f,c){var c=0,b=false,a=false,e=arguments.length;this._value=f;this._progress=c;if(e>3){b=arguments[3];if(e>4){a=arguments[4]}}this._super("OjTweenEvent","_constructor",[d,b,a])}},{TICK:"onTweenTick",COMPLETE:"onTweenComplete"});

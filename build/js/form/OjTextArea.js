@@ -1,0 +1,1 @@
+OJ.importJs("oj.form.OjInput");OJ.importCss("oj.form.OjTextArea");"use strict";OJ.extendClass(OjInput,"OjTextArea",{_setDom:function(a){this._super("OjTextArea","_setDom",arguments);var b=this.input.parent();var c=new OjStyleElement("<textarea></textarea>");c.addCss("input");b.replaceChild(this.input,c);this.input=c}});

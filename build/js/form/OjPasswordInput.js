@@ -1,0 +1,1 @@
+OJ.importJs("oj.form.OjTextInput");"use strict";OJ.extendClass(OjTextInput,"OjPasswordInput",{_min:6,_max:30,_setDom:function(a){this._super("OjPasswordInput","_setDom",arguments);this.input.setAttr("type","password")}});

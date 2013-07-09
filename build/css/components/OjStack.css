@@ -1,0 +1,1 @@
+.OjStack{display:block;overflow:visible}.OjStack.animating{overflow:hidden;-webkit-overflow-scrolling:hidden}.OjStack>*{position:relative;z-index:1}.OjStack.animating>*{position:absolute;top:0;left:0;width:100%;height:100%;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}.OjStack.animating>*.prev-active{z-index:3}

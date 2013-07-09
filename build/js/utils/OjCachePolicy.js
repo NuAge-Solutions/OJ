@@ -1,0 +1,1 @@
+"use strict";OJ.extendClass(OjObject,"OjCachePolicy",{_get_props_:{action:1,lifespan:null,url:null},_constructor:function(b){this._super("OjCachePolicy","_constructor",arguments);var a=arguments,c=a.length;this._url=b;if(c>1){this._action=a[1];if(c>2){this._lifespan=a[2]}}}},{ALWAYS:1,NEVER:0,OFFLINE:2});
