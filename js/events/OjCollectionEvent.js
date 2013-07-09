@@ -36,6 +36,9 @@ OJ.extendClass(
 	},
 	{
 		'ITEM_ADD'     : 'onItemAdd',
+		'ITEM_CLICK'   : 'onItemClick',
+		'ITEM_OVER'    : 'onItemOver',
+		'ITEM_OUT'     : 'onItemOut',
 		'ITEM_MOVE'    : 'onItemMove',
 		'ITEM_REMOVE'  : 'onItemRemove',
 		'ITEM_REPLACE' : 'onItemReplace'

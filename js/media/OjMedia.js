@@ -10,13 +10,14 @@ OJ.extendClass(
 	OjComponent, 'OjMedia',
 	{
 		'_props_' : {
-			'resizeBy'    : 'width',
+			'preload'     : false,
+			'resizeBy'    : 'none', // OjMedia.NONE
 			'source'      : null,
 			'showSpinner' : false,
 			'spinnerTint' : '#333'
 		},
 
-		'_loaded' : false,  '_source_is_css' : false,
+		'_height' : 0,  '_loaded' : false,  '_resize_vals' : ['none', 'fill', 'fit', 'hFill', 'wFill'],  '_width' : 0,
 
 		'_h_align' : OjStyleElement.CENTER,
 		'_v_align' : OjStyleElement.MIDDLE,
@@ -24,12 +25,6 @@ OJ.extendClass(
 
 		'_constructor' : function(/*source*/){
 			this._super('OjMedia', '_constructor', []);
-
-			if((this.media = this._makeMedia()) && isObjective(this.media)){
-				this.media.addCss('media');
-
-				this.addChild(this.media);
-			}
 
 			if(arguments.length){
 				this.setSource(arguments[0]);
@@ -43,12 +38,23 @@ OJ.extendClass(
 			return this._super('OjMedia', '_destructor', arguments);
 		},
 
-		'_makeMedia' : function(){ },
+
+		'_load' : function(){
+
+		},
+
+		'_makeMedia' : function(){
+			return new OjStyleElement('<div class="media"></div>');
+		},
 
 		'_resize' : function(){
+			if(!this._media){
+				return;
+			}
+
 			if(this._source_is_css){
-				this.media.setWidth(OjStyleElement.AUTO);
-				this.media.setHeight(OjStyleElement.AUTO);
+				this._media.setWidth(OjStyleElement.AUTO);
+				this._media.setHeight(OjStyleElement.AUTO);
 
 				return;
 			}
@@ -57,45 +63,46 @@ OJ.extendClass(
 				h = this._getStyleBackup('height');
 
 			if(!isEmpty(w)){
-				this.media.setWidth('100', '%');
+				this._media.setWidth('100', '%');
 
 				if(h){
-					this.media.setHeight('100', '%');
+					this._media.setHeight('100', '%');
 				}
 				else{
-					this.media.setHeight(OjStyleElement.AUTO);
+					this._media.setHeight(OjStyleElement.AUTO);
 				}
 			}
 			else if(!isEmpty(h)){
-				this.media.setHeight('100', '%');
+				this._media.setHeight('100', '%');
 
-				this.media.setWidth(OjStyleElement.AUTO);
+				this._media.setWidth(OjStyleElement.AUTO);
 			}
 			else if(this._resizeBy == this._static.WIDTH){
-				this.media.setWidth('100', '%');
-				this.media.setHeight(OjStyleElement.AUTO);
+				this._media.setWidth('100', '%');
+				this._media.setHeight(OjStyleElement.AUTO);
 			}
 			else{
-				this.media.setHeight('100', '%');
-				this.media.setWidth(OjStyleElement.AUTO);
+				this._media.setHeight('100', '%');
+				this._media.setWidth(OjStyleElement.AUTO);
 
 				var w2 = this.getWidth();
 
 				if(w > w2){
-					this.media.setMarginLeft((w2 - w) / 2);
+					this._media.setMarginLeft((w2 - w) / 2);
 				}
 			}
 		},
 
+		'_setIsDisplayed' : function(displayed){
+			this._super('OjMedia', '_setIsDisplayed', arguments);
+
+			if(displayed && !this._loaded){
+				this._load();
+			}
+		},
+
 		'_setSource' : function(url){
-			this._source_is_css = (this._source = url).charAt(0) == '@'
-
-			// reset the sizing
-			this.media.setWidth(OjStyleElement.AUTO);
-			this.media.setHeight(OjStyleElement.AUTO);
-
-			this.media.setMaxWidth(OjStyleElement.AUTO);
-			this.media.setMaxHeight(OjStyleElement.AUTO);
+			this._source = url;
 		},
 
 
@@ -104,22 +111,15 @@ OJ.extendClass(
 
 			this._loaded = true;
 
-			if(this._source_is_css){
-				this._original_w = this.media.getWidth();
-				this._original_h = this.media.getHeight();
-			}
-			else{
-				this._original_w = this.media.dom().width;
-				this._original_h = this.media.dom().height;
-			}
+			if(this._media){
+				// make sure we don't allow up-scaling
+				if(this._original_w){
+					this._media.setMaxWidth(this._original_w);
+				}
 
-			// make sure we don't allow up-scaling
-			if(this._original_w){
-				this.media.setMaxWidth(this._original_w);
-			}
-
-			if(this._original_h){
-				this.media.setMaxHeight(this._original_h);
+				if(this._original_h){
+					this._media.setMaxHeight(this._original_h);
+				}
 			}
 
 			this._resize();
@@ -132,27 +132,14 @@ OJ.extendClass(
 			return this._loaded;
 		},
 
-
-		// Getter & Setter Functions
-		'setHeight' : function(val){
-			this._super('OjMedia', 'setHeight', arguments);
-
-			if(val == OjStyleElement.AUTO || arguments.length > 1){
-				this._resize();
+		'load' : function(){
+			if(!this._loaded){
+				this._load();
 			}
 		},
 
-		'setInnerHeight' : function(val){
-			this._super('OjMedia', 'setInnerHeight', arguments);
 
-			this._resize();
-		},
-		'setInnerWidth' : function(val){
-			this._super('OjMedia', 'setInnerWidth', arguments);
-
-			this._resize();
-		},
-
+		// Getter & Setter Functions
 		'getOriginalHeight' : function(){
 			return this._original_h;
 		},
@@ -174,11 +161,17 @@ OJ.extendClass(
 				return;
 			}
 
+			this._loaded = false;
+
 			if(!this.loading && this._showSpinner){
 				this.addChild(this.loading = new OjSpinner(this._spinnerTint));
 			}
 
 			this._setSource(url);
+
+			if(this._preload || this._is_displayed){
+				this._load();
+			}
 		},
 
 		'setResizeBy' : function(val){
@@ -186,21 +179,32 @@ OJ.extendClass(
 				return;
 			}
 
-			this._resizeBy = val;
+			this._resizeBy = this._resize_vals.indexOf(val) > -1 ? val : this._static.NONE;
 
 			this._resize();
 		},
 
-		'setWidth' : function(val){
-			this._super('OjMedia', 'setWidth', arguments);
+		'_setHeight' : function(val){
+			this._super('OjMedia', '_setHeight', arguments);
 
-			if(val == OjStyleElement.AUTO || arguments.length > 1){
-				this._resize();
-			}
+			this._height = val
+
+//			this._resize();
+		},
+
+		'_setWidth' : function(val){
+			this._super('OjMedia', '_setWidth', arguments);
+
+			this._width = val;
+
+//			this._resize();
 		}
 	},
 	{
-		'HEIGHT' : 'height',
-		'WIDTH'  : 'width'
+		'NONE'   : 'none',
+		'FILL'   : 'fill',
+		'FIT'    : 'fit',
+		'HEIGHT' : 'hFill',
+		'WIDTH'  : 'wFill'
 	}
 );

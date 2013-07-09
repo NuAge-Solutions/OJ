@@ -156,8 +156,8 @@ OJ.extendClass(
 		},
 
 		'_setElmFuncs' : function(container){
-			if(container != this && container.is('OjComponent')){
-				this._elm_funcs = {
+			this._elm_funcs = container != this && container.is('OjComponent') ?
+				{
 					'addElm'        : 'addElm',
 					'addElmAt'      : 'addElmAt',
 					'getElmAt'      : 'getElmAt',
@@ -170,11 +170,10 @@ OJ.extendClass(
 					'removeElm'     : 'removeElm',
 					'removeElmAt'   : 'removeElmAt',
 					'replaceElm'    : 'replaceElm',
-					'replaceElmAt'  : 'replaceElmAt'
-				};
-			}
-			else{
-				this._elm_funcs = {
+					'replaceElmAt'  : 'replaceElmAt',
+					'setElms'       : 'setElms'
+				} :
+				{
 					'addElm'        : 'addChild',
 					'addElmAt'      : 'addChildAt',
 					'getElmAt'      : 'getChildAt',
@@ -187,9 +186,9 @@ OJ.extendClass(
 					'removeElm'     : 'removeChild',
 					'removeElmAt'   : 'removeChildAt',
 					'replaceElm'    : 'replaceChild',
-					'replaceElmAt'  : 'replaceChildAt'
-				}
-			}
+					'replaceElmAt'  : 'replaceChildAt',
+					'setElms'       : 'setChildren'
+				};
 		},
 
 		'_setIsAnimating' : function(val){
@@ -228,8 +227,12 @@ OJ.extendClass(
 
 
 		// Component Management Functions
+		'_getContainer' : function(){
+			return this.container;
+		},
+
 		'_callElmFunc' : function(func, args){
-			var container = this.container;
+			var container = this._getContainer();
 
 			if(!this._elm_funcs[func]){
 				return;
@@ -323,6 +326,10 @@ OJ.extendClass(
 
 		'replaceElmAt' : function(elm, index){
 			return this._callElmFunc('replaceElmAt', Array.array(arguments));
+		},
+
+		'setElms' : function(elms){
+			return this._callElmFunc('setElms', Array.array(arguments));
 		},
 
 

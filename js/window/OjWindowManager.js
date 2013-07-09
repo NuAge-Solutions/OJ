@@ -14,10 +14,11 @@ OJ.importCss('oj.window.OjModal');
 OJ.extendManager(
 	'WindowManager', OjActionable, 'OjWindowManager',
 	{
-		'NEW'    : '_blank',
-		'PARENT' : '_parent',
+		'BLANK'  : '_blank',
 		'SELF'   : '_self',
+		'PARENT' : '_parent',
 		'TOP'    : '_top',
+		'WINDOW' : '_window',
 
 		'HIDE' : 'onWindowHide',
 		'SHOW' : 'onWindowShow',
@@ -147,7 +148,7 @@ OJ.extendManager(
 			anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
 			anim.start();
 
-			if(this._isMobileAC(modal)){
+			if(this._isMobileModal(modal)){
 				h = pane.getHeight();
 				y = pane.getY();
 
@@ -194,7 +195,7 @@ OJ.extendManager(
 		},
 
 		'_onOjReady' : function(evt){
-			this.removeEventListener(OjEvent.READY, this, '_onOjReady');
+			OJ.removeEventListener(OjEvent.READY, this, '_onOjReady');
 
 			document.body.appendChild(this._modal_holder.dom());
 
@@ -288,31 +289,49 @@ OJ.extendManager(
 			this._modal_holder.moveChild(modal, this._modal_holder.numChildren() - 1);
 		},
 
-		'open' : function(url/*, target*/){
+		'open' : function(url/*, target, params*/){
 			var args = arguments,
-				target;
+				ln = args.length,
+				target = ln > 1 ? args[1] : this.BLANK,
+				params = ln > 2 ? args[2] : {},
+				specs = [], key,
+				vp = OJ.getViewport(), scrn = OJ.getScreen();
 
-			if(args.length > 1){
-				target = args[1];
-
-				if(target != this.NEW){
-					// do something here not sure what
+			if(target != this.SELF && target != this.TOP && target != this.PARENT){
+				if(isUnset(params.toolbar)){
+					params.toolbar = 0;
 				}
 
-				window.open(String.string(url), target);
-			}
-			else{
-				// the toString in case it is a url object and not a string
-				url = url.toString();
-
-				// if the url is the same minus the hash and their is no hash
-				// then we force a hash to prevent a reload
-				if(window.location.href.indexOf(url) != -1 && url.indexOf('#') == -1){
-					url += '#';
+				if(!params.width){
+					params.width = vp.width * .75;
 				}
 
-				window.location.href = url;
+				if(!params.height){
+					params.height = vp.height * .75;
+				}
+
+				if(isUnset(params.top)){
+					params.top = scrn.top + Math.round((vp.height - params.height) / 2);
+				}
+
+				if(isUnset(params.left)){
+					params.left = scrn.left + Math.round((vp.width - params.width) / 2);
+				}
+
+				// merge the params into the specs string
+				for(key in params){
+					specs.push(key + '=' + params[key]);
+				}
+
+				if(target == this.WINDOW){
+					// create a new target id
+					target = OJ.guid();
+				}
 			}
+
+			window.open(url.toString(), target, specs.join(','));
+
+			return target;
 		},
 
 		'show' : function(modal){

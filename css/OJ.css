@@ -34,10 +34,8 @@
 }
 
 [v-align]:after {
-	width: 1px;
+	width: 0px;
 	height: 100% !important;
-
-	margin-left: -1px;
 
 	content: "";
 }

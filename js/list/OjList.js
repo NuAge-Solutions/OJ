@@ -215,6 +215,7 @@ OJ.extendComponent(
 
 			if(item_evt && !this._item_events[item_evt]){
 				ln = this.numItems();
+
 				for(; ln--;){
 					this.getElmAt(ln).addEventListener(item_evt, this, item_callback);
 				}
@@ -257,10 +258,10 @@ OJ.extendComponent(
 		},
 
 		'_onItemAdd' : function(evt){
-			var item = this._createItem(evt.getItem(), evt.getIndex());
-
-			// update the classes on the other items now that there is a new guy in town
-			var ln = this.numItems(), i = Math.max(evt.getIndex() - 1, 0);
+			var item = this._createItem(evt.getItem(), evt.getIndex()),
+				// update the classes on the other items now that there is a new guy in town
+				ln = this.numItems(),
+				i = Math.max(evt.getIndex() - 1, 0);
 
 			for(i; i < ln; i++){
 				this._updateClasses(this.getElmAt(i), i);
@@ -273,7 +274,8 @@ OJ.extendComponent(
 		},
 
 		'_onItemMove' : function(evt){
-			var ln = this.numItems(), i, item;
+			var ln = this.numItems(),
+				i, item;
 
 			for(; ln--;){
 				item = this.getElmAt(ln);

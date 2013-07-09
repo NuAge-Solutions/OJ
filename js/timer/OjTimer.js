@@ -23,13 +23,14 @@ OJ.extendClass(
 		'_constructor' : function(/*duration, repeat_count*/){
 			this._super('OjTimer', '_constructor', []);
 
-			var ln = arguments.length;
+			var args = arguments,
+				ln = args.length;
 
 			if(ln){
-				this.setDuration(arguments[0]);
+				this.setDuration(args[0]);
 
 				if(ln > 1){
-					this.setRepeatCount(arguments[1]);
+					this.setRepeatCount(args[1]);
 				}
 			}
 		},

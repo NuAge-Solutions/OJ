@@ -2,14 +2,11 @@
 	cursor: pointer;
 	line-height: normal;
 
-	overflow: auto;
-	text-overflow: clip;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 	.OjLink > .label {
 		display: inline-block;
-
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 
 	.OjLink > .icon {

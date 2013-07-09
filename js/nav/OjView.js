@@ -223,7 +223,7 @@ OJ.extendComponent(
 					this.footer = new OjStyleElement();
 					this.footer.addCss('footer');
 
-					this.addChildAt(this.footer, 0);
+					this.container.parent().addChildAt(this.footer, 0);
 				}
 
 				this.footer.removeAllChildren();
@@ -245,7 +245,7 @@ OJ.extendComponent(
 					this.header = new OjStyleElement();
 					this.header.addCss(['header']);
 
-					this.addChildAt(this.header, 0);
+					this.container.parent().addChildAt(this.header, 0);
 				}
 
 				this.header.removeAllChildren();

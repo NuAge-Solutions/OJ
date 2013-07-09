@@ -9,9 +9,13 @@ OJ.extendComponent(
 	OjLabel, 'OjLink',
 	{
 		'_props_' : {
-			'url'      : null,
-			'icon'     : null,
-			'target'   : null
+			'downIcon'     : null,
+			'icon'         : null,
+			'overIcon'     : null,
+			'target'       : '_self', // WindowManager.SELF,
+			'targetHeight' : null,
+			'targetWidth'  : null,
+			'url'          : null
 		},
 
 		'_v_align' : OjStyleElement.MIDDLE,
@@ -39,13 +43,13 @@ OJ.extendComponent(
 			}
 		},
 
-		'setCss' : function(val){
-			if(val.indexOf('ssl') > -1){
-//				debugger;
-			}
+		'_destructor' : function(){
+			// just to make sure that the document mouse move event listener gets removed
+			OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onMouseMove');
 
-			this._super('OjLink', 'setCss', arguments);
+			this._super('OjLink', '_destructor', arguments);
 		},
+
 
 		'_redrawText' : function(){
 			this.label.setText(
@@ -55,45 +59,96 @@ OJ.extendComponent(
 			);
 		},
 
+		'_updateIcon' : function(val){
+			this.icon.removeAllChildren();
 
-		'_onMouseOver' : function(evt){
-			this.addCss(['mouse-hover']);
+			if(val){
+				this.icon.addChild(val);
+			}
 		},
 
-		'_onMouseOut' : function(evt){
-			this.removeCss(['mouse-hover']);
+
+		'_onClick' : function(evt){
+			if(this._url){
+				WindowManager.open(this._url, this._target, {'width' : this._targetWidth, 'height' : this._targetHeight});
+			}
+		},
+
+		'_onMouseOver' : function(evt){
+			if(this._overIcon){
+				OJ.addEventListener(OjMouseEvent.MOVE, this, '_onMouseMove');
+
+				this._updateIcon(this._overIcon);
+			}
+		},
+
+		'_onMouseMove' : function(evt){
+			if(!this.hitTestPoint(evt.getPageX(), evt.getPageY())){
+				OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onMouseMove');
+
+				this._updateIcon(this._icon);
+			}
 		},
 
 		'_onMouseDown' : function(evt){
-			this.addCss(['mouse-press']);
+			if(this._downIcon){
+				this._updateIcon(this._downIcon);
+
+				this.addEventListener(OjMouseEvent.UP, this, '_onMouseUp');
+			}
 		},
 
 		'_onMouseUp' : function(evt){
-			this.removeCss(['mouse-press']);
+			this.removeEventListener(OjMouseEvent.UP, this, '_onMouseUp');
+
+			this._updateIcon(this._icon);
 		},
 
 
 		// GETTER & SETTER FUNCTIONS
-		'setIcon' : function(icon){
-			if(isString(icon)){
-				icon = new OjImage(icon);
-			}
-
-			if(this._icon == icon){
+		'setDownIcon' : function(icon){
+			if(this._downIcon == (icon = OjImage.image(icon))){
 				return;
 			}
 
-			this.icon.removeAllChildren();
+			if(this._downIcon = icon){
+				this.addEventListener(OjMouseEvent.DOWN, this, '_onMouseDown');
+			}
+			else{
+				this.removeEventListener(OjMouseEvent.DOWN, this, '_onMouseDown');
+				this.removeEventListener(OjMouseEvent.UP, this, '_onMouseUp');
+			}
+		},
 
-			if(this._icon = icon){
-				this.icon.addChild(this._icon);
+		'setIcon' : function(icon){
+			if(this._icon == (icon = OjImage.image(icon))){
+				return;
+			}
+
+			this._updateIcon(this._icon = icon);
+		},
+
+		'setOverIcon' : function(icon){
+			if(this._overIcon == (icon = OjImage.image(icon))){
+				return;
+			}
+
+			if(this._overIcon = icon){
+				this.addEventListener(OjMouseEvent.OVER, this, '_onMouseOver');
+			}
+			else{
+				this.removeEventListener(OjMouseEvent.OVER, this, '_onMouseOver');
+				OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onMouseMove');
 			}
 		},
 
 		'setUrl' : function(url){
-			this._url = OjUrl.url(url);
-
-			this.setAttr('href', this._url.toString());
+			if(this._url = OjUrl.url(url)){
+				this.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+			}
+			else{
+				this.removeEventListener(OjMouseEvent.CLICK, this, '_onClick');
+			}
 		},
 
 		'setTarget' : function(target){
@@ -101,19 +156,10 @@ OJ.extendComponent(
 				target = target.getTargetId();
 			}
 
-			if(this._target == target){
-				return;
-			}
-
-			this.setAttr('target', this._target = target);
+			this._target = target;
 		}
 	},
 	{
-		'BLANK'  : '_blank',
-		'SELF'   : '_self',
-		'PARENT' : '_parent',
-		'TOP'    : '_top',
-
 		'_TAGS' : ['a']
 	}
 );

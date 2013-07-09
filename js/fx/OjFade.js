@@ -18,19 +18,20 @@ OJ.extendClass(
 		'_constructor' : function(/*target = null, direction = IN, duration = 250, easing = NONE*/){
 			this._super('OjFade', '_constructor', []);
 
-			var ln = arguments.length;
+			var args = arguments,
+				ln = args.length;
 
 			if(ln){
-				this.setTarget(arguments[0]);
+				this.setTarget(args[0]);
 
 				if(ln > 1){
-					this.setDirection(arguments[1]);
+					this.setDirection(args[1]);
 
 					if(ln > 2){
-						this.setDuration(arguments[2]);
+						this.setDuration(args[2]);
 
 						if(ln > 3){
-							this.setEasing(arguments[3]);
+							this.setEasing(args[3]);
 						}
 					}
 				}
@@ -40,6 +41,7 @@ OJ.extendClass(
 
 		'_onComplete' : function(evt){
 			if(this._direction == OjFade.NONE){
+				this._target.setAlpha(1);
 				this._target.hide();
 			}
 

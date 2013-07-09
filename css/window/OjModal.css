@@ -61,7 +61,7 @@
 				text-align: center;
 			}
 
-		.OjModal > .pane > .container {
+		.OjModal > .pane > .content {
 			position: absolute;
 
 			top: 40px;
@@ -86,8 +86,14 @@
 
 			overflow: hidden;
 		}
-		.OjModal.no-buttons > .pane > .container {
+		.OjModal.no-buttons > .pane > .content {
 			bottom: 0px;
+		}
+		.is-mobile .OjModal.browser > .pane > .content,
+		.is-tablet .OjModal.browser > .pane > .content {
+			overflow: auto;
+
+			-webkit-overflow-scrolling: touch;
 		}
 
 

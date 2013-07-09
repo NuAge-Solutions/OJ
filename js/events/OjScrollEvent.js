@@ -12,19 +12,14 @@ OJ.extendClass(
 		},
 
 
-		'_constructor' : function(type/*, bubbles, cancelable, scrollX = NaN, scrollY = NaN*/){
-			var args = Array.array(arguments),
-				ln = args.length;
+		'_constructor' : function(type, scrollX, scrollY/*, bubbles, cancelable*/){
+			var args = Array.array(arguments).slice(3);
+			args.unshift(type);
 
-			this._super('OjScrollEvent', '_constructor', ln > 3 ? args.slice(0, 3) : args);
+			this._super('OjScrollEvent', '_constructor', args);
 
-			if(ln > 3){
-				this._scrollX = args[3];
-
-				if(ln > 4){
-					this._scrollY = args[4];
-				}
-			}
+			this._scrollX = scrollX;
+			this._scrollY = scrollY;
 		},
 
 

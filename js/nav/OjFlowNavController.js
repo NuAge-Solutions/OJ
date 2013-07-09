@@ -31,7 +31,14 @@ window.OjIFlowNavController = {
 	// helper functions
 	'_makeBackButton' : function(view){
 		var btn = new OjButton(view.getShortTitle());
-		btn.addCss('back-button');
+		btn.addCss(['back-button']);
+
+		return btn;
+	},
+
+	'_makeCancelButton' : function(title){
+		var btn = new OjButton(title);
+		btn.addCss(['cancel-button']);
 
 		return btn;
 	},
@@ -77,7 +84,7 @@ window.OjIFlowNavController = {
 				cancel_view =  this._makeBackButton(this._stack.getElmAt(index - 1));
 			}
 			else if(this._show_cancel){
-				cancel_view = this._cancel_btn = new OjButton(this._cancelLabel);
+				cancel_view = this._cancel_btn = this._makeCancelButton(this._cancelLabel);
 			}
 		}
 

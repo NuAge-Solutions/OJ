@@ -80,12 +80,12 @@ OJ.extendManager(
 
 			var events = this._events,
 				target_id = target.id(),
-				listeners, key;
+				listener, listeners, key;
 
 			evt._currentTarget = target;
 
 			if(events[type] && events[type][target_id]){
-				listeners = events[type][target_id], listener;
+				listeners = events[type][target_id];
 
 				for(key in listeners){
 					listener = listeners[key];
@@ -226,11 +226,13 @@ OJ.extendManager(
 			var events = this._events,
 				target_id = target.id(),
 				context_id = context.id(),
-				guid = context_id + ':' + callback.guid;
+				guid;
 
 			if(events[type]){
 				if(events[type][target_id]){
 					if(callback = isString(callback) ? context[callback] : callback){
+						guid = context_id + ':' + callback.guid;
+
 						if(events[type][target_id][guid]){
 							this._removeEventListener(target_id, type, context_id, guid);
 						}

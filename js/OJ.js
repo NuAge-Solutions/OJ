@@ -563,9 +563,9 @@ window.OJ = function Oj(){
 		},
 
 		'importTemplate' : function(path/*, data*/){
-			var template_path = this._getTemplateImportPath(path);
-			var was_loaded = this._library.isLoaded(template_path);
-			var template_data = arguments.length > 1 ? arguments[1] : this._library.load(template_path);
+			var template_path = this._getTemplateImportPath(path),
+			was_loaded = this._library.isLoaded(template_path),
+			template_data = arguments.length > 1 ? arguments[1] : this._library.load(template_path);
 
 			this._library.setAsset(template_path, template_data);
 
@@ -614,20 +614,6 @@ window.OJ = function Oj(){
 			}
 
 			return obj;
-		},
-
-		'makeRect' : function(x, y, width, height){
-			var rect = {
-				'top'       : y,
-				'left'      : x,
-				'width'     : width,
-				'height'    : height
-			};
-
-			rect.bottom = rect.top + rect.height;
-			rect.right = rect.left + rect.width;
-
-			return rect;
 		},
 
 		'meta' : function(/*property, value*/){
@@ -722,7 +708,7 @@ window.OJ = function Oj(){
 
 		'render' : function(elm){
 			if(this.renderer){
-				this.renderer.dom().appendChild(isObjective(elm) ? elm.dom() : elm);
+				this.renderer.dom().appendChild(elm = isObjective(elm) ? elm.dom() : elm);
 			}
 		},
 
@@ -850,6 +836,20 @@ window.OJ = function Oj(){
 		},
 		'setRoot' : function(root){
 			this._root = isEmpty(root) && this._protocol == this.FILE ? '' : (root + '/');
+		},
+
+		'getScreen' : function(){
+			var rect = {
+				'top'       : isSet(window.screenY) ? window.screenY : window.screenTop,
+				'left'      : isSet(window.screenX) ? window.screenX : window.screenLeft,
+				'width'     : window.screen.availWidth,
+				'height'    : window.screen.availHeight
+			};
+
+			rect.bottom = rect.top + rect.height;
+			rect.right = rect.left + rect.width;
+
+			return rect;
 		},
 
 		'getScrollLeft' : function(){
@@ -1099,7 +1099,7 @@ window.OJ = function Oj(){
 			OJ._css_prefix = '-webkit-';
 	}
 
-	OJ._onResize = function(){
+	OJ._onOjResize = function(){
 		if(isFunction(OJ.addCss)){
 			var vp = OJ._viewport,
 				w = window.innerWidth ? window.innerWidth : document.body.clientWidth,
@@ -1129,7 +1129,7 @@ window.OJ = function Oj(){
 		}
 	};
 
-	OJ._onScroll = function(evt){
+	OJ._onOjScroll = function(evt){
 		var vp = OJ._viewport;
 		vp.top = window.pageYOffset ? window.pageYOffset : document.body.scrollTop;
 		vp.left = window.pageXOffset ? window.pageXOffset : document.body.scrollLeft;
@@ -1137,20 +1137,20 @@ window.OJ = function Oj(){
 		vp.right = vp.left + vp.width;
 	};
 
-	OJ._onOrientationChange = function(evt){
+	OJ._onOjOrientationChange = function(evt){
 		OJ.dispatchEvent(OjOrientationEvent.convertDomEvent(evt));
 	};
 
 	// setup browser event listeners
 	if(window.addEventListener){
-		window.addEventListener('resize', OJ._onResize, false);
-		window.addEventListener('scroll', OJ._onScroll, false);
-		window.addEventListener('orientationchange', OJ._onOrientationChange, false);
+		window.addEventListener('resize', OJ._onOjResize, false);
+		window.addEventListener('scroll', OJ._onOjScroll, false);
+		window.addEventListener('orientationchange', OJ._onOjOrientationChange, false);
 	}
 	else{
-		window.attachEvent('onresize', OJ._onResize, false);
-		window.attachEvent('onscroll', OJ._onScroll, false);
-		window.attachEvent('onorientationchange', OJ._onOrientationChange, false);
+		window.attachEvent('onresize', OJ._onOjResize, false);
+		window.attachEvent('onscroll', OJ._onOjScroll, false);
+		window.attachEvent('onorientationchange', OJ._onOjOrientationChange, false);
 	}
 })();
 
@@ -1700,7 +1700,11 @@ function toXml(obj){
 
 // value detection functions
 function isEmpty(obj){
-	return !isSet(obj) || obj == false || (isString(obj) && obj.trim() == '') || (isArray(obj) && obj.length == 0) || (isObject(obj) && isEmptyObject(obj));
+	return isUnset(obj) || obj == false ||
+		(isString(obj) && obj.trim() == '') ||
+		(isArray(obj) && obj.length == 0) ||
+		(isObject(obj) && isEmptyObject(obj)) ||
+		(isObjective(obj) && obj.is('OjCollection') && !obj.numItems());
 }
 
 function isEmptyObject(obj){
@@ -1732,11 +1736,15 @@ function isNumeric(obj){
 
 // true when obj has any value, including 0 and false, both of which are normally false
 function isSet(obj){
-	return !isNull(obj) && !isUndefined(obj);
+	return !isUnset(obj);
 }
 
 function isTrue(obj){
 	return !isFalse(obj);
+}
+
+function isUnset(obj){
+	return isNull(obj) || isUndefined(obj);
 }
 
 
@@ -1952,8 +1960,8 @@ function onDomReady(){
 	}
 
 	// setup the css classes for special displays
-	OJ._onResize(null);
-	OJ._onScroll(null);
+	OJ._onOjResize(null);
+	OJ._onOjScroll(null);
 
 	if(OJ.isMobile()){
 		OJ.addCss('is-mobile');

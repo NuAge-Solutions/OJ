@@ -27,11 +27,9 @@
 	text-decoration: none;
 }
     .OjButton > .label {
-		color: #FFFFFF;
 		font-size: 12px;
-		font-weight: 500;
         line-height: normal;
-		text-shadow: 0px -1px 1px #666666;
+
 		vertical-align: middle;
     }
 

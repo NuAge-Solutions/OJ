@@ -8,7 +8,9 @@ OJ.extendClass(
 	{
 		'_get_props_' : {
 			'deltaX'   : 0,
-			'deltaY'   : 0
+			'deltaY'   : 0,
+			'originX'  : 0,
+			'originY'  : 0
 		},
 
 

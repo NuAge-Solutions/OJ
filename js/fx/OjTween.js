@@ -17,25 +17,28 @@ OJ.extendClass(
 			'to'       : null
 		},
 
-		'_callback' : null,  '_delta' : 0,  '_start' : null,  '_timer' : null,
+//		'_callback' : null,  '_start' : null,  '_timer' : null,
+
+		'_delta' : 0,
 
 
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
 			this._super('OjTween', '_constructor', []);
 
-			var ln = arguments.length;
+			var args = arguments,
+				ln = args.length;
 
 			if(ln){
-				this.setFrom(arguments[0]);
+				this.setFrom(args[0]);
 
 				if(ln > 1){
-					this.setTo(arguments[1]);
+					this.setTo(args[1]);
 
 					if(ln > 2){
-						this.setDuration(arguments[2]);
+						this.setDuration(args[2]);
 
 						if(ln > 3){
-							this.setEasing(arguments[3]);
+							this.setEasing(args[3]);
 						}
 					}
 				}
@@ -66,7 +69,7 @@ OJ.extendClass(
 
 
 		'_onTick' : function(evt){
-			var key, time = Date.time() - this._start;
+			var time = Date.time() - this._start;
 
 			if(time >= this._duration){
 				time = this._duration;
@@ -88,27 +91,29 @@ OJ.extendClass(
 
 		'start' : function(){
 			// make sure we have what we need to get started
-			if(!isSet(this._from) || !isSet(this._to)){
+			if(isUnset(this._from) || isUnset(this._to)){
 				return;
 			}
+
+			var timer = this._timer;
 
 			this._calculateDelta();
 
 			// only create the time once
-			if(!this._timer){
-				this._timer = new OjTimer();
+			if(!timer){
+				timer = this._timer = new OjTimer();
 
-				this._timer.addEventListener(OjTimer.TICK, this, '_onTick');
+				timer.addEventListener(OjTimer.TICK, this, '_onTick');
 			}
 			else{
-				this._timer.stop();
+				timer.stop();
 			}
 
-			this._timer.setDuration(1000 / this._quality);
+			timer.setDuration(1000 / this._quality);
 
 			this._start = Date.time();
 
-			this._timer.start();
+			timer.start();
 		},
 
 		'pause' : function(){

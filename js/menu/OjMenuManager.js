@@ -1,3 +1,4 @@
+OJ.importJs('oj.data.OjRect');
 OJ.importJs('oj.events.OjTransformEvent');
 OJ.importJs('oj.events.OjMouseEvent');
 OJ.importJs('oj.fx.OjFade');
@@ -248,7 +249,7 @@ OJ.extendManager(
 
 
 		'positionTopLeft' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() - menu.getHorzOffset(),
 				target.getPageY() - menu.getHeight() - menu.getVertOffset(),
 				menu.getWidth(),
@@ -257,7 +258,7 @@ OJ.extendManager(
 		},
 
 		'positionTopCenter' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + ((target.getWidth() - menu.getWidth()) / 2),
 				target.getPageY() - menu.getHeight(),
 				menu.getWidth(),
@@ -266,7 +267,7 @@ OJ.extendManager(
 		},
 
 		'positionTopRight' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + target.getWidth() - menu.getWidth(),
 				target.getPageY() - menu.getHeight(),
 				menu.getWidth(),
@@ -276,7 +277,7 @@ OJ.extendManager(
 
 
 		'positionBottomLeft' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX(),
 				target.getPageY() + target.getHeight(),
 				menu.getWidth(),
@@ -285,7 +286,7 @@ OJ.extendManager(
 		},
 
 		'positionBottomCenter' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + ((target.getWidth() - menu.getWidth()) / 2),
 				target.getPageY() + target.getHeight(),
 				menu.getWidth(),
@@ -294,7 +295,7 @@ OJ.extendManager(
 		},
 
 		'positionBottomRight' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + target.getWidth() - menu.getWidth(),
 				target.getPageY() + target.getHeight(),
 				menu.getWidth(),
@@ -304,7 +305,7 @@ OJ.extendManager(
 
 
 		'positionLeftTop' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() - menu.getWidth(),
 				target.getPageY(),
 				menu.getWidth(),
@@ -313,7 +314,7 @@ OJ.extendManager(
 		},
 
 		'positionLeftMiddle' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() - menu.getWidth(),
 				target.getPageY() + ((target.getHeight() - menu.getHeight()) / 2),
 				menu.getWidth(),
@@ -322,7 +323,7 @@ OJ.extendManager(
 		},
 
 		'positionLeftBottom' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() - menu.getWidth(),
 				target.getPageY() + target.getHeight() - menu.getHeight(),
 				menu.getWidth(),
@@ -332,7 +333,7 @@ OJ.extendManager(
 
 
 		'positionRightTop' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + target.getWidth(),
 				target.getPageY(),
 				menu.getWidth(),
@@ -341,7 +342,7 @@ OJ.extendManager(
 		},
 
 		'positionRightMiddle' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + target.getWidth(),
 				target.getPageY() + ((target.getHeight() - menu.getHeight()) / 2),
 				menu.getWidth(),
@@ -350,7 +351,7 @@ OJ.extendManager(
 		},
 
 		'positionRightBottom' : function(target, menu){
-			return OJ.makeRect(
+			return new OjRect(
 				target.getPageX() + target.getWidth(),
 				target.getPageY() + target.getHeight() - menu.getHeight(),
 				menu.getWidth(),

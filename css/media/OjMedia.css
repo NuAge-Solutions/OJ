@@ -7,7 +7,11 @@
 
 	overflow: hidden;
 }
-	.OjMedia > .OjSpinner {
+/* prevents height rendering issue*/
+.OjMedia[v-align]:after {
+	display: none;
+}
+	.OjMedia .OjSpinner {
 		position: absolute;
 
 		top: 50%;
@@ -15,10 +19,63 @@
 
 		margin: -15px 0px 0px -15px;
 	}
-	.OjMedia > .media {
+	.OjMedia .media {
 		border: none;
 	}
 
+.OjImage {
+	background-position: top left;
+	background-repeat: no-repeat;
+	background-size: auto;
+}
+.OjImage.fill {
+	background-size: cover;
+}
+.OjImage.fit {
+	background-size: contain;
+}
+.OjImage.hFill {
+	background-size: auto 100%;
+}
+.OjImage.wFill {
+	background-size: 100% auto;
+}
+
+/* left alignments */
+.OjImage[h-align="l"][v-align="m"] {
+	background-position: left center;
+}
+.OjImage[h-align="l"][v-align="b"] {
+	background-position: left bottom;
+}
+
+/* center alignments */
+.OjImage[h-align="c"][v-align="t"] {
+	background-position: center top;
+}
+.OjImage[h-align="c"][v-align="m"] {
+	background-position: center center;
+}
+.OjImage[h-align="c"][v-align="b"] {
+	background-position: center bottom;
+}
+
+/*right alignments */
+.OjImage[h-align="r"][v-align="t"] {
+	background-position: right top;
+}
+.OjImage[h-align="r"][v-align="m"] {
+	background-position: right center;
+}
+.OjImage[h-align="r"][v-align="b"] {
+	background-position: right bottom;
+}
+
+
+
+.OjImage[h-align="c"] > .media {
+	margin: 0px auto;
+}
 
 .arrow-up, .OjImage > .media.arrow-up,
 .arrow-left, .OjImage > .media.arrow-left,

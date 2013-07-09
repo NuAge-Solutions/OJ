@@ -1,4 +1,13 @@
+OJ.importJs('oj.data.OjRect');
 OJ.importJs('oj.dom.OjCssTranslate');
+OJ.importJs('oj.events.OjDragEvent');
+OJ.importJs('oj.events.OjEvent');
+OJ.importJs('oj.events.OjFocusEvent');
+OJ.importJs('oj.events.OjKeyboardEvent');
+OJ.importJs('oj.events.OjMouseEvent');
+OJ.importJs('oj.events.OjScrollEvent');
+OJ.importJs('oj.events.OjTouchEvent');
+OJ.importJs('oj.events.OjTransformEvent');
 
 
 'use strict';
@@ -12,12 +21,15 @@ OJ.extendClass(
 			'owner' : null
 		},
 
-		'_alpha' : 1,  '_depth' : 0,
+		'_alpha' : 1,  '_depth' : 0,  '_scrollable' : false,
 
 		'_origin' : '0px, 0px',  '_rotation' : 0,  '_translate' : '0px, 0px',
 
 		'_h_align' : 'l', // OjStyleElement.LEFT
 		'_v_align' : 't', // OjStyleElement.TOP
+
+//		'_prev_x' : null,
+//		'_prev_y' : null,
 
 
 		'_compile_' : function(def){
@@ -151,6 +163,10 @@ OJ.extendClass(
 		},
 
 		'_destructor' : function(/*depth = 0*/){
+			// remove the timers
+			this._unset('_move_timer', '_scroll_timer');
+
+			// remove the children
 			var args = arguments,
 				depth = args.length ? args[0] : 0,
 				ln = this.numChildren();
@@ -237,8 +253,7 @@ OJ.extendClass(
 
 		'_processAttributes' : function(dom, context){
 			var attrs = dom.attributes,
-				ln = attrs.length,
-				attr;
+				ln, attr;
 
 			// variable reference
 			if((attr = dom.attributes['var']) && this._processAttribute(dom, attr, context)){
@@ -252,7 +267,7 @@ OJ.extendClass(
 			dom.removeAttribute('class-path');
 
 			// process the other attributes
-			for(; ln--;){
+			for(ln = attrs.length; ln--;){
 				attr = attrs[ln];
 
 				if(this._processAttribute(dom, attr, context)){
@@ -359,6 +374,461 @@ OJ.extendClass(
 			}
 		},
 
+		// Event Listeners
+		'_processEvent' : function(evt){
+			// because js natively calls the event functions on the context of the dom element
+			// we just get the attached oj element from it to get into the proper context to dispatch
+			// the event
+			if(OjElement.element(evt.currentTarget) != this || evt.dispatched){
+				return false;
+			}
+
+			evt.dispatched = true;
+
+			return true;
+		},
+
+		'_onOjDomEvent' : function(evt){
+			var proxy = OjElement.element(this);
+
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjDomEvent.convertDomEvent(evt));
+			}
+		},
+
+		'_onDomOjMouseEvent' : function(evt){
+			var proxy = OjElement.element(this);
+
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjMouseEvent.convertDomEvent(evt));
+			}
+		},
+
+		'_onDomOjKeyboardEvent' : function(evt){
+			var proxy = OjElement.byId(this.ojProxy);
+
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
+			}
+		},
+
+		'_onDomOjFocusEvent' : function(evt){
+			var proxy = OjElement.byId(this.ojProxy);
+
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onEvent(OjFocusEvent.convertDomEvent(evt));
+			}
+		},
+
+		'_onDomScrollEvent' : function(evt){
+			var proxy = OjElement.byId(this.ojProxy);
+
+			if(proxy && proxy._processEvent(evt)){
+				proxy._onScroll(OjScrollEvent.convertDomEvent(evt));
+			}
+		},
+
+		'_onDomTouchEvent' : function(evt){
+			var proxy = OjElement.byId(this.ojProxy);
+
+			if(proxy && proxy._processEvent(evt)){
+				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
+			}
+
+			return false;
+		},
+
+		'_onDrag' : function(evt){
+			this.dispatchEvent(
+				new OjDragEvent(
+					OjDragEvent.DRAG,
+					evt.getPageX() - this._dragX,
+					evt.getPageY() - this._dragY,
+					evt, false, false
+				)
+			);
+		},
+
+		'_onDragEnd' : function(evt){
+			OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onDrag');
+			OJ.removeEventListener(OjMouseEvent.UP, this, '_onDragEnd');
+
+			this.dispatchEvent(
+				new OjDragEvent(
+					OjDragEvent.END,
+					evt.getPageX() - this._dragX,
+					evt.getPageY() - this._dragY,
+					evt, false, false
+				)
+			);
+		},
+
+		'_onDragStart' : function(evt){
+			this._dragX = evt.getPageX();
+			this._dragY = evt.getPageY();
+
+			if(this.hasEventListener(OjDragEvent.DRAG)){
+				OJ.addEventListener(OjMouseEvent.MOVE, this, '_onDrag');
+			}
+
+			OJ.addEventListener(OjMouseEvent.UP, this, '_onDragEnd');
+
+			this.dispatchEvent(
+				new OjDragEvent(OjDragEvent.START, 0, 0, evt, false, false)
+			);
+		},
+
+		'_onEvent' : function(evt){
+			this.dispatchEvent(evt);
+
+			return false;
+		},
+
+//		'_onMouse' : function(evt){
+//			var type = evt.getType(),
+//				x = evt.getPageX(),
+//				y = evt.getPageY(),
+//				response = this._onEvent(evt);
+//
+//
+////			if(type == OjMouseEvent.UP && (!this._draggable || (this._dragX == x && this._dragY == y))){
+////				trace(this._draggable, this._dragX == x, this._dragY == y);
+////				this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, evt.getBubbles(), evt.getCancelable(), x, y));
+////			}
+//
+//			return response;
+//		},
+
+		'_onMoveTick' : function(evt){
+			var page_x = this.getPageX(),
+				page_y = this.getPageY(),
+				delta_x = this._page_x - page_x,
+				delta_y = this._page_y - page_y;
+
+			if(delta_x || delta_y){
+				this.dispatchEvent(new OjTransformEvent(OjTransformEvent.MOVE, page_x, page_y, delta_x, delta_y));
+			}
+
+			this._page_x = page_x;
+			this._page_y = page_y;
+		},
+
+		'_onScroll' : function(evt){
+			var x, y;
+
+			// for native scroll events
+			if(evt.is('OjScrollEvent')){
+				if(this._prev_x == (x = evt.getScrollX()) && this._prev_y == (y = evt.getScrollY())){
+					return;
+				}
+
+				this._prev_x = x;
+				this._prev_y = y;
+
+				return this._onEvent(evt);
+			}
+
+			// for touch scroll events
+			if(this._prev_x == (x = this.getScrollX()) && this._prev_y == (y = this.getScrollY())){
+				return;
+			}
+
+			return this._onEvent(
+				new OjScrollEvent(OjScrollEvent.SCROLL, this._prev_x = x, this._prev_y = y)
+			);
+		},
+
+		'_onTouch' : function(evt){
+			var type = evt.getType(),
+				x = evt.getPageX(),
+				y = evt.getPageY();
+
+			if(type == OjTouchEvent.END){
+				type = OjMouseEvent.UP;
+			}
+			else if(type == OjTouchEvent.START){
+				type = OjMouseEvent.DOWN;
+
+				this._dragX = x;
+				this._dragY = y;
+			}
+			else if(type == OjTouchEvent.MOVE){
+				type = OjMouseEvent.MOVE;
+			}
+
+			if(type){
+				this._onEvent(new OjMouseEvent(type, true, true, x, y));
+
+				// if the touch hasn't moved then issue a click event
+				if(type == OjMouseEvent.UP && x == this._dragX && y == this._dragY){
+					this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, true, true, x, y));
+				}
+			}
+
+			return true;
+		},
+
+
+		// event listener overrides
+		// customize this functionality for dom events so that they work
+		'_updateTouchStartListeners' : function(){
+			if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.CLICK, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
+				this._proxy.ontouchstart = null;
+			}
+		},
+
+		'_updateTouchMoveListeners' : function(){
+			if(!this.hasEventListeners(OjMouseEvent.MOVE, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){//}, OjScrollEvent.SCROLL)){
+				this._proxy.ontouchmove = null;
+			}
+		},
+
+		'_updateTouchEndListeners' : function(){
+			if(!this.hasEventListeners(OjMouseEvent.UP, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
+				this._proxy.ontouchend = null;
+			}
+		},
+
+		'addEventListener' : function(type){
+			var is_touch = OJ.isTouchCapable(),
+				proxy = this._proxy;
+
+			this._super('OjStyleElement', 'addEventListener', arguments);
+
+			if(type == OjScrollEvent.SCROLL){
+				this._scrollable = true;
+
+				proxy.onscroll = this._onDomScrollEvent;
+
+//				if(is_touch){
+//					proxy.ontouchmove = this._onDomTouchEvent;
+//				}
+			}
+
+			// mouse events
+			else if(type == OjMouseEvent.CLICK){
+				if(is_touch){
+					proxy.ontouchstart = proxy.ontouchend = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onclick = this._onDomOjMouseEvent;
+				}
+			}
+			else if(type == OjMouseEvent.DOUBLE_CLICK){
+				proxy.ondblclick = this._onDomOjMouseEvent;
+			}
+			else if(type == OjMouseEvent.DOWN){
+				if(is_touch){
+					proxy.ontouchstart = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousedown = this._onDomOjMouseEvent;
+				}
+			}
+			else if(type == OjMouseEvent.MOVE){
+				if(is_touch){
+					proxy.ontouchmove = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousemove = this._onDomOjMouseEvent;
+				}
+			}
+			else if(type == OjMouseEvent.OUT){
+				proxy.onmouseout = this._onDomOjMouseEvent;
+			}
+			else if(type == OjMouseEvent.OVER){
+				proxy.onmouseover = this._onDomOjMouseEvent;
+			}
+			else if(type == OjMouseEvent.UP){
+				if(is_touch){
+					proxy.ontouchend = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmouseup = this._onDomOjMouseEvent;
+				}
+			}
+
+			// drag events
+			else if(OjDragEvent.isDragEvent(type)){
+				this._draggable = true;
+//
+//				if(is_touch){
+//					proxy.ontouchstart = proxy.ontouchmove = proxy.ontouchend = this._onDomTouchEvent;
+//				}
+//				else{
+//					proxy.onmousedown = this._onDomOjMouseEvent;
+//				}
+
+				this.addEventListener(OjMouseEvent.DOWN, this, '_onDragStart');
+			}
+
+			// keyboard events
+			else if(type == OjKeyboardEvent.DOWN){
+				proxy.onkeydown = this._onDomOjKeyboardEvent;
+			}
+			else if(type == OjKeyboardEvent.PRESS){
+				proxy.onkeypress = this._onDomOjKeyboardEvent;
+			}
+			else if(type == OjKeyboardEvent.UP){
+				proxy.onkeyup = this._onDomOjKeyboardEvent;
+			}
+
+			// focus events
+			else if(type == OjFocusEvent.IN){
+				proxy.onfocus = this._onDomOjFocusEvent;
+			}
+			else if(type == OjFocusEvent.OUT){
+				proxy.onblur = this._onDomOjFocusEvent;
+			}
+
+			// transform events
+			else if(type == OjTransformEvent.MOVE){
+				if(!this._move_timer){
+					this._move_timer = new OjTimer(250, 0);
+					this._move_timer.addEventListener(OjTimer.TICK, this, '_onMoveTick');
+
+					this._page_x = this.getPageX();
+					this._page_y = this.getPageY();
+
+					this._move_timer.start();
+				}
+			}
+			else if(type == OjTransformEvent.RESIZE && this._proxy != document.body){
+				proxy.onresize = this._onOjDomEvent;
+			}
+
+			// misc dom events
+			else if(type == OjDomEvent.CHANGE){
+				proxy.onchange = this._onOjDomEvent;
+			}
+		},
+
+		'removeEventListener' : function(type, context, callback){
+			var proxy = this._proxy;
+
+			this._super('OjStyleElement', 'removeEventListener', arguments);
+
+			// scroll events
+			if(type == OjScrollEvent.SCROLL){
+				if(!this.hasEventListener(OjScrollEvent.SCROLL)){
+					this._scrollable = false;
+
+					proxy.onscroll = null;
+
+//					this._updateTouchMoveListeners();
+				}
+			}
+
+			// mouse events
+			else if(type == OjMouseEvent.CLICK){
+				if(!this.hasEventListener(OjMouseEvent.CLICK)){
+					proxy.onclick = null;
+
+					this._updateTouchStartListeners();
+					this._updateTouchEndListeners();
+				}
+			}
+			else if(type == OjMouseEvent.DOUBLE_CLICK){
+				if(!this.hasEventListener(OjMouseEvent.DOUBLE_CLICK)){
+					proxy.ondblclick = null;
+
+					this._updateTouchStartListeners();
+					this._updateTouchEndListeners();
+				}
+			}
+			else if(type == OjMouseEvent.DOWN){
+				if(!this.hasEventListeners(OjMouseEvent.DOWN, OjDragEvent.DRAG)){
+					proxy.onmousedown = null;
+
+					this._updateTouchStartListeners();
+				}
+			}
+			else if(type == OjMouseEvent.MOVE){
+				if(!this.hasEventListener(OjMouseEvent.MOVE)){
+					proxy.onmousemove = null;
+
+					this._updateTouchMoveListeners();
+				}
+			}
+			else if(type == OjMouseEvent.OUT){
+				if(!this.hasEventListener(OjMouseEvent.OUT)){
+					proxy.onmouseout = null;
+				}
+			}
+			else if(type == OjMouseEvent.OVER){
+				if(!this.hasEventListener(OjMouseEvent.OVER)){
+					proxy.onmouseover = null;
+				}
+			}
+			else if(type == OjMouseEvent.UP){
+				if(!this.hasEventListener(OjMouseEvent.UP)){
+					proxy.onmouseup = null;
+
+					this._updateTouchEndListeners();
+				}
+			}
+
+			// drag events
+			else if(OjDragEvent.isDragEvent(type)){
+				if(!this.hasEventListeners(OjDragEvent.DRAG, OjDragEvent.END, OjDragEvent.START)){
+					this._draggable = false;
+
+					this.removeEventListener(OjMouseEvent.DOWN, this, '_onDragStart');
+
+					OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onDrag');
+					OJ.removeEventListener(OjMouseEvent.UP, this, '_onDragEnd');
+				}
+			}
+
+			// keyboard events
+			else if(type == OjKeyboardEvent.DOWN){
+				if(!this.hasEventListener(OjKeyboardEvent.DOWN)){
+					proxy.onkeydown = null;
+				}
+			}
+			else if(type == OjKeyboardEvent.PRESS){
+				if(!this.hasEventListener(OjKeyboardEvent.PRESS)){
+					proxy.onkeypress = null;
+				}
+			}
+			else if(type == OjKeyboardEvent.UP){
+				if(!this.hasEventListener(OjKeyboardEvent.UP)){
+					proxy.onkeyup = null;
+				}
+			}
+
+			// focus events
+			else if(type == OjFocusEvent.IN){
+				if(!this.hasEventListener(OjFocusEvent.IN)){
+					proxy.onfocus = null;
+				}
+			}
+			else if(type == OjFocusEvent.OUT){
+				if(!this.hasEventListener(OjFocusEvent.OUT)){
+					proxy.onblur = null;
+				}
+			}
+
+			// transform event
+			else if(type == OjTransformEvent.MOVE){
+				if(!this.hasEventListener(OjTransformEvent.MOVE)){
+					this._unset('_move_timer');
+				}
+			}
+			else if(type == OjTransformEvent.RESIZE){
+				if(!this.hasEventListener(OjTransformEvent.RESIZE)){
+					proxy.onresize = null;
+				}
+			}
+
+			// misc dom events
+			else if(type == OjDomEvent.CHANGE){
+				if(!this.hasEventListener(OjDomEvent.CHANGE)){
+					proxy.onchange = null;
+				}
+			}
+		},
+
 
 		// Child Management Functions
 		'addChild' : function(child){
@@ -398,6 +868,16 @@ OJ.extendClass(
 			}
 
 			return ary;
+		},
+		'setChildren' : function(children){
+			this.removeAllChildren();
+
+			var i = 0,
+				ln = children.length;
+
+			for(; i < ln; i++){
+				this.addChild(children[i]);
+			}
 		},
 
 		'indexOfChild' : function(child){
@@ -753,18 +1233,11 @@ OJ.extendClass(
 		},
 
 		'hitTestRect' : function(rect){
-			var r = this.getRect();
-
-			return (rect.top >= r.top && rect.top <= r.bottom && rect.left >= r.left && rect.left <= r.right) ||
-				(rect.top >= r.top && rect.top <= r.bottom && rect.right >= r.left && rect.right <= r.right) ||
-				(rect.bottom >= r.top && rect.bottom <= r.bottom && rect.left >= r.left && rect.left <= r.right) ||
-				(rect.bottom >= r.top && rect.bottom <= r.bottom && rect.right >= r.left && rect.right <= r.right);
+			return this.getRect().hitTestRect(rect);
 		},
 
 		'hitTestPoint' : function(x, y){
-			var r = this.getRect();
-
-			return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+			return this.getRect().hitTestPoint(x, y);
 		},
 
 		'localPoint' : function(global_point){
@@ -790,7 +1263,7 @@ OJ.extendClass(
 			return this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
 		},
 		'setInnerWidth' : function(w){
-			this._setStyleNumber('width', Math.round(w));
+			this._setWidth(Math.round(w) + OJ.setting('dimUnit'));
 		},
 
 		'getOuterWidth' : function(){
@@ -803,14 +1276,17 @@ OJ.extendClass(
 		'getWidth' : function(){
 			return this._proxy.offsetWidth || this._getStyleNumber('width');
 		},
+		'_setWidth' : function(val){
+			this._setStyle('width', val);
+		},
 		'setWidth' : function(w/*, unit*/){
 			var args = arguments;
 
 			if(w == OjStyleElement.AUTO){
-				this._setStyle('width', null);
+				this._setWidth(null);
 			}
 			else if(args.length > 1){
-				this._setStyle('width', w + (isString(args[1]) ? args[1] : '%'));
+				this._setWidth(w + (isString(args[1]) ? args[1] : '%'));
 			}
 			else{
 				this.setInnerWidth(w - this.getPaddingLeft() - this.getPaddingRight());
@@ -835,7 +1311,7 @@ OJ.extendClass(
 			return this.getHeight() - this.getPaddingTop() - this.getPaddingBottom();
 		},
 		'setInnerHeight' : function(h){
-			this._setStyleNumber('height', Math.round(h));
+			this._setHeight(Math.round(h) + OJ.setting('dimUnit'));
 		},
 
 		'getOuterHeight' : function(){
@@ -848,12 +1324,17 @@ OJ.extendClass(
 		'getHeight' : function(){
 			return this._proxy.offsetHeight || this._getStyleNumber('height');;
 		},
+		'_setHeight' : function(val){
+			this._setStyle('height', val);
+		},
 		'setHeight' : function(h/*, unit*/){
+			var args = arguments;
+
 			if(h == OjStyleElement.AUTO){
-				this._setStyle('height', null);
+				this._setHeight(null);
 			}
-			else if(arguments.length > 1){
-				this._setStyle('height', h + (isString(arguments[1]) ? arguments[1] : '%'));
+			else if(args.length > 1){
+				this._setHeight(h + (isString(args[1]) ? args[1] : '%'));
 			}
 			else{
 				this.setInnerHeight(h - this.getPaddingTop() - this.getPaddingBottom());
@@ -879,10 +1360,10 @@ OJ.extendClass(
 		},
 
 		'setPercentWidth' : function(w){
-			this._setStyleNumber('width', w, '%');
+			this._setWidth(w + '%');
 		},
 		'setPercentHeight' : function(h){
-			this._setStyleNumber('height', h, '%');
+			this._setHeight(h + '%');
 		},
 
 
@@ -962,16 +1443,15 @@ OJ.extendClass(
 		'setAlpha' : function(alpha){
 			var old_alpha = this._alpha;
 
-
 			if(old_alpha == alpha){
 				return;
 			}
 
 			if((alpha = this._alpha = this._setStyle('opacity', alpha)) && old_alpha === 0){
-				this.dispatchEvent(new OjEvent(OjEvent.SHOW));
+//				this.dispatchEvent(new OjEvent(OjEvent.SHOW));
 			}
 			else if(!alpha){
-				this.dispatchEvent(new OjEvent(OjEvent.HIDE));
+//				this.dispatchEvent(new OjEvent(OjEvent.HIDE));
 			}
 		},
 
@@ -997,7 +1477,7 @@ OJ.extendClass(
 		},
 
 		'getRect' : function(){
-			return OJ.makeRect(this.getPageX(), this.getPageY(), this.getWidth(), this.getHeight());
+			return new OjRect(this.getPageX(), this.getPageY(), this.getWidth(), this.getHeight());
 		},
 		'setRect' : function(rect){
 			// add this later

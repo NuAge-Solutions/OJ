@@ -24,17 +24,22 @@ OJ.extendComponent(
 					this.setIcon(args[1]);
 				}
 			}
-
-			// force to always listen for click
-			this._proxy.onclick = this._onDomMouseEvent;
 		},
 
 
-		'removeEventListener' : function(type, context, callback){
-			this._super('OjButton', 'removeEventListener', arguments);
+		'redraw' : function(){
+			if(this._super('OjButton', 'redraw', arguments)){
+				// note: hack for webkit render bug
+				if(OJ.getEngine() == OJ.WEBKIT){
+					this._setStyle('font-size', '1px');
 
-			// force to always listen for click
-			this._proxy.onclick = this._onDomMouseEvent;
+					this._setStyle('font-size', null);
+				}
+
+				return true;
+			}
+
+			return false;
 		},
 
 
