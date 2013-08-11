@@ -4,27 +4,27 @@ OJ.importJs('oj.events.OjDomEvent');
 'use strict';
 
 OJ.extendClass(
-	OjDomEvent, 'OjOrientationEvent',
+	'OjOrientationEvent', [OjDomEvent],
 	{
 		'_get_props_' : {
 			'orientation' : null
 		},
 
 
-		'_constructor' : function(type/*, bubbles, cancelable, orientation = NULL*/){
-			var args = arguments,
+		'_constructor' : function(type/*, orientation = NULL, bubbles, cancelable*/){
+			var args = Array.array(arguments),
 				ln = args.length;
 
-			this._super('OjOrientationEvent', '_constructor', ln > 3 ? [].slice.call(args, 0, 3) : args);
-
-			if(ln > 3){
-				this._orientation = args[3];
+			if(ln > 1){
+				this._orientation = args.splice(1, 1)[0];
 			}
+
+			this._super(OjDomEvent, '_constructor', args);
 		},
 
 
 		'clone' : function(){
-			var clone = this._super('OjOrientationEvent', 'clone', arguments);
+			var clone = this._super(OjDomEvent, 'clone', arguments);
 
 			clone._orientation = this._orientation;
 
@@ -41,7 +41,7 @@ OJ.extendClass(
 				type = OjOrientationEvent.CHANGE;
 			}
 
-			return new OjOrientationEvent(type, true, true, window.orientation);
+			return new OjOrientationEvent(type, window.orientation, false, false);
 		},
 
 		'isOrientationEvent' : function(type){

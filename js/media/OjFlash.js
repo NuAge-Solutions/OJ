@@ -4,7 +4,7 @@ OJ.importJs('oj.media.OjMedia');
 'use strict';
 
 OJ.extendComponent(
-	OjMedia, 'OjFlash',
+	'OjFlash', [OjMedia],
 	{
 		'_tag' : '<object></object>'
 	},

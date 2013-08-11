@@ -6,7 +6,7 @@ OJ.importCss('oj.form.OjInput');
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'OjInput',
+	'OjInput', [OjComponent],
 	{
 		'_props_' : {
 			'default'    : null,
@@ -19,28 +19,38 @@ OJ.extendClass(
 			'value'      : null
 		},
 
-		'_errors' : null,  '_ready' : false,  '_template' : 'oj.form.OjInput',
+		'_get_props_' : {
+			'error' : null
+		},
+
+		'_ready' : false,  '_template' : 'oj.form.OjInput',
 
 
 		'_constructor' : function(/*name, label, value, validators*/){
-			this._super('OjInput', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
-			var ln = arguments.length;
+			var args = arguments,
+				ln = args.length;
 
 			this._errors = [];
 			this._validators = [];
 
+			// detect default mode
+			if(!isUndefined(this.input.dom().placeholder)){
+				this._unset('dflt');
+			}
+
 			if(ln){
-				this.setName(arguments[0]);
+				this.setName(args[0]);
 
 				if(ln > 1){
-					this.setLabel(arguments[1]);
+					this.setLabel(args[1]);
 
 					if(ln > 2){
-						this.setValue(arguments[2]);
+						this.setValue(args[2]);
 
 						if(ln > 3){
-							this.setValidators(arguments[3]);
+							this.setValidators(args[3]);
 						}
 					}
 				}
@@ -66,7 +76,7 @@ OJ.extendClass(
 			else{
 				ln = this._class_names.length;
 
-				while(ln-- > 0){
+				for(; ln--;){
 					this.addCss(this._class_names[ln]);
 
 					if(this._class_names[ln] == 'OjInput'){
@@ -81,8 +91,19 @@ OJ.extendClass(
 		},
 
 
+		'_formatError' : function(error){
+			return  OJ.tokensReplace(error, this._formatErrorTokens());
+		},
+
+		'_formatErrorTokens' : function(){
+			return {
+				'INPUT' : this._title || this._label || this._default || this._name,
+				'VALUE' : this._value
+			};
+		},
+
 		'_redrawDefault' : function(){
-			if(isEmpty(this._default) || !isEmpty(this._value)){
+			if(!this.dflt || isEmpty(this._default) || !isEmpty(this._value)){
 				this.addCss(['no-default']);
 			}
 			else{
@@ -101,14 +122,6 @@ OJ.extendClass(
 		},
 
 		'_onFocusOut' : function(evt){
-//			var classes = ['focus'];
-//
-//			if(isEmpty(this._value) && this._default){
-//				classes.push('no-default');
-//			}
-//
-//			this.removeCss(classes);
-
 			this.removeCss(['focus']);
 		},
 
@@ -131,13 +144,19 @@ OJ.extendClass(
 		},
 
 		'isValid' : function(){
-			this._errors = [];
+			this._error = null;
+
+			if(this._required && isEmpty(this._value)){
+				this._error = this._formatError(OjInput.REQUIRED_ERROR);
+
+				return false;
+			}
 
 			return true;
 		},
 
 		'redraw' : function(){
-			if(this._super('OjInput', 'redraw', arguments)){
+			if(this._super(OjComponent, 'redraw', arguments)){
 				this._redrawDefault();
 
 				return true;
@@ -164,16 +183,23 @@ OJ.extendClass(
 				return;
 			}
 
-			if(val){
-				this.dflt.addEventListener(OjMouseEvent.CLICK, this, '_onDefaultClick');
+			this._default = val;
+
+			if(this.dflt){
+				if(val){
+					this.dflt.addEventListener(OjMouseEvent.CLICK, this, '_onDefaultClick');
+				}
+				else{
+					this.dflt.removeEventListener(OjMouseEvent.CLICK, this, '_onDefaultClick');
+				}
+
+				this.dflt.setText(val);
+
+				this._redrawDefault();
 			}
 			else{
-				this.dflt.removeEventListener(OjMouseEvent.CLICK, this, '_onDefaultClick');
+				this.input.setAttr('placeholder', val);
 			}
-
-			this.dflt.setText(this._default = val);
-
-			this._redrawDefault();
 		},
 
 		'getErrors' : function(){
@@ -251,6 +277,9 @@ OJ.extendClass(
 		}
 	},
 	{
+		'REQUIRED_ERROR' : '[%INPUT] is required.',
+
+
 		'supportsInputType' : function(type){
 			var i = document.createElement('input');
 			i.setAttribute('type', type);

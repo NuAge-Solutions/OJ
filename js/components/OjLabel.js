@@ -4,7 +4,7 @@ OJ.importCss('oj.components.OjLabel');
 'use strict';
 
 OJ.extendComponent(
-	OjComponent, 'OjLabel',
+	'OjLabel', [OjComponent],
 	{
 		'_props_' : {
 			'prefix' : null,
@@ -18,7 +18,7 @@ OJ.extendComponent(
 		'_constructor' : function(){
 			var args = arguments;
 
-			this._super('OjLabel', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			if(args.length){
 				this.setText(args[0]);
@@ -35,7 +35,7 @@ OJ.extendComponent(
 				return;
 			}
 
-			return this._super('OjLabel', '_processDomSourceChildren', arguments);
+			return this._super(OjComponent, '_processDomSourceChildren', arguments);
 		},
 
 		'_redrawText' : function(){
@@ -60,7 +60,7 @@ OJ.extendComponent(
 		},
 
 		'redraw' : function(){
-			if(this._super('OjLabel', 'redraw', arguments)){
+			if(this._super(OjComponent, 'redraw', arguments)){
 				this._redrawText();
 
 				return true;

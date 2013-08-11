@@ -7,7 +7,7 @@ OJ.importCss('oj.form.OjOption');
 'use strict';
 
 OJ.extendClass(
-	OjItemRenderer, 'OjOption',
+	'OjOption', [OjItemRenderer],
 	{
 		'_props_' : {
 			'dataRenderer' : null,
@@ -37,7 +37,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjOption', '_constructor', arguments);
+			this._super(OjItemRenderer, '_constructor', arguments);
 
 			if(!this._selector){
 				this.setDataRenderer(renderer);
@@ -49,7 +49,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._selector = this._dataRenderer = null;
 
-			return this._super('OjOption', '_destructor', arguments);
+			return this._super(OjItemRenderer, '_destructor', arguments);
 		},
 
 
@@ -60,11 +60,11 @@ OJ.extendClass(
 				return null;
 			}
 
-			return this._super('OjOption', '_processDomSourceChild', arguments);
+			return this._super(OjItemRenderer, '_processDomSourceChild', arguments);
 		},
 
 		'_redrawData' : function(){
-			if(this.option && this._super('OjOption', '_redrawData', arguments)){
+			if(this.option && this._super(OjItemRenderer, '_redrawData', arguments)){
 				this.option.setData(this._data);
 
 				return true;
@@ -100,7 +100,7 @@ OJ.extendClass(
 				return;
 			}
 
-			this._super('OjOption', 'setGroup', arguments);
+			this._super(OjItemRenderer, 'setGroup', arguments);
 
 			var owner;
 

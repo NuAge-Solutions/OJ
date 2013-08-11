@@ -6,7 +6,7 @@ OJ.importCss('oj.components.OjButton');
 'use strict';
 
 OJ.extendComponent(
-	OjLink, 'OjButton',
+	'OjButton', [OjLink],
 	{
 		'_default_h_align' : OjStyleElement.CENTER,
 
@@ -15,7 +15,7 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = args.length;
 
-			this._super('OjButton', '_constructor', []);
+			this._super(OjLink, '_constructor', []);
 
 			if(ln){
 				this.setText(args[0]);
@@ -28,7 +28,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._super('OjButton', 'redraw', arguments)){
+			if(this._super(OjLink, 'redraw', arguments)){
 				// note: hack for webkit render bug
 				if(OJ.getEngine() == OJ.WEBKIT){
 					this._setStyle('font-size', '1px');
@@ -51,7 +51,7 @@ OJ.extendComponent(
 		},
 
 		'setIsActive' : function(active){
-			this._super('OjButton', 'setIsActive', arguments);
+			this._super(OjLink, 'setIsActive', arguments);
 
 			if(this._icon){
 				this._icon.setIsActive(active);

@@ -4,7 +4,7 @@ OJ.importJs('oj.components.OjButton');
 'use strict';
 
 OJ.extendComponent(
-	OjButton, 'OjImageButton',
+	'OjImageButton', [OjButton],
 	{
 		'_v_align' : OjStyleElement.TOP,
 
@@ -12,7 +12,7 @@ OJ.extendComponent(
 		'_constructor' : function(/*image*/){
 			var args = arguments;
 
-			this._super('OjImageButton', '_constructor', []);
+			this._super(OjButton, '_constructor', []);
 
 			if(args.length){
 				this.setIcon(args[0]);
@@ -30,7 +30,7 @@ OJ.extendComponent(
 				return null;
 			}
 
-			return this._super('OjImageButton', '_processDomSourceChildren', arguments);
+			return this._super(OjButton, '_processDomSourceChildren', arguments);
 		},
 
 

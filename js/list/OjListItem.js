@@ -5,7 +5,7 @@ OJ.importJs('oj.media.OjImage');
 'use strict';
 
 OJ.extendComponent(
-	OjItemRenderer, 'OjListItem',
+	'OjListItem', [OjItemRenderer],
 	{
 		'_props_' : {
 			'showAccessory' : false,
@@ -16,7 +16,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*data*/){
-			this._super('OjListItem', '_constructor', []);
+			this._super(OjItemRenderer, '_constructor', []);
 
 			this.addChild(this.accessory = new OjStyleElement('<div class="-accessory valign-middle"></div>'));
 			this.addChild(this.icon = new OjImage());
@@ -36,7 +36,7 @@ OJ.extendComponent(
 
 			this._list = this._data = null;
 
-			return this._super('OjListItem', '_destructor', arguments);
+			return this._super(OjItemRenderer, '_destructor', arguments);
 		},
 
 
@@ -64,7 +64,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._super('OjListItem', 'redraw', arguments)){
+			if(this._super(OjItemRenderer, 'redraw', arguments)){
 				this._redrawData();
 
 				this._redrawAccessory();

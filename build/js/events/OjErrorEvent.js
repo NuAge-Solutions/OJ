@@ -1,1 +1,1 @@
-OJ.importJs("oj.events.OjTextEvent");"use strict";OJ.extendClass(OjTextEvent,"OjErrorEvent",{_get_props_:{code:0},_constructor:function(b){var a=Array.array(arguments),c=a.length;if(c>2){this._code=a[2];a.splice(2,1)}this._super("OjErrorEvent","_constructor",a)}},{ERROR:"onError"});
+OJ.importJs("oj.events.OjTextEvent");"use strict";OJ.extendClass("OjErrorEvent",[OjTextEvent],{_get_props_:{code:0},_constructor:function(b){var a=Array.array(arguments),c=a.length;if(c>2){this._code=a[2];a.splice(2,1)}this._super(OjTextEvent,"_constructor",a)}},{ERROR:"onError"});

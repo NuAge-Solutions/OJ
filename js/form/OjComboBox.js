@@ -9,7 +9,7 @@ OJ.importCss('oj.form.OjComboBox');
 'use strict';
 
 OJ.extendClass(
-	OjInput, 'OjComboBox',
+	'OjComboBox', [OjInput],
 	{
 		'_options' : null,  '_options_dp' : null,  '_options_index' : null,
 
@@ -23,7 +23,7 @@ OJ.extendClass(
 
 			this._options_index = [];
 
-			this._super('OjComboBox', '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
+			this._super(OjInput, '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
 
 			this._list = new OjList();
 			this._list.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
@@ -321,7 +321,7 @@ OJ.extendClass(
 
 				this._redrawValue();
 
-				this._super('OjComboBox', 'setValue', [value]);
+				this._super(OjInput, 'setValue', [value]);
 			}
 		}
 	}

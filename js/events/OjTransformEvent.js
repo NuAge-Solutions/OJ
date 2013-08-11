@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjTransformEvent',
+	'OjTransformEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'deltaX'   : 0,
@@ -19,7 +19,7 @@ OJ.extendClass(
 
 			args.unshift(type);
 
-			this._super('OjTransformEvent', '_constructor', args);
+			this._super(OjEvent, '_constructor', args);
 
 			this._deltaX = deltaX;
 			this._deltaY = deltaY;
@@ -30,7 +30,7 @@ OJ.extendClass(
 
 
 		'clone' : function(){
-			var clone = this._super('OjTransformEvent', 'clone', arguments);
+			var clone = this._super(OjEvent, 'clone', arguments);
 
 			clone._deltaX = this._deltaX;
 			clone._deltaY = this._deltaY;

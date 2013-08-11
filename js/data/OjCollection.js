@@ -5,7 +5,7 @@ OJ.importJs('oj.events.OjCollectionEvent');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjCollection',
+	'OjCollection', [OjActionable],
 	{
 		'_props_' : {
 			'allowDuplicate' : true,
@@ -16,7 +16,7 @@ OJ.extendClass(
 		'_constructor' : function(/*items*/){
 			var args = arguments;
 
-			this._super('OjCollection', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			this._items = [];
 
@@ -28,7 +28,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._items = null;
 
-			return this._super('OjCollection', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

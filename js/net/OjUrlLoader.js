@@ -11,7 +11,7 @@ OJ.importJs('oj.utils.OjCacheManager');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjUrlLoader',
+	'OjUrlLoader', [OjActionable],
 	{
 		'_props_' : {
 			'async'       : false,
@@ -25,7 +25,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*request, async,*/){
-			this._super('OjUrlLoader', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -54,7 +54,7 @@ OJ.extendClass(
 			this._xhr = null;
 			this._request = null;
 
-			return this._super('OjUrlLoader', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

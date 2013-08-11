@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjMouseEvent');
 'use strict';
 
 OJ.extendClass(
-	OjMouseEvent, 'OjDragEvent',
+	'OjDragEvent', [OjMouseEvent],
 	{
 		'_get_props_' : {
 			'deltaX'   : 0,
@@ -19,7 +19,7 @@ OJ.extendClass(
 
 			args.unshift(type);
 
-			this._super('OjDragEvent', '_constructor', args);
+			this._super(OjMouseEvent, '_constructor', args);
 
 			this._deltaX = deltaX;
 			this._deltaY = deltaY;
@@ -30,7 +30,7 @@ OJ.extendClass(
 
 
 		'clone' : function(){
-			var clone = this._super('OjDragEvent', 'clone', arguments);
+			var clone = this._super(OjMouseEvent, 'clone', arguments);
 
 			clone._deltaX = this._deltaX;
 			clone._deltaY = this._deltaY

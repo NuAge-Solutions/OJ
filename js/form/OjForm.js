@@ -1,138 +1,47 @@
 OJ.importJs('oj.nav.OjView');
-OJ.importJs('oj.form.OjFormError');
-OJ.importJs('oj.list.OjList');
 
-OJ.importCss('oj.form.OjForm');
-
-
-'use strict';
 
 OJ.extendComponent(
-	OjView, 'OjForm',
+	'OjForm', [OjView], 
 	{
-		'_template' : 'oj.form.OjForm',
+		'_getInputs' : function(){
+			var inputs = this._dom.getElementsByClassName('OjInput'),
+				rtrn = [],
+				ln = inputs.length;
 
-		'header' : null,  'footer' : null,  'title' : null,  '_data' : null,  '_inputs' : null,  '_errors' : null,
+			for(; ln--;){
+				// todo: OjForm - add checking for compound inputs
+				rtrn.unshift(OjElement.element(inputs[ln]));
+			}
 
-
-		'_compile_' : function(){
-			this.getLabel = this.getTitle;
-			this.setLabel = this.setTitle;
+			return rtrn;
 		},
 
 
-		'_constructor' : function(){
-			this._data = {};
+		'focus' : function(){
+			this._super(OjView, 'focus', arguments);
 
-			this._inputs = {};
+			var inputs = this._getInputs();
 
-			this._errors = [];
-
-			this._super('OjForm', '_constructor', arguments);
-
-			this.errors.hide();
-
-			this._processActions();
-		},
-
-
-		'_processActions' : function(){
-			if(this.actions){
-				var item, ln = this.actions.numChildren();
-
-				while(ln-- > 0){
-					item = this.actions.getChildAt(ln);
-
-					if(item.is('OjButton')){
-						item.addEventListener(OjMouseEvent.CLICK, this, '_onActionButtonClick');
-					}
-				}
+			if(inputs.length){
+				inputs[0].focus();
 			}
 		},
 
+		'reset' : function(){
+			var inputs = this._getInputs(),
+				ln = inputs.length;
 
-		'_onActionButtonClick' : function(evt){
-			var button = evt.getCurrentTarget();
-
-			if(button.hasCss(['submit-button'])){
-				this._onSubmit(evt);
-			}
-			else if(button.hasCss(['cancel-button'])){
-				this._onCancel(evt);
+			for(; ln--;){
+				inputs[ln].setValue(null);
 			}
 		},
 
-		'_onSubmit' : function(evt){
-			this.submit();
-		},
+		'submit' : function(){
+			if(this.validate()){
+				// todo: OjForm - add submit code logic/functionality
 
-		'_onCancel' : function(evt){
-			this.dispatchEvent(new OjEvent(OjEvent.CANCEL));
-		},
-
-
-		'_updateInputs' : function(){
-			// todo: remove dependency on sizzle find command
-			var parent, inputs = this.find('.OjInput'), ln = inputs.length;
-
-			this._inputs = {};
-
-			while(ln-- > 0){
-				parent = OjForm.parentForm(inputs[ln]);
-
-				if(parent && parent == this){
-					this._inputs[inputs[ln].id] = OJ.elm(inputs[ln]);
-				}
-			}
-		},
-
-		'_redraw' : function(){
-
-		},
-
-		'_reset' : function(){
-			this._updateInputs();
-
-			var key, input;
-
-			for(key in this._inputs){
-				input = this._inputs[key];
-
-				input.setValue(this._data[input.getName()]);
-			}
-		},
-
-		'_submit' : function(){
-
-		},
-
-		'_validate' : function(){
-			this._updateInputs();
-
-			var key, input, valid = true;
-
-			for(key in this._inputs){
-				input = this._inputs[key];
-
-				if(!input.validate()){
-					this._errors.push(
-						{
-							'input'     : input,
-							'errors'    : input.getErrors()
-						}
-					);
-
-					valid = false;
-				}
-			}
-
-			return valid;
-		},
-
-
-		'redraw' : function(){
-			if(this._super('OjForm', 'redraw', arguments)){
-				this._redraw();
+				this.dispatchEvent(new OjEvent(OjEvent.SUBMIT, false, false));
 
 				return true;
 			}
@@ -140,94 +49,41 @@ OJ.extendComponent(
 			return false;
 		},
 
-		'reset' : function(){
-			this._reset();
-		},
-
-		'submit' : function(){
-			// do some validation
-
-			// then send some data
-			this._submit();
-
-			// then let the world know what you did
-			this.dispatchEvent(new OjEvent(OjEvent.SUBMIT));
-		},
-
 		'validate' : function(){
+			var inputs = this._getInputs(),
+				ln = inputs.length,
+				input, msg = '';
+
 			this._errors = [];
 
-			var valid = this._validate();
+			for(; ln--;){
+				input = inputs[ln];
 
-			this.errors.getDataProvider().setSource(this._errors);
-
-			if(valid){
-				this.errors.hide();
-			}
-			else{
-				this.errors.show();
-			}
-
-			return valid;
-		},
-
-
-		'_addElm' : function(elm, index){
-			if(elm.is('OjInput')){
-				this._inputs[elm.id()] = elm;
-			}
-
-			this._super('OjForm', '_addElm', arguments);
-		},
-
-		'_removeElm' : function(elm){
-			delete this._inputs[elm.id()];
-
-			this._super('OjForm', '_removeElm', arguments)
-		},
-
-
-		'getData' : function(){
-			return this._data;
-		},
-		'setData' : function(data){
-			this._data = data; this._reset();
-		},
-
-		'setError' : function(error){
-			this.errors.getDataProvider().addItem(
-				{
-					'input'     : null,
-					'errors'    : [error]
+				if(!input.validate()){
+					this._errors.unshift({
+						'input' : input,
+						'error' : input.getError()
+					});
 				}
+			}
+
+			if(!(ln = this._errors.length)){
+				return true;
+			}
+
+			for(; ln--;){
+				msg = '\n' + this._errors[ln].error + msg;
+			}
+
+			WindowManager.alert(
+				'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
+				'Form Error'
 			);
 
-			this.errors.show();
+			return false;
 		}
 	},
 	{
-		'_TAGS' : ['form'],
-
-		'COMPLETE' : 'formComplete',
-
-		'parentForm' : function(elm, top){
-			elm = OJ.elm(elm);
-
-			var parent, top = arguments.length > 1 ? arguments[0] : OJ;
-
-			top = OJ.elm(top);
-
-			while(elm && elm != top){
-				parent = elm.parent();
-
-				if(parent && parent.is('OjForm')){
-					return parent;
-				}
-
-				elm = parent;
-			}
-
-			return null;
-		}
+		'_TAGS' : ['form']
 	}
 );

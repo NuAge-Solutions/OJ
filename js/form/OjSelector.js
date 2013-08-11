@@ -12,7 +12,7 @@ OJ.importCss('oj.form.OjSelector');
 'use strict';
 
 OJ.extendComponent(
-	OjInput, 'OjSelector',
+	'OjSelector', [OjInput],
 	{
 		'_props_' : {
 			'itemRenderer'      : OjLabelItemRenderer,
@@ -30,7 +30,7 @@ OJ.extendComponent(
 			// default the value
 			this._value = [];
 
-			this._super('OjSelector', '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
+			this._super(OjInput, '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
 
 			// setup the list listeners
 			this.input.addEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
@@ -153,7 +153,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._super('OjSelector', 'redraw', arguments)){
+			if(this._super(OjInput, 'redraw', arguments)){
 				this.input.redraw();
 
 				// update the selection

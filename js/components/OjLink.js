@@ -6,7 +6,7 @@ OJ.importCss('oj.components.OjLink');
 'use strict';
 
 OJ.extendComponent(
-	OjLabel, 'OjLink',
+	'OjLink', [OjLabel],
 	{
 		'_props_' : {
 			'downIcon'     : null,
@@ -27,7 +27,7 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = args.length;
 
-			this._super('OjLink', '_constructor', []);
+			this._super(OjLabel, '_constructor', []);
 
 			// process arguments
 			if(ln){
@@ -47,7 +47,18 @@ OJ.extendComponent(
 			// just to make sure that the document mouse move event listener gets removed
 			OJ.removeEventListener(OjMouseEvent.MOVE, this, '_onMouseMove');
 
-			this._super('OjLink', '_destructor', arguments);
+			this._super(OjLabel, '_destructor', arguments);
+		},
+
+
+		'_processAttribute' : function(dom, attr, context){
+			if(attr.nodeName == 'href'){
+				this.setUrl(attr.value);
+
+				return true;
+			}
+
+			return this._super(OjLabel, '_processAttribute', arguments);
 		},
 
 

@@ -4,7 +4,7 @@ OJ.importJs('oj.nav.OjNavController');
 'use strict';
 
 OJ.extendComponent(
-	OjNavController, 'OjTabNavController',
+	'OjTabNavController', [OjNavController],
 	{
 		'_prev_active' : null,
 
@@ -82,7 +82,7 @@ OJ.extendComponent(
 				}
 			}
 
-			this._super('OjTabNavController', 'setStack', arguments);
+			this._super(OjNavController, 'setStack', arguments);
 
 			if(stack){
 				stack.addEventListener(OjStackEvent.ADD, this, '_onStackViewAdd');

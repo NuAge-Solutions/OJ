@@ -4,7 +4,7 @@ OJ.importJs('oj.data.OjObject');
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjRect',
+	'OjRect', [OjObject],
 	{
 		'_props_' : {
 			'top'    : 0,
@@ -20,7 +20,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*left, top, width, height*/){
-			this._super('OjRect', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			var args = arguments,
 				ln = args.length;

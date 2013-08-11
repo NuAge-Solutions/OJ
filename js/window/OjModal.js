@@ -8,7 +8,7 @@ OJ.importJs('oj.window.OjAlert');
 'use strict';
 
 OJ.extendClass(
-	OjAlert, 'OjModal',
+	'OjModal', [OjAlert],
 	OJ.implementInterface(
 		OjINavController,
 		{
@@ -17,11 +17,11 @@ OJ.extendClass(
 			'_stack' : null, '_template' : 'oj.window.OjModal',
 
 
-			'_constructor' : function(/*title, view*/){
+			'_constructor' : function(/*view, title*/){
 				var args = arguments,
 					ln = args.length;
 
-				this._super('OjModal', '_constructor', []);
+				this._super(OjAlert, '_constructor', []);
 
 				// setup controller stack relationship
 				this.stack = this.container;
@@ -41,11 +41,11 @@ OJ.extendClass(
 
 				// process arguments
 				if(ln){
-					if(ln > 1){
-						this.addView(args[1]);
-					}
+					this.addView(args[0]);
 
-					this.setTitle(args[0]);
+					if(ln > 1){
+						this.setTitle(args[1]);
+					}
 				}
 
 				if(OJ.isMobile()){
@@ -62,7 +62,7 @@ OJ.extendClass(
 
 				this._stack = null;
 
-				return this._super('OjModal', '_destructor', arguments);
+				return this._super(OjAlert, '_destructor', arguments);
 			},
 
 
@@ -148,7 +148,7 @@ OJ.extendClass(
 
 
 			'setButtons' : function(val){
-				this._super('OjModal', 'setButtons', arguments);
+				this._super(OjAlert, 'setButtons', arguments);
 
 				if(this.buttons.numChildren()){
 					this.buttons.show();

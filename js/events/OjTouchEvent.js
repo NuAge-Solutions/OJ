@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjDomEvent');
 'use strict';
 
 OJ.extendClass(
-	OjDomEvent, 'OjTouchEvent',
+	'OjTouchEvent', [OjDomEvent],
 	{
 		'_get_props_' : {
 			'pageX'   : NaN,
@@ -12,10 +12,10 @@ OJ.extendClass(
 		},
 
 
-		'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
+		'_constructor' : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
 			var ln = arguments.length;
 
-			this._super('OjTouchEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
+			this._super(OjDomEvent, '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
 
 			if(ln > 3){
 				this._pageX = arguments[3];
@@ -28,7 +28,7 @@ OJ.extendClass(
 
 
 		'clone' : function(){
-			var clone = this._super('OjTouchEvent', 'clone', arguments);
+			var clone = this._super(OjDomEvent, 'clone', arguments);
 
 			clone._pageX = this._pageX;
 			clone._pageY = this._pageY;
@@ -52,7 +52,7 @@ OJ.extendClass(
 				type = OjTouchEvent.START;
 			}
 
-			var new_evt = new OjTouchEvent(type, evt.bubbles, evt.cancelable, evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+			var new_evt = new OjTouchEvent(type, evt.changedTouches[0].pageX, evt.changedTouches[0].pageY, evt.bubbles, evt.cancelable);
 			new_evt._target = OjElement.element(evt.target)
 			new_evt._currentTarget = OjElement.element(evt.currentTarget);
 

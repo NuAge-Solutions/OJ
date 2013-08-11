@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjTextEvent',
+	'OjTextEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'text' : ''
@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjTextEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super(OjEvent, '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

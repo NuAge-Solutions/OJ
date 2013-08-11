@@ -4,7 +4,7 @@ OJ.importJs('oj.data.OjObject');
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjXml',
+	'OjXml', [OjObject],
 	{
 		'_props_' : {
 			'xml'  : null
@@ -12,7 +12,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(xml){
-			this._super('OjXml', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			this.setXml(xml);
 		},

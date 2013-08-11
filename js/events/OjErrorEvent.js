@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjTextEvent');
 'use strict';
 
 OJ.extendClass(
-	OjTextEvent, 'OjErrorEvent',
+	'OjErrorEvent', [OjTextEvent],
 	{
 		'_get_props_' : {
 			'code'    : 0
@@ -21,7 +21,7 @@ OJ.extendClass(
 				args.splice(2, 1);
 			}
 
-			this._super('OjErrorEvent', '_constructor', args);
+			this._super(OjTextEvent, '_constructor', args);
 		}
 	},
 	{

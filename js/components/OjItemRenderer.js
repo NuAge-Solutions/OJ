@@ -4,7 +4,7 @@ OJ.importJs('oj.components.OjComponent');
 'use strict';
 
 OJ.extendComponent(
-	OjComponent, 'OjItemRenderer',
+	'OjItemRenderer', [OjComponent],
 	{
 		'_props_' : {
 			'data'  : null,
@@ -13,7 +13,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*group, data*/){
-			this._super('OjItemRenderer', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			var args = arguments,
 				ln = args.length;
@@ -34,7 +34,7 @@ OJ.extendComponent(
 
 
 		'redraw' : function(){
-			if(this._super('OjItemRenderer', 'redraw', arguments)){
+			if(this._super(OjComponent, 'redraw', arguments)){
 				this._redrawData();
 
 				return true;

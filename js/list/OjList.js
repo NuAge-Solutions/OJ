@@ -9,7 +9,7 @@ OJ.importCss('oj.list.OjList');
 'use strict';
 
 OJ.extendComponent(
-	OjView, 'OjList',
+	'OjList', [OjView],
 	{
 		'_props_' : {
 			'dataProvider' : null,
@@ -24,7 +24,7 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = arguments.length;
 
-			this._super('OjList', '_constructor', []);
+			this._super(OjView, '_constructor', []);
 
 			// setup the display
 			this.addCss(['vertical']);
@@ -141,7 +141,7 @@ OJ.extendComponent(
 
 		// render functions
 		'redraw' : function(){
-			if(this._super('OjList', 'redraw', arguments)){
+			if(this._super(OjView, 'redraw', arguments)){
 				this._redrawItems();
 
 				return true;
@@ -223,11 +223,11 @@ OJ.extendComponent(
 				this._item_events[item_evt] = item_callback;
 			}
 
-			return this._super('OjList', 'addEventListener', arguments);
+			return this._super(OjView, 'addEventListener', arguments);
 		},
 
 		'removeEventListener' : function(type, target, func){
-			var rtrn = this._super('OjList', 'removeEventListener', arguments);
+			var rtrn = this._super(OjView, 'removeEventListener', arguments);
 
 			if(!this.hasEventListener(type)){
 				var item_evt, item_callback;

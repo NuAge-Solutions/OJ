@@ -4,13 +4,15 @@ OJ.importCss('oj.form.OjTextValue');
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'OjTextValue',
+	'OjTextValue', [OjComponent],
 	{
-		'_template' : 'oj.form.OjTextValue',  '_label' : null,  '_value' : null,
+		'_template' : 'oj.form.OjTextValue',
+
+//		'_label' : null,  '_value' : null,
 
 
 		'_constructor' : function(/*label, value*/){
-			this._super('OjTextValue', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			var ln = arguments.length;
 
@@ -24,14 +26,30 @@ OJ.extendClass(
 		},
 
 
-		'_redrawLabel' : function(){ this.label.setText(this._label); },
+		'_redrawLabel' : function(){
+			this.label.setText(this._label);
+		},
 
-		'_redrawValue' : function(){ this.value.setText(this._value); },
+		'_redrawValue' : function(){
+			this.value.setText(this._value);
+		},
 
-		'getLabel' : function(){ return this._label; },
-		'setLabel' : function(label){ this._label = label; this._redrawLabel(); },
+		'getLabel' : function(){
+			return this._label;
+		},
+		'setLabel' : function(label){
+			this._label = label;
 
-		'getValue' : function(){ return this._value; },
-		'setValue' : function(value){ this._value = value; this._redrawValue(); }
+			this._redrawLabel();
+		},
+
+		'getValue' : function(){
+			return this._value;
+		},
+		'setValue' : function(value){
+			this._value = value;
+
+			this._redrawValue();
+		}
 	}
 );

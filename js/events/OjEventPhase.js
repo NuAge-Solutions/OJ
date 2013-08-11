@@ -1,7 +1,7 @@
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjEventPhase',
+	'OjEventPhase', [OjObject],
 	{},
 	{
 		'BUBBLING'  : 3,

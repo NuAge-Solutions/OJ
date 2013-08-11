@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjHttpStatusEvent',
+	'OjHttpStatusEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'status' : null
@@ -29,7 +29,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjHttpStatusEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super(OjEvent, '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

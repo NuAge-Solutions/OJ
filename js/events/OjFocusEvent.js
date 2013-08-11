@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjDomEvent');
 'use strict';
 
 OJ.extendClass(
-	OjDomEvent, 'OjFocusEvent',
+	'OjFocusEvent', [OjDomEvent],
 	{},
 	{
 		'convertDomEvent' : function(evt){

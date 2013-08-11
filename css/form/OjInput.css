@@ -24,7 +24,7 @@
 
     overflow: hidden;
 }
-.OjInput > .wrapper {
+.OjInput .wrapper {
 	display: table;
 
 	width: 100%;
@@ -38,16 +38,16 @@
 	-webkit-box-shadow: inset 0px 1px 0px 0px #DDDDDD;
 	box-shadow:         inset 0px 1px 0px 0px #DDDDDD;
 }
-.OjInput > .wrapper:hover {
+.OjInput .wrapper:hover {
     border-color: #AAAAAA;
 }
-.OjInput.error > .wrapper,
-.OjInput.error > .wrapper:hover {
+.OjInput.error .wrapper,
+.OjInput.error .wrapper:hover {
 	/*background-color: #FEF5F1;*/
 
 	border-color: #ED541D;
 }
-	.OjInput > .wrapper > * {
+	.OjInput .wrapper > * {
 		display: table-cell;
 
 		height: 26px;
@@ -74,12 +74,12 @@
 		font-weight: bold;
 	}
 	.OjInput.no-label > .wrapper > .label {
-		width: 0px;
+		display: none;
 
 		padding: 0px;
 	}
 
-	.OjInput > .wrapper > .psuedoInput {
+	.OjInput .psuedoInput {
 		width: 100%;
 		height: 100%;
 
@@ -91,7 +91,7 @@
 		color: #333333;
 	}
 
-		.OjInput > .wrapper > .psuedoInput > .stem {
+		.OjInput .stem {
 			display: block;
 
 			height: 100%;
@@ -101,7 +101,7 @@
 
 			margin: 0px 5px;
 		}
-			.OjInput > .wrapper > .psuedoInput > .stem > .input {
+			.OjInput .input {
 				display: block;
 				position: absolute;
 
@@ -124,7 +124,7 @@
 				z-index: 1;
 			}
 
-			.OjInput > .wrapper > .psuedoInput > .stem > .dflt {
+			.OjInput .dflt {
 				position: absolute;
 
 				top: 0px;
@@ -138,20 +138,20 @@
 
 				overflow: hidden;
 			}
-			.OjInput.no-default > .wrapper > .psuedoInput > .stem > .dflt {
+			.OjInput.no-default .dflt {
 				height: 0px;
 			}
 
-.OjInput.grey > .wrapper,
-.OjInput.grey > .wrapper:hover,
-.OjInput.grey.focus > .wrapper,
-.OjInput.grey.focus > .wrapper:hover {
+.OjInput.grey .wrapper,
+.OjInput.grey .wrapper:hover,
+.OjInput.grey.focus .wrapper,
+.OjInput.grey.focus .wrapper:hover {
     background: #F0F0F0;
     border-color: #E6E6E6;
 
 	padding: 0px 5px;
 }
-	.OjInput.grey > .wrapper > * {
+	.OjInput.grey .wrapper > * {
 		padding: 0px;
 	}
 	.OjInput.grey > .wrapper > .label {

@@ -4,7 +4,7 @@ OJ.importJs('oj.data.OjObject');
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjUrl',
+	'OjUrl', [OjObject],
 	{
 		'_props_' : {
 			'protocol' : null,
@@ -48,7 +48,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*url*/){
-			this._super('OjUrl', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			var args = arguments;
 

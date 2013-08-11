@@ -1,7 +1,7 @@
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjCachePolicy',
+	'OjCachePolicy', [OjObject],
 	{
 		'_get_props_' : {
 			'action'     : 1,
@@ -11,7 +11,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(url/*, action, lifespan*/){
-			this._super('OjCachePolicy', '_constructor', arguments);
+			this._super(OjObject, '_constructor', arguments);
 
 			var args = arguments,
 				ln = args.length;

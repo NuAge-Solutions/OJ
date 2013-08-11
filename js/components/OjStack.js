@@ -17,7 +17,7 @@ OJ.importCss('oj.components.OjStack');
 'use strict';
 
 OJ.extendComponent(
-	OjCollectionComponent, 'OjStack',
+	'OjStack', [OjCollectionComponent],
 	{
 		// Properties & Vars
 		'_props_' : {
@@ -42,7 +42,7 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = args.length;
 
-			this._super('OjStack', '_constructor', []);
+			this._super(OjCollectionComponent, '_constructor', []);
 
 			// set the default transition mode
 			if(ln > 2){
@@ -89,7 +89,7 @@ OJ.extendComponent(
 			// remove object references
 			this._controller = this._transition = null;
 
-			return this._super('OjStack', '_destructor', args);
+			return this._super(OjCollectionComponent, '_destructor', args);
 		},
 
 
@@ -161,7 +161,7 @@ OJ.extendComponent(
 				return false;
 			}
 
-			return this._super('OjStack', '_processDomSourceChild', arguments);
+			return this._super(OjCollectionComponent, '_processDomSourceChild', arguments);
 		},
 
 		'_processDomSourceChildren' : function(dom_elm, context){
@@ -358,7 +358,7 @@ OJ.extendComponent(
 
 		// Event Handler Functions
 		'_onItemAdd' : function(evt){
-			this._super('OjStack', '_onItemAdd', arguments);
+			this._super(OjCollectionComponent, '_onItemAdd', arguments);
 
 			// since we are using a collection to keep track of things the parent won't get properly changes
 			// so we need to do it here
@@ -376,7 +376,7 @@ OJ.extendComponent(
 		},
 
 		'_onItemMove' : function(evt){
-			this._super('OjStack', '_onItemMove', arguments);
+			this._super(OjCollectionComponent, '_onItemMove', arguments);
 
 			this.dispatchEvent(new OjStackEvent(OjStackEvent.MOVE, evt.getItem(), this._transition, evt.getIndex()));
 
@@ -387,7 +387,7 @@ OJ.extendComponent(
 		},
 
 		'_onItemRemove' : function(evt){
-			this._super('OjStack', '_onItemRemove', arguments);
+			this._super(OjCollectionComponent, '_onItemRemove', arguments);
 
 			var ln,
 				item = evt.getItem(),
@@ -417,7 +417,7 @@ OJ.extendComponent(
 		},
 
 		'_onItemReplace' : function(evt){
-			this._super('OjStack', '_onItemReplace', arguments);
+			this._super(OjCollectionComponent, '_onItemReplace', arguments);
 
 			var item = evt.getItem(),
 				index = evt.getIndex();
@@ -482,7 +482,7 @@ OJ.extendComponent(
 		},
 
 		'renderItemAt' : function(index){
-			return this._super('OjStack', 'renderItemAt', [this._processIndex(index)]);
+			return this._super(OjCollectionComponent, 'renderItemAt', [this._processIndex(index)]);
 		},
 
 

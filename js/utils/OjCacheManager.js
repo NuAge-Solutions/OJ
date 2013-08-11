@@ -6,7 +6,7 @@ OJ.importJs('oj.utils.OjCachePolicy');
 'use strict';
 
 OJ.extendManager(
-	'CacheManager', OjActionable, 'OjCacheManager',
+	'CacheManager', 'OjCacheManager', [OjActionable],
 	{
 		// lifespans
 		'MINUTE'  : 60,
@@ -24,7 +24,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super('OjCacheManager', '_constructor', arguments);
+			this._super(OjActionable, '_constructor', arguments);
 
 			// check to see if local storage is supported
 			try{

@@ -1,7 +1,7 @@
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjCacheObject',
+	'OjCacheObject', [OjObject],
 	{
 		'_props_' : {
 			'created'    : null,
@@ -13,7 +13,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*data, expiration*/){
-			this._super('OjCacheObject', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			this.setCreated(new Date());
 
@@ -30,7 +30,7 @@ OJ.extendClass(
 		},
 
 		'exportData' : function(){
-			var obj = this._super('OjCacheObject', 'exportData', arguments);
+			var obj = this._super(OjObject, 'exportData', arguments);
 
 			obj.created    = this._created;
 			obj.data       = this._data ? OjObject.exportData(this._data) : null;

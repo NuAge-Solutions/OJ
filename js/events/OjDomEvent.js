@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjDomEvent',
+	'OjDomEvent', [OjEvent],
 	{},
 	{
 		'normalizeDomEvent' : function(evt){

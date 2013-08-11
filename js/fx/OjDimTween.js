@@ -5,7 +5,7 @@ OJ.importJs('oj.fx.OjTweenEvent');
 'use strict';
 
 OJ.extendClass(
-	OjPropTween, 'OjDimTween',
+	'OjDimTween', [OjPropTween],
 	{
 		'_props_' : {
 			'amount'    : null,
@@ -14,7 +14,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*target, direction, amount, duration, easing*/){
-			this._super('OjDimTween', '_constructor', []);
+			this._super(OjPropTween, '_constructor', []);
 
 			var ln = arguments.length;
 

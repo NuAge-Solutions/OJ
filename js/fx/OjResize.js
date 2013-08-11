@@ -4,10 +4,10 @@ OJ.importJs('oj.fx.OjDimTween');
 'use strict';
 
 OJ.extendClass(
-	OjDimTween, 'OjResize',
+	'OjResize', [OjDimTween],
 	{
 		'setAmount' : function(amount){
-			this._super('OjResize', 'setAmount', arguments);
+			this._super(OjDimTween, 'setAmount', arguments);
 
 			if(this._direction == OjResize.BOTH){
 				this._to.width = amount[0];

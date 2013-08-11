@@ -4,7 +4,7 @@ OJ.importJs('oj.net.OjUrl');
 'use strict';
 
 OJ.extendClass(
-	OjUrl, 'OjUrlRequest',
+	'OjUrlRequest', [OjUrl],
 	{
 		'_props_' : {
 			'data'        : null,
@@ -19,7 +19,7 @@ OJ.extendClass(
 		'_constructor' : function(/*url, data, content_type, method*/){
 			var ln = arguments.length;
 
-			this._super('OjUrlRequest', '_constructor', ln ? [arguments[0]] : []);
+			this._super(OjUrl, '_constructor', ln ? [arguments[0]] : []);
 
 			this._headers = {};
 

@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjStackEvent',
+	'OjStackEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'index'      : null,
@@ -35,7 +35,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjStackEvent', '_constructor', args);
+			this._super(OjEvent, '_constructor', args);
 		}
 	},
 	{

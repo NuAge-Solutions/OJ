@@ -7,7 +7,7 @@ OJ.importCss('oj.nav.OjView');
 'use strict';
 
 OJ.extendComponent(
-	OjComponent, 'OjView',
+	'OjView', [OjComponent],
 	{
 		'_props_' : {
 			'controller'  : null,
@@ -35,7 +35,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*content, title, short_title*/){
-			this._super('OjView', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			// setup vars
 			this._load_checkpoints = {};
@@ -74,7 +74,7 @@ OJ.extendComponent(
 			this._unset('_titleView');
 			this._unset('_overlay');
 
-			return this._super('OjView', '_destructor', arguments);
+			return this._super(OjComponent, '_destructor', arguments);
 		},
 
 

@@ -6,7 +6,7 @@ OJ.importCss('oj.components.OjComponent');
 'use strict';
 
 OJ.extendClass(
-	OjStyleElement, 'OjComponent',
+	'OjComponent', [OjStyleElement],
 	{
 		'_props_' : {
 			'isActive'    : false,
@@ -32,7 +32,7 @@ OJ.extendClass(
 			}
 
 			// call super constructor
-			this._super('OjComponent', '_constructor', args);
+			this._super(OjStyleElement, '_constructor', args);
 
 			// add the class name inheritance as css classes
 			this.addCss(this._class_names.slice(this._class_names.indexOf('OjComponent')));
@@ -43,7 +43,7 @@ OJ.extendClass(
 
 		// override this so that the component gets properly set
 		'_processChild' : function(dom, context){
-			return this._super('OjComponent', '_processChild', [dom, context ? context : this]);
+			return this._super(OjStyleElement, '_processChild', [dom, context ? context : this]);
 		},
 
 		'_processDomSourceAttributes' : function(dom, context){
@@ -209,7 +209,7 @@ OJ.extendClass(
 				return;
 			}
 
-			this._super('OjComponent', '_setIsDisplayed', arguments);
+			this._super(OjStyleElement, '_setIsDisplayed', arguments);
 
 			if(displayed){
 				this.redraw();
@@ -222,7 +222,7 @@ OJ.extendClass(
 				return false;
 			}
 
-			return this._super('OjComponent', '_processEvent', arguments);
+			return this._super(OjStyleElement, '_processEvent', arguments);
 		},
 
 

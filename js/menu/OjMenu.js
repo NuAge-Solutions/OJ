@@ -6,7 +6,7 @@ OJ.importCss('oj.menu.OjMenu');
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'OjMenu',
+	'OjMenu', [OjComponent],
 	{
 		'_props_' : {
 			'content'     : null,
@@ -18,7 +18,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*content, positioning, parent_menu*/){
-			this._super('OjMenu', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			// process arguments
 			var ln = arguments.length;
@@ -48,7 +48,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._content = null;
 
-			return this._super('OjMenu', '_destructor', arguments);
+			return this._super(OjComponent, '_destructor', arguments);
 		},
 
 

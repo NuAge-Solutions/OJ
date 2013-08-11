@@ -13,7 +13,7 @@ OJ.importJs('oj.events.OjTransformEvent');
 'use strict';
 
 OJ.extendClass(
-	OjElement, 'OjStyleElement',
+	'OjStyleElement', [OjElement],
 	{
 		'_props_' : {
 			'id'    : null,
@@ -154,7 +154,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjStyleElement', '_constructor', [source, context]);
+			this._super(OjElement, '_constructor', [source, context]);
 
 			OjElement.register(this);
 
@@ -180,7 +180,7 @@ OJ.extendClass(
 			this._owner = null;
 
 			// continue on with the destruction
-			return this._super('OjStyleElement', '_destructor', arguments);
+			return this._super(OjElement, '_destructor', arguments);
 		},
 
 
@@ -344,7 +344,7 @@ OJ.extendClass(
 
 		'_setDom' : function(dom, context){
 			// todo: re-evaluate the pre-render functionality of dom
-			this._super('OjStyleElement', '_setDom', [dom]);
+			this._super(OjElement, '_setDom', [dom]);
 
 			// process the attributes
 			this._processAttributes(dom, context);
@@ -365,7 +365,7 @@ OJ.extendClass(
 				return;
 			}
 
-			this._super('OjStyleElement', '_setIsDisplayed', arguments);
+			this._super(OjElement, '_setIsDisplayed', arguments);
 
 			for(ln = this.numChildren(); ln--;){
 				if(child = this.getChildAt(ln)){
@@ -435,7 +435,7 @@ OJ.extendClass(
 				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
 
-			return false;
+			return true;
 		},
 
 		'_onDrag' : function(evt){
@@ -557,11 +557,11 @@ OJ.extendClass(
 			}
 
 			if(type){
-				this._onEvent(new OjMouseEvent(type, true, true, x, y));
+				this._onEvent(new OjMouseEvent(type, x, y, true, true));
 
 				// if the touch hasn't moved then issue a click event
 				if(type == OjMouseEvent.UP && x == this._dragX && y == this._dragY){
-					this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, true, true, x, y));
+					this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, x, y, true, true));
 				}
 			}
 
@@ -593,7 +593,7 @@ OJ.extendClass(
 			var is_touch = OJ.isTouchCapable(),
 				proxy = this._proxy;
 
-			this._super('OjStyleElement', 'addEventListener', arguments);
+			this._super(OjElement, 'addEventListener', arguments);
 
 			if(type == OjScrollEvent.SCROLL){
 				this._scrollable = true;
@@ -706,7 +706,7 @@ OJ.extendClass(
 		'removeEventListener' : function(type, context, callback){
 			var proxy = this._proxy;
 
-			this._super('OjStyleElement', 'removeEventListener', arguments);
+			this._super(OjElement, 'removeEventListener', arguments);
 
 			// scroll events
 			if(type == OjScrollEvent.SCROLL){

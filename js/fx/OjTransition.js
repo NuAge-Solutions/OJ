@@ -4,7 +4,7 @@ OJ.importJs('oj.data.OjObject');
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjTransition',
+	'OjTransition', [OjObject],
 	{
 		'_props_' : {
 			'easing'   : null,
@@ -14,7 +14,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*effect, duration, easing*/){
-			this._super('OjTransition', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			// default the easing property
 			this._easing = [OjEasing.NONE, OjEasing.NONE];

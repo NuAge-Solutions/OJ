@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjActionable');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjElement',
+	'OjElement', [OjActionable],
 	{
 //		'_dom' : null,  '_proxy' : null,
 //
@@ -19,7 +19,7 @@ OJ.extendClass(
 				source = ln && args[0] ? args[0] : OjElement.elm('div'),
 				context = ln > 1 ? args[1] : null;
 
-			this._super('OjElement', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			// set the dom
 			// if no source present then create one
@@ -41,7 +41,7 @@ OJ.extendClass(
 			}
 
 			// continue on with the destruction
-			return this._super('OjElement', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

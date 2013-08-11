@@ -6,7 +6,7 @@ OJ.importCss('oj.nav.OjIframe');
 'use strict';
 
 OJ.extendComponent(
-	OjView, 'OjIframe',
+	'OjIframe', [OjView],
 	{
 		'_source' : null,  '_interval' : null,  '_timeout' : 60,
 
@@ -14,7 +14,7 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*source, target*/){
-			this._super('OjIframe', '_constructor', []);
+			this._super(OjView, '_constructor', []);
 
 			var ln = arguments.length;
 

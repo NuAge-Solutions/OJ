@@ -145,12 +145,12 @@ window.OjINavController = {
 
 
 OJ.extendComponent(
-	OjComponent, 'OjNavController',
+	'OjNavController', [OjComponent],
 	OJ.implementInterface(
 		OjINavController,
 		{
 			'_constructor' : function(/*stack*/){
-				this._super('OjNavController', '_constructor', []);
+				this._super(OjComponent, '_constructor', []);
 
 				// process the arguments
 				if(arguments.length){
@@ -161,7 +161,7 @@ OJ.extendComponent(
 			'_destructor' : function(){
 				this._cleanupStack();
 
-				return this._super('OjNavController', '_destructor', arguments);
+				return this._super(OjComponent, '_destructor', arguments);
 			}
 		}
 	),

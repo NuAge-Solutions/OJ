@@ -9,7 +9,7 @@ OJ.importCss('oj.window.OjAlert');
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'OjAlert',
+	'OjAlert', [OjComponent],
 	{
 		'_props_' : {
 			'buttons'      : null,
@@ -21,33 +21,34 @@ OJ.extendClass(
 		'_template' : 'oj.window.OjAlert',
 
 
-		'_constructor' : function(/*title, content, buttons, cancel_label*/){
-			this._super('OjAlert', '_constructor', []);
+		'_constructor' : function(/*content, title, buttons, cancel_label*/){
+			this._super(OjComponent, '_constructor', []);
 
 			// setup the display
 			if(this.className().indexOf('Alert') > -1){
-				this.buttons.addChild(this.cancelBtn = new OjButton('Ok'));
+				this.buttons.addChild(this.cancelBtn = new OjButton(OjAlert.OK));
 
 				this.cancelBtn.addEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
 			}
 
 			// process the arguments
-			var ln = arguments.length;
+			var args = arguments,
+				ln = args.length;
 
 			if(ln){
-				this.setTitle(arguments[0]);
+				this.setContent(args[0]);
 
 				if(ln > 1){
-					this.setContent(arguments[1]);
+					this.setTitle(args[1]);
 
 					if(ln > 2){
-						this.setButtons(arguments[2]);
+						this.setButtons(args[2]);
 
 						if(ln > 3){
-							this.cancelBtn.setLabel(arguments[3]);
+							this.cancelBtn.setLabel(args[3]);
 						}
 						else{
-							this.cancelBtn.setLabel('Cancel');
+							this.cancelBtn.setLabel(OjAlert.CANCEL);
 						}
 					}
 				}
@@ -63,7 +64,7 @@ OJ.extendClass(
 				this.container.removeAllChildren();
 			}
 
-			return this._super('OjAlert', '_destructor', arguments);
+			return this._super(OjComponent, '_destructor', arguments);
 		},
 
 
@@ -125,7 +126,7 @@ OJ.extendClass(
 				}
 			}
 
-			while(ln-- > 1){
+			for(; ln-- > 1;){
 				btn = this.buttons.getChildAt(ln);
 
 				btn.setLabel(this._buttons[ln]);
@@ -187,8 +188,11 @@ OJ.extendClass(
 		}
 	},
 	{
-		'NONE' : 0,
+		'NONE'    : 0,
 		'SHALLOW' : 1,
-		'DEEP' : 2
+		'DEEP'    : 2,
+
+		'OK'     : 'Ok',
+		'Cancel' : 'Cancel'
 	}
 );

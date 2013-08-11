@@ -4,7 +4,7 @@ OJ.importJs('oj.data.OjObject');
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjEvent',
+	'OjEvent', [OjObject],
 	{
 		'_get_props_' : {
 			'bubbles'       : false,
@@ -22,7 +22,7 @@ OJ.extendClass(
 			var args = arguments,
 				ln = args.length;
 
-			this._super('OjEvent', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			this._type = type;
 

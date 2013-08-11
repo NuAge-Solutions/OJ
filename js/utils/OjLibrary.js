@@ -9,7 +9,7 @@ OJ.importJs('oj.net.OjUrlLoader');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjLibrary',
+	'OjLibrary', [OjActionable],
 	{
 		'_props_' : {
 			'assets' : null,
@@ -20,7 +20,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*assets*/){
-			this._super('OjLibrary', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			this.setAssets(arguments.length ? arguments[0] : {});
 

@@ -4,7 +4,7 @@ OJ.importJs('oj.data.OjObject');
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjActionable',
+	'OjActionable', [OjObject],
 	{
 		'_props_' : {
 			'eventProxy' : null
@@ -16,7 +16,7 @@ OJ.extendClass(
 		'_constructor' : function(){
 			this._eventProxy = this;
 
-			this._super('OjActionable', '_constructor', arguments);
+			this._super(OjObject, '_constructor', arguments);
 		},
 
 		'_destructor' : function(){
@@ -30,7 +30,7 @@ OJ.extendClass(
 				this._eventProxy = null;
 			}
 
-			return this._super('OjActionable', '_destructor', arguments);
+			return this._super(OjObject, '_destructor', arguments);
 		},
 
 

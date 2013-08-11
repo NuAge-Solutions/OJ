@@ -3,13 +3,13 @@ OJ.importJs('oj.components.OjLabel');
 
 
 OJ.extendClass(
-	OjItemRenderer, 'OjLabelItemRenderer',
+	'OjLabelItemRenderer', [OjItemRenderer],
 	{
 		'_template' : 'oj.list.OjLabelItemRenderer',
 
 
 		'_redrawData' : function(){
-			if(this._super('OjLabelItemRenderer', '_redrawData', arguments)){
+			if(this._super(OjItemRenderer, '_redrawData', arguments)){
 				this.lbl.setText(this._data);
 
 				return true;

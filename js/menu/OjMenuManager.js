@@ -9,13 +9,13 @@ OJ.importJs('oj.window.OjWindowManager');
 'use strict';
 
 OJ.extendManager(
-	'MenuManager', OjActionable, 'OjMenuManager',
+	'MenuManager', 'OjMenuManager', [OjActionable],
 	{
 		'_menus' : null,  '_active' : null,  '_tweens' : null,
 
 
 		'_constructor' : function(){
-			this._super('OjMenuManager', '_constructor', arguments);
+			this._super(OjActionable, '_constructor', arguments);
 
 			this._menus = {};
 			this._active = {};

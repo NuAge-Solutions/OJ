@@ -4,10 +4,10 @@ OJ.importJs('oj.form.OjOption');
 'use strict';
 
 OJ.extendClass(
-	OjOption, 'OjRadioOption',
+	'OjRadioOption', [OjOption],
 	{
 		'_constructor' : function(){
-			this._super('OjRadioOption', '_constructor', arguments);
+			this._super(OjOption, '_constructor', arguments);
 
 			this.input.setAttr('type', 'radio');
 		}

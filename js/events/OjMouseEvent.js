@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjDomEvent');
 'use strict';
 
 OJ.extendClass(
-	OjDomEvent, 'OjMouseEvent',
+	'OjMouseEvent', [OjDomEvent],
 	{
 		'_get_props_' : {
 			'pageX' : NaN,
@@ -12,23 +12,24 @@ OJ.extendClass(
 		},
 
 
-		'_constructor' : function(type/*, bubbles, cancelable, pageX = NaN, pageY = NaN*/){
-			var ln = arguments.length;
+		'_constructor' : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
+			var args = Array.array(arguments),
+				ln = args.length;
 
-			this._super('OjMouseEvent', '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
+			if(ln > 1){
+				this._pageX = args.splice(1, 1)[0];
 
-			if(ln > 3){
-				this._pageX = arguments[3];
-
-				if(ln > 4){
-					this._pageY = arguments[4];
+				if(ln > 2){
+					this._pageY = args.splice(1, 1)[0];
 				}
 			}
+
+			this._super(OjDomEvent, '_constructor', args);
 		},
 
 
 		'clone' : function(){
-			var clone = this._super('OjMouseEvent', 'clone', arguments);
+			var clone = this._super(OjDomEvent, 'clone', arguments);
 
 			clone._pageX = this._pageX;
 			clone._pageY = this._pageY;
@@ -57,7 +58,7 @@ OJ.extendClass(
 				// todo: OjMouseEvent - add middle and right click event detection
 			}
 
-			var new_evt = new OjMouseEvent(type, evt.bubbles, evt.cancelable, evt.pageX, evt.pageY);
+			var new_evt = new OjMouseEvent(type, evt.pageX, evt.pageY, evt.bubbles, evt.cancelable);
 			new_evt._target = OjElement.element(evt.target);
 			new_evt._currentTarget = OjElement.element(evt.currentTarget);
 

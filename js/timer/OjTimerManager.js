@@ -5,13 +5,13 @@ OJ.importJs('oj.timer.OjTimer');
 'use strict';
 
 OJ.extendManager(
-	'TimerManager', OjActionable, 'OjTimerManager',
+	'TimerManager', 'OjTimerManager', [OjActionable],
 	{
 		'_callback' : null,  '_timers' : {},  '_timer_count' : 0,  '_min_interval' : 999999,  '_interval' : null,
 
 
 		'_constructor' : function(){
-			this._super('OjTimerManager', '_constructor', arguments);
+			this._super(OjActionable, '_constructor', arguments);
 
 			this._callback = this._tick.bind(this);
 		},
@@ -19,7 +19,7 @@ OJ.extendManager(
 		'_destructor' : function(){
 			this._callback = null;
 
-			return this._super('OjTimerManager', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

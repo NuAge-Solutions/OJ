@@ -7,7 +7,7 @@ OJ.importCss('oj.media.OjMedia');
 'use strict';
 
 OJ.extendClass(
-	OjComponent, 'OjMedia',
+	'OjMedia', [OjComponent],
 	{
 		'_props_' : {
 			'preload'     : false,
@@ -24,7 +24,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*source*/){
-			this._super('OjMedia', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			if(arguments.length){
 				this.setSource(arguments[0]);
@@ -35,7 +35,7 @@ OJ.extendClass(
 			this._unset('media');
 			this._unset('loading');
 
-			return this._super('OjMedia', '_destructor', arguments);
+			return this._super(OjComponent, '_destructor', arguments);
 		},
 
 
@@ -94,7 +94,7 @@ OJ.extendClass(
 		},
 
 		'_setIsDisplayed' : function(displayed){
-			this._super('OjMedia', '_setIsDisplayed', arguments);
+			this._super(OjComponent, '_setIsDisplayed', arguments);
 
 			if(displayed && !this._loaded){
 				this._load();
@@ -185,7 +185,7 @@ OJ.extendClass(
 		},
 
 		'_setHeight' : function(val){
-			this._super('OjMedia', '_setHeight', arguments);
+			this._super(OjComponent, '_setHeight', arguments);
 
 			this._height = val
 
@@ -193,7 +193,7 @@ OJ.extendClass(
 		},
 
 		'_setWidth' : function(val){
-			this._super('OjMedia', '_setWidth', arguments);
+			this._super(OjComponent, '_setWidth', arguments);
 
 			this._width = val;
 

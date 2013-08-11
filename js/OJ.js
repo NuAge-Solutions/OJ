@@ -333,7 +333,7 @@ window.OJ = function Oj(){
 			return OjElement.element(elm);
 		},
 
-		'extendComponent' : function(base, ns, def/*, static_def*/){
+		'extendComponent' : function(ns, parents, def/*, static_def*/){
 			var cls = this.extendClass.apply(this, arguments);
 
 			var tags = cls._TAGS,
@@ -350,22 +350,26 @@ window.OJ = function Oj(){
 			return cls;
 		},
 
-		'extendClass' : function(base, ns, def/*, static_def*/){
+		'extendClass' : function(ns, parents, def/*, static_def*/){
 			// setup our vars & prototype
-			var key, c,
+			var key, c, parent,
+				ln = parents.length,
 				proto = {
 					'_class_name' : ns
 				};
 
 			// setup the constructor
 			eval(
-				'c = window[ns] = function ' + ns +
-					'(){ this._constructor.apply(this, arguments); };'
+				'c = window[ns] = function ' + ns + '(){ this._constructor.apply(this, arguments); };'
 			);
 
 			// copy the base class statics
-			for(key in base){
-				c[key] = base[key];
+			for(; ln--;){
+				parent = parents[ln];
+
+				for(key in parent){
+					c[key] = parent[key];
+				}
 			}
 
 			// add new statics
@@ -378,18 +382,21 @@ window.OJ = function Oj(){
 			}
 
 			// copy the prototype as our starting point of inheritance
-			base = base.prototype;
+			for(ln = parents.length; ln--;){
+				parent = parents[ln].prototype;
 
-			for(key in base){
-				if(key == '_class_name'){
-					continue
-				}
+				for(key in parent){
+					if(key == '_class_name'){
+						continue
+					}
 
-				if(key == '_class_names' || key == '_post_compile_'){
-					proto[key] = base[key].clone();
-				}
-				else{
-					proto[key] = base[key];
+					// we need to do something different for this to be able to handle multiple inheritance
+					if(key == '_class_names' || key == '_post_compile_'){
+						proto[key] = parent[key].clone();
+					}
+					else{
+						proto[key] = parent[key];
+					}
 				}
 			}
 
@@ -398,9 +405,6 @@ window.OJ = function Oj(){
 
 			// setup the static var
 			proto._static = c;
-
-			// setup the supers array
-			proto._supers_[ns] = {};
 
 			// process properties if they exist
 			if(isObject(def['_props_'])){
@@ -426,10 +430,6 @@ window.OJ = function Oj(){
 					continue;
 				}
 
-				if(isFunction(proto[key])){
-					proto._supers_[ns][key] = proto[key];
-				}
-
 				proto[key] = def[key];
 			}
 
@@ -443,24 +443,19 @@ window.OJ = function Oj(){
 				proto._post_compile_.unshift(def._post_compile_);
 			}
 
-			var ln = proto._post_compile_.length;
-
-			for(; ln--;){
+			for(ln = proto._post_compile_.length; ln--;){
 				proto._post_compile_[ln].call(proto);
 			}
 
 			// setup the prototype and constructor for the class
-			(c.prototype = proto).constructor = c;
-
-			// return the constructor
-			return c;
+			return (c.prototype = proto).constructor = c;
 		},
 
-		'extendManager' : function(manager, base, ns, def/*, static_def*/){
-			var prev_manager = window[manager],
+		'extendManager' : function(manager_ns, cls_ns, parents, def/*, static_def*/){
+			var prev_manager = window[manager_ns],
 				cls = OJ.extendClass.apply(this, Array.slice(arguments, 1));
 
-			return window[manager] = new cls(prev_manager);
+			return window[manager_ns] = new cls(prev_manager);
 		},
 
 		'guid' : function(){
@@ -908,31 +903,56 @@ window.OJ = function Oj(){
 (function(){
 	// detect script element
 	var script_elms = document.getElementsByTagName('script'),
-		ln = script_elms.length,
-		src, index;
+		src = script_elms[script_elms.length - 1].getAttribute('src'),
+		index = src.indexOf('//'), // detect protocol mode
+		i = 0,
+		path, ln, part;
 
-	for(; ln--;){
-		src = script_elms[ln].getAttribute('src');
+	// process the protocol and setup the path
+	if(index > 0){
+		path = src;
 
-		if((index = src.indexOf('/oj/')) != -1){
-			src = src.substr(0, index);
-
-			// detect file mode
-			var protocol_index = src.indexOf('//');
-
-			if(protocol_index > 0){
-				OJ._protocol = src.substring(0, protocol_index - 1);
-			}
-			else{
-				OJ._protocol = window.location.protocol.substring(-1);
-			}
-
-			// detect the root
-			OJ.setRoot(src);
-
-			break;
-		}
+		OJ._protocol = src.substring(0, index - 1);
 	}
+	else{
+		path = window.location.href;
+
+		OJ._protocol = window.location.protocol.substring(-1);
+	}
+
+	path = path.split('/');
+	path.pop(); // remove the file name
+
+	// figure out where the root is
+	if((part = src.charAt(0)) == '/'){
+		path = path.slice(0, 3);
+	}
+	else{
+		src = src.split('/');
+
+		if(part == '.'){
+			for(ln = src.length - 1; i < ln; i++){
+				if((part = src[i]) == '..'){
+					path.pop();
+				}
+				else{
+					path.push(part);
+				}
+			}
+		}
+		else{
+
+		}
+
+//		if((index = src.indexOf('oj/')) == -1){
+//			if((index = src.indexOf('/js/')) > -1){
+//
+//			}
+//		}
+	}
+	trace(path);
+	// detect the root
+	OJ.setRoot(path.join('/'));
 
 	// detect the broswer, os and version
 	var detector = {
@@ -1879,6 +1899,13 @@ function onDomReady(){
 
 			target.removeAttribute(attr);
 		}
+
+		OJ._target = target;
+	}
+
+	// make sure the theme got loaded
+	if(!OJ._theme_elm){
+		OJ.setting('theme', OJ.setting('theme'));
 	}
 
 	// process the mode
@@ -1940,16 +1967,10 @@ function onDomReady(){
 
 	window.OJ = tmp;
 
-	// place OJ component in the DOM
-	if(target){
-		OJ._setDomSource(target, tmp);
-	}
-	else{
-		document.body.appendChild(OJ.dom());
-	}
-
 	// dispatch load event
 	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
+
+
 
 	// setup the dom event proxy
 	OJ._setProxy(document.body);
@@ -2021,6 +2042,16 @@ function onOjReady(){
 
 	// run this init function if any
 	traceGroup('Juicing the oranges.', true);
+
+	// place OJ component in the DOM
+	if(OJ._target){
+		OJ._setDomSource(OJ._target, OJ);
+
+		OJ._target = null;
+	}
+	else{
+		document.body.appendChild(OJ.dom());
+	}
 
 	var init = OJ._('init');
 

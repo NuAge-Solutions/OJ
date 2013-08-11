@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjAlertEvent',
+	'OjAlertEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'buttonIndex' : -1
@@ -26,7 +26,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjAlertEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super(OjEvent, '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

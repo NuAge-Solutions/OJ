@@ -7,10 +7,10 @@ OJ.importCss('oj.date.OjCalendarControl');
 'use strict';
 
 OJ.extendClass(
-	OjTextInput, 'OjDateInput',
+	'OjDateInput', [OjTextInput],
 	{
 		'_onFocusIn' : function(evt){
-			this._super('OjDateInput', '_onFocusIn', arguments);
+			this._super(OjTextInput, '_onFocusIn', arguments);
 
 			//showCalendarControl(this.dom());
 

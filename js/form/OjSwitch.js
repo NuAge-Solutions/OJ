@@ -8,7 +8,7 @@ OJ.importCss('oj.form.OjSwitch');
 'use strict';
 
 OJ.extendComponent(
-	OjInput, 'OjSwitch',
+	'OjSwitch', [OjInput],
 	{
 		'_props_' : {
 

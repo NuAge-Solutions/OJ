@@ -4,7 +4,7 @@ OJ.importJs('oj.media.OjMedia');
 'use strict';
 
 OJ.extendComponent(
-	OjMedia, 'OjVideo',
+	'OjVideo', [OjMedia],
 	{
 		'_tag' : '<video></video>'
 	},

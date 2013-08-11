@@ -12,7 +12,7 @@ OJ.importCss('oj.window.OjModal');
 'use strict';
 
 OJ.extendManager(
-	'WindowManager', OjActionable, 'OjWindowManager',
+	'WindowManager', 'OjWindowManager', [OjActionable],
 	{
 		'BLANK'  : '_blank',
 		'SELF'   : '_self',
@@ -29,7 +29,7 @@ OJ.extendManager(
 		},
 
 		'_constructor' : function(manager){
-			this._super('OjWindowManager', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			if(manager){
 				this._modals = manager._modals;
@@ -60,31 +60,6 @@ OJ.extendManager(
 			}
 		},
 
-
-		'_alert' : function(title, message/*, buttons, cancel_label*/){
-			var args = arguments,
-				ln = args.length,
-				buttons = ln > 2 ? args[2] : [],
-				cancel_label = 'Ok',
-				alrt;
-
-			if(ln > 3){
-				cancel_label = args[3];
-			}
-			else if(ln > 2){
-				cancel_label = 'Cancel';
-			}
-
-			alrt = this.makeAlert(title, message, buttons, cancel_label);
-
-			if(!buttons && !cancel_label){
-				alrt.hideButtons();
-			}
-
-			alrt.setPaneWidth(400);
-
-			return alrt;
-		},
 
 		'_calcBrowserWidth' : function(){
 			var vp = OJ.getViewport();
@@ -203,19 +178,27 @@ OJ.extendManager(
 		},
 
 
-		'alert' : function(title, message/*, buttons, cancel_label*/){
-			var alrt = this._alert.apply(this, arguments);
+		'alert' : function(message/*, title, buttons, cancel_label*/){
+			var alrt = this.makeAlert.apply(this, arguments);
 
 			this.show(alrt);
 
 			return alrt;
 		},
 
+		'call' : function(phone){
+			window.location.href = 'tel:' + phone.getPath().substring(1);
+		},
+
+		'email' : function(email){
+			window.location.href = 'mailto:' + email.getPath().substring(1);
+		},
+
 		'browser' : function(url, title/*, width, height */){
 			var args = arguments,
 				ln = args.length,
 				iframe = new OjIframe(url),
-				modal = this.makeModal(title, iframe);
+				modal = this.makeModal(iframe, title);
 
 			iframe.setWidth(100, '%');
 			iframe.setHeight(100, '%');
@@ -226,6 +209,20 @@ OJ.extendManager(
 			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
 
 			return this.show(modal);
+		},
+
+		'modal' : function(/*content, title, width, height*/){
+			var args = arguments,
+				ln = args.length,
+				modal = this.makeModal.apply(this, args);
+
+			modal.setSelfDestruct(OjAlert.DEEP);
+			modal.setPaneWidth(ln > 2 ? args[2] : this._calcBrowserWidth());
+			modal.setPaneHeight(ln > 3 ? args[3] : this._calcBrowserHeight());
+
+			this.show(modal);
+
+			return modal;
 		},
 
 		'position' : function(modal){
@@ -265,7 +262,7 @@ OJ.extendManager(
 			var args = arguments,
 				ln = args.length,
 				viewer = new OjImageViewer(url),
-				modal = this.makeModal(title, viewer);
+				modal = this.makeModal(viewer, title);
 
 			viewer.setWidth(100, '%');
 			viewer.setHeight(100, '%');
@@ -277,11 +274,45 @@ OJ.extendManager(
 			return this.show(modal);
 		},
 
-		'makeAlert' : function(/*title, content*/){
-			return this._alertClass.makeNew(arguments);
+		'makeAlert' : function(/*message, title, buttons = [], cancel_label = 'OK', width = 400, height = auto*/){
+			var args = arguments,
+				ln = args.length,
+				params = [
+					ln ? args[0] : null,
+					ln > 1 ? args[1] : null,
+					ln > 2 ? args[2] : [],
+					OjAlert.OK
+				],
+				alrt;
+
+			// load in the passed buttons array
+			if(ln > 3){
+				params[3] = args[3];
+			}
+			// default the cancel label
+			else if(ln > 2){
+				params[3] = OjAlert.CANCEL;
+			}
+
+			// make the new alert
+			alrt = this._alertClass.makeNew(params);
+
+			// hide the buttons if we have no buttons and no cancel label
+			if(!params[2] && !params[3]){
+				alrt.hideButtons();
+			}
+
+			// set the pane height and width
+			alrt.setPaneWidth(ln > 4 ? args[4] : 400);
+
+			if(ln > 5){
+				alrt.setPaneHeight(args[5]);
+			}
+
+			return alrt;
 		},
 
-		'makeModal' : function(/*title, content*/){
+		'makeModal' : function(/*content, title*/){
 			return this._modalClass.makeNew(arguments);
 		},
 
@@ -290,12 +321,27 @@ OJ.extendManager(
 		},
 
 		'open' : function(url/*, target, params*/){
+			// check for email
+			if(url.getProtocol() == 'mailto'){
+				return this.email(url);
+			}
+
+			// check for phone call
+			if(url.getProtocol() == 'tel'){
+				return this.call(url);
+			}
+
 			var args = arguments,
 				ln = args.length,
 				target = ln > 1 ? args[1] : this.BLANK,
 				params = ln > 2 ? args[2] : {},
 				specs = [], key,
 				vp = OJ.getViewport(), scrn = OJ.getScreen();
+
+			// check for text message
+			if(url.getProtocol() == 'sms' || url.getProtocol() == 'mms'){
+				return this.txt(url, params);
+			}
 
 			if(target != this.SELF && target != this.TOP && target != this.PARENT){
 				if(isUnset(params.toolbar)){
@@ -329,7 +375,14 @@ OJ.extendManager(
 				}
 			}
 
-			window.open(url.toString(), target, specs.join(','));
+			args = [url.toString()];
+
+			if(target != this.BLANK){
+				args.push(target);
+				args.push(specs.join(','));
+			}
+
+			window.open.apply(window, args);
 
 			return target;
 		},

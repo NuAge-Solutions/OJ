@@ -5,13 +5,13 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendManager(
-	'EventManager', OjObject, 'OjEventManager',
+	'EventManager', 'OjEventManager', [OjObject],
 	{
 		'_events' : {},  '_index' : {},
 
 
 		'_constructor' : function(){
-			this._super('OjEventManager', '_constructor', arguments);
+			this._super(OjObject, '_constructor', arguments);
 
 			var ready,
 				timer,

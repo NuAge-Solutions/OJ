@@ -4,10 +4,10 @@ OJ.importJs('oj.fx.OjDimTween');
 'use strict';
 
 OJ.extendClass(
-	OjDimTween, 'OjMove',
+	'OjMove', [OjDimTween],
 	{
 		'setAmount' : function(amount){
-			this._super('OjMove', 'setAmount', arguments);
+			this._super(OjDimTween, 'setAmount', arguments);
 
 			if(this._direction == OjMove.BOTH){
 				this._to.x = amount[0];

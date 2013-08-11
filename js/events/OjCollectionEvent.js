@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjCollectionEvent',
+	'OjCollectionEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'item'    : null,
@@ -31,7 +31,7 @@ OJ.extendClass(
 				}
 			}
 
-			this._super('OjCollectionEvent', '_constructor', params);
+			this._super(OjEvent, '_constructor', params);
 		}
 	},
 	{

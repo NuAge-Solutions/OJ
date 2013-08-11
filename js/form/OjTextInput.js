@@ -4,7 +4,7 @@ OJ.importJs('oj.form.OjInput');
 'use strict';
 
 OJ.extendComponent(
-	OjInput, 'OjTextInput',
+	'OjTextInput', [OjInput],
 	{
 		'_props_' : {
 			'minLength' : 0,
@@ -13,21 +13,21 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*name, label, value, validators*/){
-			this._super('OjTextInput', '_constructor', arguments);
+			this._super(OjInput, '_constructor', arguments);
 
 			this.input.addEventListener(OjKeyboardEvent.UP, this, '_onChange');
 		},
 
 
 		'_setDom' : function(dom_elm){
-			this._super('OjTextInput', '_setDom', arguments);
+			this._super(OjInput, '_setDom', arguments);
 
 			this.input.setAttr('type', 'text');
 		},
 
 
 		'isValid' : function(){
-			var valid = this._super('OjTextInput', 'isValid', arguments);
+			var valid = this._super(OjInput, 'isValid', arguments);
 
 			var ln = this._value ? this._value.length : 0;
 
@@ -53,7 +53,7 @@ OJ.extendComponent(
 				return;
 			}
 
-			return this._super('OjTextInput', 'setValue', arguments);
+			return this._super(OjInput, 'setValue', arguments);
 		}
 	},
 	{

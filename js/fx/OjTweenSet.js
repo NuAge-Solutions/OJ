@@ -5,7 +5,7 @@ OJ.importJs('oj.fx.OjPropTween');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjTweenSet',
+	'OjTweenSet', [OjActionable],
 	{
 		'_tweens' : null,  '_completed' : null,  '_is_finished' : false,
 
@@ -15,7 +15,7 @@ OJ.extendClass(
 
 			this._completed = [];
 
-			this._super('OjTweenSet', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			if(arguments.length){
 				if(isArray(arguments[0])){
@@ -45,7 +45,7 @@ OJ.extendClass(
 				}
 			}
 
-			return this._super('OjTweenSet', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

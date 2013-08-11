@@ -4,7 +4,7 @@ OJ.importJs('oj.form.OjTextInput');
 'use strict';
 
 OJ.extendComponent(
-	OjTextInput, 'OjEmailInput',
+	'OjEmailInput', [OjTextInput],
 	{
 		'_props_' : {
 			'maxLength' : 254,
@@ -13,7 +13,7 @@ OJ.extendComponent(
 
 
 		'_setDom' : function(dom_elm){
-			this._super('OjEmailInput', '_setDom', arguments);
+			this._super(OjTextInput, '_setDom', arguments);
 
 			if(this._static.SUPPORTS_EMAIL_TYPE){
 				this.input.setAttr('type', 'email');
@@ -22,15 +22,16 @@ OJ.extendComponent(
 
 
 		'isValid' : function(){
-			var valid = this._super('OjEmailInput', 'isValid', arguments);
+			if(
+				this._super(OjTextInput, 'isValid', arguments) &&
+				!isEmpty(this._value) && !this._static.isValidEmail(this._value)
+			){
+				this._error = this._formatError(OjEmailInput.INVALID_ERROR);
 
-			if(!isEmpty(this._value) && !this._static.isValidEmail(this._value)){
-				this._errors.push(OJ.tokenReplace(OjEmailInput.INVALID_ERROR, 'EMAIL', this._value));
-
-				valid = false;
+				return false;
 			}
 
-			return valid;
+			return true;
 		},
 
 
@@ -43,7 +44,7 @@ OJ.extendComponent(
 		}
 	},
 	{
-		'INVALID_ERROR' : '[%EMAIL] is not a valid email address.',
+		'INVALID_ERROR' : '[%INPUT] requires a valid email address.',
 
 		'SUPPORTS_EMAIL_TYPE' : OjInput.supportsInputType('email'),
 

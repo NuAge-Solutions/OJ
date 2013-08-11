@@ -1,7 +1,7 @@
 'use strict';
 
 OJ.extendClass(
-	OjObject, 'OjCssTranslate',
+	'OjCssTranslate', [OjObject],
 	{
 		'_props_' : {
 			'x'     : 0,
@@ -15,7 +15,7 @@ OJ.extendClass(
 			var args = arguments,
 				ln = args.length;
 
-			this._super('OjCssTranslate', '_constructor', []);
+			this._super(OjObject, '_constructor', []);
 
 			if(ln){
 				this.setX(args[0]);
@@ -36,7 +36,7 @@ OJ.extendClass(
 
 
 		'clone' : function(){
-			var obj = this._super('OjCssTranslate', 'clone', arguments);
+			var obj = this._super(OjObject, 'clone', arguments);
 
 			obj._x     = this._x;
 			obj._unitX = this._unitX;

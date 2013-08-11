@@ -11,16 +11,6 @@ OjObject.prototype = {
 	'_destroyed_' : false,
 
 	/**
-	 * Parents Object
-	 *
-	 * @description An object used by the compile function to store overridden functions in order to
-	 * simulate inheritance
-	 *
-	 * @private
-	 */
-	'_supers_' : {},
-
-	/**
 	 * Class Names Array
 	 *
 	 * @description An array of class names in the order of inheritance
@@ -94,9 +84,7 @@ OjObject.prototype = {
 	 * @return {OjObj} return the this object to allow for chaining
 	 */
 	'_super' : function(context, func, args){
-		var supers = this._supers_[context];
-
-		return supers && supers[func] ? supers[func].apply(this, args) : null;
+		return context.prototype[func].apply(this, args);
 	},
 
 	/**

@@ -7,7 +7,7 @@ OJ.importCss('oj.components.OjOverlay');
 'use strict';
 
 OJ.extendComponent(
-	OjComponent, 'OjOverlay',
+	'OjOverlay', [OjComponent],
 	{
 		'_props_' : {
 			'forceIcon'    : true,
@@ -26,7 +26,7 @@ OJ.extendComponent(
 				ln = arguments.length,
 				icon;
 
-			this._super('OjOverlay', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			if(ln){
 				this.setMessage(args[0]);
@@ -45,7 +45,7 @@ OJ.extendComponent(
 				this.getParent().removeChild(this);
 			}
 
-			this._super('OjOverlay', '_onFadeComplete', arguments);
+			this._super(OjComponent, '_onFadeComplete', arguments);
 		},
 
 

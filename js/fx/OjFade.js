@@ -5,7 +5,7 @@ OJ.importJs('oj.fx.OjTweenEvent');
 'use strict';
 
 OJ.extendClass(
-	OjPropTween, 'OjFade',
+	'OjFade', [OjPropTween],
 	{
 		'_props_' : {
 			'direction' : 'fadeIn', // OjFade.IN
@@ -16,7 +16,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*target = null, direction = IN, duration = 250, easing = NONE*/){
-			this._super('OjFade', '_constructor', []);
+			this._super(OjPropTween, '_constructor', []);
 
 			var args = arguments,
 				ln = args.length;
@@ -45,7 +45,7 @@ OJ.extendClass(
 				this._target.hide();
 			}
 
-			this._super('OjFade', '_onComplete', arguments);
+			this._super(OjPropTween, '_onComplete', arguments);
 		},
 
 
@@ -76,7 +76,7 @@ OJ.extendClass(
 
 			this._target.show();
 
-			this._super('OjFade', 'start', arguments);
+			this._super(OjPropTween, 'start', arguments);
 		}
 	},
 	{

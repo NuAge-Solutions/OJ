@@ -3,7 +3,7 @@ OJ.importJs('oj.net.OjUrlLoader');
 'use strict';
 
 OJ.extendClass(
-	OjUrlLoader, 'OjRpc',
+	'OjRpc', [OjUrlLoader],
 	{
 		'_props_' : {
 			'method' : null,
@@ -16,7 +16,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(url, method, params/*, content_type, async*/){
-			this._super('OjRpc', '_constructor', []);
+			this._super(OjUrlLoader, '_constructor', []);
 
 			var args = arguments,
 				ln = args.length;
@@ -42,7 +42,7 @@ OJ.extendClass(
 		},
 
 		'load' : function(){
-			return this._super('OjRpc', 'load', []);
+			return this._super(OjUrlLoader, 'load', []);
 		},
 
 

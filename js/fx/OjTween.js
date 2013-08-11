@@ -7,7 +7,7 @@ OJ.importJs('oj.timer.OjTimer');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjTween',
+	'OjTween', [OjActionable],
 	{
 		'_props_' : {
 			'duration' : 500,
@@ -23,7 +23,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
-			this._super('OjTween', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			var args = arguments,
 				ln = args.length;
@@ -49,7 +49,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			this._unset('_timer');
 
-			return this._super('OjTween', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjDomEvent');
 'use strict';
 
 OJ.extendClass(
-	OjDomEvent, 'OjKeyboardEvent',
+	'OjKeyboardEvent', [OjDomEvent],
 	{},
 	{
 		'convertDomEvent' : function(evt){
@@ -12,9 +12,15 @@ OJ.extendClass(
 
 			evt = OjDomEvent.normalizeDomEvent(evt);
 
-			if(evt.type == OjDomEvent.KEY_DOWN){ type = OjKeyboardEvent.DOWN; }
-			else if(evt.type == OjDomEvent.KEY_PRESS){ type = OjKeyboardEvent.PRESS; }
-			else if(evt.type == OjDomEvent.KEY_UP){ type = OjKeyboardEvent.UP; }
+			if(evt.type == OjDomEvent.KEY_DOWN){
+				type = OjKeyboardEvent.DOWN;
+			}
+			else if(evt.type == OjDomEvent.KEY_PRESS){
+				type = OjKeyboardEvent.PRESS;
+			}
+			else if(evt.type == OjDomEvent.KEY_UP){
+				type = OjKeyboardEvent.UP;
+			}
 
 			return new OjKeyboardEvent(type, true, true);
 		},

@@ -7,7 +7,7 @@ OJ.importJs('oj.timer.OjTimer');
 'use strict';
 
 OJ.extendManager(
-	'HistoryManager', OjActionable, 'OjHistoryManager',
+	'HistoryManager', 'OjHistoryManager', [OjActionable],
 	{
 		'_previous' : null,  '_next' : null,  '_current' : 0,  '_native' : false,  '_timer' : 0,
 
@@ -22,7 +22,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super('OjHistoryManager', '_constructor', arguments);
+			this._super(OjActionable, '_constructor', arguments);
 
 			this._list = [new OjUrl(window.location.href)];
 
@@ -52,7 +52,7 @@ OJ.extendManager(
 		'_destructor' : function(){
 			OJ.destroy(this._timer);
 
-			return this._super('OjHistoryManager', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

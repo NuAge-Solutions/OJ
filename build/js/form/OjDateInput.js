@@ -1,1 +1,1 @@
-OJ.importJs("oj.form.OjTextInput");OJ.importCss("oj.date.OjCalendarControl");"use strict";OJ.extendClass(OjTextInput,"OjDateInput",{_onFocusIn:function(a){this._super("OjDateInput","_onFocusIn",arguments)}});
+OJ.importJs("oj.form.OjTextInput");OJ.importCss("oj.date.OjCalendarControl");"use strict";OJ.extendClass("OjDateInput",[OjTextInput],{_onFocusIn:function(a){this._super(OjTextInput,"_onFocusIn",arguments)}});

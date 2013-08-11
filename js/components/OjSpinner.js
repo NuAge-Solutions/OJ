@@ -7,7 +7,7 @@ OJ.importCss('oj.components.OjSpinner');
 'use strict';
 
 OJ.extendComponent(
-	OjComponent, 'OjSpinner',
+	'OjSpinner', [OjComponent],
 	{
 		'_props_' : {
 			'numBlades' : null,
@@ -23,7 +23,7 @@ OJ.extendComponent(
 				ln = args.length,
 				num_blades = 13;
 
-			this._super('OjSpinner', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			if(ln){
 				this.setTint(args[0]);
@@ -53,14 +53,14 @@ OJ.extendComponent(
 		'_destructor' : function(){
 			this._unset('_timer');
 
-			return this._super('OjSpinner', '_destructor', arguments);
+			return this._super(OjComponent, '_destructor', arguments);
 		},
 
 
 		'_setIsDisplayed' : function(){
 			var timer = this._timer;
 
-			this._super('OjSpinner', '_setIsDisplayed', arguments);
+			this._super(OjComponent, '_setIsDisplayed', arguments);
 
 			if(timer){
 				timer[this._is_displayed ? 'start' : 'stop']();
@@ -85,11 +85,11 @@ OJ.extendComponent(
 		'hide' : function(){
 			this._timer.pause();
 
-			this._super('OjSpinner', 'hide', arguments);
+			this._super(OjComponent, 'hide', arguments);
 		},
 
 		'redraw' : function(){
-			if(this._super('OjSpinner', 'redraw', arguments)){
+			if(this._super(OjComponent, 'redraw', arguments)){
 
 				var ln = this._numBlades, elm, pos;
 
@@ -117,7 +117,7 @@ OJ.extendComponent(
 				this._timer.start();
 			}
 
-			this._super('OjSpinner', 'show', arguments);
+			this._super(OjComponent, 'show', arguments);
 		},
 
 		'start' : function(){
@@ -143,7 +143,7 @@ OJ.extendComponent(
 				}
 			}
 
-			this._super('OjSpinner', 'setAlpha', arguments);
+			this._super(OjComponent, 'setAlpha', arguments);
 		},
 
 		'setNumBlades' : function(val){

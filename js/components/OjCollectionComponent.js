@@ -199,12 +199,12 @@ window.OjICollectionComponent = {
 
 
 OJ.extendComponent(
-	OjComponent, 'OjCollectionComponent',
+	'OjCollectionComponent', [OjComponent],
 	OJ.implementInterface(
 		OjICollectionComponent,
 		{
 			'_constructor' : function(){
-				this._super('OjCollectionComponent', '_constructor', arguments);
+				this._super(OjComponent, '_constructor', arguments);
 
 				// run the collection component setup
 				this._setup();
@@ -214,18 +214,18 @@ OJ.extendComponent(
 				// run the collection component teardown
 				this._teardown();
 
-				this._super('OjCollectionComponent', '_destructor', arguments);
+				this._super(OjComponent, '_destructor', arguments);
 			},
 
 
 			'addEventListener' : function(type, target, func){
-				this._super('OjCollectionComponent', 'addEventListener', arguments);
+				this._super(OjComponent, 'addEventListener', arguments);
 
 				this._addItemListener(type);
 			},
 
 			'removeEventListener' : function(type, target, func){
-				this._super('OjCollectionComponent', 'removeEventListener', arguments);
+				this._super(OjComponent, 'removeEventListener', arguments);
 
 				this._removeItemListener(type);
 			}

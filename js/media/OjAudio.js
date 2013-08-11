@@ -4,7 +4,7 @@ OJ.importJs('oj.media.OjMedia');
 'use strict';
 
 OJ.extendComponent(
-	OjMedia, 'OjAudio',
+	'OjAudio', [OjMedia],
 	{
 		'_sources' : null,
 
@@ -18,7 +18,7 @@ OJ.extendComponent(
 		},
 
 		'_setSource' : function(url){
-			this._super('OjAudio', '_setSource', arguments);
+			this._super(OjMedia, '_setSource', arguments);
 
 			if(this.media){
 				this.media.setAttr('src', this._source);

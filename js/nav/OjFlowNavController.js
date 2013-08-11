@@ -277,12 +277,12 @@ window.OjIFlowNavController = {
 
 
 OJ.extendComponent(
-	OjNavController, 'OjFlowNavController',
+	'OjFlowNavController', [OjNavController],
 	OJ.implementInterface(
 		OjIFlowNavController,
 		{
 			'_constructor' : function(/*stack*/){
-				this._super('OjFlowNavController', '_constructor', []);
+				this._super(OjNavController, '_constructor', []);
 
 				// process the arguments
 				if(arguments.length){
@@ -292,7 +292,7 @@ OJ.extendComponent(
 
 
 			'_setupStack' : function(){
-				this._super('OjFlowNavController', '_setupStack', arguments);
+				this._super(OjNavController, '_setupStack', arguments);
 
 				this._stack.setTransition(new OjTransition(OjTransition.SLIDE_HORZ, 250, [OjEasing.IN, OjEasing.OUT]));
 
@@ -300,7 +300,7 @@ OJ.extendComponent(
 			},
 
 			'_cleanupStack' : function(){
-				this._super('OjFlowNavController', '_cleanupStack', arguments);
+				this._super(OjNavController, '_cleanupStack', arguments);
 
 				if(this._stack){
 					this._stack.removeEventListener(OjStackEvent.ADD, this, '_onStackAdd');

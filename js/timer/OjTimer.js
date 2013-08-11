@@ -5,7 +5,7 @@ OJ.importJs('oj.timer.OjTimerManager');
 'use strict';
 
 OJ.extendClass(
-	OjActionable, 'OjTimer',
+	'OjTimer', [OjActionable],
 	{
 		'_props_' : {
 			'duration'    : 0,
@@ -21,7 +21,7 @@ OJ.extendClass(
 
 
 		'_constructor' : function(/*duration, repeat_count*/){
-			this._super('OjTimer', '_constructor', []);
+			this._super(OjActionable, '_constructor', []);
 
 			var args = arguments,
 				ln = args.length;
@@ -38,7 +38,7 @@ OJ.extendClass(
 		'_destructor' : function(){
 			TimerManager.unregisterTimer(this);
 
-			return this._super('OjTimer', '_destructor', arguments);
+			return this._super(OjActionable, '_destructor', arguments);
 		},
 
 

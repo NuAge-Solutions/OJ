@@ -1,14 +1,14 @@
 'use strict';
 
 OJ.extendClass(
-	OjElement, 'OjTextElement',
+	'OjTextElement', [OjElement],
 	{
 		'_constructor' : function(/*text*/){
 			var args = arguments,
 				ln = args.length,
 				is_dom = ln && isDomElement(args[0]);
 
-			this._super('OjTextElement', '_constructor', is_dom ? [args[0]] : []);
+			this._super(OjElement, '_constructor', is_dom ? [args[0]] : []);
 
 			if(ln && !is_dom){
 				this.setText(args[0]);
@@ -21,7 +21,7 @@ OJ.extendClass(
 				dom_elm = document.createTextNode(dom_elm.innerText);
 			}
 
-			this._super('OjTextElement', '_setDom', [dom_elm]);
+			this._super(OjElement, '_setDom', [dom_elm]);
 		},
 
 

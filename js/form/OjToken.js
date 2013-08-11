@@ -5,13 +5,13 @@ OJ.importJs('oj.events.OjMouseEvent');
 'use strict';
 
 OJ.extendClass(
-	OjItemRenderer, 'OjToken',
+	'OjToken', [OjItemRenderer],
 	{
 		'_template' : 'oj.form.OjToken',
 
 
 		'_constructor' : function(/*data*/){
-			this._super('OjToken', '_constructor', arguments);
+			this._super(OjItemRenderer, '_constructor', arguments);
 
 			this.removeBtn.addEventListener(OjMouseEvent.CLICK, this, '_onRemoveClick');
 		},

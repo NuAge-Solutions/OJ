@@ -7,7 +7,7 @@ OJ.importCss('oj.components.OjFieldset');
 'use strict';
 
 OJ.extendComponent(
-	OjComponent, 'OjFieldset',
+	'OjFieldset', [OjComponent],
 	{
 		'_props_' : {
 			'collapsedIcon' : null,
@@ -27,7 +27,7 @@ OJ.extendComponent(
 			var args = arguments,
 				ln = args.length;
 
-			this._super('OjFieldset', '_constructor', []);
+			this._super(OjComponent, '_constructor', []);
 
 			// remove the actuator
 			this.actuator.addEventListener(OjMouseEvent.CLICK, this, '_onActuatorClick');
@@ -172,7 +172,7 @@ OJ.extendComponent(
 		},
 
 		'redraw' : function(){
-			if(this._super('OjFieldset', 'redraw', arguments)){
+			if(this._super(OjComponent, 'redraw', arguments)){
 				this._redrawActuator();
 
 				this._redrawLegend();

@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjEvent');
 'use strict';
 
 OJ.extendClass(
-	OjEvent, 'OjTweenEvent',
+	'OjTweenEvent', [OjEvent],
 	{
 		'_get_props_' : {
 			'progress' : 0,
@@ -13,20 +13,24 @@ OJ.extendClass(
 
 
 		'_constructor' : function(type, value, progress/*, bubbles = false, cancelable = false*/){
-			var progress = 0, bubbles = false, cancelable = false, ln = arguments.length;
+			var progress = 0,
+				bubbles = false,
+				cancelable = false,
+				args = arguments,
+				ln = args.length;
 
 			this._value = value;
 			this._progress = progress;
 
 			if(ln > 3){
-				bubbles = arguments[3];
+				bubbles = args[3];
 
 				if(ln > 4){
-					cancelable = arguments[4];
+					cancelable = args[4];
 				}
 			}
 
-			this._super('OjTweenEvent', '_constructor', [type, bubbles, cancelable]);
+			this._super(OjEvent, '_constructor', [type, bubbles, cancelable]);
 		}
 	},
 	{

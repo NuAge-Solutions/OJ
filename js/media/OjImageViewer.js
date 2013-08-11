@@ -7,7 +7,7 @@ OJ.importCss('oj.media.OjImageViewer');
 'use strict';
 
 OJ.extendComponent(
-	OjView, 'OjImageViewer',
+	'OjImageViewer', [OjView],
 	{
 		'_images' : null,
 
@@ -15,7 +15,7 @@ OJ.extendComponent(
 		'_constructor' : function(/*content, title, short_title*/){
 			this._images = [];
 
-			this._super('OjImageViewer', '_constructor', arguments);
+			this._super(OjView, '_constructor', arguments);
 		},
 
 

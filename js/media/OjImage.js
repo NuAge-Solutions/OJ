@@ -5,7 +5,7 @@ OJ.importJs('oj.media.OjMedia');
 'use strict';
 
 OJ.extendComponent(
-	OjMedia, 'OjImage',
+	'OjImage', [OjMedia],
 	{
 		'_source_is_css' : false,
 
@@ -18,7 +18,7 @@ OJ.extendComponent(
 
 			this._callback = this._img = null;
 
-			return this._super('OjImage', '_destructor', arguments);
+			return this._super(OjMedia, '_destructor', arguments);
 		},
 
 
@@ -33,7 +33,7 @@ OJ.extendComponent(
 		'_makeMedia' : function(){
 
 
-			return this._super('OjImage', '_makeMedia', arguments);
+			return this._super(OjMedia, '_makeMedia', arguments);
 		},
 
 		'_resize' : function(){
@@ -48,7 +48,7 @@ OJ.extendComponent(
 
 
 		'_onMediaLoad' : function(evt){
-			var rtrn = this._super('OjImage', '_onMediaLoad', arguments);
+			var rtrn = this._super(OjMedia, '_onMediaLoad', arguments);
 
 			if(this._source_is_css){
 				this._media.addCss([this._source.substring(1)]);
@@ -86,7 +86,7 @@ OJ.extendComponent(
 				this._setStyle('backgroundImage', null);
 			}
 
-			this._super('OjImage', '_setSource', arguments);
+			this._super(OjMedia, '_setSource', arguments);
 
 			if(url){
 				// check to see if this is a css class

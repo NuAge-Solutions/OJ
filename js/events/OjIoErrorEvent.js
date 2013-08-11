@@ -4,7 +4,7 @@ OJ.importJs('oj.events.OjErrorEvent');
 'use strict';
 
 OJ.extendClass(
-	OjErrorEvent, 'OjIoErrorEvent',
+	'OjIoErrorEvent', [OjErrorEvent],
 	{},
 	{
 		'IO_ERROR'   : 'onIoError',

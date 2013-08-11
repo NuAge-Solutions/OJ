@@ -4,7 +4,7 @@ OJ.importJs('oj.components.OjStack');
 'use strict';
 
 OJ.extendComponent(
-	OjStack, 'OjNavStack',
+	'OjNavStack', [OjStack],
 	{
 		'_props_' : {
 			'controller' : null
@@ -22,7 +22,7 @@ OJ.extendComponent(
 			}
 
 			// continue on
-			this._super('OjNavStack', '_destructor', arguments);
+			this._super(OjStack, '_destructor', arguments);
 		},
 
 
@@ -31,7 +31,7 @@ OJ.extendComponent(
 			elm.setStack(this);
 			elm.load();
 
-			this._super('OjNavStack', '_addActiveElm', arguments);
+			this._super(OjStack, '_addActiveElm', arguments);
 		},
 
 		'_removeActiveElm' : function(elm){
@@ -39,7 +39,7 @@ OJ.extendComponent(
 			elm.setController(null);
 			elm.setStack(null);
 
-			this._super('OjNavStack', '_removeActiveElm', arguments)
+			this._super(OjStack, '_removeActiveElm', arguments)
 		},
 
 
