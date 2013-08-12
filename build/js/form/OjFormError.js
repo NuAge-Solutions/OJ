@@ -1,1 +1,0 @@
-OJ.importJs("oj.components.OjItemRenderer");"use strict";OJ.extendClass("OjFormError",[OjItemRenderer],{_template:"oj.form.OjFormError",_redrawData:function(){var b=this._data,a=this.input,c=this.errors;if(b){if(b.input){a.show();a.setText(b.input.getLabel())}else{a.hide()}if(b.errors){c.show();c.getDataProvider().setSource(b.errors)}else{c.hide()}}}});

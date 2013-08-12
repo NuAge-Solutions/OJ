@@ -1,1 +1,0 @@
-OJ.importJs("oj.events.OjEvent");"use strict";OJ.extendClass("OjTextEvent",[OjEvent],{_get_props_:{text:""},_constructor:function(c){var b,a=b=false,d=arguments.length;if(d>1){this._text=arguments[1];if(d>2){a=arguments[2];if(d>3){b=arguments[3]}}}this._super(OjEvent,"_constructor",[c,a,b])}},{TEXT:"onText"});

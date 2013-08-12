@@ -54,22 +54,32 @@ def processDir(dir, file_type, func):
     files_dir = path.join(dir, file_type)
 
     for root, subFolders, files in walk(files_dir):
+        # remove hidden folders
+        for folder in subFolders:
+            if folder[0] == '.':
+                subFolders.remove(folder)
+
         for file in files:
             file_path = path.join(root, file)
 
-            if file[0] != '.' and file.find('.' + file_type) > 0 and file_path not in list:
-                rtrn = func(dir, file_get_contents(file_path))
+            # ignore hidden files
+            # ignore files of the wrong type
+            # ignore files already listed
+            if file[0] == '.' or file.find('.' + file_type) < 1 or file_path in list:
+                continue
 
-                build_list['css'] += rtrn['build_list']['css']
-                build_list['js'] += rtrn['build_list']['js']
+            build_list[file_type].append(file_path)
 
-                build_list[file_type].append(file_path)
+            rtrn = func(dir, file_get_contents(file_path))
 
-                content += rtrn['file']
+            build_list['css'] += rtrn['build_list']['css']
+            build_list['js'] += rtrn['build_list']['js']
+
+            content += rtrn['file']
 
     if file_type == 'js':
         content = ("'use strict';" + content).replace(';;', ';')
-
+    print(build_list['js'])
     file_put_contents(path.join(dir, package + '-dev.' + file_type), content)
 
 
@@ -84,9 +94,21 @@ def processImport(dir, file, str, ext):
         if index > -1:
             end = file.find(')', index)
 
-            list.append(path.join(dir, path.sep.join(file[index + ln:end - 1].split('.')[1:])) + '.' + ext)
+            include = path.join(dir, path.sep.join(file[index + ln:end - 1].split('.')[1:])) + '.' + ext
 
-            file = file[:index] + file[end + 3:]
+            if path.exists(include):
+                include_str = ''
+
+                if include not in list:
+                    list.append(include)
+
+                    if ext == 'js':
+                        include_str = file_get_contents(list[-1])
+
+                file = file[:index] + include_str + file[end + 3:]
+
+            else:
+                index = end
 
     return {'file': file, 'list': list}
 
@@ -104,7 +126,7 @@ def processJs(dir, file):
     rtrn = processImport(path.join(dir, 'css'), rtrn['file'], 'OJ.importCss(', 'css')
 
     build_list['css'] = rtrn['list']
-    print(rtrn['list'])
+
     # return the results
     return {
         'file': rtrn['file'].replace("'use strict'", '').replace('"use strict"', '').replace("\n;", ''),
