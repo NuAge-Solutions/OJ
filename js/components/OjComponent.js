@@ -1,4 +1,3 @@
-OJ.importJs('oj.components.OjStyleElement');
 OJ.importJs('oj.fx.OjFade');
 
 OJ.importCss('oj.components.OjComponent');

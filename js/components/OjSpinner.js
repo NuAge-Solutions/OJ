@@ -159,6 +159,8 @@ OJ.extendComponent(
 			ln = this._numBlades;
 			section = 360 / ln;
 
+			this.wrapper.removeAllChildren();
+
 			for(; ln--;){
 				elm = new OjStyleElement();
 				elm.addCss('blade');

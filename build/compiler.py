@@ -38,17 +38,11 @@ def file_put_contents(path, contents):
         f.write(contents)
 
 
-def processDir(dir, file_type, func):
-    global package, build_list
+def processDir(dir, build_list, file_type, func):
+    global package
 
     content = ''
     list = build_list[file_type]
-
-    # process the build list first
-    for file in list:
-        rtrn = func(dir, file_get_contents(file))
-
-        content += rtrn['file']
 
     # then process the directories
     files_dir = path.join(dir, file_type)
@@ -68,74 +62,72 @@ def processDir(dir, file_type, func):
             if file[0] == '.' or file.find('.' + file_type) < 1 or file_path in list:
                 continue
 
-            build_list[file_type].append(file_path)
+            list.append(file_path)
 
-            rtrn = func(dir, file_get_contents(file_path))
-
-            build_list['css'] += rtrn['build_list']['css']
-            build_list['js'] += rtrn['build_list']['js']
-
-            content += rtrn['file']
+            content += func(dir, file_get_contents(file_path), build_list)
 
     if file_type == 'js':
         content = ("'use strict';" + content).replace(';;', ';')
-    print(build_list['js'])
+
     file_put_contents(path.join(dir, package + '-dev.' + file_type), content)
 
 
-def processImport(dir, file, str, ext):
-    list = []
+def processJs(dir, file, list):
+    # search for import js statements
+    needle = 'OJ.importJs('
+    ln = len(needle) + 1
     index = 0
-    ln = len(str) + 1
 
     while index > -1:
-        index = file.find(str, index)
+        index = file.find(needle, index)
 
         if index > -1:
             end = file.find(')', index)
 
-            include = path.join(dir, path.sep.join(file[index + ln:end - 1].split('.')[1:])) + '.' + ext
+            include = path.join(dir, 'js', path.sep.join(file[index + ln:end - 1].split('.')[1:])) + '.js'
 
             if path.exists(include):
                 include_str = ''
 
-                if include not in list:
-                    list.append(include)
+                if include not in list['js']:
+                    list['js'].append(include)
 
-                    if ext == 'js':
-                        include_str = file_get_contents(list[-1])
+                    include_str = file_get_contents(include)
 
                 file = file[:index] + include_str + file[end + 3:]
 
             else:
                 index = end
 
-    return {'file': file, 'list': list}
-
-
-def processJs(dir, file):
-    # setup an empty build list
-    build_list = {'css': [], 'js': []}
-
-    # search for import js statements
-    rtrn = processImport(path.join(dir, 'js'), file, 'OJ.importJs(', 'js')
-
-    build_list['js'] = rtrn['list']
-
     # search for import css statements
-    rtrn = processImport(path.join(dir, 'css'), rtrn['file'], 'OJ.importCss(', 'css')
+    needle = 'OJ.importCss('
+    ln = len(needle) + 1
+    index = 0
 
-    build_list['css'] = rtrn['list']
+    while index > -1:
+        index = file.find(needle, index)
+
+        if index > -1:
+            end = file.find(')', index)
+
+            include = path.join(dir, 'css', path.sep.join(file[index + ln:end - 1].split('.')[1:])) + '.css'
+
+            if path.exists(include):
+                if include not in list['css']:
+                    list['css'].append(include)
+
+                file = file[:index] + file[end + 3:]
+
+            else:
+                index = end
 
     # return the results
-    return {
-        'file': rtrn['file'].replace("'use strict'", '').replace('"use strict"', '').replace("\n;", ''),
-        'build_list': build_list
-    }
+    return file.replace("'use strict'", '').replace('"use strict"', '').replace("\n;", '')
 
 
-def processCss(dir, file):
-    return {'file': file, 'build_list': {'css': [], 'js': []}}
+def processCss(dir, file, list):
+    # return {'file': file, 'build_list': {'css': [], 'js': []}}
+    return file
 
 
 # process the script args
@@ -166,7 +158,7 @@ if args.type in ['all', 'js']:
     build_list['js'] = []
     build_list['css'] = []
 
-    processDir(args.path, 'js', processJs)
+    processDir(args.path, build_list, 'js', processJs)
 
     if compress:
         print('we need to compress the js')
@@ -176,7 +168,7 @@ if args.type in ['all', 'js']:
 if args.type in ['all', 'css']:
     print('we got css to compile')
 
-    processDir(args.path, 'css', processCss)
+    processDir(args.path, build_list, 'css', processCss)
 
     if compress:
         print('we need to compress the css')
