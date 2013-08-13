@@ -1,4 +1,5 @@
 'use strict';
+;
 
 
 /**
@@ -1832,6 +1833,242 @@ if(!isSet(console.group) || !isFunction(console.group)){
 traceGroup('Picking the oranges.', true);
 
 
+
+
+
+
+
+// on dom ready event handler
+function onDomReady(){
+	var key;
+
+	// make sure the document has a head var
+	if(!document.head){
+		document.head = document.getElementsByTagName('head');
+
+		if(document.head.length){
+			document.head = document.head[0];
+		}
+		else{
+			document.head = null;
+		}
+	}
+
+	// process the target and it's attributes for any additional settings
+	var target = OJ.byId(OJ._('target'));
+
+	if(target){
+		// process the target attributes
+		// as settings
+		var attrs = target.attributes, attr,
+			special = ['mode', 'version'],
+			ln = special.length;
+
+		// process order sensitive settings first
+		for(; ln--;){
+			if((attr = special[ln]) && attrs[attr]){
+				OJ.setting(attr, attrs[attr].value)
+
+				target.removeAttribute(attr);
+			}
+		}
+
+		// process the rest of the settings
+		ln = attrs.length;
+
+		for(; ln--;){
+			attr = attrs[ln].nodeName;
+
+			// disregard the id, class and event attributes since they are not settings
+			if(attr == 'id' || attr == 'class' || attr.substr(0, 3) == 'on-'){
+				continue;
+			}
+
+			// all other attributes are settings
+			OJ.setting(OJ.attributeToFunc(attr), attrs[ln].value);
+
+			target.removeAttribute(attr);
+		}
+
+		OJ._target = target;
+	}
+
+	// make sure the theme got loaded
+	if(!OJ._theme_elm){
+		OJ.setting('theme', OJ.setting('theme'));
+	}
+
+	// process the mode
+	// if no mode has been specified then push us into production mode by default
+	if(OJ._('mode') == OJ.LOADING){
+		OJ.setting('mode', OJ.PROD);
+	}
+
+	// updated the loaded assets with the appropriate query string
+	for(key in OJ._loaded){
+		OJ._loaded[key + OJ.getVersionQuery()] = true;
+	}
+
+	// setup a library for the loaded assets
+	OJ._library = new OjLibrary(OJ._loaded);
+
+	// import the required classes
+								
+	// create the OJ component
+	var tmp = new OjView();
+	tmp.setAlpha(0);
+
+	// add the rendering div
+	tmp.addChild(tmp.renderer = new OjStyleElement('<div class="renderer"></div>'));
+
+	// handle events added before we could do anything with them
+	var evt,
+		i = 0,
+		ln = OJ._events.length;
+
+	for(; i < ln; i++){
+		evt = OJ._events[i];
+
+		if(evt.action == 'add'){
+			tmp.addEventListener(evt.type, evt.context, evt.func);
+		}
+		else{
+			tmp.removeEventListener(evt.type, evt.context, evt.func);
+		}
+	}
+
+	delete OJ._events;
+	delete OJ._handleEvent;
+	delete OJ.addEventListener;
+	delete OJ.removeEventListener;
+
+	// merge OJ with component
+	tmp.bulkSet(OJ);
+
+	tmp.addCss('OJ');
+
+	window.OJ = tmp;
+
+	// dispatch load event
+	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
+
+
+
+	// setup the dom event proxy
+	OJ._setProxy(document.body);
+
+	// hack so that we can capture taps in iOS
+	if(OJ._os == OJ.IOS){
+		tmp.dom().onclick = function(){};
+	}
+
+	// setup the css classes for special displays
+	OJ._onOjResize(null);
+	OJ._onOjScroll(null);
+
+	if(OJ.isMobile()){
+		OJ.addCss('is-mobile');
+	}
+
+	if(OJ.isTablet()){
+		OJ.addCss('is-tablet');
+	}
+
+	var scale = OJ.getPixelRatio();
+
+	if(scale <= .75){
+		OJ.addCss('ld'); // low-density
+	}
+	else if(scale >= 1.5){
+		OJ.addCss('hd'); // high-density
+	}
+	else{
+		OJ.addCss('sd'); // standard-density
+	}
+
+	// set all the content as displayed
+	OJ._setIsDisplayed(true);
+
+	// check if browser is supported
+	try{
+		var browser = OJ.getBrowser(),
+			version = OJ.getBrowserVersion();
+
+		OJ._is_supported = !(OJ.isComputer() && (
+			(browser == OJ.IE && version.compareVersion('9.0') < 0) ||
+			(browser == OJ.FIREFOX && version.compareVersion('2.0') < 0) ||
+			(browser == OJ.CHROME && version.compareVersion('4.0') < 0) ||
+			(browser == OJ.SAFARI && version.compareVersion('5.0') < 0) ||
+			(browser == OJ.OPERA && version.compareVersion('10.5') < 0)
+		));
+	}
+	catch(e){
+		OJ._is_supported = false;
+	}
+
+	// timeout offset to allow for css and stuff to settle
+	// this is clearly a hack so deal with it
+	OJ._interval = setInterval(window.onOjReady, 100);
+}
+
+// on oj ready event handler
+function onOjReady(){
+//    trace(OjStyleElement.getStyle(document.body, 'minWidth'));
+	if(isEmpty(OjStyleElement.getStyle(document.body, 'minWidth'))){
+		return;
+	}
+
+	clearInterval(OJ._interval);
+
+	// close up the loading group logs
+	traceGroup();
+
+	// run this init function if any
+	traceGroup('Juicing the oranges.', true);
+
+	// place OJ component in the DOM
+	if(OJ._target){
+		OJ._setDomSource(OJ._target, OJ);
+
+		OJ._target = null;
+	}
+	else{
+		document.body.appendChild(OJ.dom());
+	}
+
+	var init = OJ._('init');
+
+	if(init){
+		init();
+	}
+
+	traceGroup();
+
+	// dispatch the ready event
+	traceGroup('Your OJ is ready. Enjoy!', true);
+
+	OJ._is_ready = true;
+
+	OJ.fadeIn();
+
+	// detect if the browser is not supported
+	if(!OJ.isSupported()){
+		var alrt = WindowManager.makeAlert('UnSupported Browser', OJ._('supportMessage'));
+		alrt.hideButtons();
+		alrt.setPaneWidth(425);
+
+		WindowManager.show(alrt);
+
+		return;
+	}
+
+	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
+
+	traceGroup();
+}
+
+;
+
 // setup the base object
 window.OjObject = function OjObject(){
 	this._constructor.apply(this, arguments);
@@ -2161,6 +2398,8 @@ OjObject.makeNew = function(args){
 	return new F();
 };
 
+;
+
 /**
  * Query String Prototype Functions
  */
@@ -2266,7 +2505,9 @@ window.toQueryString = function(obj){
 	}
 
 	return '';
-};/**
+};
+
+/**
  * JSON Prototype Functions
  */
 Date.prototype.toJson = function(key){
@@ -2308,6 +2549,7 @@ String.prototype.parseJson = function(){
 window.toJson = function(obj){
 	return JSON.stringify(obj);
 };
+
 
 
 
@@ -2431,6 +2673,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjEvent', [OjObject],
 	{
@@ -2516,6 +2760,8 @@ OJ.extendClass(
 		'REMOVED_FROM_DISPLAY'  : 'onRemovedFromDisplay'
 	}
 );
+
+
 
 
 OJ.extendManager(
@@ -2758,6 +3004,8 @@ OJ.extendManager(
 );
 
 
+
+
 OJ.extendClass(
 	'OjTextEvent', [OjEvent],
 	{
@@ -2790,6 +3038,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjErrorEvent', [OjTextEvent],
 	{
@@ -2815,6 +3065,7 @@ OJ.extendClass(
 		'ERROR' : 'onError'
 	}
 );
+
 
 
 
@@ -3069,6 +3320,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjUrlRequest', [OjUrl],
 	{
@@ -3211,6 +3464,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjXml', [OjObject],
 	{
@@ -3320,6 +3575,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjHttpStatusEvent', [OjEvent],
 	{
@@ -3355,6 +3612,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjIoErrorEvent', [OjErrorEvent],
 	{},
@@ -3363,6 +3622,8 @@ OJ.extendClass(
 		'IO_TIMEOUT' : 'onIoTimeout'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -3395,6 +3656,8 @@ OJ.extendClass(
 		'PROGRESS' : 'onProgress'
 	}
 );
+
+;
 
 OJ.extendClass(
 	'OjCacheObject', [OjObject],
@@ -3468,6 +3731,8 @@ OJ.extendClass(
 	}
 );
 
+;
+
 OJ.extendClass(
 	'OjCachePolicy', [OjObject],
 	{
@@ -3504,6 +3769,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendManager(
 	'CacheManager', 'OjCacheManager', [OjActionable],
 	{
@@ -3523,7 +3790,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjActionable, '_constructor', arguments);
+			this._super(OjActionable, '_constructor', []);
 
 			// check to see if local storage is supported
 			try{
@@ -3788,6 +4055,8 @@ OJ.extendManager(
 		}
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -4137,6 +4406,7 @@ OJ.extendClass(
 
 
 
+
 OJ.extendClass(
 	'OjLibrary', [OjActionable],
 	{
@@ -4228,82 +4498,7 @@ OJ.extendClass(
 	}
 );
 
-// on dom ready event handler
-function onDomReady(){
-	var key;
 
-	// make sure the document has a head var
-	if(!document.head){
-		document.head = document.getElementsByTagName('head');
-
-		if(document.head.length){
-			document.head = document.head[0];
-		}
-		else{
-			document.head = null;
-		}
-	}
-
-	// process the target and it's attributes for any additional settings
-	var target = OJ.byId(OJ._('target'));
-
-	if(target){
-		// process the target attributes
-		// as settings
-		var attrs = target.attributes, attr,
-			special = ['mode', 'version'],
-			ln = special.length;
-
-		// process order sensitive settings first
-		for(; ln--;){
-			if((attr = special[ln]) && attrs[attr]){
-				OJ.setting(attr, attrs[attr].value)
-
-				target.removeAttribute(attr);
-			}
-		}
-
-		// process the rest of the settings
-		ln = attrs.length;
-
-		for(; ln--;){
-			attr = attrs[ln].nodeName;
-
-			// disregard the id, class and event attributes since they are not settings
-			if(attr == 'id' || attr == 'class' || attr.substr(0, 3) == 'on-'){
-				continue;
-			}
-
-			// all other attributes are settings
-			OJ.setting(OJ.attributeToFunc(attr), attrs[ln].value);
-
-			target.removeAttribute(attr);
-		}
-
-		OJ._target = target;
-	}
-
-	// make sure the theme got loaded
-	if(!OJ._theme_elm){
-		OJ.setting('theme', OJ.setting('theme'));
-	}
-
-	// process the mode
-	// if no mode has been specified then push us into production mode by default
-	if(OJ._('mode') == OJ.LOADING){
-		OJ.setting('mode', OJ.PROD);
-	}
-
-	// updated the loaded assets with the appropriate query string
-	for(key in OJ._loaded){
-		OJ._loaded[key + OJ.getVersionQuery()] = true;
-	}
-
-	// setup a library for the loaded assets
-	OJ._library = new OjLibrary(OJ._loaded);
-
-	// import the required classes
-	
 
 
 OJ.extendClass(
@@ -4509,6 +4704,8 @@ OJ.extendClass(
 
 
 
+
+
 OJ.extendClass(
 	'OjRect', [OjObject],
 	{
@@ -4578,6 +4775,8 @@ OJ.extendClass(
 	}
 );
 
+;
+
 OJ.extendClass(
 	'OjCssTranslate', [OjObject],
 	{
@@ -4633,6 +4832,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -4702,6 +4903,8 @@ OJ.extendClass(
 		'ORIENTATION_CHANGE' : 'orientationchange'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -4806,6 +5009,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjDragEvent', [OjMouseEvent],
 	{
@@ -4853,6 +5058,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjFocusEvent', [OjDomEvent],
 	{},
@@ -4885,6 +5092,8 @@ OJ.extendClass(
 		'OUT' : 'onFocusOut'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -4922,6 +5131,8 @@ OJ.extendClass(
 		'UP'    : 'onKeyUp'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -4978,6 +5189,8 @@ OJ.extendClass(
 		'SCROLL' : 'onScroll'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -5051,6 +5264,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjTransformEvent', [OjEvent],
 	{
@@ -5097,6 +5312,8 @@ OJ.extendClass(
 		'RESIZE' : 'onResize'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -6758,6 +6975,8 @@ OJ.extendClass(
 	}
 );
 
+;
+
 OJ.extendClass(
 	'OjTextElement', [OjElement],
 	{
@@ -6799,6 +7018,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -6927,6 +7148,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendManager(
 	'TimerManager', 'OjTimerManager', [OjActionable],
 	{
@@ -6934,7 +7157,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjActionable, '_constructor', arguments);
+            this._super(OjActionable, '_constructor', []);
 
 			this._callback = this._tick.bind(this);
 		},
@@ -7039,7 +7262,9 @@ OJ.extendManager(
 			}
 		}
 	}
-);	
+);
+
+
 
 
 OJ.extendManager(
@@ -7231,7 +7456,9 @@ OJ.extendManager(
 			return this._list.length;
 		}
 	}
-);	;
+);
+
+;
 
 // t = time, o = origin, d = delta, l = length
 window.OjEasing = {
@@ -7344,6 +7571,8 @@ window.OjEasing = {
 };
 
 
+
+
 OJ.extendClass(
 	'OjTweenEvent', [OjEvent],
 	{
@@ -7379,6 +7608,8 @@ OJ.extendClass(
 		'COMPLETE' : 'onTweenComplete'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -7508,6 +7739,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -7723,6 +7956,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjFade', [OjPropTween],
 	{
@@ -7804,6 +8039,8 @@ OJ.extendClass(
 		'OUT'  : 'onFadeOut'
 	}
 );
+
+
 
 
 
@@ -8254,7 +8491,57 @@ OJ.extendClass(
 //				var w, h;
 //
 //				if(type == OJ.IMAGE){
-//					
+//					//
+//					widget = new OjImage();
+//				}
+//				else if(type == OJ.FLASH){
+//					//
+//					widget = new OjFlash();
+//
+//					w = '100%';
+//					h = 300;
+//				}
+//				else if(type == OJ.VIDEO || type == OJ.AUDIO || type == OJ.STREAMING){
+//					OJ.importJs('oj.media.OjMediaPlayer');
+//
+//					widget = new OjMediaPlayer();
+//
+//					w = '100%';
+//					h = '100%';
+//				}
+//				else{
+//					importJs('oj.widgets.Container');
+//
+//					widget = new OjView();
+//				}
+//
+//				widget.source(_source);
+//
+//				if(isNull(w)){
+//					w = widget.width();
+//				}
+//
+//				if(isNull(h)){
+//					h = widget.height();
+//				}
+//
+//				if((isEmpty(this.css('width')) || this.css('width') == 'auto') && w){
+//					this.width(w);
+//				}
+//
+//				if((isEmpty(this.css('height')) || this.css('height') == 'auto') && h){
+//					this.height(h);
+//				}
+//
+//				this.add(widget);
+//			}
+//
+//			return source;
+		}
+	}
+);
+
+
 
 
 
@@ -8464,6 +8751,8 @@ OJ.extendComponent(
 
 
 
+
+
 OJ.extendClass(
 	'OjMedia', [OjComponent],
 	{
@@ -8668,6 +8957,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjImage', [OjMedia],
 	{
@@ -8793,11 +9084,9 @@ OJ.extendComponent(
 			return null;
 		}
 	}
-);//
-//					widget = new OjImage();
-//				}
-//				else if(type == OJ.FLASH){
-//					
+);
+
+
 
 
 OJ.extendComponent(
@@ -8808,51 +9097,9 @@ OJ.extendComponent(
 	{
 		'_TAGS' : ['flash']
 	}
-);//
-//					widget = new OjFlash();
-//
-//					w = '100%';
-//					h = 300;
-//				}
-//				else if(type == OJ.VIDEO || type == OJ.AUDIO || type == OJ.STREAMING){
-//					OJ.importJs('oj.media.OjMediaPlayer');
-//
-//					widget = new OjMediaPlayer();
-//
-//					w = '100%';
-//					h = '100%';
-//				}
-//				else{
-//					importJs('oj.widgets.Container');
-//
-//					widget = new OjView();
-//				}
-//
-//				widget.source(_source);
-//
-//				if(isNull(w)){
-//					w = widget.width();
-//				}
-//
-//				if(isNull(h)){
-//					h = widget.height();
-//				}
-//
-//				if((isEmpty(this.css('width')) || this.css('width') == 'auto') && w){
-//					this.width(w);
-//				}
-//
-//				if((isEmpty(this.css('height')) || this.css('height') == 'auto') && h){
-//					this.height(h);
-//				}
-//
-//				this.add(widget);
-//			}
-//
-//			return source;
-		}
-	}
 );
+
+
 
 
 
@@ -8958,6 +9205,8 @@ OJ.extendComponent(
 		'_TAGS' : ['overlay']
 	}
 );
+
+
 
 
 
@@ -9242,6 +9491,8 @@ OJ.extendComponent(
 
 
 
+
+
 OJ.extendComponent(
 	'OjIframe', [OjView],
 	{
@@ -9325,6 +9576,8 @@ OJ.extendComponent(
 
 
 
+
+
 OJ.extendComponent(
 	'OjImageViewer', [OjView],
 	{
@@ -9359,6 +9612,8 @@ OJ.extendComponent(
 		'_TAGS' : ['imageviewer']
 	}
 );
+
+
 
 
 
@@ -9529,6 +9784,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjLabel', [OjComponent],
 	{
@@ -9632,6 +9889,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendClass(
 	'OjStackEvent', [OjEvent],
 	{
@@ -9680,6 +9939,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjDimTween', [OjPropTween],
 	{
@@ -9725,6 +9986,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjMove', [OjDimTween],
 	{
@@ -9749,6 +10012,8 @@ OJ.extendClass(
 		'BOTH' : OjDimTween.BOTH
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -9909,6 +10174,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 
@@ -10218,9 +10485,8 @@ OJ.extendComponent(
 
 		'BACK'     : 'onFlowNavBack'
 	}
-);/*
- * Note: Stack requires defined dimensions for transitions to work properly
- */
+);
+
 
 
 
@@ -10265,6 +10531,8 @@ OJ.extendClass(
 		'ITEM_REPLACE' : 'onItemReplace'
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -10568,6 +10836,8 @@ window.OjICollection = {
 };
 
 
+
+
 window.OjICollectionComponent = {
 	// properties
 	'_props_' : {
@@ -10797,6 +11067,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendClass(
 	'OjResize', [OjDimTween],
 	{
@@ -10821,6 +11093,8 @@ OJ.extendClass(
 		'BOTH'   : OjDimTween.BOTH
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -10954,6 +11228,11 @@ OJ.extendClass(
 
 // setup the default transition
 OjTransition.DEFAULT = new OjTransition(OjTransition.NONE, 250);
+
+/*
+ * Note: Stack requires defined dimensions for transitions to work properly
+ */
+
 
 
 
@@ -11544,6 +11823,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjNavStack', [OjStack],
 	{
@@ -11655,6 +11936,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendClass(
 	'OjAlertEvent', [OjEvent],
 	{
@@ -11685,6 +11968,8 @@ OJ.extendClass(
 		'BUTTON_CLICK' : 'onAlertButtonClick'
 	}
 );
+
+
 
 
 OJ.extendComponent(
@@ -11859,6 +12144,8 @@ OJ.extendComponent(
 
 
 
+
+
 OJ.extendComponent(
 	'OjButton', [OjLink],
 	{
@@ -11916,6 +12203,8 @@ OJ.extendComponent(
 		'_TAGS' : ['button']
 	}
 );
+
+
 
 
 
@@ -12109,6 +12398,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjModal', [OjAlert],
 	OJ.implementInterface(
@@ -12288,6 +12579,8 @@ OJ.extendClass(
 		}
 	)
 );
+
+
 
 
 
@@ -12714,158 +13007,9 @@ OJ.extendManager(
 			return this._modal_holder;
 		}
 	}
-);				
-	// create the OJ component
-	var tmp = new OjView();
-	tmp.setAlpha(0);
-
-	// add the rendering div
-	tmp.addChild(tmp.renderer = new OjStyleElement('<div class="renderer"></div>'));
-
-	// handle events added before we could do anything with them
-	var evt,
-		i = 0,
-		ln = OJ._events.length;
-
-	for(; i < ln; i++){
-		evt = OJ._events[i];
-
-		if(evt.action == 'add'){
-			tmp.addEventListener(evt.type, evt.context, evt.func);
-		}
-		else{
-			tmp.removeEventListener(evt.type, evt.context, evt.func);
-		}
-	}
-
-	delete OJ._events;
-	delete OJ._handleEvent;
-	delete OJ.addEventListener;
-	delete OJ.removeEventListener;
-
-	// merge OJ with component
-	tmp.bulkSet(OJ);
-
-	tmp.addCss('OJ');
-
-	window.OJ = tmp;
-
-	// dispatch load event
-	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
+);
 
 
-
-	// setup the dom event proxy
-	OJ._setProxy(document.body);
-
-	// hack so that we can capture taps in iOS
-	if(OJ._os == OJ.IOS){
-		tmp.dom().onclick = function(){};
-	}
-
-	// setup the css classes for special displays
-	OJ._onOjResize(null);
-	OJ._onOjScroll(null);
-
-	if(OJ.isMobile()){
-		OJ.addCss('is-mobile');
-	}
-
-	if(OJ.isTablet()){
-		OJ.addCss('is-tablet');
-	}
-
-	var scale = OJ.getPixelRatio();
-
-	if(scale <= .75){
-		OJ.addCss('ld'); // low-density
-	}
-	else if(scale >= 1.5){
-		OJ.addCss('hd'); // high-density
-	}
-	else{
-		OJ.addCss('sd'); // standard-density
-	}
-
-	// set all the content as displayed
-	OJ._setIsDisplayed(true);
-
-	// check if browser is supported
-	try{
-		var browser = OJ.getBrowser(),
-			version = OJ.getBrowserVersion();
-
-		OJ._is_supported = !(OJ.isComputer() && (
-			(browser == OJ.IE && version.compareVersion('9.0') < 0) ||
-			(browser == OJ.FIREFOX && version.compareVersion('2.0') < 0) ||
-			(browser == OJ.CHROME && version.compareVersion('4.0') < 0) ||
-			(browser == OJ.SAFARI && version.compareVersion('5.0') < 0) ||
-			(browser == OJ.OPERA && version.compareVersion('10.5') < 0)
-		));
-	}
-	catch(e){
-		OJ._is_supported = false;
-	}
-
-	// timeout offset to allow for css and stuff to settle
-	// this is clearly a hack so deal with it
-	OJ._interval = setInterval(window.onOjReady, 100);
-}
-
-// on oj ready event handler
-function onOjReady(){
-	if(isEmpty(OjStyleElement.getStyle(document.body, 'minWidth'))){
-		return;
-	}
-
-	clearInterval(OJ._interval);
-
-	// close up the loading group logs
-	traceGroup();
-
-	// run this init function if any
-	traceGroup('Juicing the oranges.', true);
-
-	// place OJ component in the DOM
-	if(OJ._target){
-		OJ._setDomSource(OJ._target, OJ);
-
-		OJ._target = null;
-	}
-	else{
-		document.body.appendChild(OJ.dom());
-	}
-
-	var init = OJ._('init');
-
-	if(init){
-		init();
-	}
-
-	traceGroup();
-
-	// dispatch the ready event
-	traceGroup('Your OJ is ready. Enjoy!', true);
-
-	OJ._is_ready = true;
-
-	OJ.fadeIn();
-
-	// detect if the browser is not supported
-	if(!OJ.isSupported()){
-		var alrt = WindowManager.makeAlert('UnSupported Browser', OJ._('supportMessage'));
-		alrt.hideButtons();
-		alrt.setPaneWidth(425);
-
-		WindowManager.show(alrt);
-
-		return;
-	}
-
-	OJ.dispatchEvent(new OjEvent(OjEvent.READY));
-
-	traceGroup();
-}
 
 
 
@@ -13143,6 +13287,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjImageButton', [OjButton],
 	{
@@ -13197,6 +13343,8 @@ OJ.extendComponent(
 		'_TAGS' : ['imagebutton']
 	}
 );
+
+
 
 
 OJ.extendComponent(
@@ -13255,6 +13403,8 @@ OJ.extendComponent(
 	}
 );
 
+;
+
 OJ.extendClass(
 	'OjEventPhase', [OjObject],
 	{},
@@ -13264,6 +13414,8 @@ OJ.extendClass(
 		'TARGETING' : 2
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -13323,6 +13475,8 @@ OJ.extendClass(
 	}
 );
 
+
+
 OJ.extendClass(
 	'OjLabelItemRenderer', [OjItemRenderer],
 	{
@@ -13340,6 +13494,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 
@@ -13479,6 +13635,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjCheckedOption', [OjOption],
 	{},
@@ -13486,6 +13644,8 @@ OJ.extendComponent(
 		'_TAGS' : ['checkbox']
 	}
 );
+
+
 
 
 
@@ -13774,6 +13934,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjListItem', [OjItemRenderer],
 	{
@@ -13893,6 +14055,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendClass(
 	'OjListEvent', [OjEvent],
 	{
@@ -13928,6 +14092,8 @@ OJ.extendClass(
 		'ITEM_OUT'   : 'onItemOut'
 	}
 );
+
+
 
 
 
@@ -14320,6 +14486,8 @@ OJ.extendComponent(
 
 
 
+
+
 OJ.extendClass(
 	'OjComboBox', [OjInput],
 	{
@@ -14637,7 +14805,8 @@ OJ.extendClass(
 			}
 		}
 	}
-);//OJ.importJs('oj.date.CalendarControl');
+);
+
 
 
 
@@ -14702,6 +14871,9 @@ OJ.extendComponent(
 	}
 );
 
+//OJ.importJs('oj.date.CalendarControl');
+
+
 
 
 OJ.extendClass(
@@ -14715,6 +14887,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 OJ.extendClass(
@@ -14769,6 +14943,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjDateValue', [OjTextValue],
 	{
@@ -14777,6 +14953,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 OJ.extendComponent(
@@ -14831,6 +15009,8 @@ OJ.extendComponent(
 		'_TAGS' : ['emailinput']
 	}
 );
+
+
 
 
 
@@ -15012,6 +15192,8 @@ OJ.extendClass(
 	}
 );
 
+
+
 OJ.extendComponent(
 	'OjForm', [OjView], 
 	{
@@ -15100,6 +15282,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendClass(
 	'OjFormError', [OjItemRenderer],
 	{
@@ -15136,231 +15320,6 @@ OJ.extendClass(
 
 
 
-OJ.extendComponent(
-	OjView, 'OjForm',
-	{
-		'_template' : 'oj.form.OjForm',
-
-		'header' : null,  'footer' : null,  'title' : null,  '_data' : null,  '_inputs' : null,  '_errors' : null,
-
-
-		'_compile_' : function(){
-			this.getLabel = this.getTitle;
-			this.setLabel = this.setTitle;
-		},
-
-
-		'_constructor' : function(){
-			this._data = {};
-
-			this._inputs = {};
-
-			this._errors = [];
-
-			this._super('OjForm', '_constructor', arguments);
-
-			this.errors.hide();
-
-			this._processActions();
-		},
-
-
-		'_processActions' : function(){
-			if(this.actions){
-				var item, ln = this.actions.numChildren();
-
-				while(ln-- > 0){
-					item = this.actions.getChildAt(ln);
-
-					if(item.is('OjButton')){
-						item.addEventListener(OjMouseEvent.CLICK, this, '_onActionButtonClick');
-					}
-				}
-			}
-		},
-
-
-		'_onActionButtonClick' : function(evt){
-			var button = evt.getCurrentTarget();
-
-			if(button.hasCss(['submit-button'])){
-				this._onSubmit(evt);
-			}
-			else if(button.hasCss(['cancel-button'])){
-				this._onCancel(evt);
-			}
-		},
-
-		'_onSubmit' : function(evt){
-			this.submit();
-		},
-
-		'_onCancel' : function(evt){
-			this.dispatchEvent(new OjEvent(OjEvent.CANCEL));
-		},
-
-
-		'_updateInputs' : function(){
-			// todo: remove dependency on sizzle find command
-			var parent, inputs = this.find('.OjInput'), ln = inputs.length;
-
-			this._inputs = {};
-
-			for(; ln--;){
-				parent = OjForm.parentForm(inputs[ln]);
-
-				if(parent && parent == this){
-					this._inputs[inputs[ln].id] = OJ.elm(inputs[ln]);
-				}
-			}
-		},
-
-		'_redraw' : function(){
-
-		},
-
-		'_reset' : function(){
-			this._updateInputs();
-
-			var key, input;
-
-			for(key in this._inputs){
-				input = this._inputs[key];
-
-				input.setValue(this._data[input.getName()]);
-			}
-		},
-
-		'_submit' : function(){
-
-		},
-
-		'_validate' : function(){
-			this._updateInputs();
-
-			var key, input, valid = true;
-
-			for(key in this._inputs){
-				input = this._inputs[key];
-
-				if(!input.validate()){
-					this._errors.push(
-						{
-							'input'     : input,
-							'errors'    : input.getErrors()
-						}
-					);
-
-					valid = false;
-				}
-			}
-
-			return valid;
-		},
-
-
-		'redraw' : function(){
-			if(this._super('OjForm', 'redraw', arguments)){
-				this._redraw();
-
-				return true;
-			}
-
-			return false;
-		},
-
-		'reset' : function(){
-			this._reset();
-		},
-
-		'submit' : function(){
-			// do some validation
-
-			// then send some data
-			this._submit();
-
-			// then let the world know what you did
-			this.dispatchEvent(new OjEvent(OjEvent.SUBMIT));
-		},
-
-		'validate' : function(){
-			this._errors = [];
-
-			var valid = this._validate();
-
-			this.errors.getDataProvider().setSource(this._errors);
-
-			if(valid){
-				this.errors.hide();
-			}
-			else{
-				this.errors.show();
-			}
-
-			return valid;
-		},
-
-
-		'_addElm' : function(elm, index){
-			if(elm.is('OjInput')){
-				this._inputs[elm.id()] = elm;
-			}
-
-			this._super('OjForm', '_addElm', arguments);
-		},
-
-		'_removeElm' : function(elm){
-			delete this._inputs[elm.id()];
-
-			this._super('OjForm', '_removeElm', arguments)
-		},
-
-
-		'getData' : function(){
-			return this._data;
-		},
-		'setData' : function(data){
-			this._data = data; this._reset();
-		},
-
-		'setError' : function(error){
-			this.errors.getDataProvider().addItem(
-				{
-					'input'     : null,
-					'errors'    : [error]
-				}
-			);
-
-			this.errors.show();
-		}
-	},
-	{
-		'_TAGS' : ['form'],
-
-		'COMPLETE' : 'formComplete',
-
-		'parentForm' : function(elm, top){
-			elm = OJ.elm(elm);
-
-			var parent, top = arguments.length > 1 ? arguments[0] : OJ;
-
-			top = OJ.elm(top);
-
-			while(elm && elm != top){
-				parent = elm.parent();
-
-				if(parent && parent.is('OjForm')){
-					return parent;
-				}
-
-				elm = parent;
-			}
-
-			return null;
-		}
-	}
-);
-
 
 OJ.extendClass(
 	'OjPasswordInput', [OjTextInput],
@@ -15377,6 +15336,8 @@ OJ.extendClass(
 );
 
 
+
+
 OJ.extendClass(
 	'OjRadioOption', [OjOption],
 	{
@@ -15387,6 +15348,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 
@@ -15639,6 +15602,8 @@ OJ.extendComponent(
 
 
 
+
+
 OJ.extendComponent(
 	'OjSwitch', [OjInput],
 	{
@@ -15652,6 +15617,8 @@ OJ.extendComponent(
 		'_TAGS' : ['switch']
 	}
 );
+
+
 
 
 
@@ -15677,6 +15644,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendClass(
 	'OjToken', [OjItemRenderer],
 	{
@@ -15700,6 +15669,8 @@ OJ.extendClass(
 		}
 	}
 );
+
+
 
 
 
@@ -15906,12 +15877,16 @@ OJ.extendClass(
 	}
 );
 
+
+
 OJ.extendManager(
 	'LayoutManager', 'OjLayoutManager', [OjActionable],
 	{
 
 	}
 );
+
+
 
 
 OJ.extendComponent(
@@ -16031,6 +16006,8 @@ OJ.extendComponent(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjVideo', [OjMedia],
 	{
@@ -16042,6 +16019,8 @@ OJ.extendComponent(
 		}
 	}
 );
+
+
 
 
 
@@ -16143,6 +16122,8 @@ OJ.extendClass(
 		'RIGHT_BOTTOM' : 'positionRightBottom'
 	}
 );
+
+
 
 
 OJ.extendManager(
@@ -16499,6 +16480,8 @@ OJ.extendManager(
 );
 
 
+
+
 OJ.extendComponent(
 	'OjTabNavController', [OjNavController],
 	{
@@ -16601,6 +16584,8 @@ OJ.extendComponent(
 		'_TAGS' : ['tabnav']
 	}
 );
+
+
 
 OJ.extendClass(
 	'OjRpc', [OjUrlLoader],

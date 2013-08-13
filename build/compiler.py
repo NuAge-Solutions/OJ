@@ -59,7 +59,7 @@ def processDir(dir, build_list, file_type, func):
             # ignore hidden files
             # ignore files of the wrong type
             # ignore files already listed
-            if file[0] == '.' or file.find('.' + file_type) < 1 or file_path in list:
+            if file[0] == '.' or path.splitext(file)[1] != '.' + file_type or file_path in list:
                 continue
 
             list.append(file_path)
@@ -67,6 +67,28 @@ def processDir(dir, build_list, file_type, func):
             content += func(dir, file_get_contents(file_path), build_list)
 
     if file_type == 'js':
+        # search for import css statements
+        needle = 'OJ.importCss('
+        ln = len(needle) + 1
+        index = 0
+
+        while index > -1:
+            index = content.find(needle, index)
+
+            if index > -1:
+                end = content.find(')', index)
+
+                include = path.join(dir, 'css', path.sep.join(content[index + ln:end - 1].split('.')[1:])) + '.css'
+
+                if path.exists(include):
+                    if include not in build_list['css']:
+                        build_list['css'].append(include)
+
+                    content = content[:index] + content[end + 3:]
+
+                else:
+                    index = end
+
         content = ("'use strict';" + content).replace(';;', ';')
 
     file_put_contents(path.join(dir, package + '-dev.' + file_type), content)
@@ -77,6 +99,8 @@ def processJs(dir, file, list):
     needle = 'OJ.importJs('
     ln = len(needle) + 1
     index = 0
+    prefix = ''
+    suffix = ''
 
     while index > -1:
         index = file.find(needle, index)
@@ -88,41 +112,26 @@ def processJs(dir, file, list):
 
             if path.exists(include):
                 include_str = ''
+                ln2 = 0
 
                 if include not in list['js']:
                     list['js'].append(include)
 
-                    include_str = file_get_contents(include)
+                    include_str = processJs(dir, file_get_contents(include), list)
 
-                file = file[:index] + include_str + file[end + 3:]
-
-            else:
-                index = end
-
-    # search for import css statements
-    needle = 'OJ.importCss('
-    ln = len(needle) + 1
-    index = 0
-
-    while index > -1:
-        index = file.find(needle, index)
-
-        if index > -1:
-            end = file.find(')', index)
-
-            include = path.join(dir, 'css', path.sep.join(file[index + ln:end - 1].split('.')[1:])) + '.css'
-
-            if path.exists(include):
-                if include not in list['css']:
-                    list['css'].append(include)
-
+                cutoff = len(file) * .3
                 file = file[:index] + file[end + 3:]
 
+                if index < cutoff:
+                    prefix += include_str
+
+                else:
+                    suffix += include_str
             else:
                 index = end
 
     # return the results
-    return file.replace("'use strict'", '').replace('"use strict"', '').replace("\n;", '')
+    return prefix + "\n" + file.replace("'use strict'", '').replace('"use strict"', '').replace("\n;", '') + "\n" + suffix
 
 
 def processCss(dir, file, list):

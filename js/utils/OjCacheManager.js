@@ -24,7 +24,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjActionable, '_constructor', arguments);
+			this._super(OjActionable, '_constructor', []);
 
 			// check to see if local storage is supported
 			try{

@@ -2031,6 +2031,7 @@ function onDomReady(){
 
 // on oj ready event handler
 function onOjReady(){
+//    trace(OjStyleElement.getStyle(document.body, 'minWidth'));
 	if(isEmpty(OjStyleElement.getStyle(document.body, 'minWidth'))){
 		return;
 	}
