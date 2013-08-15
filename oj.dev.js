@@ -951,7 +951,7 @@ window.OJ = function Oj(){
 //			}
 //		}
 	}
-	trace(path);
+
 	// detect the root
 	OJ.setRoot(path.join('/'));
 
@@ -1913,7 +1913,11 @@ function onDomReady(){
 	OJ._library = new OjLibrary(OJ._loaded);
 
 	// import the required classes
-								
+					OJ.importJs('oj.nav.OjView');
+	OJ.importJs('oj.events.OjTransformEvent');
+	OJ.importJs('oj.fx.OjFade');
+	OJ.importJs('oj.fx.OjTweenSet');
+
 	// create the OJ component
 	var tmp = new OjView();
 	tmp.setAlpha(0);
@@ -2550,6 +2554,7 @@ window.toJson = function(obj){
 	return JSON.stringify(obj);
 };
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -2672,6 +2677,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -2761,6 +2767,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -2771,7 +2778,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjObject, '_constructor', arguments);
+			this._super(OjObject, '_constructor', []);
 
 			var ready,
 				timer,
@@ -2800,19 +2807,15 @@ OJ.extendManager(
 				},
 				fireDOMReady = function(){
 					if(!ready){
-						ready = true;
+            ready = true;
 
 						if(document.removeEventListener){
 							document.removeEventListener('DOMContentLoaded', onChange, false);
 						}
 
-						document.onreadystatechange = null;
+            clearInterval(timer);
 
-						window.onload = null;
-
-						clearInterval(timer);
-
-						timer = null;
+						document.onreadystatechange = window.onload = timer = null;
 
 						window.onDomReady();
 					}
@@ -3003,6 +3006,7 @@ OJ.extendManager(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -3037,6 +3041,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjTextEvent');
 
 
 
@@ -3066,6 +3071,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -3319,6 +3325,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.net.OjUrl');
 
 
 
@@ -3463,6 +3470,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -3574,6 +3582,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -3611,6 +3620,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjErrorEvent');
 
 
 
@@ -3623,6 +3633,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -3768,6 +3779,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
 
 
 
@@ -4056,6 +4068,9 @@ OJ.extendManager(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.events.OjEvent');
+OJ.importJs('oj.net.OjUrlRequest');
 
 
 
@@ -4404,6 +4419,12 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.events.OjEvent');
+OJ.importJs('oj.events.OjErrorEvent');
+OJ.importJs('oj.events.OjIoErrorEvent');
+OJ.importJs('oj.net.OjUrlRequest');
+OJ.importJs('oj.net.OjUrlLoader');
 
 
 
@@ -4498,6 +4519,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
 
 
 
@@ -4703,6 +4725,7 @@ OJ.extendClass(
 
 
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -4833,6 +4856,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -5057,6 +5081,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjDomEvent');
 
 
 
@@ -5093,6 +5118,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjDomEvent');
 
 
 
@@ -5132,6 +5158,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjDomEvent');
 
 
 
@@ -5190,6 +5217,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjDomEvent');
 
 
 
@@ -5263,6 +5291,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -5313,6 +5342,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
+OJ.importJs('oj.events.OjMouseEvent');
 
 
 
@@ -7019,6 +7050,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjObject');
+OJ.importJs('oj.timer.OjTimerManager');
 
 
 
@@ -7147,6 +7180,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
 
 
 
@@ -7264,6 +7298,10 @@ OJ.extendManager(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.events.OjEvent');
+OJ.importJs('oj.net.OjUrl');
+OJ.importJs('oj.timer.OjTimer');
 
 
 
@@ -7283,7 +7321,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjActionable, '_constructor', arguments);
+			this._super(OjActionable, '_constructor', []);
 
 			this._list = [new OjUrl(window.location.href)];
 
@@ -7570,6 +7608,7 @@ window.OjEasing = {
 	}
 };
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -7609,6 +7648,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.timer.OjTimer');
 
 
 
@@ -7955,6 +7996,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.fx.OjTweenEvent');
 
 
 
@@ -8040,6 +8082,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.fx.OjFade');
 
 
 
@@ -8541,6 +8584,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.dom.OjCssTranslate');
+OJ.importJs('oj.timer.OjTimer');
 
 
 
@@ -8749,6 +8794,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -8956,6 +9002,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -9086,6 +9133,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.media.OjMedia');
 
 
 
@@ -9099,6 +9147,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
+OJ.importJs('oj.components.OjSpinner');
 
 
 
@@ -9574,6 +9624,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.nav.OjView');
+OJ.importJs('oj.media.OjImage');
 
 
 
@@ -9613,6 +9665,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
 
 
 
@@ -9888,6 +9941,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -9938,6 +9992,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.fx.OjPropTween');
+OJ.importJs('oj.fx.OjTweenEvent');
 
 
 
@@ -10013,6 +10069,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.fx.OjPropTween');
 
 
 
@@ -10175,6 +10233,9 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.dom.OjStyleElement');
+OJ.importJs('oj.events.OjEvent');
+OJ.importJs('oj.fx.OjFade');
 
 
 
@@ -10487,6 +10548,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -10532,6 +10594,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
 
 
 
@@ -10835,6 +10898,8 @@ window.OjICollection = {
 	}
 };
 
+OJ.importJs('oj.components.OjComponent');
+OJ.importJs('oj.events.OjCollectionEvent');
 
 
 
@@ -11066,6 +11131,7 @@ OJ.extendComponent(
 	)
 );
 
+OJ.importJs('oj.fx.OjDimTween');
 
 
 
@@ -11094,6 +11160,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjObject');
 
 
 
@@ -11232,6 +11299,12 @@ OjTransition.DEFAULT = new OjTransition(OjTransition.NONE, 250);
 /*
  * Note: Stack requires defined dimensions for transitions to work properly
  */
+OJ.importJs('oj.events.OjCollectionEvent');
+OJ.importJs('oj.events.OjStackEvent');
+OJ.importJs('oj.fx.OjEasing');
+OJ.importJs('oj.fx.OjFade');
+OJ.importJs('oj.fx.OjMove');
+OJ.importJs('oj.fx.OjTweenSet');
 
 
 
@@ -11935,6 +12008,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -11969,6 +12043,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.components.OjLabel');
+OJ.importJs('oj.media.OjImage');
 
 
 
@@ -12204,6 +12280,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.window.OjModal');
+OJ.importJs('oj.components.OjLabel');
 
 
 
@@ -12397,6 +12475,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjDragEvent');
+OJ.importJs('oj.nav.OjView');
 
 
 
@@ -12580,6 +12660,9 @@ OJ.extendClass(
 	)
 );
 
+OJ.importJs('oj.dom.OjStyleElement');
+OJ.importJs('oj.events.OjActionable');
+OJ.importJs('oj.window.OjAlert');
 
 
 
@@ -13009,6 +13092,8 @@ OJ.extendManager(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
+OJ.importJs('oj.fx.OjResize');
 
 
 
@@ -13286,6 +13371,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjButton');
 
 
 
@@ -13344,6 +13430,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
 
 
 
@@ -13415,6 +13502,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjDomEvent');
 
 
 
@@ -13475,6 +13563,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.components.OjItemRenderer');
+OJ.importJs('oj.components.OjLabel');
 
 
 OJ.extendClass(
@@ -13495,6 +13585,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjMouseEvent');
 
 
 
@@ -13645,6 +13736,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
 
 
 
@@ -13933,6 +14025,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.components.OjItemRenderer');
+OJ.importJs('oj.media.OjImage');
 
 
 
@@ -14054,6 +14148,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.events.OjEvent');
 
 
 
@@ -14093,6 +14188,8 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
+OJ.importJs('oj.data.OjCollection');
 
 
 
@@ -14484,6 +14581,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjButton');
+OJ.importJs('oj.data.OjCollection');
 
 
 
@@ -14807,6 +14906,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.form.OjInput');
 
 
 
@@ -14954,6 +15054,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.form.OjTextInput');
 
 
 
@@ -15010,6 +15111,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.events.OjFocusEvent');
+OJ.importJs('oj.form.OjComboBox');
 
 
 
@@ -15192,6 +15295,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.nav.OjView');
 
 
 OJ.extendComponent(
@@ -15281,6 +15385,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjItemRenderer');
 
 
 
@@ -15318,6 +15423,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.form.OjTextInput');
 
 
 
@@ -15335,6 +15441,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.form.OjOption');
 
 
 
@@ -15349,6 +15456,12 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjCollection');
+OJ.importJs('oj.form.OjRadioOption');
+OJ.importJs('oj.form.OjInput');
+OJ.importJs('oj.list.OjLabelItemRenderer');
+OJ.importJs('oj.list.OjList');
+OJ.importJs('oj.list.OjListEvent');
 
 
 
@@ -15599,6 +15712,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjButton');
+OJ.importJs('oj.form.OjInput');
 
 
 
@@ -15618,6 +15733,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.form.OjInput');
 
 
 
@@ -15643,6 +15759,8 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjItemRenderer');
+OJ.importJs('oj.events.OjMouseEvent');
 
 
 
@@ -15670,6 +15788,9 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.form.OjFilterBox');
+OJ.importJs('oj.form.OjToken');
+OJ.importJs('oj.list.OjList');
 
 
 
@@ -15877,6 +15998,7 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.events.OjActionable');
 
 
 OJ.extendManager(
@@ -15886,6 +16008,7 @@ OJ.extendManager(
 	}
 );
 
+OJ.importJs('oj.media.OjMedia');
 
 
 
@@ -16005,6 +16128,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.media.OjMedia');
 
 
 
@@ -16020,6 +16144,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.components.OjComponent');
 
 
 
@@ -16123,6 +16248,12 @@ OJ.extendClass(
 	}
 );
 
+OJ.importJs('oj.data.OjRect');
+OJ.importJs('oj.events.OjTransformEvent');
+OJ.importJs('oj.events.OjMouseEvent');
+OJ.importJs('oj.fx.OjFade');
+OJ.importJs('oj.menu.OjMenu');
+OJ.importJs('oj.window.OjWindowManager');
 
 
 
@@ -16479,6 +16610,7 @@ OJ.extendManager(
 	}
 );
 
+OJ.importJs('oj.nav.OjNavController');
 
 
 
@@ -16585,6 +16717,7 @@ OJ.extendComponent(
 	}
 );
 
+OJ.importJs('oj.net.OjUrlLoader');
 
 
 OJ.extendClass(

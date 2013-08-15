@@ -950,7 +950,7 @@ window.OJ = function Oj(){
 //			}
 //		}
 	}
-	trace(path);
+
 	// detect the root
 	OJ.setRoot(path.join('/'));
 

@@ -11,7 +11,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjObject, '_constructor', arguments);
+			this._super(OjObject, '_constructor', []);
 
 			var ready,
 				timer,
@@ -40,19 +40,15 @@ OJ.extendManager(
 				},
 				fireDOMReady = function(){
 					if(!ready){
-						ready = true;
+            ready = true;
 
 						if(document.removeEventListener){
 							document.removeEventListener('DOMContentLoaded', onChange, false);
 						}
 
-						document.onreadystatechange = null;
+            clearInterval(timer);
 
-						window.onload = null;
-
-						clearInterval(timer);
-
-						timer = null;
+						document.onreadystatechange = window.onload = timer = null;
 
 						window.onDomReady();
 					}

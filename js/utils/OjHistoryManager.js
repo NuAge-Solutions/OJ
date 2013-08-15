@@ -22,7 +22,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjActionable, '_constructor', arguments);
+			this._super(OjActionable, '_constructor', []);
 
 			this._list = [new OjUrl(window.location.href)];
 
