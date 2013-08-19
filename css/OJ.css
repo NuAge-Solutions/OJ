@@ -112,6 +112,7 @@
 	z-index: 1;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-user-select: none;
 }
 	.OJ > .container {
 		text-align: center;

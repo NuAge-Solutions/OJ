@@ -430,7 +430,7 @@ OJ.extendClass(
 
 		'_onDomTouchEvent' : function(evt){
 			var proxy = OjElement.byId(this.ojProxy);
-
+            trace(evt);
 			if(proxy && proxy._processEvent(evt)){
 				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
@@ -560,7 +560,7 @@ OJ.extendClass(
 				this._onEvent(new OjMouseEvent(type, x, y, true, true));
 
 				// if the touch hasn't moved then issue a click event
-				if(type == OjMouseEvent.UP && x == this._dragX && y == this._dragY){
+                if(type == OjMouseEvent.UP && x == this._dragX && y == this._dragY){
 					this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, x, y, true, true));
 				}
 			}

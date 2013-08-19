@@ -49,7 +49,7 @@ window.OjINavController = {
 		// if no view is specified we go all the way back to the root
 		// if a new view is specified we go all the way back to root and replace with new view
 		if(!view || (index = this.indexOfView(view)) > -1){
-			return this.gotoViewAt(index, animated);
+            return this.gotoViewAt(index, animated);
 		}
 
 		if(index = this.getActiveIndex()){
@@ -62,9 +62,7 @@ window.OjINavController = {
 	},
 
 	'gotoViewAt' : function(index/*, animated = true*/){
-		var s = this._stack;
-
-		return s.setActiveIndex.apply(s, arguments);
+		return this._stack.setActiveIndex.apply(this._stack, arguments);
 	},
 
 	'hasView' : function(view){

@@ -1931,6 +1931,7 @@ function onDomReady(){
 	OJ.importJs('oj.events.OjTransformEvent');
 	OJ.importJs('oj.fx.OjFade');
 	OJ.importJs('oj.fx.OjTweenSet');
+    OJ.importCss('oj.OJ');
 
 	// create the OJ component
 	var tmp = new OjView();

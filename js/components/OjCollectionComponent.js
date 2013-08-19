@@ -63,8 +63,7 @@ window.OjICollectionComponent = {
 		this._unset('_items');
 
 		// clear out the helper vars
-		this._rendered = null;
-		this._item_events = null;
+		this._rendered = this._item_events = null;
 	},
 
 
@@ -77,7 +76,7 @@ window.OjICollectionComponent = {
 
 			if(evt){
 				for(key in this._rendered){
-					this._rendered[key].addEventListener(evt[0], this, evt[1]);
+                    this._rendered[key].addEventListener(evt[0], this, evt[1]);
 				}
 
 				this._item_events[type] = evt[0];
@@ -167,7 +166,7 @@ window.OjICollectionComponent = {
 
 		// if we have already rendered the item then just return the cached value
 		if(this._rendered[id]){
-			return this._rendered[id];
+            return this._rendered[id];
 		}
 
 		item = this._itemRenderer ? new this._itemRenderer(this, item) : item;

@@ -13,17 +13,18 @@ OJ.extendClass(
 
 
 		'_constructor' : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
-			var ln = arguments.length;
+			var args = Array.array(arguments),
+				ln = args.length;
 
-			this._super(OjDomEvent, '_constructor', ln > 3 ? [].slice.call(arguments, 0, 3) : arguments);
+			if(ln > 1){
+				this._pageX = args.splice(1, 1)[0];
 
-			if(ln > 3){
-				this._pageX = arguments[3];
-
-				if(ln > 4){
-					this._pageY = arguments[4];
+				if(ln > 2){
+					this._pageY = args.splice(1, 1)[0];
 				}
 			}
+
+			this._super(OjDomEvent, '_constructor', args);
 		},
 
 

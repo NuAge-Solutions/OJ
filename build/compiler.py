@@ -28,8 +28,10 @@ parser.add_argument('--type',
                     type=str, choices=['all', 'css', 'js', 'theme'], default='all',
                     help='The file types to compile.')
 
+parser.add_argument('--source', type=str, help='The path to the directory of the package.')
+
 # process the script args
 args = parser.parse_args()
 
 # compile
-oj.compile(src_path, mode=args.mode, output=True, profiles=args.profiles, type=args.type)
+oj.compile(args.source if args.source else src_path, mode=args.mode, output=True, profiles=args.profiles, type=args.type)
