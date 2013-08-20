@@ -11,12 +11,18 @@ window.OjINavController = {
 
 
 	'_setupStack' : function(){
-		this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+    this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+    // if we already have stuff in the stack then trigger a change event so the display gets updated properly
+    var ln = this._stack.numElms();
+
+    if(ln){
+      this._onStackChange(new OjStackEvent(OjStackEvent.CHANGE, this._stack.getElmAt(ln - 1), OjTransition.DEFAULT, ln - 1, 0));
+    }
 	},
 
 	'_cleanupStack' : function(){
 		if(this._stack){
-			this._stack.removeEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+      this._stack.removeEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
 		}
 	},
 
@@ -125,10 +131,10 @@ window.OjINavController = {
 	},
 
 	'setStack' : function(stack){
-		if(this._stack){
-			if(this._stack == stack){
-				return;
-			}
+    if(this._stack){
+      if(this._stack == stack){
+        return;
+      }
 
 			this._cleanupStack();
 		}

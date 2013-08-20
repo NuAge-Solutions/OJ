@@ -27,7 +27,7 @@ OJ.extendComponent(
 
 
 		'_addActiveElm' : function(elm){
-			elm.setController(this._controller);
+      elm.setController(this._controller);
 			elm.setStack(this);
 			elm.load();
 
@@ -96,11 +96,13 @@ OJ.extendComponent(
 
 
 		'setController' : function(val){
-			if(this._controller == val){
+      if(this._controller == val){
 				return;
 			}
 
-			this._controller = val;
+      this._controller = val;
+
+      this._controller.setStack(this);
 
 			// update the items in this stack with the latest
 			if(this._active){

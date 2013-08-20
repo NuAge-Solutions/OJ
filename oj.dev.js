@@ -4332,6 +4332,9 @@ OJ.extendClass(
 					else if(lower == 'false'){
 						val = false;
 					}
+          else{
+            val = this._processReferenceValue(val, context);
+          }
 					this[setter](val);
 					// if the nm is v-align or h-align we want to return false so that the attribute isn't destroyed
 					return nm.indexOf('-align') == -1;
@@ -4409,6 +4412,32 @@ OJ.extendClass(
 			}
 			return child;
 		},
+    '_processReferenceValue' : function(val, context){
+      var ary = val.split('.'),
+          target = null,
+          ln = ary.length,
+          i = 1;
+      if(ln > 1){
+        switch(ary[0]){
+          case 'this':
+            target = this;
+          break;
+          case 'window':
+            target = window;
+          break;
+          case '$':
+            target = context;
+          break;
+				}
+        if(target){
+          val = target;
+          for(; i < ln; i++){
+            val = val[ary[i]];
+          }
+        }
+      }
+      return val;
+    },
 		'_setDom' : function(dom, context){
 			// todo: re-evaluate the pre-render functionality of dom
 			this._super(OjElement, '_setDom', [dom]);
@@ -6371,7 +6400,7 @@ OJ.extendClass(
 				source = is_body ? this._dom : dom,
 				target = is_body ? dom : this._dom;
 			// prevent events from dispatching while we are setting everything up
-			this._prevent_dispatch = true;
+//			this._prevent_dispatch = true;
 			// process dom attributes
 			this._processDomSourceAttributes(dom, context);
 			// copy over attributes
@@ -6407,7 +6436,7 @@ OJ.extendClass(
 				}
 			}
 			// reengage event dispatching now that everything is setup
-			this._prevent_dispatch = false;
+//			this._prevent_dispatch = false;
 			// update our dom var to the target
 			this._dom = target;
 		},
@@ -7523,11 +7552,16 @@ window.OjINavController = {
 	},
 
 	'_setupStack' : function(){
-		this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+    this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+    // if we already have stuff in the stack then trigger a change event so the display gets updated properly
+    var ln = this._stack.numElms();
+    if(ln){
+      this._onStackChange(new OjStackEvent(OjStackEvent.CHANGE, this._stack.getElmAt(ln - 1), OjTransition.DEFAULT, ln - 1, 0));
+    }
 	},
 	'_cleanupStack' : function(){
 		if(this._stack){
-			this._stack.removeEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+      this._stack.removeEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
 		}
 	},
 
@@ -7608,10 +7642,10 @@ window.OjINavController = {
 		this._stack.setActiveIndex(val);
 	},
 	'setStack' : function(stack){
-		if(this._stack){
-			if(this._stack == stack){
-				return;
-			}
+    if(this._stack){
+      if(this._stack == stack){
+        return;
+      }
 			this._cleanupStack();
 		}
 		this._stack = stack;
@@ -7974,7 +8008,7 @@ window.OjIFlowNavController = {
 		return elm;
 	},
 	'_update' : function(view, transition, index, old_index){
-		// remove any old animations
+    // remove any old animations
 		this._unset('_tween');
 		// process the left, title & right components
 		// setup the vars
@@ -8106,7 +8140,7 @@ window.OjIFlowNavController = {
 		this._stack.removeEventListener(OjStackEvent.CHANGE_COMPLETE, this, '_onBackComplete');
 	},
 	'_onStackChange' : function(evt){
-		this._update(evt.getView(), evt.getTransition(), evt.getIndex(), evt.getOldIndex());
+    this._update(evt.getView(), evt.getTransition(), evt.getIndex(), evt.getOldIndex());
 	},
 	'_onTweenComplete' : function(evt){
 		this._unset('_tween');
@@ -9132,7 +9166,7 @@ OJ.extendComponent(
 
 		// Getter & Setter Functions
 		'setActiveIndex' : function(val/*, transition = true*/){
-			var trans, trans_diff, item, direction, evt;
+      var trans, trans_diff, item, direction, evt;
 			// check for change
 			if(this._current_index == val && this._active){
 				return;
@@ -9180,7 +9214,7 @@ OJ.extendComponent(
 				this.setTransition(trans);
 			}
 			// dispatch the change event
-			this.dispatchEvent(evt);
+      this.dispatchEvent(evt);
 			// dispatch the change is complete
 			// if no animation
 			if(!this._trans_out && !this._alwaysTrans){
@@ -9234,7 +9268,7 @@ OJ.extendComponent(
 		},
 
 		'_addActiveElm' : function(elm){
-			elm.setController(this._controller);
+      elm.setController(this._controller);
 			elm.setStack(this);
 			elm.load();
 			this._super(OjStack, '_addActiveElm', arguments);
@@ -9287,10 +9321,11 @@ OJ.extendComponent(
 		},
 
 		'setController' : function(val){
-			if(this._controller == val){
+      if(this._controller == val){
 				return;
 			}
-			this._controller = val;
+      this._controller = val;
+      this._controller.setStack(this);
 			// update the items in this stack with the latest
 			if(this._active){
 				this._active.setController(val);

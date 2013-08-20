@@ -247,23 +247,23 @@ def processJs(src, js, build_list, profile):
     needle = 'OJ.importJs('
     ln = len(needle) + 1
     index = 0
+    js_ary = js.split('.')
     js_path = path.join(src, 'js')
     prefix = ''
     suffix = ''
 
-    # check to see if we are allowed to include
-    if not isPathAllowed(js, profile):
-        raise Exception('Not allowed to include.')
-
     # build the include path and check to see if we have already included it
-    js = js.split('.')
-    pkg = js[0]
+    pkg = js_ary[0]
 
     # if the file is from another package then return empty
     if pkg != profile['package']:
         return ''
 
-    include_path = path.join(js_path, path.sep.join(js[1:]) + '.js')
+    # check to see if we are allowed to include
+    if not isPathAllowed(js, profile):
+        raise Exception('Not allowed to include.')
+
+    include_path = path.join(js_path, path.sep.join(js_ary[1:]) + '.js')
 
     # if the path doesn't exist then raise an exception
     if not path.exists(include_path):
@@ -372,7 +372,7 @@ def saveJson(dest, obj):
 
 
 def updatePackage(src, name, ext, contents, profile, mode, msg=None):
-    profile_ext = '.' + profile if profile else '.'
+    profile_ext = ('.' + profile) if profile else '.'
     dev_path = path.join(src, name + profile_ext + ('' if profile_ext == '.' else '-') + 'dev.' + ext)
 
     filePutContents(dev_path, contents)
@@ -381,7 +381,7 @@ def updatePackage(src, name, ext, contents, profile, mode, msg=None):
         if msg:
             print(msg)
 
-        prod_path = path.join(src, name + profile_ext + ext)
+        prod_path = path.join(src, name + profile_ext + ('' if profile_ext == '.' else '.') + ext)
 
         call('java -jar "' + path.join(src, 'build', 'yuicompressor.jar') + '" -o "' + prod_path + '" "' + dev_path + '"', shell=True)
 

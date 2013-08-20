@@ -240,6 +240,9 @@ OJ.extendClass(
 					else if(lower == 'false'){
 						val = false;
 					}
+          else{
+            val = this._processReferenceValue(val, context);
+          }
 
 					this[setter](val);
 
@@ -341,6 +344,39 @@ OJ.extendClass(
 
 			return child;
 		},
+
+    '_processReferenceValue' : function(val, context){
+      var ary = val.split('.'),
+          target = null,
+          ln = ary.length,
+          i = 1;
+
+      if(ln > 1){
+        switch(ary[0]){
+          case 'this':
+            target = this;
+          break;
+
+          case 'window':
+            target = window;
+          break;
+
+          case '$':
+            target = context;
+          break;
+				}
+
+        if(target){
+          val = target;
+
+          for(; i < ln; i++){
+            val = val[ary[i]];
+          }
+        }
+      }
+
+      return val;
+    },
 
 		'_setDom' : function(dom, context){
 			// todo: re-evaluate the pre-render functionality of dom

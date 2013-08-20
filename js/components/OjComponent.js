@@ -104,7 +104,7 @@ OJ.extendClass(
 				target = is_body ? dom : this._dom;
 
 			// prevent events from dispatching while we are setting everything up
-			this._prevent_dispatch = true;
+//			this._prevent_dispatch = true;
 
 			// process dom attributes
 			this._processDomSourceAttributes(dom, context);
@@ -149,7 +149,7 @@ OJ.extendClass(
 			}
 
 			// reengage event dispatching now that everything is setup
-			this._prevent_dispatch = false;
+//			this._prevent_dispatch = false;
 
 			// update our dom var to the target
 			this._dom = target;

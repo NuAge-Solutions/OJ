@@ -51,7 +51,7 @@ window.OjIFlowNavController = {
 	},
 
 	'_update' : function(view, transition, index, old_index){
-		// remove any old animations
+    // remove any old animations
 		this._unset('_tween');
 
 		// process the left, title & right components
@@ -219,7 +219,7 @@ window.OjIFlowNavController = {
 	},
 
 	'_onStackChange' : function(evt){
-		this._update(evt.getView(), evt.getTransition(), evt.getIndex(), evt.getOldIndex());
+    this._update(evt.getView(), evt.getTransition(), evt.getIndex(), evt.getOldIndex());
 	},
 
 	'_onTweenComplete' : function(evt){

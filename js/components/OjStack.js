@@ -496,7 +496,7 @@ OJ.extendComponent(
 
 		// Getter & Setter Functions
 		'setActiveIndex' : function(val/*, transition = true*/){
-			var trans, trans_diff, item, direction, evt;
+      var trans, trans_diff, item, direction, evt;
 
 			// check for change
 			if(this._current_index == val && this._active){
@@ -562,7 +562,7 @@ OJ.extendComponent(
 			}
 
 			// dispatch the change event
-			this.dispatchEvent(evt);
+      this.dispatchEvent(evt);
 
 			// dispatch the change is complete
 			// if no animation
