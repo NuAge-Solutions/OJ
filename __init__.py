@@ -25,12 +25,17 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
         if output:
             print(msg)
 
+    # store old dir then change to src
+    prev_dir = os.getcwd()
+
+    os.chdir(src)
+
     # extract the package name
     package = path.basename(path.normpath(src)).lower()
 
     # get the build profiles
     try:
-        build_profiles = loadJson(path.join(src, 'build', 'profiles.json'))
+        build_profiles = loadJson(path.join('build', 'profiles.json'))
 
     except:
         trace('Build Profiles File Invalid... Using Default Profile\n')
@@ -38,7 +43,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
         build_profiles = {'': {'package': package, 'includes': ['*'], 'excludes': []}}
 
     # get the build lists
-    build_list_path = path.join(src, 'build', 'list.json')
+    build_list_path = path.join('build', 'list.json')
 
     try:
         build_lists = loadJson(build_list_path)
@@ -62,11 +67,11 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
     if type in ['all', 'theme']:
         trace('\nCompiling Themes...')
 
-        for theme in dirFilesOfType(path.join(src, 'themes'), 'css'):
+        for theme in dirFilesOfType('themes', 'css'):
             theme_name = path.splitext(path.basename(theme))[0] + '-theme'
 
             updatePackage(
-                src, theme_name, 'css', fileGetContents(theme), None, mode,
+                theme_name, 'css', fileGetContents(theme), None, mode,
                 '  Compressing "' + theme_name + '"...' if output else None
             )
 
@@ -87,7 +92,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
                 build_list['css'] = []
 
                 # find all the js files in this package
-                js_path = path.join(src, 'js', '')
+                js_path = path.join('js', '')
                 contents = ''
 
                 # compile the js contents
@@ -95,19 +100,19 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
                     try:
                         js = package + '.' + path.splitext(js)[0].replace(js_path, '').replace(path.sep, '.')
 
-                        contents += processJs(src, js, build_list, profile)
+                        contents += processJs(js, build_list, profile)
                     except:
                         pass
 
                 # remove the css imports
                 trace('  Building CSS Import List...')
 
-                contents = processCss(src, contents, build_list)
+                contents = processCss(contents, build_list, profile)
 
                 # insert template strings
                 trace('  Inserting Template Strings...')
 
-                contents = processTemplates(src, contents)
+                contents = processTemplates(contents, build_list, profile)
 
                 # add in strict flag and optimize
                 trace('  Optimizing...')
@@ -119,7 +124,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
 
                 # update the package with the new js file
                 updatePackage(
-                    src, package, 'js', contents, key, mode,
+                    package, 'js', contents, key, mode,
                     '  Compressing JS...' if output else None
                 )
 
@@ -134,16 +139,25 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
                     contents += fileGetContents(css_file)
 
                 updatePackage(
-                    src, package, 'css', contents, key, mode,
+                    package, 'css', contents, key, mode,
                     '  Compressing CSS...' if output else None
                 )
 
     # save the build list
     saveJson(build_list_path, build_lists)
 
+    # change back to previous dir
+    os.chdir(prev_dir)
+
 
 def dirFilesOfType(src, file_type):
     rtrn = []
+
+    if not isinstance(file_type, (tuple, list)):
+        file_types = [file_type]
+
+    else:
+        file_types = file_type
 
     for root, subFolders, files in walk(src):
         # remove hidden folders
@@ -157,7 +171,7 @@ def dirFilesOfType(src, file_type):
             # ignore hidden files
             # ignore files of the wrong type
             # ignore files already listed
-            if f[0] == '.' or path.splitext(f)[1] != '.' + file_type:
+            if f[0] == '.' or path.splitext(f)[1][1:] not in file_types:
                 continue
 
             rtrn.append(file_path)
@@ -214,7 +228,7 @@ def loadJson(src):
     return json.loads(fileGetContents(src))
 
 
-def processCss(src, contents, build_list):
+def processCss(contents, build_list, profile):
     # process css imports
     # search for import css statements
     needle = 'OJ.importCss('
@@ -228,7 +242,7 @@ def processCss(src, contents, build_list):
             end = contents.find(')', index)
 
             include = path.join(
-                src, 'css', path.sep.join(contents[index + ln:end - 1].split('.')[1:])
+                'css', path.sep.join(contents[index + ln:end - 1].split('.')[1:])
             ) + '.css'
 
             if path.exists(include):
@@ -243,12 +257,12 @@ def processCss(src, contents, build_list):
     return contents
 
 
-def processJs(src, js, build_list, profile):
+def processJs(js, build_list, profile):
     needle = 'OJ.importJs('
     ln = len(needle) + 1
     index = 0
     js_ary = js.split('.')
-    js_path = path.join(src, 'js')
+    js_path = 'js'
     prefix = ''
     suffix = ''
 
@@ -289,7 +303,7 @@ def processJs(src, js, build_list, profile):
             include = contents[index + ln:end - 1]
 
             try:
-                include_str = processJs(src, include, build_list, profile)
+                include_str = processJs(include, build_list, profile)
 
                 contents = contents[:index] + contents[end + 3:]
 
@@ -312,11 +326,47 @@ def processJs(src, js, build_list, profile):
     return prefix + '\n' + contents + '\n' + suffix
 
 
-def processTemplates(src, contents):
+def processTemplates(contents, build_list, profile):
+    # compile the templates
+    tmp = path.join('build', 'templates.html')
+    tmplt_str = ''
+    sep = '<template:divider/>'
+    templates = {}
+    order = []
+
+    for template in dirFilesOfType('templates', ['htm', 'html']):
+        if tmplt_str:
+            tmplt_str += sep
+
+        tmplt_str += fileGetContents(template)
+
+        template = template.split(path.sep)[1:]
+        template.insert(0, profile['package'])
+        template[-1] = path.splitext(template[-1])[0]
+
+        order.append('.'.join(template))
+
+    # save the templates html
+    filePutContents(tmp, tmplt_str)
+
+    # compress the templates html
+    call(
+        'java -jar "' + path.join('build', 'htmlcompressor.jar') +
+        '" --remove-quotes --remove-intertag-spaces -o "' +
+        tmp + '" "' + tmp + '"', shell=True
+    )
+
+    # process compressed templates
+    index = 0
+
+    for template in fileGetContents(tmp).split(sep):
+        templates[order[index]] = template
+
+        index += 1
+
+    # search through the contents to replace template strings
     index = 1
     needle = '[\'|"]_template[\'|"][ ]*:[ ]*[\'|"]([\S]+)[\'|"]'
-    tmp = path.join(src, 'build', 'template.html')
-    compressor_call = 'java -jar "' + path.join(src, 'build', 'htmlcompressor.jar') + '" --remove-quotes --remove-intertag-spaces -o "' + tmp + '" "' + tmp + '"'
 
     while index:
         match = re.search(needle, contents[index:])
@@ -325,19 +375,9 @@ def processTemplates(src, contents):
             # get the template path
             pkg = match.group(1)
 
-            # try and get the contents of the template string found
-            html = fileGetContents(path.join(src, 'templates', path.sep.join(pkg.split('.')[1:]) + '.html'))
-
             # if we were able to get contents continue with replacement
-            if html:
-                # store the template so we can run it through the compressor
-                filePutContents(tmp, html)
-
-                # compress
-                call(compressor_call, shell=True)
-
-                # get compressed html
-                html = fileGetContents(tmp)
+            if pkg in templates:
+                html = templates[pkg]
 
                 # make the substitution
                 contents = contents[:index + match.start(1)] + html.replace("'", "\\'") + contents[index + match.end(1):]
@@ -371,9 +411,9 @@ def saveJson(dest, obj):
     filePutContents(dest, json.dumps(obj, indent=2, separators=(',', ' : ')))
 
 
-def updatePackage(src, name, ext, contents, profile, mode, msg=None):
+def updatePackage(name, ext, contents, profile, mode, msg=None):
     profile_ext = ('.' + profile) if profile else '.'
-    dev_path = path.join(src, name + profile_ext + ('' if profile_ext == '.' else '-') + 'dev.' + ext)
+    dev_path = path.join(name + profile_ext + ('' if profile_ext == '.' else '-') + 'dev.' + ext)
 
     filePutContents(dev_path, contents)
 
@@ -381,9 +421,9 @@ def updatePackage(src, name, ext, contents, profile, mode, msg=None):
         if msg:
             print(msg)
 
-        prod_path = path.join(src, name + profile_ext + ('' if profile_ext == '.' else '.') + ext)
+        prod_path = path.join(name + profile_ext + ('' if profile_ext == '.' else '.') + ext)
 
-        call('java -jar "' + path.join(src, 'build', 'yuicompressor.jar') + '" -o "' + prod_path + '" "' + dev_path + '"', shell=True)
+        call('java -jar "' + path.join('build', 'yuicompressor.jar') + '" -o "' + prod_path + '" "' + dev_path + '"', shell=True)
 
         if ext == 'js':
             filePutContents(
