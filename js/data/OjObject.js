@@ -119,6 +119,32 @@ OjObject.prototype = {
 		this._destroyed_ = true;
 	},
 
+
+  '_processArguments' : function(args, def){
+    var ln = args.length,
+        count = 0,
+        key, val;
+
+    for(key in def){
+      val = def[key];
+
+      if(ln > count){
+        val = args[count];
+      }
+
+      if(!isUndefined(val)){
+        if(isFunction(this[key])){
+          this[key](val);
+        }
+        else{
+          this[key] = val;
+        }
+      }
+
+      count++;
+    }
+  },
+
 	'_unset' : function(prop/*|props, depth*/){
 		var args = arguments,
 			ln = args.length, props;

@@ -153,6 +153,9 @@ OJ.extendClass(
 
 			// update our dom var to the target
 			this._dom = target;
+
+      // process any template vars
+      this._processTemplateVars();
 		},
 
 		'_setElmFuncs' : function(container){

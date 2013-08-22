@@ -119,5 +119,9 @@ OJ.extendClass(
 
 			this._eventProxy = proxy;
 		}
-	}
+	},
+  {
+    'ADD' : 'add',
+    'REMOVE' : 'remove'
+  }
 );

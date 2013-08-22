@@ -228,23 +228,37 @@ OJ.extendClass(
 				setter = OjStyleElement.attributeToSetter(nm);
 
 				if(isFunction(this[setter])){
-					if(val == ''){
-						val = null;
-					}
-					else if(isNumeric(val)){
-						val = parseFloat(val);
-					}
-					else if((lower = val.toLowerCase()) == 'true'){
-						val = true;
-					}
-					else if(lower == 'false'){
-						val = false;
-					}
-          else{
-            val = this._processReferenceValue(val, context);
-          }
+          try{
+            if(val == ''){
+              val = null;
+            }
+            else if(isNumeric(val)){
+              val = parseFloat(val);
+            }
+            else if((lower = val.toLowerCase()) == 'true'){
+              val = true;
+            }
+            else if(lower == 'false'){
+              val = false;
+            }
+            else{
+              val = this._processReferenceValue(val, context);
+            }
 
-					this[setter](val);
+            this[setter](val);
+          }
+					catch(e){
+            // setup holder for template reference values for deferred processing
+            if(!context._template_vars_){
+              context._template_vars_ = [];
+            }
+
+            context._template_vars_.unshift({
+              'context' : this,
+              'func'    : this[setter],
+              'value'   : val
+            });
+          }
 
 					// if the nm is v-align or h-align we want to return false so that the attribute isn't destroyed
 					return nm.indexOf('-align') == -1;
@@ -258,7 +272,7 @@ OJ.extendClass(
 			var attrs = dom.attributes,
 				ln, attr;
 
-			// variable reference
+      // variable reference
 			if((attr = dom.attributes['var']) && this._processAttribute(dom, attr, context)){
 				dom.removeAttribute('var');
 			}
@@ -349,7 +363,7 @@ OJ.extendClass(
       var ary = val.split('.'),
           target = null,
           ln = ary.length,
-          i = 1;
+          i = 1, item;
 
       if(ln > 1){
         switch(ary[0]){
@@ -363,6 +377,11 @@ OJ.extendClass(
 
           case '$':
             target = context;
+
+            // if we are not at the top level defer processing template reference values
+            if(this != context){
+              throw "Template Reference Value Processing Deferred"
+            }
           break;
 				}
 
@@ -370,12 +389,35 @@ OJ.extendClass(
           val = target;
 
           for(; i < ln; i++){
-            val = val[ary[i]];
+            item = ary[i];
+
+            if(item.length > 2 && item.slice(-2) == '()'){
+              val = val[item.slice(0, -2)]();
+            }
+            else{
+              val = val[item];
+            }
           }
         }
       }
 
       return val;
+    },
+
+    '_processTemplateVars' : function(){
+      if(this._template_vars_){
+        var ln = this._template_vars_.length,
+            item, context;
+
+        for(; ln--;){
+          item = this._template_vars_[ln];
+          context = item.context;
+
+          item.func.call(context, this._processReferenceValue(item.value, this));
+        }
+
+        this._unset('_template_vars_');
+      }
     },
 
 		'_setDom' : function(dom, context){
@@ -387,6 +429,9 @@ OJ.extendClass(
 
 			// process the children
 			this._processChildren(dom, context);
+
+      // process any template vars
+      this._processTemplateVars();
 
 			// setup the dom id if there isn't one already
 			if(!this._id){
@@ -466,7 +511,7 @@ OJ.extendClass(
 
 		'_onDomTouchEvent' : function(evt){
 			var proxy = OjElement.byId(this.ojProxy);
-            trace(evt);
+
 			if(proxy && proxy._processEvent(evt)){
 				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
