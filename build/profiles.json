@@ -2,6 +2,6 @@
     "" : {
         "package" : "oj",
         "includes" : ["*"],
-        "excludes" : ["oj.layout.*", "oj.menu.*"]
+        "excludes" : ["oj.layout.*"]
     }
 }

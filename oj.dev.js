@@ -263,29 +263,29 @@ window.OJ = function Oj(){
 		'elm' : function(elm){
 			return OjElement.element(elm);
 		},
-		'extendComponent' : function(ns, parents, def/*, static_def*/){
-			var cls = this.extendClass.apply(this, arguments);
-			var tags = cls._TAGS,
-				ln = tags.length;
-			// register class name as tag
-			OjStyleElement.registerComponentTag(ns.toLowerCase(), ns);
-			// register special tags
-			for(; ln--;){
-				OjStyleElement.registerComponentTag(tags[ln], ns);
-			}
-			return cls;
-		},
+
+    'defineClass' : function(ns, def/*, static_def*/){
+      eval('window[ns] = function ' + ns + '(){' + (def['_constructor'] ? 'this._constructor.apply(this, arguments);' : '') + '};');
+      def._class_names = [def._class_name = ns];
+      window[ns].prototype = def;
+      if(arguments.length > 2){
+        var statics = arguments[2],
+            key;
+        for(key in statics){
+					window[ns][key] = statics[key];
+				}
+      }
+      return window[ns];
+    },
 		'extendClass' : function(ns, parents, def/*, static_def*/){
 			// setup our vars & prototype
-			var key, c, parent,
-				ln = parents.length,
+			var key, parent,
+        props = {'_props_' : null, '_get_props_' : null, '_set_props_' : null},
+        ln = parents.length,
 				proto = {
-					'_class_name' : ns
-				};
-			// setup the constructor
-			eval(
-				'c = window[ns] = function ' + ns + '(){ this._constructor.apply(this, arguments); };'
-			);
+          '_constructor' : true
+        },
+        c = OJ.defineClass(ns, proto);
 			// copy the base class statics
 			for(; ln--;){
 				parent = parents[ln];
@@ -301,42 +301,52 @@ window.OJ = function Oj(){
 				}
 			}
 			// copy the prototype as our starting point of inheritance
-			for(ln = parents.length; ln--;){
-				parent = parents[ln].prototype;
+      for(ln = parents.length; ln--;){
+        parent = parents[ln].prototype;
 				for(key in parent){
-					if(key == '_class_name'){
-						continue
-					}
-					// we need to do something different for this to be able to handle multiple inheritance
+          if(key == '_class_name'){
+            continue;
+          }
 					if(key == '_class_names' || key == '_post_compile_'){
-						proto[key] = parent[key].clone();
-					}
+            proto[key] = parent[key].concat(proto[key] || []);
+          }
+          else if(key == '_props_' || key == '_get_props_' || key == '_set_props_'){
+            props[key] = Object.concat(props[key] ? props[key] : {}, parent[key]);
+          }
 					else{
 						proto[key] = parent[key];
 					}
 				}
 			}
-			// add our class name to the class names array
-			proto._class_names.push(ns);
+      // concat the props
+      for(key in props){
+        // if no proto props then begin exit process
+        if(!props[key]){
+          // if no def props then finish exit process
+          if(!def[key]){
+            continue;
+          }
+          // otherwise carry on
+        }
+        // else we have proto props that need to be merged with def props
+        else{
+          // update def props
+          if(def[key]){
+            def[key] = Object.concat(def[key] ? def[key] : {}, proto[key]);
+          }
+          else{
+            def[key] = props[key];
+          }
+        }
+        // if we have def props then compile
+        proto._propCompile_(def, key);
+      }
 			// setup the static var
 			proto._static = c;
-			// process properties if they exist
-			if(isObject(def['_props_'])){
-				proto._propCompile_(def, '_props_');
-			}
-			if(isObject(def['_get_props_'])){
-				proto._propCompile_(def, '_get_props_');
-			}
-			if(isObject(def['_set_props_'])){
-				proto._propCompile_(def, '_set_props_');
-			}
 			// process other functions and properties accordingly
 			for(key in def){
 				// skip private funcs
 				if(key.charAt(0) == '_' && key.slice(-1) == '_'){
-					if(key == '_interface_'){
-						proto._class_names.splice(-1, 0, def[key]);
-					}
 					continue;
 				}
 				proto[key] = def[key];
@@ -353,13 +363,26 @@ window.OJ = function Oj(){
 				proto._post_compile_[ln].call(proto);
 			}
 			// setup the prototype and constructor for the class
-			return (c.prototype = proto).constructor = c;
+			return c.prototype.constructor = c;
+		},
+    'extendComponent' : function(ns, parents, def/*, static_def*/){
+			var cls = this.extendClass.apply(this, arguments);
+			var tags = cls._TAGS,
+				ln = tags.length;
+			// register class name as tag
+			OjStyleElement.registerComponentTag(ns.toLowerCase(), ns);
+			// register special tags
+			for(; ln--;){
+				OjStyleElement.registerComponentTag(tags[ln], ns);
+			}
+			return cls;
 		},
 		'extendManager' : function(manager_ns, cls_ns, parents, def/*, static_def*/){
 			var prev_manager = window[manager_ns],
 				cls = OJ.extendClass.apply(this, Array.slice(arguments, 1));
 			return window[manager_ns] = new cls(prev_manager);
 		},
+
 		'guid' : function(){
 			return (arguments.length ? arguments[0]._class_name : 'func') + '_' + this._guid++;
 		},
@@ -469,13 +492,7 @@ window.OJ = function Oj(){
 			return this._is_touch_capable;
 		},
 		'merge' : function(obj, obj2/*, ...objs*/){
-			var key, i, ln = arguments.length;
-			for(i = 1; i < ln; i++){
-				for(key in arguments[i]){
-					obj[key] = arguments[i][key];
-				}
-			}
-			return obj;
+      return Object.concat.apply(Object, arguments);
 		},
 		'meta' : function(/*property, value*/){
 			var ln, meta, name;
@@ -700,45 +717,22 @@ window.OJ = function Oj(){
 (function(){
 	// detect script element
 	var script_elms = document.getElementsByTagName('script'),
-		src = script_elms[script_elms.length - 1].getAttribute('src'),
-		index = src.indexOf('//'), // detect protocol mode
-		i = 0,
-		path, ln, part;
+		  src = script_elms[script_elms.length - 1].getAttribute('src'),
+		  index = src.indexOf('://'), // detect protocol mode
+		  i = 0,
+		  path, ln, part;
 	// process the protocol and setup the path
 	if(index > 0){
 		path = src;
-		OJ._protocol = src.substring(0, index - 1);
+		OJ._protocol = src.substring(0, index);
 	}
 	else{
-		path = window.location.href;
+		path = window.location.href + (src.charAt(0) == '/' ? src.substr(1) : src);
 		OJ._protocol = window.location.protocol.substring(-1);
 	}
 	path = path.split('/');
 	path.pop(); // remove the file name
-	// figure out where the root is
-	if((part = src.charAt(0)) == '/'){
-		path = path.slice(0, 3);
-	}
-	else{
-		src = src.split('/');
-		if(part == '.'){
-			for(ln = src.length - 1; i < ln; i++){
-				if((part = src[i]) == '..'){
-					path.pop();
-				}
-				else{
-					path.push(part);
-				}
-			}
-		}
-		else{
-		}
-//		if((index = src.indexOf('oj/')) == -1){
-//			if((index = src.indexOf('/js/')) > -1){
-//
-//			}
-//		}
-	}
+  path.pop(); // move up a directory
 	// detect the root
 	OJ.setRoot(path.join('/'));
 	// detect the broswer, os and version
@@ -891,7 +885,7 @@ window.OJ = function Oj(){
 			OJ._css_prefix = '-webkit-';
 	}
 	OJ._onOjResize = function(){
-		if(isFunction(OJ.addCss)){
+		if(isFunction(OJ.dispatchEvent) && isFunction(OJ.addCss)){
 			var vp = OJ._viewport,
 				w = window.innerWidth ? window.innerWidth : document.body.clientWidth,
 				h = window.innerHeight ? window.innerHeight : document.body.clientHeight,
@@ -922,7 +916,9 @@ window.OJ = function Oj(){
 		vp.right = vp.left + vp.width;
 	};
 	OJ._onOjOrientationChange = function(evt){
-		OJ.dispatchEvent(OjOrientationEvent.convertDomEvent(evt));
+    if(isFunction(OJ.dispatchEvent)){
+      OJ.dispatchEvent(OjOrientationEvent.convertDomEvent(evt));
+    }
 	};
 	// setup browser event listeners
 	if(window.addEventListener){
@@ -1167,6 +1163,16 @@ Object.clone = function(obj){
 		cloned[key] = obj[key];
 	}
 	return cloned;
+};
+Object.concat = function(obj, obj2/*, ...objs*/){
+    var key, i,
+        ln = arguments.length;
+    for(i = 1; i < ln; i++){
+      for(key in arguments[i]){
+        obj[key] = arguments[i][key];
+      }
+    }
+    return obj;
 };
 
 // string functions
@@ -1507,7 +1513,9 @@ function onDomReady(){
 	// setup a library for the loaded assets
 	OJ._library = new OjLibrary(OJ._loaded);
 	// import the required classes
-								    
+								
+  // import the required css
+  
 	// create the OJ component
 	var tmp = new OjView();
 	tmp.setAlpha(0);
@@ -1536,7 +1544,6 @@ function onDomReady(){
 	window.OJ = tmp;
 	// dispatch load event
 	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
-
 	// setup the dom event proxy
 	OJ._setProxy(document.body);
 	// hack so that we can capture taps in iOS
@@ -1623,289 +1630,280 @@ function onOjReady(){
 	traceGroup();
 }
 
-// setup the base object
-window.OjObject = function OjObject(){
-	this._constructor.apply(this, arguments);
-};
-
-// setup the prototype
-OjObject.prototype = {
-	'_destroyed_' : false,
-	/**
-	 * Class Names Array
-	 *
-	 * @description An array of class names in the order of inheritance
-	 *
-	 * @protected
-	 */
-	'_class_names' : ['OjObject'],
-	/**
-	 *
-	 * Class Name
-	 *
-	 * @protected
-	 */
-	'_class_name' : 'OjObject',
-	'_static' : OjObject,
-	'_post_compile_' : [],
-	'_propCompile_' : function(context, props){
-		var key, u_key, get_func, set_func,
-			is_getter = props == '_props_' || props == '_get_props_' ? true : false,
-			is_setter = props == '_props_' || props == '_set_props_' ? true : false;
-		if(isFunction(context['_processProp_'])){
-			this._processProp_ = context['_processProp_'];
-		}
-		for(key in context[props]){
-			get_func = 'get' + (u_key = key.ucFirst());
-			set_func = 'set' + u_key;
-			this._processProp_(
-				key, context[props][key],
-				is_getter && !isFunction(this[get_func]) && !isFunction(context[get_func]) ? get_func : null,
-				is_setter && !isFunction(this[set_func]) && !isFunction(context[set_func]) ? set_func : null
-			);
-		}
-	},
-	'_processProp_' : function(key, val, getter, setter){
-		var prop = '_' + key;
-		// store the default value of the property
-		this[prop] = val;
-		// setup the getter function
-		if(getter){
-			this[getter] = function(){
-				return this[prop];
-			};
-		}
-		// setup the setter function
-		if(setter){
-			this[setter] = function(val){
-				this[prop] = val;
-			};
-		}
-	},
-	/**
-	 * Super
-	 *
-	 * @protected
-	 * @this {OjObj}
-	 * @param {string) context - The current class name
-		* @param {string} func - The method on the super/parent you want to call
-	 * @param {arguments|array} args - The parameters to send to the super function
-	 * @return {OjObj} return the this object to allow for chaining
-	 */
-	'_super' : function(context, func, args){
-		return context.prototype[func].apply(this, args);
-	},
-	/**
-	 * Constructor
-	 *
-	 * @constructor
-	 * @protected
-	 * @this {OjObj}
-	 * @return {OjObj} return the this object to allow for chaining
-	 */
-	'_constructor' : function(/*obj*/){
-		var args = arguments;
-		if(args.length && isObject(args[0])){
-			this.bulkSet(args[0]);
-		}
-		this._id_ = OJ.guid(this);
-		return this;
-	},
-	/**
-	 * Destructor
-	 *
-	 * @destructor
-	 * @protected
-	 * @this {OjObj}
-	 * @return {null} return null since the object "no longer exists"
-	 */
-	'_destructor' : function(/*depth = 0*/){
-		this._destroyed_ = true;
-	},
-
-  '_processArguments' : function(args, def){
-    var ln = args.length,
-        count = 0,
-        key, val;
-    for(key in def){
-      val = def[key];
-      if(ln > count){
-        val = args[count];
+OJ.defineClass(
+  'OjObject',
+  {
+    '_destroyed_' : false,
+    '_post_compile_' : [],
+    '_propCompile_' : function(context, props){
+      var key, u_key, get_func, set_func,
+        is_getter = props == '_props_' || props == '_get_props_' ? true : false,
+        is_setter = props == '_props_' || props == '_set_props_' ? true : false;
+      if(isFunction(context['_processProp_'])){
+        this._processProp_ = context['_processProp_'];
       }
-      if(!isUndefined(val)){
-        if(isFunction(this[key])){
-          this[key](val);
+      for(key in context[props]){
+        get_func = 'get' + (u_key = key.ucFirst());
+        set_func = 'set' + u_key;
+        this._processProp_(
+          key, context[props][key],
+          is_getter && !isFunction(this[get_func]) && !isFunction(context[get_func]) ? get_func : null,
+          is_setter && !isFunction(this[set_func]) && !isFunction(context[set_func]) ? set_func : null
+        );
+      }
+    },
+    '_processProp_' : function(key, val, getter, setter){
+      var prop = '_' + key;
+      // store the default value of the property
+      this[prop] = val;
+      // setup the getter function
+      if(getter){
+        this[getter] = function(){
+          return this[prop];
+        };
+      }
+      // setup the setter function
+      if(setter){
+        this[setter] = function(val){
+          this[prop] = val;
+        };
+      }
+    },
+    /**
+     * Super
+     *
+     * @protected
+     * @this {OjObj}
+     * @param {string) context - The current class name
+      * @param {string} func - The method on the super/parent you want to call
+     * @param {arguments|array} args - The parameters to send to the super function
+     * @return {OjObj} return the this object to allow for chaining
+     */
+    '_super' : function(context, func, args){
+      return context.prototype[func].apply(this, args);
+    },
+    /**
+     * Constructor
+     *
+     * @constructor
+     * @protected
+     * @this {OjObj}
+     * @return {OjObj} return the this object to allow for chaining
+     */
+    '_constructor' : function(/*obj*/){
+      var args = arguments;
+      if(args.length && isObject(args[0])){
+        this.bulkSet(args[0]);
+      }
+      this._id_ = OJ.guid(this);
+      return this;
+    },
+    /**
+     * Destructor
+     *
+     * @destructor
+     * @protected
+     * @this {OjObj}
+     * @return {null} return null since the object "no longer exists"
+     */
+    '_destructor' : function(/*depth = 0*/){
+      this._destroyed_ = true;
+    },
+
+    '_processArguments' : function(args, def){
+      var ln = args.length,
+          count = 0,
+          key, val, ctx, ary, ln2, i, func;
+      for(key in def){
+        val = def[key];
+        if(ln > count){
+          val = args[count];
         }
-        else{
-          this[key] = val;
+        if(!isUndefined(val)){
+          ctx = this;
+          ary = key.split('.');
+          if((ln2 = ary.length) > 1){
+            for(i = 0; i < ln2; i++){
+              if(i){
+                ctx = ctx[key];
+              }
+              key = ary[i];
+            }
+          }
+          if(isFunction(ctx[key])){
+            ctx[key](val);
+          }
+          else{
+            ctx[key] = val;
+          }
+        }
+        count++;
+      }
+    },
+    '_unset' : function(prop/*|props, depth*/){
+      var args = arguments,
+        ln = args.length, props;
+      if(isArray(args[0])){
+        ln = (props = args[0]).length;
+        for(; ln--;){
+          args[0] = props[ln];
+          this._unset.apply(this, args);
+        }
+        return;
+      }
+      this[prop] = OJ.destroy(this[prop], ln > 1 ? args[1] : 0);
+    },
+    /**
+     * Bulk Getter
+     *
+     * @public
+     * @this {OjObj}
+     * @param {array} props - An array of property names
+     * @return {object} A key:value pair object of the requested properties and their values
+     */
+    'bulkGet' : function(props){
+      var key, getter_func, obj = {};
+      for(key in props){
+        if(this[key]){
+          if(isFunction(this[key])){
+            obj[key] = this[key]();
+          }
+          else{
+            obj[key] = props[key];
+          }
+          continue;
+        }
+        getter_func = 'set' + key.ucFirst();
+        if(this[getter_func] && isFunction(this[getter_func])){
+          obj[key] = this[getter_func]();
         }
       }
-      count++;
+      return obj;
+    },
+    /**
+     * Bulk Setter
+     *
+     * @public
+     * @this {OjObj}
+     * @param {array} props - A key:value pair object of properties and their values
+     * @return {undefined}
+     */
+    'bulkSet' : function(props){
+      var key, setter_func;
+      for(key in props){
+        if(this[key]){
+          if(isFunction(this[key])){
+            this[key](props[key]);
+          }
+          else{
+            this[key] = props[key];
+          }
+          continue;
+        }
+        setter_func = 'set' + key.ucFirst();
+        if(this[setter_func] && isFunction(this[setter_func])){
+          this[setter_func](props[key]);
+          continue;
+        }
+        this[key] = props[key];
+      }
+    },
+    'className' : function(){
+      return this._class_name;
+    },
+    'clone' : function(){
+      var cls = this._static;
+      return new cls();
+    },
+    'exportData' : function(){
+      return {
+        '_class_name' : this._class_name
+      }
+    },
+    'id' : function(){
+      return this._id_;
+    },
+    'importData' : function(data){
+      return data;
+    },
+    /**
+     * Inheritance Checker
+     *
+     * @public
+     * @this {OjObj}
+     * @param {string|class} val - Either the string name of a class or the class itself
+     * @return {boolean} True when this is the referenced class or a child of that class
+     */
+    'is' : function(val){
+      if(isObject(val) || isFunction(val)){
+        val = OJ.classToString(val);
+      }
+      return val == this._class_name || this._class_names.indexOf(val) != -1;
+    },
+    'isEqualTo' : function(obj){
+      return this == obj;
+    },
+    'toJson' : function(){
+      return JSON.stringify(this);
+    },
+    'toQueryString' : function(){
+      return Object.toQueryString(this);
     }
   },
-	'_unset' : function(prop/*|props, depth*/){
-		var args = arguments,
-			ln = args.length, props;
-		if(isArray(args[0])){
-			ln = (props = args[0]).length;
-			for(; ln--;){
-				args[0] = props[ln];
-				this._unset.apply(this, args);
-			}
-			return;
-		}
-		this[prop] = OJ.destroy(this[prop], ln > 1 ? args[1] : 0);
-	},
-	/**
-	 * Bulk Getter
-	 *
-	 * @public
-	 * @this {OjObj}
-	 * @param {array} props - An array of property names
-	 * @return {object} A key:value pair object of the requested properties and their values
-	 */
-	'bulkGet' : function(props){
-		var key, getter_func, obj = {};
-		for(key in props){
-			if(this[key]){
-				if(isFunction(this[key])){
-					obj[key] = this[key]();
-				}
-				else{
-					obj[key] = props[key];
-				}
-				continue;
-			}
-			getter_func = 'set' + key.ucFirst();
-			if(this[getter_func] && isFunction(this[getter_func])){
-				obj[key] = this[getter_func]();
-			}
-		}
-		return obj;
-	},
-	/**
-	 * Bulk Setter
-	 *
-	 * @public
-	 * @this {OjObj}
-	 * @param {array} props - A key:value pair object of properties and their values
-	 * @return {undefined}
-	 */
-	'bulkSet' : function(props){
-		var key, setter_func;
-		for(key in props){
-			if(this[key]){
-				if(isFunction(this[key])){
-					this[key](props[key]);
-				}
-				else{
-					this[key] = props[key];
-				}
-				continue;
-			}
-			setter_func = 'set' + key.ucFirst();
-			if(this[setter_func] && isFunction(this[setter_func])){
-				this[setter_func](props[key]);
-				continue;
-			}
-			this[key] = props[key];
-		}
-	},
-	'className' : function(){
-		return this._class_name;
-	},
-	'clone' : function(){
-		var cls = this._static;
-		return new cls();
-	},
-	'exportData' : function(){
-		return {
-			'_class_name' : this._class_name
-		}
-	},
-	'id' : function(){
-		return this._id_;
-	},
-	'importData' : function(data){
-		return data;
-	},
-	/**
-	 * Inheritance Checker
-	 *
-	 * @public
-	 * @this {OjObj}
-	 * @param {string|class} val - Either the string name of a class or the class itself
-	 * @return {boolean} True when this is the referenced class or a child of that class
-	 */
-	'is' : function(val){
-		if(isObject(val) || isFunction(val)){
-			val = OJ.classToString(val);
-		}
-		return val == this._class_name || this._class_names.indexOf(val) != -1;
-	},
-	'isEqualTo' : function(obj){
-		return this == obj;
-	},
-	'toJson' : function(){
-		return JSON.stringify(this);
-	},
-	'toQueryString' : function(){
-		return Object.toQueryString(this);
-	}
-};
-
-// setup static functions
-OjObject.importData = function(data){
-	var i, c, obj, key;
-	if(isArray(data)){
-		for(i = data.length; i--;){
-			data[i] = OjObject.importData(data[i]);
-		}
-	}
-	else if(isObject(data)){
-		if(data._class_name){
-			c = OJ.stringToClass(data._class_name);
-			if(!c && data._class_path){
-				
-				c = OJ.stringToClass(data._class_name)
-			}
-			if(c){
-				obj = new c();
-				obj.importData(data);
-				return obj;
-			}
-		}
-		for(key in data){
-			data[key] = OjObject.importData(data[key]);
-		}
-	}
-	return data;
-};
-OjObject.exportData = function(obj){
-	var i, key;
-	if(isArray(obj)){
-		for(i = obj.length; i--;){
-			obj[i] = OjObject.exportData(obj[i]);
-		}
-	}
-	else if(isObject(obj)){
-		if(isFunction(obj.exportData)){
-			return obj.exportData();
-		}
-		for(key in obj){
-			obj[key] = OjObject.exportData(obj[key]);
-		}
-	}
-	return obj;
-};
-OjObject.makeNew = function(args){
-	var constructor = this;
-	function F() {
-		return constructor.apply(this, args);
-	}
-	F.prototype = constructor.prototype;
-	return new F();
-};
+  {
+    'importData' : function(data){
+      var i, c, obj, key;
+      if(isArray(data)){
+        for(i = data.length; i--;){
+          data[i] = OjObject.importData(data[i]);
+        }
+      }
+      else if(isObject(data)){
+        if(data._class_name){
+          c = OJ.stringToClass(data._class_name);
+          if(!c && data._class_path){
+            
+            c = OJ.stringToClass(data._class_name)
+          }
+          if(c){
+            obj = new c();
+            obj.importData(data);
+            return obj;
+          }
+        }
+        for(key in data){
+          data[key] = OjObject.importData(data[key]);
+        }
+      }
+      return data;
+    },
+    'exportData' : function(obj){
+      var i, key;
+      if(isArray(obj)){
+        for(i = obj.length; i--;){
+          obj[i] = OjObject.exportData(obj[i]);
+        }
+      }
+      else if(isObject(obj)){
+        if(isFunction(obj.exportData)){
+          return obj.exportData();
+        }
+        for(key in obj){
+          obj[key] = OjObject.exportData(obj[key]);
+        }
+      }
+      return obj;
+    },
+    'makeNew' : function(args){
+      var constructor = this;
+      function F() {
+        return constructor.apply(this, args);
+      }
+      F.prototype = constructor.prototype;
+      return new F();
+    }
+  }
+);
 
 /**
  * Query String Prototype Functions
@@ -2190,6 +2188,7 @@ OJ.extendClass(
 		'REMOVED'  : 'onRemoved',
 		'SHOW'     : 'onShow',
 		'SUBMIT'   : 'onSubmit',
+    'UNLOAD'   : 'onUnload',
 		'ADDED_TO_DISPLAY'      : 'onAddToDisplay',
 		'REMOVED_FROM_DISPLAY'  : 'onRemovedFromDisplay'
 	}
@@ -2202,7 +2201,7 @@ OJ.extendManager(
 		'_events' : {},  '_index' : {},
 
 		'_constructor' : function(){
-			this._super(OjObject, '_constructor', []);
+      this._super(OjObject, '_constructor', []);
 			var ready,
 				timer,
 				onChange = function(e){
@@ -3841,9 +3840,11 @@ OJ.extendClass(
 		// scroll events
 		'SCROLL' : 'scroll',
 		// touch events
-		'TOUCH_START' : 'touchstart',
-		'TOUCH_MOVE'  : 'touchmove',
-		'TOUCH_END'   : 'touchend',
+		'TOUCH_CANCEL' : 'touchcancel',
+    'TOUCH_END'    : 'touchend',
+		'TOUCH_LEAVE'  : 'touchleave',
+    'TOUCH_MOVE'   : 'touchmove',
+		'TOUCH_START'  : 'touchstart',
 		// orientation events
 		'ORIENTATION_CHANGE' : 'orientationchange'
 	}
@@ -4105,14 +4106,16 @@ OJ.extendClass(
 		'convertDomEvent' : function(evt){
 			var type;
 			evt = OjDomEvent.normalizeDomEvent(evt);
-			if(evt.type == OjDomEvent.TOUCH_END){
-				type = OjTouchEvent.END;
-			}
-			else if(evt.type == OjDomEvent.TOUCH_MOVE){
+			if(evt.type == OjDomEvent.TOUCH_MOVE){
 				type = OjTouchEvent.MOVE;
 			}
 			else if(evt.type == OjDomEvent.TOUCH_START){
 				type = OjTouchEvent.START;
+			}
+      else if(
+        evt.type == OjDomEvent.TOUCH_END || evt.type == OjDomEvent.TOUCH_CANCEL || evt.type == OjDomEvent.TOUCH_LEAVE
+      ){
+				type = OjTouchEvent.END;
 			}
 			var new_evt = new OjTouchEvent(type, evt.changedTouches[0].pageX, evt.changedTouches[0].pageY, evt.bubbles, evt.cancelable);
 			new_evt._target = OjElement.element(evt.target)
@@ -4568,7 +4571,7 @@ OJ.extendClass(
 		'_onDomTouchEvent' : function(evt){
 			var proxy = OjElement.byId(this.ojProxy);
 			if(proxy && proxy._processEvent(evt)){
-				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
+        return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
 			return true;
 		},
@@ -4655,8 +4658,8 @@ OJ.extendClass(
 		},
 		'_onTouch' : function(evt){
 			var type = evt.getType(),
-				x = evt.getPageX(),
-				y = evt.getPageY();
+				  x = evt.getPageX(),
+				  y = evt.getPageY();
 			if(type == OjTouchEvent.END){
 				type = OjMouseEvent.UP;
 			}
@@ -4669,9 +4672,9 @@ OJ.extendClass(
 				type = OjMouseEvent.MOVE;
 			}
 			if(type){
-				this._onEvent(new OjMouseEvent(type, x, y, true, true));
+        this._onEvent(new OjMouseEvent(type, x, y, true, true));
 				// if the touch hasn't moved then issue a click event
-                if(type == OjMouseEvent.UP && x == this._dragX && y == this._dragY){
+        if(type == OjMouseEvent.UP && !this.hasEventListener(OjDragEvent.START)){
 					this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, x, y, true, true));
 				}
 			}
@@ -4691,8 +4694,8 @@ OJ.extendClass(
 			}
 		},
 		'_updateTouchEndListeners' : function(){
-			if(!this.hasEventListeners(OjMouseEvent.UP, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
-				this._proxy.ontouchend = null;
+			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.CLICK, OjDragEvent.END)){
+				this._proxy.ontouchcancel = this._proxy.ontouchend = this._proxy.ontouchleave = null;
 			}
 		},
 		'addEventListener' : function(type){
@@ -4709,7 +4712,7 @@ OJ.extendClass(
 			// mouse events
 			else if(type == OjMouseEvent.CLICK){
 				if(is_touch){
-					proxy.ontouchstart = proxy.ontouchend = this._onDomTouchEvent;
+					proxy.ontouchstart = proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave =this._onDomTouchEvent;
 				}
 				else{
 					proxy.onclick = this._onDomOjMouseEvent;
@@ -4742,7 +4745,7 @@ OJ.extendClass(
 			}
 			else if(type == OjMouseEvent.UP){
 				if(is_touch){
-					proxy.ontouchend = this._onDomTouchEvent;
+          proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
 				}
 				else{
 					proxy.onmouseup = this._onDomOjMouseEvent;
@@ -6060,31 +6063,23 @@ OJ.extendClass(
 	'OjTween', [OjActionable],
 	{
 		'_props_' : {
-			'duration' : 500,
-			'easing'   : OjEasing.NONE,
+			'duration' : null,
+			'easing'   : null,
 			'from'     : null,
 			'quality'  : 60,  // frame rate
 			'to'       : null
 		},
-//		'_callback' : null,  '_start' : null,  '_timer' : null,
+//	  '_animationFrame': null,	'_callback': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
 		'_delta' : 0,
 
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
 			this._super(OjActionable, '_constructor', []);
-			var args = arguments,
-				ln = args.length;
-			if(ln){
-				this.setFrom(args[0]);
-				if(ln > 1){
-					this.setTo(args[1]);
-					if(ln > 2){
-						this.setDuration(args[2]);
-						if(ln > 3){
-							this.setEasing(args[3]);
-						}
-					}
-				}
-			}
+      this._processArguments(arguments, {
+        'setFrom'     : null,
+        'setTo'       : null,
+        'setDuration' : 500,
+        'setEasing'   : OjEasing.NONE
+      });
 		},
 
 		'_destructor' : function(){
@@ -6106,15 +6101,15 @@ OJ.extendClass(
 		},
 
 		'_onTick' : function(evt){
-			var time = Date.time() - this._start;
-			if(time >= this._duration){
-				time = this._duration;
-				this._timer.stop();
-			}
-			this._tick(time);
+			var time = Math.min(Date.time() - this._start, this._duration);
+      this._tick(time);
 			if(time == this._duration){
-				this._onComplete(evt);
+				this.stop();
+        this._onComplete(evt);
 			}
+      else if(this._onAnimationFrame){
+        this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
+      }
 		},
 		'_onComplete' : function(evt){
 			this.dispatchEvent(new OjTweenEvent(OjTweenEvent.COMPLETE, this._to, 1));
@@ -6125,25 +6120,45 @@ OJ.extendClass(
 			if(isUnset(this._from) || isUnset(this._to)){
 				return;
 			}
-			var timer = this._timer;
 			this._calculateDelta();
+      this._start = Date.time();
 			// only create the time once
-			if(!timer){
-				timer = this._timer = new OjTimer();
-				timer.addEventListener(OjTimer.TICK, this, '_onTick');
-			}
-			else{
-				timer.stop();
-			}
-			timer.setDuration(1000 / this._quality);
-			this._start = Date.time();
-			timer.start();
+      if(window.requestAnimationFrame){
+        if(!this._onAnimationFrame){
+          this._onAnimationFrame = this._onTick.bind(this);
+        }
+        this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
+      }
+      else{
+        this._timer;
+        if(!this._timer){
+          this._timer = new OjTimer();
+          this._timer.addEventListener(OjTimer.TICK, this, '_onTick');
+        }
+        else{
+          this._timer.stop();
+        }
+        this._timer.setDuration(1000 / this._quality);
+        this._timer.start();
+      }
 		},
 		'pause' : function(){
-			this._timer.pause();
+      if(this._animationFrame){
+        window.cancelAnimationFrame(this._animationFrame);
+        this._animationFrame = null;
+      }
+      else if(this._timer){
+        this._timer.pause();
+      }
 		},
 		'stop' : function(){
-			this._timer.stop();
+      if(this._animationFrame){
+        window.cancelAnimationFrame(this._animationFrame);
+        this._animationFrame = null;
+      }
+      else if(this._timer){
+        this._timer.stop();
+      }
 		},
 		'restart' : function(){
 			this._timer.restart();
@@ -6153,6 +6168,17 @@ OJ.extendClass(
 		}
 	}
 );
+// normalize browser diff on requestAnimationFrame function
+(function(){
+  var vendors = ['o', 'ms', 'webkit', 'moz'],
+      ln = vendors.length,
+      vendor;
+  for(; ln-- && !window.requestAnimationFrame;){
+    vendor = vendors[ln];
+    window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+  }
+})();
 
 
 OJ.extendClass(
@@ -6974,8 +7000,8 @@ OJ.extendClass(
 			return this._super(OjComponent, '_destructor', arguments);
 		},
 
-		'_load' : function(){
-		},
+    // NOTE: this should never be called directly
+		'_load' : function(){},
 		'_makeMedia' : function(){
 			return new OjStyleElement('<div class="media"></div>');
 		},
@@ -7022,13 +7048,28 @@ OJ.extendClass(
 				this._load();
 			}
 		},
+    // NOTE: this should never be called directly
 		'_setSource' : function(url){
 			this._source = url;
 		},
+    // NOTE: this should never be called directly
+    '_unload' : function(){
+      this._source = null;
+      this._loaded = false;
+      if(this.loading){
+        this._unset('loading');
+      }
+      if(this._media){
+        this._media.setMaxWidth(OjStyleElement.AUTO);
+        this._media.setMaxHeight(OjStyleElement.AUTO);
+      }
+      this.removeCss(['is-loaded']);
+      this.dispatchEvent(new OjEvent(OjEvent.UNLOAD));
+    },
 
 		'_onMediaLoad' : function(evt){
 			this._unset('loading');
-			this._loaded = true;
+      this._loaded = true;
 			if(this._media){
 				// make sure we don't allow up-scaling
 				if(this._original_w){
@@ -7039,6 +7080,7 @@ OJ.extendClass(
 				}
 			}
 			this._resize();
+      this.addCss(['is-loaded']);
 			this.dispatchEvent(new OjEvent(OjEvent.LOAD));
 		},
 
@@ -7046,10 +7088,15 @@ OJ.extendClass(
 			return this._loaded;
 		},
 		'load' : function(){
-			if(!this._loaded){
+			if(!this._loaded && this._source){
 				this._load();
 			}
 		},
+    'unload' : function(){
+      if(this._loaded && this._source){
+        this._unload();
+      }
+    },
 
 		// Getter & Setter Functions
 		'getOriginalHeight' : function(){
@@ -7066,14 +7113,14 @@ OJ.extendClass(
 				url = url.toString();
 			}
 			// make sure we don't do extra work with loading the same media twice
-			if(this._source == url){
+      if(this._source == url){
 				return;
 			}
-			this._loaded = false;
+      this.unload();
 			if(!this.loading && this._showSpinner){
 				this.addChild(this.loading = new OjSpinner(this._spinnerTint));
 			}
-			this._setSource(url);
+      this._setSource(url);
 			if(this._preload || this._is_displayed){
 				this._load();
 			}
@@ -7138,14 +7185,13 @@ OJ.extendComponent(
 		},
 
 		'_onMediaLoad' : function(evt){
-			var rtrn = this._super(OjMedia, '_onMediaLoad', arguments);
 			if(this._source_is_css){
-				this._media.addCss([this._source.substring(1)]);
+        this._media.addCss([this._source.substring(1)]);
 				this._original_w = this._media.getWidth();
 				this._original_h = this._media.getHeight();
 			}
 			else{
-				this._original_w = this._img.width;
+        this._original_w = this._img.width;
 				this._original_h = this._img.height;
 				if(!this.getWidth()){
 					this.setWidth(this._original_w);
@@ -7155,35 +7201,20 @@ OJ.extendComponent(
 				}
 				this._setStyle('backgroundImage', 'url(' + this._source + ')');
 			}
-			return rtrn;
+			return this._super(OjMedia, '_onMediaLoad', arguments);
 		},
 
 		'_setSource' : function(url){
-			// cleanup old source
-			if(this._source_is_css){
-				// remove old source css class
-				this._media.removeCss([this._source.substring(1)]);
-			}
-			else{
-				// remove old source background image
-				this._setStyle('backgroundImage', null);
-			}
 			this._super(OjMedia, '_setSource', arguments);
 			if(url){
 				// check to see if this is a css class
 				if(this._source_is_css = (this._source.charAt(0) == '@')){
 					// if the media holder doesn't exist then create it
-					if(!this._media){
-						this.addChild(this._media = this._makeMedia());
-					}
+					this.addChild(this._media = this._makeMedia());
 					// trigger the image load since its already loaded
 					this._onMediaLoad(null);
 				}
 				else{
-					// if previous source was a css image then remove the media holder
-					if(this._media){
-						this._unset('_media');
-					}
 					// make sure we have an image loader object
 					if(!this._img){
 						this._img = new Image();
@@ -7191,7 +7222,17 @@ OJ.extendComponent(
 					}
 				}
 			}
-		}
+		},
+    '_unload' : function(){
+      // cleanup old source
+			if(!this._source_is_css){
+        // remove old source background image
+				this._setStyle('backgroundImage', null);
+			}
+      this._unset('_media');
+      this._source_is_css = false;
+      this._super(OjMedia, '_unload', arguments);
+    }
 	},
 	{
 		'_TAGS' : ['img', 'image'],
@@ -7609,132 +7650,132 @@ OJ.extendComponent(
 );
 
 
-window.OjINavController = {
-	'_props_' : {
-		'stack'   : null
-	},
+OJ.defineClass(
+  'OjINavController',
+  {
+    '_props_' : {
+      'stack'   : null
+    },
 
-	'_setupStack' : function(){
-    this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
-    // if we already have stuff in the stack then trigger a change event so the display gets updated properly
-    var ln = this._stack.numElms();
-    if(ln){
-      this._onStackChange(new OjStackEvent(OjStackEvent.CHANGE, this._stack.getElmAt(ln - 1), OjTransition.DEFAULT, ln - 1, 0));
-    }
-	},
-	'_cleanupStack' : function(){
-		if(this._stack){
-      this._stack.removeEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
-		}
-	},
-
-	// event listener callbacks
-	'_onStackChange' : function(evt){},
-
-	// stack view functions
-	// todo: enable animated flag option for nav stack view functions
-	'addView' : function(view/*, animated = true*/){
-		var s = this._stack;
-		return s.addElm.apply(s, arguments);
-	},
-	'addViewAt' : function(view, index/*, animated = true*/){
-		var s = this._stack;
-		return s.addElmAt.apply(s, arguments);
-	},
-	'gotoView' : function(/*view = root, animated = true*/){
-		var args = arguments,
-			ln = args.length, index,
-			view = ln ? args[0] : null,
-			animated = ln > 1 ? args[1] : true;
-		// if no view is specified we go all the way back to the root
-		// if a new view is specified we go all the way back to root and replace with new view
-		if(!view || (index = this.indexOfView(view)) > -1){
-            return this.gotoViewAt(index, animated);
-		}
-		if(index = this.getActiveIndex()){
-			this.replaceViewAt(0, view);
-			return this.gotoViewAt(0);
-		}
-		this.replaceActive(view, animated);
-	},
-	'gotoViewAt' : function(index/*, animated = true*/){
-		return this._stack.setActiveIndex.apply(this._stack, arguments);
-	},
-	'hasView' : function(view){
-		return this._stack.hasElm(view);
-	},
-	'indexOfView' : function(view){
-		return this._stack.indexOfElm(view);
-	},
-	'removeActive' : function(/*animated = true*/){
-		return this.removeViewAt(this._stack.getActiveIndex(), arguments.length ? arguments[0] : true);
-	} ,
-	'removeView' : function(view/*, animated = true*/){
-		var s = this._stack;
-		return s.removeElm.apply(s, arguments);
-	},
-	'removeViewAt' : function(view, index/*, animated = true*/){
-		var s = this._stack;
-		return s.removeElmAt.apply(s, arguments);
-	},
-	'replaceActive' : function(view/*, animated = true*/){
-		var s = this._stack,
-			args = arguments;
-		return s.replaceElmAt(this.getActiveIndex(), view, args.length > 1 ? args[0] : true);
-	},
-	'replaceView' : function(oldView, newView/*, animated = true*/){
-		var s = this._stack;
-		return s.replaceElm.apply(s, arguments);
-	},
-	'replaceViewAt' : function(index, newView/*, animated = true*/){
-		var s = this._stack;
-		return s.replaceElmAt.apply(s, arguments);
-	},
-
-	// getter & setter functions
-	'getActiveView' : function(){
-		return this._stack.getActive();
-	},
-	'setActiveView' : function(val){
-		this._stack.setActive(val);
-	},
-	'getActiveIndex' : function(){
-		return this._stack.getActiveIndex();
-	},
-	'setActiveIndex' : function(val){
-		this._stack.setActiveIndex(val);
-	},
-	'setStack' : function(stack){
-    if(this._stack){
-      if(this._stack == stack){
-        return;
+    '_setupStack' : function(){
+      this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+      // if we already have stuff in the stack then trigger a change event so the display gets updated properly
+      var ln = this._stack.numElms();
+      if(ln){
+        this._onStackChange(new OjStackEvent(OjStackEvent.CHANGE, this._stack.getElmAt(ln - 1), OjTransition.DEFAULT, ln - 1, 0));
       }
-			this._cleanupStack();
-		}
-		this._stack = stack;
-		stack.setController(this);
-		this._setupStack();
-	}
-};
+    },
+    '_cleanupStack' : function(){
+      if(this._stack){
+        this._stack.removeEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+      }
+    },
+
+    // event listener callbacks
+    '_onStackChange' : function(evt){},
+
+    // stack view functions
+    // todo: enable animated flag option for nav stack view functions
+    'addView' : function(view/*, animated = true*/){
+      var s = this._stack;
+      return s.addElm.apply(s, arguments);
+    },
+    'addViewAt' : function(view, index/*, animated = true*/){
+      var s = this._stack;
+      return s.addElmAt.apply(s, arguments);
+    },
+    'gotoView' : function(/*view = root, animated = true*/){
+      var args = arguments,
+        ln = args.length, index,
+        view = ln ? args[0] : null,
+        animated = ln > 1 ? args[1] : true;
+      // if no view is specified we go all the way back to the root
+      // if a new view is specified we go all the way back to root and replace with new view
+      if(!view || (index = this.indexOfView(view)) > -1){
+              return this.gotoViewAt(index, animated);
+      }
+      if(index = this.getActiveIndex()){
+        this.replaceViewAt(0, view);
+        return this.gotoViewAt(0);
+      }
+      this.replaceActive(view, animated);
+    },
+    'gotoViewAt' : function(index/*, animated = true*/){
+      return this._stack.setActiveIndex.apply(this._stack, arguments);
+    },
+    'hasView' : function(view){
+      return this._stack.hasElm(view);
+    },
+    'indexOfView' : function(view){
+      return this._stack.indexOfElm(view);
+    },
+    'removeActive' : function(/*animated = true*/){
+      return this.removeViewAt(this._stack.getActiveIndex(), arguments.length ? arguments[0] : true);
+    } ,
+    'removeView' : function(view/*, animated = true*/){
+      var s = this._stack;
+      return s.removeElm.apply(s, arguments);
+    },
+    'removeViewAt' : function(view, index/*, animated = true*/){
+      var s = this._stack;
+      return s.removeElmAt.apply(s, arguments);
+    },
+    'replaceActive' : function(view/*, animated = true*/){
+      var s = this._stack,
+        args = arguments;
+      return s.replaceElmAt(this.getActiveIndex(), view, args.length > 1 ? args[0] : true);
+    },
+    'replaceView' : function(oldView, newView/*, animated = true*/){
+      var s = this._stack;
+      return s.replaceElm.apply(s, arguments);
+    },
+    'replaceViewAt' : function(index, newView/*, animated = true*/){
+      var s = this._stack;
+      return s.replaceElmAt.apply(s, arguments);
+    },
+
+    // getter & setter functions
+    'getActiveView' : function(){
+      return this._stack.getActive();
+    },
+    'setActiveView' : function(val){
+      this._stack.setActive(val);
+    },
+    'getActiveIndex' : function(){
+      return this._stack.getActiveIndex();
+    },
+    'setActiveIndex' : function(val){
+      this._stack.setActiveIndex(val);
+    },
+    'setStack' : function(stack){
+      if(this._stack){
+        if(this._stack == stack){
+          return;
+        }
+        this._cleanupStack();
+      }
+      this._stack = stack;
+      stack.setController(this);
+      this._setupStack();
+    }
+  }
+);
 
 OJ.extendComponent(
-	'OjNavController', [OjComponent],
-	OJ.implementInterface(
-		OjINavController,
-		{
-			'_constructor' : function(/*stack*/){
-				this._super(OjComponent, '_constructor', []);
-				// process the arguments
-				if(arguments.length){
-					this.setStack(arguments[0]);
-				}
-			},
-			'_destructor' : function(){
-				this._cleanupStack();
-				return this._super(OjComponent, '_destructor', arguments);
-			}
-		}
-	),
+	'OjNavController', [OjComponent, OjINavController],
+	{
+    '_constructor' : function(/*stack*/){
+      this._super(OjComponent, '_constructor', []);
+      // process the arguments
+      if(arguments.length){
+        this.setStack(arguments[0]);
+      }
+    },
+    '_destructor' : function(){
+      this._cleanupStack();
+      return this._super(OjComponent, '_destructor', arguments);
+    }
+	},
 	{
 		'_TAGS' : ['nav', 'navcontroller']
 	}
@@ -9632,28 +9673,16 @@ OJ.extendClass(
 				this.buttons.addChild(this.cancelBtn = new OjButton(OjAlert.OK));
 				this.cancelBtn.addEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
 			}
-			// process the arguments
-			var args = arguments,
-				ln = args.length;
-			if(ln){
-				this.setContent(args[0]);
-				if(ln > 1){
-					this.setTitle(args[1]);
-					if(ln > 2){
-						this.setButtons(args[2]);
-						if(ln > 3){
-							this.cancelBtn.setLabel(args[3]);
-						}
-						else{
-							this.cancelBtn.setLabel(OjAlert.CANCEL);
-						}
-					}
-				}
-			}
+      this._processArguments(arguments, {
+        'setContent': null,
+        'setTitle' : null,
+        'setButtons' : null,
+        'cancelBtn.setLabel' : OjAlert.CANCEL
+      });
 		},
 		'_destructor' : function(/*depth = 1*/){
 			var args = arguments,
-				depth = args.length ? args[0] : 0;
+				  depth = args.length ? args[0] : 0;
 			if(!depth){
 				// remove all the content so it doesn't get destroyed
 				this.container.removeAllChildren();
@@ -9766,53 +9795,51 @@ OJ.extendClass(
 
 
 OJ.extendClass(
-	'OjModal', [OjAlert],
-	OJ.implementInterface(
-		OjINavController,
-		{
-			'_show_bar' : true,  '_show_close' : true,  '_show_underlay' : true,  '_show_buttons' : false,
-			'_stack' : null, '_template' : '<div><div var=underlay></div><div var=pane><flownav var=bar v-align=m cancel-label=Close></flownav><navstack var=container class=content></navstack><div var=buttons v-align=m></div></div></div>',
+	'OjModal', [OjAlert, OjINavController],
+	{
+    '_show_bar' : true,  '_show_close' : true,  '_show_underlay' : true,  '_show_buttons' : false,
+    '_stack' : null, '_template' : '<div><div var=underlay></div><div var=pane><flownav var=bar v-align=m cancel-label=Close></flownav><navstack var=container class=content></navstack><div var=buttons v-align=m></div></div></div>',
 
-			'_constructor' : function(/*view, title*/){
-				var args = arguments,
-					ln = args.length;
-				this._super(OjAlert, '_constructor', []);
-				// setup controller stack relationship
-				this.stack = this.container;
-				this.bar.setStack(this.stack);
-				this.setStack(this.stack);
+    '_constructor' : function(/*view, title*/){
+      var args = arguments,
+        ln = args.length;
+      this._super(OjAlert, '_constructor', []);
+      // setup controller stack relationship
+      this.stack = this.container;
+      this.bar.setStack(this.stack);
+      this.setStack(this.stack);
 
-				// default the show settings
-				this.showBar(this._show_bar);
-				this.showClose(this._show_close);
-				this.showUnderlay(this._show_underlay);
-				this.showButtons(this._show_buttons);
-				// process arguments
-				if(ln){
-					this.addView(args[0]);
-					if(ln > 1){
-						this.setTitle(args[1]);
-					}
-				}
-				if(OJ.isMobile()){
-					this.bar.setCancelLabel('&#10006');
-				}
-			},
-			'_destructor' : function(/*depth = 0*/){
-				var args = arguments,
-					depth = args.length ? args[0] : 0;
-				this._unset('bar', depth);
-				this._unset('stack', depth);
-				this._stack = null;
-				return this._super(OjAlert, '_destructor', arguments);
-			},
+      // default the show settings
+      this.showBar(this._show_bar);
+      this.showClose(this._show_close);
+      this.showUnderlay(this._show_underlay);
+      this.showButtons(this._show_buttons);
+      // process arguments
+      if(ln){
+        this.addView(args[0]);
+        if(ln > 1){
+          this.setTitle(args[1]);
+        }
+      }
+      if(OJ.isMobile()){
+        this.bar.setCancelLabel('&#10006');
+      }
+    },
+    '_destructor' : function(/*depth = 0*/){
+      var args = arguments,
+        depth = args.length ? args[0] : 0;
+      this._unset('bar', depth);
+      this._unset('stack', depth);
+      this._stack = null;
+      return this._super(OjAlert, '_destructor', arguments);
+    },
 
-			'_onDrag' : function(evt){
-				this.pane.setX(this.pane.getX() + evt.getDeltaX());
-				this.pane.setY(this.pane.getY() + evt.getDeltaY());
-			},
-			'_onStackChange' : function(evt){
-				// todo: OjModal - rethink how to autosize the modal to content
+    '_onDrag' : function(evt){
+      this.pane.setX(this.pane.getX() + evt.getDeltaX());
+      this.pane.setY(this.pane.getY() + evt.getDeltaY());
+    },
+    '_onStackChange' : function(evt){
+      // todo: OjModal - rethink how to autosize the modal to content
 //				if(!this.getPaneWidth()){
 //					trace(evt.getView().getWidth());
 //					this.setPaneWidth(evt.getView().getWidth());
@@ -9821,94 +9848,71 @@ OJ.extendClass(
 //				if(!this.getPaneHeight()){
 //					this.setPaneWidth(evt.getView().getWidth());
 //				}
-			},
+    },
 
-			'showBar' : function(){
-				if(arguments.length){
-					if(this._show_bar = arguments[0]){
-						this.bar.show();
+    'showBar' : function(){
+      if(arguments.length){
+        if(this._show_bar = arguments[0]){
+          this.bar.show();
 //						this.bar.addEventListener(OjDragEvent.DRAG, this, '_onDrag');
-					}
-					else{
-						this.bar.hide();
+        }
+        else{
+          this.bar.hide();
 //						this.bar.removeEventListener(OjDragEvent.DRAG, this, '_onDrag');
-					}
-				}
-				return this._show_bar;
-			},
-			'showButtons' : function(){
-				var args = arguments;
-				if(args.length){
-					if(this._show_buttons = args[0]){
-						this.removeCss(['no-buttons']);
-					}
-					else{
-						this.addCss(['no-buttons']);
-					}
-				}
-				return this._show_buttons;
-			},
-			'showClose' : function(){
-				var args = arguments;
-				if(args.length){
-					this.bar.showCancel(args[0]);
-					if(args[0]){
-						this.bar.addEventListener(OjEvent.CANCEL, this, '_onCancelClick');
-					}
-					else{
-						this.bar.removeEventListener(OjEvent.CANCEL, this, '_onCancelClick');
-					}
-				}
-				return this.bar.showCancel();
-			},
-			'showUnderlay' : function(){
-				if(arguments.length){
-					if(this._show_underlay = arguments[0]){
-						this.underlay.show();
-					}
-					else{
-						this.underlay.hide();
-					}
-				}
-				return this._show_underlay;
-			},
+        }
+      }
+      return this._show_bar;
+    },
+    'showButtons' : function(){
+      var args = arguments;
+      if(args.length){
+        if(this._show_buttons = args[0]){
+          this.removeCss(['no-buttons']);
+        }
+        else{
+          this.addCss(['no-buttons']);
+        }
+      }
+      return this._show_buttons;
+    },
+    'showClose' : function(){
+      var args = arguments;
+      if(args.length){
+        this.bar.showCancel(args[0]);
+        if(args[0]){
+          this.bar.addEventListener(OjEvent.CANCEL, this, '_onCancelClick');
+        }
+        else{
+          this.bar.removeEventListener(OjEvent.CANCEL, this, '_onCancelClick');
+        }
+      }
+      return this.bar.showCancel();
+    },
+    'showUnderlay' : function(){
+      if(arguments.length){
+        if(this._show_underlay = arguments[0]){
+          this.underlay.show();
+        }
+        else{
+          this.underlay.hide();
+        }
+      }
+      return this._show_underlay;
+    },
 
-			'setButtons' : function(val){
-				this._super(OjAlert, 'setButtons', arguments);
-				if(this.buttons.numChildren()){
-					this.buttons.show();
-				}
-				else{
-					this.buttons.hide();
-				}
-			},
-			'setTitle' : function(title){
-				this.bar.setTitle(this._title = title);
-			}
-//			,
-//
-//			'setContent' : function(content){
-//				if(this._content == content){
-//					return;
-//				}
-//
-//				if(content.is('OjForm')){
-//					content.addEventListener(OjEvent.CANCEL, this, '_onCancelClick');
-//					content.addEventListener(OjEvent.SUBMIT, this, '_onCancelClick');
-//				}
-//
-//				if(this._content){
-//					this._content.removeEventListener(OjEvent.CANCEL, this, '_onCancelClick');
-//					this._content.removeEventListener(OjEvent.SUBMIT, this, '_onCancelClick');
-//
-//					this.container.replaceElm(this._content, this._content = content);
-//				}
-//				else{
-//					this.container.addElm(this._content = content);
-//				}
-//			}
-		}
-	)
+    'setButtons' : function(val){
+      this._super(OjAlert, 'setButtons', arguments);
+      if(this.buttons.numChildren()){
+        this.buttons.show();
+      }
+      else{
+        this.buttons.hide();
+      }
+    },
+    'setTitle' : function(title){
+      this.bar.setTitle(this._title = title);
+    }
+  }
 );
 
 
@@ -10047,6 +10051,9 @@ OJ.extendManager(
 		'call' : function(phone){
 			window.location.href = 'tel:' + phone.getPath().substring(1);
 		},
+    'close' : function(){
+      window.close();
+    },
 		'email' : function(email){
 			window.location.href = 'mailto:' + email.getPath().substring(1);
 		},
@@ -10074,7 +10081,7 @@ OJ.extendManager(
 			return modal;
 		},
 		'position' : function(modal){
-			// position the modal
+      // position the modal
 			var w = modal.getWidth(),
 				h = modal.getHeight(),
 				w2 = modal.getPaneWidth(),
@@ -10949,15 +10956,12 @@ OJ.extendComponent(
 		},
 		'accessory' : null,  'content' : null,  'icon' : null,
 
-		'_constructor' : function(/*data*/){
-			this._super(OjItemRenderer, '_constructor', []);
-			this.addChild(this.accessory = new OjStyleElement('<div class="-accessory valign-middle"></div>'));
+		'_constructor' : function(/*group, data*/){
+			this._super(OjItemRenderer, '_constructor', arguments);
+      this.addChild(this.accessory = new OjStyleElement('<div class="accessory" valign="m"></div>'));
 			this.addChild(this.icon = new OjImage());
-			this.addChild(this.content = new OjStyleElement('<div class="-content valign-middle"></div>'));
+			this.addChild(this.content = new OjStyleElement('<div class="content" valign="m"></div>'));
 			this.icon.addCss('-icon');
-			if(arguments.length){
-				this.setData(arguments[0]);
-			}
 		},
 		'_destructor' : function(/*depth = 0*/){
 			if(this._data && this._data.is && this._data.is('OjActionable')){
@@ -12518,6 +12522,369 @@ OJ.extendComponent(
 	{
 		'supportedVideo' : function(){
 			return ['video'];
+		}
+	}
+);
+
+
+OJ.extendClass(
+	'OjMenu', [OjComponent],
+	{
+		'_props_' : {
+			'content'     : null,
+			'horzOffset'  : null,
+			'positioning' : null,
+			'parentMenu'  : null,
+			'vertOffset'  : 0
+		},
+
+		'_constructor' : function(/*content, positioning, parent_menu*/){
+			this._super(OjComponent, '_constructor', []);
+      this._processArguments(arguments, {
+        'setContent'     : null,
+        'setPositioning' : [
+					OjMenu.RIGHT_MIDDLE, OjMenu.RIGHT_TOP, OjMenu.RIGHT_BOTTOM,
+					OjMenu.LEFT_MIDDLE, OjMenu.LEFT_TOP, OjMenu.LEFT_BOTTOM,
+					OjMenu.BOTTOM_LEFT, OjMenu.BOTTOM_CENTER, OjMenu.BOTTOM_RIGHT,
+					OjMenu.TOP_LEFT, OjMenu.TOP_CENTER, OjMenu.TOP_RIGHT
+				],
+        'setParentMenu'  : null
+      });
+		},
+		'_destructor' : function(){
+			this._content = null;
+			return this._super(OjComponent, '_destructor', arguments);
+		},
+
+		'hasSubMenu' : function(menu){
+			while(menu){
+				if(menu.getParentMenu() == this){
+					return;
+				}
+				menu = menu.getParentMenu();
+			}
+			return false;
+		},
+		'setContent' : function(content){
+			if(this._content == content){
+				return;
+			}
+//				if(content.is('OjForm')){
+//					content.addEventListener(OjEvent.CANCEL, this, '_onClose');
+//					content.addEventListener(OjEvent.SUBMIT, this, '_onClose');
+//				}
+			if(this._content){
+//					this._content.removeEventListener(OjEvent.CANCEL, this, '_onClose');
+//					this._content.removeEventListener(OjEvent.SUBMIT, this, '_onClose');
+				this.replaceChild(this._content, this._content = content);
+			}
+			else{
+				this.addChild(this._content = content);
+			}
+		}
+	},
+	{
+		'TOP_LEFT'   : 'positionTopLeft',
+		'TOP_CENTER' : 'positionTopCenter',
+		'TOP_RIGHT'  : 'positionTopRight',
+		'BOTTOM_LEFT'   : 'positionBottomLeft',
+		'BOTTOM_CENTER' : 'positionBottomCenter',
+		'BOTTOM_RIGHT'  : 'positionBottomRight',
+		'LEFT_TOP'    : 'positionLeftTop',
+		'LEFT_MIDDLE' : 'positionLeftMiddle',
+		'LEFT_BOTTOM' : 'positionLeftBottom',
+		'RIGHT_TOP'    : 'positionRightTop',
+		'RIGHT_MIDDLE' : 'positionRightMiddle',
+		'RIGHT_BOTTOM' : 'positionRightBottom'
+	}
+);
+
+
+OJ.extendManager(
+	'MenuManager', 'OjMenuManager', [OjActionable],
+	{
+    '_props_' : {
+      'menuClass' : OjMenu
+    },
+
+//		'_active': null,  '_menus': null,  '_tweens': null,
+
+		'_constructor' : function(){
+			this._super(OjActionable, '_constructor', arguments);
+			this._menus = {};
+			this._active = {};
+			this._tweens = {};
+		},
+		'_percentRectVisible' : function(rect){
+			var viewport = OJ.getViewport();
+			var x = {
+				'top'       : rect.top > 0 && rect.top >= viewport.top ? rect.top : viewport.top,
+				'left'      : rect.left > 0 && rect.left >= viewport.left ? rect.left : viewport.left,
+				'bottom'    : viewport.bottom >= rect.bottom ? rect.bottom : viewport.bottom,
+				'right'     : viewport.right >= rect.right ? rect.right : viewport.right
+			};
+			return ((rect.bottom - rect.top) * (rect.right - rect.left)) /
+				((x.bottom - x.top) * (x.right - x.left));
+		},
+		'_positionMenu' : function(menu, target){
+      var pos = menu.getPositioning();
+			var rect, rect_vis;
+			var backup, visibility = 0;
+			var i, ln = pos.length;
+			for(i = 0; i < ln; i++){
+				rect = this[pos[i]](target, menu);
+				rect_vis = this._percentRectVisible(rect);
+				if(rect_vis == 1){
+					break;
+				}
+				else if(rect_vis > visibility){
+					visibility = rect_vis;
+					backup = rect;
+				}
+        if(backup){
+          rect = null;
+        }
+			}
+			if(!rect){
+				rect = backup;
+			}
+			menu.setX(rect.getLeft());
+			menu.setY(rect.getTop());
+		},
+		'_removeMenus' : function(list){
+			var key, tweens = new OjTweenSet();
+			for(key in list){
+				// stop & remove the old tween/menu
+				OJ.destroy(this._tweens[key]);
+				// remove old event listeners
+				OjElement.byId(key).removeEventListener(OjTransformEvent.MOVE, this, '_onTargetMove');
+				// add the fade out
+				tweens.addTween(new OjFade(list[key], OjFade.OUT));
+				delete this._active[key];
+				delete this._tweens[key];
+			}
+			if(tweens.numTweens()){
+				tweens.addEventListener(OjTweenEvent.COMPLETE, this, '_onTransOut');
+				tweens.start();
+			}
+		},
+
+		'_onPageClick' : function(evt){
+			var key, active, target;
+			// check to see if we should cancel
+			for(key in this._active){
+				active = this._active[key];
+				if(active && active.hitTestPoint(evt.getPageX(), evt.getPageY())){
+					return;
+				}
+				target = OjElement.byId(key);
+				if(target && target.hitTestPoint(evt.getPageX(), evt.getPageY())){
+					return;
+				}
+			}
+			// if not shut it down for all actives
+			this._removeMenus(this._active);
+			// remove the event listener
+			OJ.removeEventListener(OjMouseEvent.CLICK, this, '_onPageClick');
+		},
+		'_onTargetClick' : function(evt){
+			var target = evt.getCurrentTarget();
+			var menu = this._menus[target.id()];
+			if(menu && !this._active[target.id()]){
+				this.show(menu, target)
+			}
+		},
+		'_onTargetMove' : function(evt){
+			var target = evt.getCurrentTarget();
+			var menu = this._menus[target.id()];
+			if(menu){
+				this._positionMenu(menu, target);
+			}
+		},
+		'_onTransOut' : function(evt){
+			OJ.destroy(evt.getCurrentTarget());
+		},
+
+		'hide' : function(menu){
+			var key, id, ln = 0;
+			for(key in this._active){
+				ln++;
+				if(this._active[key] == menu){
+					id = key
+				}
+			}
+			if(id){
+				var tmp = {};
+				tmp[id] = menu;
+				delete this._active[id];
+				this._removeMenus(tmp);
+				// if there are no more active menus then stop listening for page clicks
+				if(ln == 1){
+					OJ.removeEventListener(OjMouseEvent.CLICK, this, '_onPageClick');
+				}
+			}
+		},
+    'makeMenu' : function(){
+      return this._menuClass.makeNew(arguments);
+    },
+    'menu' : function(target, content/*, positioning, parent_menu*/){
+      // build the menu
+      var menu = this.makeMenu.apply(this, Array.slice(arguments, 1));
+      this.register(target, menu);
+      this.show(menu, target);
+			return menu;
+    },
+		'register' : function(target, menu){
+      // setup the target click listener
+      target.addEventListener(OjMouseEvent.CLICK, this, '_onTargetClick');
+      this._menus[target.id()] = menu;
+		},
+		'show' : function(menu/*, target*/){
+			var target = arguments.length > 1 ? arguments[1] : null;
+			var key, list = {};
+			if(!target){
+				for(key in this._menus){
+					if(this._menus[key] == menu){
+						target = OjElement.byId(key);
+						break;
+					}
+				}
+			}
+			// remove all non-parent active menus
+			for(key in this._active){
+				if(this._active[key] != menu && !this._active[key].hasSubMenu(menu)){
+					list[key] = this._active[key];
+				}
+			}
+			this._removeMenus(list);
+			// grab the menu
+			menu.setAlpha(0);
+			OJ.addChild(menu);
+			// position the menu based on preferences
+			if(menu){
+				this._positionMenu(menu, target);
+				var tween = new OjFade(menu);
+				tween.start();
+				this._active[target.id()] = menu;
+				this._tweens[target.id()] = tween;
+				OJ.addEventListener(OjMouseEvent.CLICK, this, '_onPageClick');
+			}
+			target.addEventListener(OjTransformEvent.MOVE, this, '_onTargetMove');
+		},
+		'unregister' : function(target/*|menu*/){
+			if(target.is('OjMenu')){
+				var key;
+				for(key in this._menus){
+					if(this._menus[key] == target){
+						target = OjElement.byId(key);
+						break;
+					}
+				}
+			}
+			if(target){
+				target.removeEventListener(OjMouseEvent.CLICK, this, '_onTargetClick');
+				delete this._menus[target.id()];
+			}
+		},
+
+		'positionTopLeft' : function(target, menu){
+			return new OjRect(
+				target.getPageX() - menu.getHorzOffset(),
+				target.getPageY() - menu.getHeight() - menu.getVertOffset(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionTopCenter' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + ((target.getWidth() - menu.getWidth()) / 2),
+				target.getPageY() - menu.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionTopRight' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + target.getWidth() - menu.getWidth(),
+				target.getPageY() - menu.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+
+		'positionBottomLeft' : function(target, menu){
+			return new OjRect(
+				target.getPageX(),
+				target.getPageY() + target.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionBottomCenter' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + ((target.getWidth() - menu.getWidth()) / 2),
+				target.getPageY() + target.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionBottomRight' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + target.getWidth() - menu.getWidth(),
+				target.getPageY() + target.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+
+		'positionLeftTop' : function(target, menu){
+			return new OjRect(
+				target.getPageX() - menu.getWidth(),
+				target.getPageY(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionLeftMiddle' : function(target, menu){
+			return new OjRect(
+				target.getPageX() - menu.getWidth(),
+				target.getPageY() + ((target.getHeight() - menu.getHeight()) / 2),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionLeftBottom' : function(target, menu){
+			return new OjRect(
+				target.getPageX() - menu.getWidth(),
+				target.getPageY() + target.getHeight() - menu.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+
+		'positionRightTop' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + target.getWidth(),
+				target.getPageY(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionRightMiddle' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + target.getWidth(),
+				target.getPageY() + ((target.getHeight() - menu.getHeight()) / 2),
+				menu.getWidth(),
+				menu.getHeight()
+			);
+		},
+		'positionRightBottom' : function(target, menu){
+			return new OjRect(
+				target.getPageX() + target.getWidth(),
+				target.getPageY() + target.getHeight() - menu.getHeight(),
+				menu.getWidth(),
+				menu.getHeight()
+			);
 		}
 	}
 );

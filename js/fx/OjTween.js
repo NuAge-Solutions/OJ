@@ -10,14 +10,14 @@ OJ.extendClass(
 	'OjTween', [OjActionable],
 	{
 		'_props_' : {
-			'duration' : 500,
-			'easing'   : OjEasing.NONE,
+			'duration' : null,
+			'easing'   : null,
 			'from'     : null,
 			'quality'  : 60,  // frame rate
 			'to'       : null
 		},
 
-//		'_callback' : null,  '_start' : null,  '_timer' : null,
+//	  '_animationFrame': null,	'_callback': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
 
 		'_delta' : 0,
 
@@ -25,24 +25,12 @@ OJ.extendClass(
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
 			this._super(OjActionable, '_constructor', []);
 
-			var args = arguments,
-				ln = args.length;
-
-			if(ln){
-				this.setFrom(args[0]);
-
-				if(ln > 1){
-					this.setTo(args[1]);
-
-					if(ln > 2){
-						this.setDuration(args[2]);
-
-						if(ln > 3){
-							this.setEasing(args[3]);
-						}
-					}
-				}
-			}
+      this._processArguments(arguments, {
+        'setFrom'     : null,
+        'setTo'       : null,
+        'setDuration' : 500,
+        'setEasing'   : OjEasing.NONE
+      });
 		},
 
 
@@ -69,19 +57,18 @@ OJ.extendClass(
 
 
 		'_onTick' : function(evt){
-			var time = Date.time() - this._start;
+			var time = Math.min(Date.time() - this._start, this._duration);
 
-			if(time >= this._duration){
-				time = this._duration;
-
-				this._timer.stop();
-			}
-
-			this._tick(time);
+      this._tick(time);
 
 			if(time == this._duration){
-				this._onComplete(evt);
+				this.stop();
+
+        this._onComplete(evt);
 			}
+      else if(this._onAnimationFrame){
+        this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
+      }
 		},
 
 		'_onComplete' : function(evt){
@@ -95,33 +82,56 @@ OJ.extendClass(
 				return;
 			}
 
-			var timer = this._timer;
-
 			this._calculateDelta();
 
+      this._start = Date.time();
+
 			// only create the time once
-			if(!timer){
-				timer = this._timer = new OjTimer();
+      if(window.requestAnimationFrame){
+        if(!this._onAnimationFrame){
+          this._onAnimationFrame = this._onTick.bind(this);
+        }
 
-				timer.addEventListener(OjTimer.TICK, this, '_onTick');
-			}
-			else{
-				timer.stop();
-			}
+        this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
+      }
+      else{
+        this._timer;
 
-			timer.setDuration(1000 / this._quality);
+        if(!this._timer){
+          this._timer = new OjTimer();
 
-			this._start = Date.time();
+          this._timer.addEventListener(OjTimer.TICK, this, '_onTick');
+        }
+        else{
+          this._timer.stop();
+        }
 
-			timer.start();
+        this._timer.setDuration(1000 / this._quality);
+
+        this._timer.start();
+      }
 		},
 
 		'pause' : function(){
-			this._timer.pause();
+      if(this._animationFrame){
+        window.cancelAnimationFrame(this._animationFrame);
+
+        this._animationFrame = null;
+      }
+      else if(this._timer){
+        this._timer.pause();
+      }
 		},
 
 		'stop' : function(){
-			this._timer.stop();
+      if(this._animationFrame){
+        window.cancelAnimationFrame(this._animationFrame);
+
+        this._animationFrame = null;
+      }
+      else if(this._timer){
+        this._timer.stop();
+      }
 		},
 
 		'restart' : function(){
@@ -133,3 +143,17 @@ OJ.extendClass(
 		}
 	}
 );
+
+// normalize browser diff on requestAnimationFrame function
+(function(){
+  var vendors = ['o', 'ms', 'webkit', 'moz'],
+      ln = vendors.length,
+      vendor;
+
+  for(; ln-- && !window.requestAnimationFrame;){
+    vendor = vendors[ln];
+
+    window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+  }
+})();

@@ -513,7 +513,7 @@ OJ.extendClass(
 			var proxy = OjElement.byId(this.ojProxy);
 
 			if(proxy && proxy._processEvent(evt)){
-				return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
+        return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
 
 			return true;
@@ -621,8 +621,8 @@ OJ.extendClass(
 
 		'_onTouch' : function(evt){
 			var type = evt.getType(),
-				x = evt.getPageX(),
-				y = evt.getPageY();
+				  x = evt.getPageX(),
+				  y = evt.getPageY();
 
 			if(type == OjTouchEvent.END){
 				type = OjMouseEvent.UP;
@@ -638,10 +638,10 @@ OJ.extendClass(
 			}
 
 			if(type){
-				this._onEvent(new OjMouseEvent(type, x, y, true, true));
+        this._onEvent(new OjMouseEvent(type, x, y, true, true));
 
 				// if the touch hasn't moved then issue a click event
-                if(type == OjMouseEvent.UP && x == this._dragX && y == this._dragY){
+        if(type == OjMouseEvent.UP && !this.hasEventListener(OjDragEvent.START)){
 					this._onEvent(new OjMouseEvent(OjMouseEvent.CLICK, x, y, true, true));
 				}
 			}
@@ -665,8 +665,8 @@ OJ.extendClass(
 		},
 
 		'_updateTouchEndListeners' : function(){
-			if(!this.hasEventListeners(OjMouseEvent.UP, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
-				this._proxy.ontouchend = null;
+			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.CLICK, OjDragEvent.END)){
+				this._proxy.ontouchcancel = this._proxy.ontouchend = this._proxy.ontouchleave = null;
 			}
 		},
 
@@ -689,7 +689,7 @@ OJ.extendClass(
 			// mouse events
 			else if(type == OjMouseEvent.CLICK){
 				if(is_touch){
-					proxy.ontouchstart = proxy.ontouchend = this._onDomTouchEvent;
+					proxy.ontouchstart = proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave =this._onDomTouchEvent;
 				}
 				else{
 					proxy.onclick = this._onDomOjMouseEvent;
@@ -722,7 +722,7 @@ OJ.extendClass(
 			}
 			else if(type == OjMouseEvent.UP){
 				if(is_touch){
-					proxy.ontouchend = this._onDomTouchEvent;
+          proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
 				}
 				else{
 					proxy.onmouseup = this._onDomOjMouseEvent;

@@ -39,9 +39,8 @@ OJ.extendClass(
 		},
 
 
-		'_load' : function(){
-
-		},
+    // NOTE: this should never be called directly
+		'_load' : function(){},
 
 		'_makeMedia' : function(){
 			return new OjStyleElement('<div class="media"></div>');
@@ -101,15 +100,36 @@ OJ.extendClass(
 			}
 		},
 
+    // NOTE: this should never be called directly
 		'_setSource' : function(url){
 			this._source = url;
 		},
+
+    // NOTE: this should never be called directly
+    '_unload' : function(){
+      this._source = null;
+
+      this._loaded = false;
+
+      if(this.loading){
+        this._unset('loading');
+      }
+
+      if(this._media){
+        this._media.setMaxWidth(OjStyleElement.AUTO);
+        this._media.setMaxHeight(OjStyleElement.AUTO);
+      }
+
+      this.removeCss(['is-loaded']);
+
+      this.dispatchEvent(new OjEvent(OjEvent.UNLOAD));
+    },
 
 
 		'_onMediaLoad' : function(evt){
 			this._unset('loading');
 
-			this._loaded = true;
+      this._loaded = true;
 
 			if(this._media){
 				// make sure we don't allow up-scaling
@@ -124,6 +144,8 @@ OJ.extendClass(
 
 			this._resize();
 
+      this.addCss(['is-loaded']);
+
 			this.dispatchEvent(new OjEvent(OjEvent.LOAD));
 		},
 
@@ -133,10 +155,16 @@ OJ.extendClass(
 		},
 
 		'load' : function(){
-			if(!this._loaded){
+			if(!this._loaded && this._source){
 				this._load();
 			}
 		},
+
+    'unload' : function(){
+      if(this._loaded && this._source){
+        this._unload();
+      }
+    },
 
 
 		// Getter & Setter Functions
@@ -157,17 +185,17 @@ OJ.extendClass(
 			}
 
 			// make sure we don't do extra work with loading the same media twice
-			if(this._source == url){
+      if(this._source == url){
 				return;
 			}
 
-			this._loaded = false;
+      this.unload();
 
 			if(!this.loading && this._showSpinner){
 				this.addChild(this.loading = new OjSpinner(this._spinnerTint));
 			}
 
-			this._setSource(url);
+      this._setSource(url);
 
 			if(this._preload || this._is_displayed){
 				this._load();

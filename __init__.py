@@ -16,10 +16,11 @@ else:
     def u(x):
         return x
 
+
 #
 # Compiler Function
 #
-def compile(src, mode='prod', output=False, profiles=None, type='all'):
+def compile(src, mode='prod', output=False, profiles=None, type='all', package=None):
     # setup trace func
     def trace(msg):
         if output:
@@ -31,14 +32,22 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
     os.chdir(src)
 
     # extract the package name
-    package = path.basename(path.normpath(src)).lower()
+    default_package = path.basename(path.normpath(src)).lower()
 
     # get the build profiles
     try:
         build_profiles = loadJson(path.join('build', 'profiles.json'))
 
+        if not package:
+            if '' in build_profiles and 'package' in build_profiles['']:
+                package = build_profiles['']['package']
+            else:
+                package = default_package
     except:
         trace('Build Profiles File Invalid... Using Default Profile\n')
+
+        if not package:
+            package = default_package
 
         build_profiles = {'': {'package': package, 'includes': ['*'], 'excludes': []}}
 
@@ -47,7 +56,6 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
 
     try:
         build_lists = loadJson(build_list_path)
-
     except:
         build_lists = {}
 
@@ -75,6 +83,48 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
                 '  Compressing "' + theme_name + '"...' if output else None
             )
 
+    # compile templates
+    tmp = path.join('build', 'templates.html')
+    tmplt_str = ''
+    sep = '<template:divider/>'
+    templates = {}
+    order = []
+
+    for template in dirFilesOfType('templates', ['htm', 'html']):
+        if tmplt_str:
+            tmplt_str += sep
+
+        tmplt_str += fileGetContents(template)
+
+        template = template.split(path.sep)[1:]
+        template.insert(0, package)
+        template[-1] = path.splitext(template[-1])[0]
+
+        order.append('.'.join(template))
+
+    # save the templates html
+    filePutContents(tmp, tmplt_str)
+
+    # compress the templates html
+    call(
+        'java -jar "' + path.join('build', 'htmlcompressor.jar') + '" --remove-quotes --remove-intertag-spaces -o "' +
+        tmp + '" "' + tmp + '"', shell=True
+    )
+
+    # process compressed templates
+    index = 0
+
+    for template in fileGetContents(tmp).split(sep):
+        templates[order[index]] = template
+
+        index += 1
+
+    # make sure to cleanup temporary template file
+    try:
+        os.remove(tmp)
+    except:
+        pass
+
     # loop through profiles and build selected
     for key in build_profiles:
         if has_all or key in profiles:
@@ -90,6 +140,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all'):
                 # reset the build_list since we are going back through all the js anyway
                 build_list['js'] = []
                 build_list['css'] = []
+                build_list['templates'] = templates
 
                 # find all the js files in this package
                 js_path = path.join('js', '')
@@ -327,42 +378,7 @@ def processJs(js, build_list, profile):
 
 
 def processTemplates(contents, build_list, profile):
-    # compile the templates
-    tmp = path.join('build', 'templates.html')
-    tmplt_str = ''
-    sep = '<template:divider/>'
-    templates = {}
-    order = []
-
-    for template in dirFilesOfType('templates', ['htm', 'html']):
-        if tmplt_str:
-            tmplt_str += sep
-
-        tmplt_str += fileGetContents(template)
-
-        template = template.split(path.sep)[1:]
-        template.insert(0, profile['package'])
-        template[-1] = path.splitext(template[-1])[0]
-
-        order.append('.'.join(template))
-
-    # save the templates html
-    filePutContents(tmp, tmplt_str)
-
-    # compress the templates html
-    call(
-        'java -jar "' + path.join('build', 'htmlcompressor.jar') +
-        '" --remove-quotes --remove-intertag-spaces -o "' +
-        tmp + '" "' + tmp + '"', shell=True
-    )
-
-    # process compressed templates
-    index = 0
-
-    for template in fileGetContents(tmp).split(sep):
-        templates[order[index]] = template
-
-        index += 1
+    templates = build_list['templates']
 
     # search through the contents to replace template strings
     index = 1
@@ -390,12 +406,6 @@ def processTemplates(contents, build_list, profile):
 
         else:
             index = 0
-
-    # make sure to cleanup temporary template file
-    try:
-        os.remove(tmp)
-    except:
-        pass
 
     return contents
 

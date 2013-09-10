@@ -333,35 +333,35 @@ window.OJ = function Oj(){
 			return OjElement.element(elm);
 		},
 
-		'extendComponent' : function(ns, parents, def/*, static_def*/){
-			var cls = this.extendClass.apply(this, arguments);
 
-			var tags = cls._TAGS,
-				ln = tags.length;
+    'defineClass' : function(ns, def/*, static_def*/){
+      eval('window[ns] = function ' + ns + '(){' + (def['_constructor'] ? 'this._constructor.apply(this, arguments);' : '') + '};');
 
-			// register class name as tag
-			OjStyleElement.registerComponentTag(ns.toLowerCase(), ns);
+      def._class_names = [def._class_name = ns];
 
-			// register special tags
-			for(; ln--;){
-				OjStyleElement.registerComponentTag(tags[ln], ns);
-			}
+      window[ns].prototype = def;
 
-			return cls;
-		},
+      if(arguments.length > 2){
+        var statics = arguments[2],
+            key;
+
+        for(key in statics){
+					window[ns][key] = statics[key];
+				}
+      }
+
+      return window[ns];
+    },
 
 		'extendClass' : function(ns, parents, def/*, static_def*/){
 			// setup our vars & prototype
-			var key, c, parent,
-				ln = parents.length,
+			var key, parent,
+        props = {'_props_' : null, '_get_props_' : null, '_set_props_' : null},
+        ln = parents.length,
 				proto = {
-					'_class_name' : ns
-				};
-
-			// setup the constructor
-			eval(
-				'c = window[ns] = function ' + ns + '(){ this._constructor.apply(this, arguments); };'
-			);
+          '_constructor' : true
+        },
+        c = OJ.defineClass(ns, proto);
 
 			// copy the base class statics
 			for(; ln--;){
@@ -382,51 +382,59 @@ window.OJ = function Oj(){
 			}
 
 			// copy the prototype as our starting point of inheritance
-			for(ln = parents.length; ln--;){
-				parent = parents[ln].prototype;
+      for(ln = parents.length; ln--;){
+        parent = parents[ln].prototype;
 
 				for(key in parent){
-					if(key == '_class_name'){
-						continue
-					}
+          if(key == '_class_name'){
+            continue;
+          }
 
-					// we need to do something different for this to be able to handle multiple inheritance
 					if(key == '_class_names' || key == '_post_compile_'){
-						proto[key] = parent[key].clone();
-					}
+            proto[key] = parent[key].concat(proto[key] || []);
+          }
+          else if(key == '_props_' || key == '_get_props_' || key == '_set_props_'){
+            props[key] = Object.concat(props[key] ? props[key] : {}, parent[key]);
+          }
 					else{
 						proto[key] = parent[key];
 					}
 				}
 			}
 
-			// add our class name to the class names array
-			proto._class_names.push(ns);
+      // concat the props
+      for(key in props){
+        // if no proto props then begin exit process
+        if(!props[key]){
+          // if no def props then finish exit process
+          if(!def[key]){
+            continue;
+          }
+
+          // otherwise carry on
+        }
+        // else we have proto props that need to be merged with def props
+        else{
+          // update def props
+          if(def[key]){
+            def[key] = Object.concat(def[key] ? def[key] : {}, proto[key]);
+          }
+          else{
+            def[key] = props[key];
+          }
+        }
+
+        // if we have def props then compile
+        proto._propCompile_(def, key);
+      }
 
 			// setup the static var
 			proto._static = c;
-
-			// process properties if they exist
-			if(isObject(def['_props_'])){
-				proto._propCompile_(def, '_props_');
-			}
-
-			if(isObject(def['_get_props_'])){
-				proto._propCompile_(def, '_get_props_');
-			}
-
-			if(isObject(def['_set_props_'])){
-				proto._propCompile_(def, '_set_props_');
-			}
 
 			// process other functions and properties accordingly
 			for(key in def){
 				// skip private funcs
 				if(key.charAt(0) == '_' && key.slice(-1) == '_'){
-					if(key == '_interface_'){
-						proto._class_names.splice(-1, 0, def[key]);
-					}
-
 					continue;
 				}
 
@@ -448,7 +456,24 @@ window.OJ = function Oj(){
 			}
 
 			// setup the prototype and constructor for the class
-			return (c.prototype = proto).constructor = c;
+			return c.prototype.constructor = c;
+		},
+
+    'extendComponent' : function(ns, parents, def/*, static_def*/){
+			var cls = this.extendClass.apply(this, arguments);
+
+			var tags = cls._TAGS,
+				ln = tags.length;
+
+			// register class name as tag
+			OjStyleElement.registerComponentTag(ns.toLowerCase(), ns);
+
+			// register special tags
+			for(; ln--;){
+				OjStyleElement.registerComponentTag(tags[ln], ns);
+			}
+
+			return cls;
 		},
 
 		'extendManager' : function(manager_ns, cls_ns, parents, def/*, static_def*/){
@@ -457,6 +482,7 @@ window.OJ = function Oj(){
 
 			return window[manager_ns] = new cls(prev_manager);
 		},
+
 
 		'guid' : function(){
 			return (arguments.length ? arguments[0]._class_name : 'func') + '_' + this._guid++;
@@ -600,15 +626,7 @@ window.OJ = function Oj(){
 		},
 
 		'merge' : function(obj, obj2/*, ...objs*/){
-			var key, i, ln = arguments.length;
-
-			for(i = 1; i < ln; i++){
-				for(key in arguments[i]){
-					obj[key] = arguments[i][key];
-				}
-			}
-
-			return obj;
+      return Object.concat.apply(Object, arguments);
 		},
 
 		'meta' : function(/*property, value*/){
@@ -903,53 +921,26 @@ window.OJ = function Oj(){
 (function(){
 	// detect script element
 	var script_elms = document.getElementsByTagName('script'),
-		src = script_elms[script_elms.length - 1].getAttribute('src'),
-		index = src.indexOf('//'), // detect protocol mode
-		i = 0,
-		path, ln, part;
+		  src = script_elms[script_elms.length - 1].getAttribute('src'),
+		  index = src.indexOf('://'), // detect protocol mode
+		  i = 0,
+		  path, ln, part;
 
 	// process the protocol and setup the path
 	if(index > 0){
 		path = src;
 
-		OJ._protocol = src.substring(0, index - 1);
+		OJ._protocol = src.substring(0, index);
 	}
 	else{
-		path = window.location.href;
+		path = window.location.href + (src.charAt(0) == '/' ? src.substr(1) : src);
 
 		OJ._protocol = window.location.protocol.substring(-1);
 	}
 
 	path = path.split('/');
 	path.pop(); // remove the file name
-
-	// figure out where the root is
-	if((part = src.charAt(0)) == '/'){
-		path = path.slice(0, 3);
-	}
-	else{
-		src = src.split('/');
-
-		if(part == '.'){
-			for(ln = src.length - 1; i < ln; i++){
-				if((part = src[i]) == '..'){
-					path.pop();
-				}
-				else{
-					path.push(part);
-				}
-			}
-		}
-		else{
-
-		}
-
-//		if((index = src.indexOf('oj/')) == -1){
-//			if((index = src.indexOf('/js/')) > -1){
-//
-//			}
-//		}
-	}
+  path.pop(); // move up a directory
 
 	// detect the root
 	OJ.setRoot(path.join('/'));
@@ -1120,7 +1111,7 @@ window.OJ = function Oj(){
 	}
 
 	OJ._onOjResize = function(){
-		if(isFunction(OJ.addCss)){
+		if(isFunction(OJ.dispatchEvent) && isFunction(OJ.addCss)){
 			var vp = OJ._viewport,
 				w = window.innerWidth ? window.innerWidth : document.body.clientWidth,
 				h = window.innerHeight ? window.innerHeight : document.body.clientHeight,
@@ -1158,7 +1149,9 @@ window.OJ = function Oj(){
 	};
 
 	OJ._onOjOrientationChange = function(evt){
-		OJ.dispatchEvent(OjOrientationEvent.convertDomEvent(evt));
+    if(isFunction(OJ.dispatchEvent)){
+      OJ.dispatchEvent(OjOrientationEvent.convertDomEvent(evt));
+    }
 	};
 
 	// setup browser event listeners
@@ -1472,6 +1465,19 @@ Object.clone = function(obj){
 	}
 
 	return cloned;
+};
+
+Object.concat = function(obj, obj2/*, ...objs*/){
+    var key, i,
+        ln = arguments.length;
+
+    for(i = 1; i < ln; i++){
+      for(key in arguments[i]){
+        obj[key] = arguments[i][key];
+      }
+    }
+
+    return obj;
 };
 
 
@@ -1931,7 +1937,9 @@ function onDomReady(){
 	OJ.importJs('oj.events.OjTransformEvent');
 	OJ.importJs('oj.fx.OjFade');
 	OJ.importJs('oj.fx.OjTweenSet');
-    OJ.importCss('oj.OJ');
+
+  // import the required css
+  OJ.importCss('oj.OJ');
 
 	// create the OJ component
 	var tmp = new OjView();
@@ -1970,8 +1978,6 @@ function onDomReady(){
 
 	// dispatch load event
 	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
-
-
 
 	// setup the dom event proxy
 	OJ._setProxy(document.body);

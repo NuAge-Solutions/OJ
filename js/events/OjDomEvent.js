@@ -62,9 +62,11 @@ OJ.extendClass(
 		'SCROLL' : 'scroll',
 
 		// touch events
-		'TOUCH_START' : 'touchstart',
-		'TOUCH_MOVE'  : 'touchmove',
-		'TOUCH_END'   : 'touchend',
+		'TOUCH_CANCEL' : 'touchcancel',
+    'TOUCH_END'    : 'touchend',
+		'TOUCH_LEAVE'  : 'touchleave',
+    'TOUCH_MOVE'   : 'touchmove',
+		'TOUCH_START'  : 'touchstart',
 
 		// orientation events
 		'ORIENTATION_CHANGE' : 'orientationchange'

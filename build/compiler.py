@@ -24,6 +24,10 @@ parser.add_argument('--mode',
                     type=str, choices=['dev', 'prod'], default='prod',
                     help='The mode to compile in. Note that prod will automatically update dev as well.')
 
+parser.add_argument('--package',
+                    type=str, default=None,
+                    help='The package name to use.')
+
 parser.add_argument('--type',
                     type=str, choices=['all', 'css', 'js', 'theme'], default='all',
                     help='The file types to compile.')
@@ -34,4 +38,7 @@ parser.add_argument('--source', type=str, help='The path to the directory of the
 args = parser.parse_args()
 
 # compile
-oj.compile(args.source if args.source else src_path, mode=args.mode, output=True, profiles=args.profiles, type=args.type)
+oj.compile(
+    args.source if args.source else src_path,
+    mode=args.mode, output=True, profiles=args.profiles, type=args.type, package=args.package
+)

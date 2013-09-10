@@ -11,7 +11,7 @@ OJ.extendManager(
 
 
 		'_constructor' : function(){
-			this._super(OjObject, '_constructor', []);
+      this._super(OjObject, '_constructor', []);
 
 			var ready,
 				timer,

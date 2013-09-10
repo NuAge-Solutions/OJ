@@ -7,3 +7,7 @@
 .OjList > .items.horizontal {
 	white-space: nowrap;
 }
+
+.OjListItem .content {
+    line-height: normal;
+}

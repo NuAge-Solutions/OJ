@@ -190,6 +190,10 @@ OJ.extendManager(
 			window.location.href = 'tel:' + phone.getPath().substring(1);
 		},
 
+    'close' : function(){
+      window.close();
+    },
+
 		'email' : function(email){
 			window.location.href = 'mailto:' + email.getPath().substring(1);
 		},
@@ -226,7 +230,7 @@ OJ.extendManager(
 		},
 
 		'position' : function(modal){
-			// position the modal
+      // position the modal
 			var w = modal.getWidth(),
 				h = modal.getHeight(),
 				w2 = modal.getPaneWidth(),

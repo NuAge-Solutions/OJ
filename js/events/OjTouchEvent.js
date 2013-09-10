@@ -43,14 +43,16 @@ OJ.extendClass(
 
 			evt = OjDomEvent.normalizeDomEvent(evt);
 
-			if(evt.type == OjDomEvent.TOUCH_END){
-				type = OjTouchEvent.END;
-			}
-			else if(evt.type == OjDomEvent.TOUCH_MOVE){
+			if(evt.type == OjDomEvent.TOUCH_MOVE){
 				type = OjTouchEvent.MOVE;
 			}
 			else if(evt.type == OjDomEvent.TOUCH_START){
 				type = OjTouchEvent.START;
+			}
+      else if(
+        evt.type == OjDomEvent.TOUCH_END || evt.type == OjDomEvent.TOUCH_CANCEL || evt.type == OjDomEvent.TOUCH_LEAVE
+      ){
+				type = OjTouchEvent.END;
 			}
 
 			var new_evt = new OjTouchEvent(type, evt.changedTouches[0].pageX, evt.changedTouches[0].pageY, evt.bubbles, evt.cancelable);

@@ -11,7 +11,12 @@ OJ.importJs('oj.window.OjWindowManager');
 OJ.extendManager(
 	'MenuManager', 'OjMenuManager', [OjActionable],
 	{
-		'_menus' : null,  '_active' : null,  '_tweens' : null,
+    '_props_' : {
+      'menuClass' : OjMenu
+    },
+
+
+//		'_active': null,  '_menus': null,  '_tweens': null,
 
 
 		'_constructor' : function(){
@@ -37,7 +42,7 @@ OJ.extendManager(
 		},
 
 		'_positionMenu' : function(menu, target){
-			var pos = menu.getPositioning();
+      var pos = menu.getPositioning();
 			var rect, rect_vis;
 			var backup, visibility = 0;
 			var i, ln = pos.length;
@@ -55,15 +60,17 @@ OJ.extendManager(
 					backup = rect;
 				}
 
-				rect = null;
+        if(backup){
+          rect = null;
+        }
 			}
 
 			if(!rect){
 				rect = backup;
 			}
 
-			menu.setX(rect.left);
-			menu.setY(rect.top);
+			menu.setX(rect.getLeft());
+			menu.setY(rect.getTop());
 		},
 
 		'_removeMenus' : function(list){
@@ -164,23 +171,26 @@ OJ.extendManager(
 			}
 		},
 
-		'register' : function(target, content/*, positioning, parent_menu*/){
-			target.addEventListener(OjMouseEvent.CLICK, this, '_onTargetClick');
+    'makeMenu' : function(){
+      return this._menuClass.makeNew(arguments);
+    },
 
-			var menu = new OjMenu(content);
-			var ln = arguments.length;
+    'menu' : function(target, content/*, positioning, parent_menu*/){
+      // build the menu
+      var menu = this.makeMenu.apply(this, Array.slice(arguments, 1));
 
-			if(ln > 2){
-				menu.setPositioning(arguments[2]);
+      this.register(target, menu);
 
-				if(ln > 3){
-					menu.setParentMenu(arguments[3]);
-				}
-			}
-
-			this._menus[target.id()] = menu;
+      this.show(menu, target);
 
 			return menu;
+    },
+
+		'register' : function(target, menu){
+      // setup the target click listener
+      target.addEventListener(OjMouseEvent.CLICK, this, '_onTargetClick');
+
+      this._menus[target.id()] = menu;
 		},
 
 		'show' : function(menu/*, target*/){

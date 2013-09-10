@@ -31,33 +31,17 @@ OJ.extendClass(
 				this.cancelBtn.addEventListener(OjMouseEvent.CLICK, this, '_onCancelClick');
 			}
 
-			// process the arguments
-			var args = arguments,
-				ln = args.length;
-
-			if(ln){
-				this.setContent(args[0]);
-
-				if(ln > 1){
-					this.setTitle(args[1]);
-
-					if(ln > 2){
-						this.setButtons(args[2]);
-
-						if(ln > 3){
-							this.cancelBtn.setLabel(args[3]);
-						}
-						else{
-							this.cancelBtn.setLabel(OjAlert.CANCEL);
-						}
-					}
-				}
-			}
+      this._processArguments(arguments, {
+        'setContent': null,
+        'setTitle' : null,
+        'setButtons' : null,
+        'cancelBtn.setLabel' : OjAlert.CANCEL
+      });
 		},
 
 		'_destructor' : function(/*depth = 1*/){
 			var args = arguments,
-				depth = args.length ? args[0] : 0;
+				  depth = args.length ? args[0] : 0;
 
 			if(!depth){
 				// remove all the content so it doesn't get destroyed

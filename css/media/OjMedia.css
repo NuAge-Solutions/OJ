@@ -7,8 +7,8 @@
 
 	overflow: hidden;
 }
-/* prevents height rendering issue*/
-.OjMedia[v-align]:after {
+/* prevents height rendering issue */
+.OjMedia.is-loaded[v-align]:after {
 	display: none;
 }
 	.OjMedia .OjSpinner {
@@ -20,6 +20,7 @@
 		margin: -15px 0px 0px -15px;
 	}
 	.OjMedia .media {
+        display: inline-block;
 		border: none;
 	}
 

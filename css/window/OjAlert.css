@@ -1,12 +1,27 @@
-.WindowManager,
+.WindowManager {
+    position: fixed;
+
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+
+    overflow: hidden;
+
+    z-index: 999999;
+}
+
 .OjAlert {
 	position: absolute;
 
 	top: 0px;
 	left: 0px;
 
-	min-width: 100%;
-	min-height: 100%;
+	max-width: 100%;
+    min-width: 100%;
+
+    max-height: 100%;
+    min-height: 100%;
 
 	margin: 0px;
 	padding: 0px;
@@ -14,17 +29,14 @@
 	background: none;
 
 	overflow: auto;
-
-	z-index: 999999;
 }
 	.OjAlert > .underlay {
-		 position: absolute;
+		 position: fixed;
 
 		 top: 0px;
 		 left: 0px;
-
-		 width: 100%;
-		 height: 100%;
+         bottom: 0px;
+         right: 0px;
 
 		 margin: 0px;
 		 padding: 0px;
@@ -41,6 +53,9 @@
 
 		top: 50%;
 		left: 50%;
+
+        max-width: 100%;
+        max-height: 100%;
 
 		background: #0b1b44;
 

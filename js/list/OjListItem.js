@@ -15,18 +15,14 @@ OJ.extendComponent(
 		'accessory' : null,  'content' : null,  'icon' : null,
 
 
-		'_constructor' : function(/*data*/){
-			this._super(OjItemRenderer, '_constructor', []);
+		'_constructor' : function(/*group, data*/){
+			this._super(OjItemRenderer, '_constructor', arguments);
 
-			this.addChild(this.accessory = new OjStyleElement('<div class="-accessory valign-middle"></div>'));
+      this.addChild(this.accessory = new OjStyleElement('<div class="accessory" valign="m"></div>'));
 			this.addChild(this.icon = new OjImage());
-			this.addChild(this.content = new OjStyleElement('<div class="-content valign-middle"></div>'));
+			this.addChild(this.content = new OjStyleElement('<div class="content" valign="m"></div>'));
 
 			this.icon.addCss('-icon');
-
-			if(arguments.length){
-				this.setData(arguments[0]);
-			}
 		},
 
 		'_destructor' : function(/*depth = 0*/){

@@ -83,6 +83,7 @@ OJ.extendClass(
 		'REMOVED'  : 'onRemoved',
 		'SHOW'     : 'onShow',
 		'SUBMIT'   : 'onSubmit',
+    'UNLOAD'   : 'onUnload',
 
 		'ADDED_TO_DISPLAY'      : 'onAddToDisplay',
 		'REMOVED_FROM_DISPLAY'  : 'onRemovedFromDisplay'

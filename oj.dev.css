@@ -1,3 +1,44 @@
+/* Standard HTML Element Styles */
+* {
+	position: relative;
+
+	margin: 0px;
+	padding: 0px;
+
+	vertical-align: top;
+}
+*:focus {
+	outline: none;
+}
+
+html, body {
+	width: 100%;
+	min-width: 100%;
+
+	height: 100%;
+	min-height: 100%;
+
+	margin: 0px;
+	padding: 0px;
+
+	background: transparent;
+
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 0px;
+	text-align: left;
+	vertical-align: top;
+
+	z-index: -1;
+
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+}
+body:hover,
+body.is-mobile, body.is-tablet {
+	z-index: 0;
+}
+
 /* Utility Styles */
 .hidden {
 	display: none !important;
@@ -174,8 +215,8 @@
 
 	overflow: hidden;
 }
-/* prevents height rendering issue*/
-.OjMedia[v-align]:after {
+/* prevents height rendering issue */
+.OjMedia.is-loaded[v-align]:after {
 	display: none;
 }
 	.OjMedia .OjSpinner {
@@ -187,6 +228,7 @@
 		margin: -15px 0px 0px -15px;
 	}
 	.OjMedia .media {
+        display: inline-block;
 		border: none;
 	}
 
@@ -521,15 +563,30 @@
 	-moz-box-shadow:    none;
 	-webkit-box-shadow: none;
 	box-shadow:         none;
-}.WindowManager,
+}.WindowManager {
+    position: fixed;
+
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+
+    overflow: hidden;
+
+    z-index: 999999;
+}
+
 .OjAlert {
 	position: absolute;
 
 	top: 0px;
 	left: 0px;
 
-	min-width: 100%;
-	min-height: 100%;
+	max-width: 100%;
+    min-width: 100%;
+
+    max-height: 100%;
+    min-height: 100%;
 
 	margin: 0px;
 	padding: 0px;
@@ -537,17 +594,14 @@
 	background: none;
 
 	overflow: auto;
-
-	z-index: 999999;
 }
 	.OjAlert > .underlay {
-		 position: absolute;
+		 position: fixed;
 
 		 top: 0px;
 		 left: 0px;
-
-		 width: 100%;
-		 height: 100%;
+         bottom: 0px;
+         right: 0px;
 
 		 margin: 0px;
 		 padding: 0px;
@@ -564,6 +618,9 @@
 
 		top: 50%;
 		left: 50%;
+
+        max-width: 100%;
+        max-height: 100%;
 
 		background: #0b1b44;
 
@@ -1002,6 +1059,10 @@
 }
 .OjList > .items.horizontal {
 	white-space: nowrap;
+}
+
+.OjListItem .content {
+    line-height: normal;
 }.OjComboBox {}
     .OjComboBox > .wrapper > .psuedoInput .OjButton {
         display: inline-block;
@@ -1516,4 +1577,39 @@
 			font-weight: bold;
 
 			vertical-align: middle;
-		}
+		}.OjMenu {
+	position: absolute;
+
+	top: 0px;
+	left: 0px;
+
+	margin: 0px;
+	padding: 1px;
+
+	background: #FFF;
+
+	border: 1px solid #CCC;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+
+	-webkit-box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, .2);
+	box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, .2);
+
+	z-index: 999;
+}
+
+.OjMenu .OjView,
+.OjMenu .OjList.items, .OjMenu .OjList > .items
+.OjMenu .OjStack {
+	border: none;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.OjMenu > * {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}

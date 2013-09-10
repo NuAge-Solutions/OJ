@@ -48,16 +48,14 @@ OJ.extendComponent(
 
 
 		'_onMediaLoad' : function(evt){
-			var rtrn = this._super(OjMedia, '_onMediaLoad', arguments);
-
 			if(this._source_is_css){
-				this._media.addCss([this._source.substring(1)]);
+        this._media.addCss([this._source.substring(1)]);
 
 				this._original_w = this._media.getWidth();
 				this._original_h = this._media.getHeight();
 			}
 			else{
-				this._original_w = this._img.width;
+        this._original_w = this._img.width;
 				this._original_h = this._img.height;
 
 				if(!this.getWidth()){
@@ -71,40 +69,23 @@ OJ.extendComponent(
 				this._setStyle('backgroundImage', 'url(' + this._source + ')');
 			}
 
-			return rtrn;
+			return this._super(OjMedia, '_onMediaLoad', arguments);
 		},
 
 
 		'_setSource' : function(url){
-			// cleanup old source
-			if(this._source_is_css){
-				// remove old source css class
-				this._media.removeCss([this._source.substring(1)]);
-			}
-			else{
-				// remove old source background image
-				this._setStyle('backgroundImage', null);
-			}
-
 			this._super(OjMedia, '_setSource', arguments);
 
 			if(url){
 				// check to see if this is a css class
 				if(this._source_is_css = (this._source.charAt(0) == '@')){
 					// if the media holder doesn't exist then create it
-					if(!this._media){
-						this.addChild(this._media = this._makeMedia());
-					}
+					this.addChild(this._media = this._makeMedia());
 
 					// trigger the image load since its already loaded
 					this._onMediaLoad(null);
 				}
 				else{
-					// if previous source was a css image then remove the media holder
-					if(this._media){
-						this._unset('_media');
-					}
-
 					// make sure we have an image loader object
 					if(!this._img){
 						this._img = new Image();
@@ -112,7 +93,21 @@ OJ.extendComponent(
 					}
 				}
 			}
-		}
+		},
+
+    '_unload' : function(){
+      // cleanup old source
+			if(!this._source_is_css){
+        // remove old source background image
+				this._setStyle('backgroundImage', null);
+			}
+
+      this._unset('_media');
+
+      this._source_is_css = false;
+
+      this._super(OjMedia, '_unload', arguments);
+    }
 	},
 	{
 		'_TAGS' : ['img', 'image'],

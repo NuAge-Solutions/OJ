@@ -20,29 +20,16 @@ OJ.extendClass(
 		'_constructor' : function(/*content, positioning, parent_menu*/){
 			this._super(OjComponent, '_constructor', []);
 
-			// process arguments
-			var ln = arguments.length;
-
-			if(ln){
-				this.setContent(arguments[0]);
-
-				if(ln > 1){
-					this.setPositioning(arguments[1]);
-
-					if(ln > 2){
-						this.setParentMenu(arguments[2]);
-					}
-				}
-			}
-
-			if(!this._positioning){
-				this.setPositioning([
+      this._processArguments(arguments, {
+        'setContent'     : null,
+        'setPositioning' : [
 					OjMenu.RIGHT_MIDDLE, OjMenu.RIGHT_TOP, OjMenu.RIGHT_BOTTOM,
 					OjMenu.LEFT_MIDDLE, OjMenu.LEFT_TOP, OjMenu.LEFT_BOTTOM,
 					OjMenu.BOTTOM_LEFT, OjMenu.BOTTOM_CENTER, OjMenu.BOTTOM_RIGHT,
 					OjMenu.TOP_LEFT, OjMenu.TOP_CENTER, OjMenu.TOP_RIGHT
-				]);
-			}
+				],
+        'setParentMenu'  : null
+      });
 		},
 
 		'_destructor' : function(){
