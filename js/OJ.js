@@ -353,6 +353,16 @@ window.OJ = function Oj(){
       return window[ns];
     },
 
+    'definePackage' : function(ns, def/*, parents=[OjPackage]*/){
+      var cls = this.extendClass(ns, arguments.length > 2 ? arguments[2] : [OjPackage], def),
+          pkg = new cls();
+
+      window[ns.toUpperCase()] = pkg;
+
+      OJ.addEventListener(OjEvent.LOAD, pkg, '_onOjLoad');
+      OJ.addEventListener(OjEvent.READY, pkg, '_onOjReady');
+    },
+
 		'extendClass' : function(ns, parents, def/*, static_def*/){
 			// setup our vars & prototype
 			var key, parent,
@@ -1499,10 +1509,11 @@ String.prototype.ucFirst = function(){
 };
 
 String.prototype.capitalize = function(){
-	var words = this.split(' ');
-	var str = '', ln = words.length;
+	var str = '',
+      words = this.split(' '),
+      ln = words.length;
 
-	while(ln-- > 0){
+	for(; ln--;){
 		if(str != ''){
 			str = ' ' + str;
 		}
