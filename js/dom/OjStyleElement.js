@@ -322,7 +322,7 @@ OJ.extendClass(
 			}
 
 			var child, cls_path,
-				cls = dom.getAttribute('class-name');
+				  cls = dom.getAttribute('class-name');
 
 			tag = tag.toLowerCase();
 

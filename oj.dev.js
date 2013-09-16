@@ -18,7 +18,7 @@ window.OJ = function Oj(){
 			'cssExt' : '.css',  'cssPath' : 'css',
 			'dimUnit' : 'px',  'fontUnit' : 'px',  'init' : null,
 			'jsPath' : 'js',  'jsExt' : '.js',  'lazyLoad' : true,  'mode' : 'loading',
-			'target' : '#OJ',  'theme' : 'oj',  'themePath' : 'themes',
+			'target' : '#OJ',  'theme' : null,  'themePath' : 'themes',
 			'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
 			'waitForCss' : true,
 			'supportMessage' : 'Our apologies. Your browser is currently not supported. ' +
@@ -105,17 +105,15 @@ window.OJ = function Oj(){
 			return this._root + this._getClassPath(this._('tplPath'), path, this._('tplExt')) + this.getVersionQuery();
 		},
 		'_getThemePath' : function(path){
-			if(path.indexOf('/') != -1){
+			if(!path || path.indexOf('/') != -1){
 				return path;
 			}
 			var parts = path.split('.'),
-				prefix = parts.length == 1 ? path + '.' : '',
-				type = this._('themePath');
-			if(this._('mode') != this.DEV){
-				path += '-theme';
-				type = null;
-			}
-			return this._root + this._getClassPath(type, prefix + path, this._('cssExt')) + this.getVersionQuery();
+				prefix = parts.length == 1 ? path + '.' : '';
+			return this._root + this._getClassPath(
+        null, prefix + path + '-theme',
+        (this._('mode') == this.DEV ? '.dev' : '') + this._('cssExt')
+      ) + this.getVersionQuery();
 		},
 		'_handleEvent' : function(action, type, context, func){
 			this._events.push({
@@ -154,16 +152,18 @@ window.OJ = function Oj(){
 
 		// public functions
 		'addEventListener' : function(type, context, func){
-				this._handleEvent('add', type, context, func);
-			},
-		'addCssFile' : function(css/*, is_path*/){
-			var elm;
+      this._handleEvent('add', type, context, func);
+    },
+		'loadCss' : function(css/*, is_path=false, async=true*/){
+			var elm, head;
+      // check to see if the value is a path
 			if(arguments.length > 1 && arguments[1]){
-				elm = document.createElement('link');
-				elm.setAttribute('rel', 'stylesheet');
-				elm.setAttribute('type','text/css');
-				elm.setAttribute('href', css);
+        elm = document.createElement('link');
+        elm.setAttribute('rel', 'stylesheet');
+        elm.setAttribute('type','text/css');
+        elm.setAttribute('href', css);
 			}
+      // check to see if we have any css data
 			else if(css){
 				elm = document.createElement('style');
 				elm.type = 'text/css';
@@ -177,21 +177,25 @@ window.OJ = function Oj(){
 			else{
 				return null;
 			}
-			var head = document.getElementsByTagName('head')[0];
+      // add the css element to the head
+			head = document.getElementsByTagName('head')[0];
+      // if we have a theme elm then we want to insert the css before the theme elm
+      // so that it doesn't override the theme css
 			if(this._theme_elm){
 				head.insertBefore(elm, this._theme_elm);
 			}
+      // otherwise just add it to the end of the head
 			else{
 				head.appendChild(elm);
 			}
 			return elm;
 		},
 		// dynamically add js to page
-		'addJsFile' : function(js/*, is_path=false, async=false*/){
+		'loadJs' : function(js/*, is_path=true, async=true*/){
 			var args = arguments,
 				ln = args.length,
-				is_path = ln > 1 ? args[1] : false,
-				is_async = ln > 2 ? args[2] : false;
+				is_path = ln > 1 ? args[1] : true,
+				is_async = ln > 2 ? args[2] : true;
 			try{
 				if(this._('mode') != this.LOADING || is_async){
 					var elm = document.createElement('script');
@@ -210,7 +214,9 @@ window.OJ = function Oj(){
 					return elm;
 				}
 			}
-			catch(e){}
+			catch(e){
+        // ignore the error and load the js the old fashion way
+      }
 			if(is_path){
 				document.write('<scri' + 'pt type="text/javascript" language="javascript" src="' + js + '"></scr' + 'ipt>');
 			}
@@ -276,6 +282,13 @@ window.OJ = function Oj(){
 				}
       }
       return window[ns];
+    },
+    'definePackage' : function(ns, def/*, parents=[OjPackage]*/){
+      var cls = this.extendClass(ns, arguments.length > 2 ? arguments[2] : [OjPackage], def),
+          pkg = new cls();
+      window[ns.toUpperCase()] = pkg;
+      OJ.addEventListener(OjEvent.LOAD, pkg, '_onOjLoad');
+      OJ.addEventListener(OjEvent.READY, pkg, '_onOjReady');
     },
 		'extendClass' : function(ns, parents, def/*, static_def*/){
 			// setup our vars & prototype
@@ -412,53 +425,11 @@ window.OJ = function Oj(){
 			}
 			return def;
 		},
-		'importCss' : function(path/*, data, wait_for_css*/){
-			var css_path = this._getCssImportPath(path);
-			if(this._library){
-				var was_loaded = this._library.isLoaded(css_path);
-				var ln = arguments.length, css_data = ln > 1 ? arguments[1] : null, elm;
-				if(!was_loaded){
-					if(
-						this._('lazyLoad') && this._protocol != this.FILE &&
-							(this._('waitForCss') || (ln > 2 && arguments[2]))
-						){
-						elm = this.addCssFile(this._library.load(css_path));
-					}
-					else if(isFunction(document.createStyleSheet)){
-						elm = document.createStyleSheet(css_path);
-					}
-					else{
-						elm = this.addCssFile(css_path, true);
-					}
-					this._library.setAsset(css_path, true);
-				}
-				return elm;
-			}
-			if(!this._loaded[css_path]){
-				this._loaded[css_path] = true;
-				return this.addCssFile(css_path, true);
-			}
-			return null;
+		'importCss' : function(path){
+      return this.loadCss(this._getCssImportPath(path), true, false);
 		},
-		'importJs' : function(path/*, data*/){
-			var js_path = this._getJsImportPath(path);
-			if(this._library){
-				var was_loaded = this._library.isLoaded(js_path);
-				if(!was_loaded){
-					if(this._('lazyLoad') && this._protocol != this.FILE){
-						this.addJsFile(arguments.length > 1 ? arguments[1] : this._library.load(js_path));
-					}
-					else{
-						this.addJsFile(js_path, true);
-					}
-					this._library.setAsset(js_path, true);
-				}
-				return arguments.length > 1 ? arguments[1] : this._library.load(js_path);
-			}
-			if(!this._loaded[js_path]){
-				this._loaded[js_path] = true;
-				this.addJsFile(js_path, true);
-			}
+		'importJs' : function(path){
+      return this.loadJs(this._getJsImportPath(path), true, false);
 		},
 		'importTemplate' : function(path/*, data*/){
 			var template_path = this._getTemplateImportPath(path),
@@ -573,23 +544,22 @@ window.OJ = function Oj(){
 			}
 			var val = arguments[1];
 			if(key == 'theme'){
-				var sep = '/',
-					old_path = this._compiled_theme_path,
-					path = this._getThemePath(val);
+				var ln, elms,
+            old_path = this._compiled_theme_path,
+					  path = this._getThemePath(val);
 				// check for change
-				if(path.indexOf(old_path) > -1){
+				if(!path || path.indexOf(old_path) > -1){
 					return;
 				}
-				var elms = document.getElementsByTagName('link'),
-					ln = elms.length;
+				elms = document.getElementsByTagName('link');
 				this._compiled_theme_path = this._path;
-				for(; ln--;){
-					if(elms[ln].getAttribute('href').indexOf(old_path)> -1){
+				for(ln = elms.length; ln--;){
+					if(elms[ln].getAttribute('href').indexOf(old_path) > -1){
 						elms[ln].setAttribute('href', path);
 						return;
 					}
 				}
-				this._theme_elm = this.importCss(path);
+				this._theme_elm = this.loadCss(path, true);
 			}
 			this._settings[key] = val;
 		},
@@ -1189,9 +1159,10 @@ String.prototype.ucFirst = function(){
 	return this.charAt(0).toUpperCase() + this.slice(1);
 };
 String.prototype.capitalize = function(){
-	var words = this.split(' ');
-	var str = '', ln = words.length;
-	while(ln-- > 0){
+	var str = '',
+      words = this.split(' '),
+      ln = words.length;
+	for(; ln--;){
 		if(str != ''){
 			str = ' ' + str;
 		}
@@ -4425,7 +4396,7 @@ OJ.extendClass(
 				return isEmpty(dom.nodeValue) ? null : new OjTextElement(dom);
 			}
 			var child, cls_path,
-				cls = dom.getAttribute('class-name');
+				  cls = dom.getAttribute('class-name');
 			tag = tag.toLowerCase();
 			// if this is a script or link tag ignore it
 			if(tag == 'script' || tag == 'link'){
@@ -10540,6 +10511,18 @@ OJ.extendComponent(
 	{
 		'_TAGS' : ['item']
 	}
+);
+
+OJ.extendClass(
+  'OjPackage', [OjActionable],
+  {
+    '_onOjLoad' : function(evt){
+      OJ.removeEventListener(OjEvent.LOAD, this, '_onOjLoad');
+    },
+    '_onOjReady' : function(evt){
+      OJ.removeEventListener(OjEvent.READY, this, '_onOjReady');
+    }
+  }
 );
 
 OJ.extendClass(
