@@ -156,8 +156,6 @@ OJ.extendClass(
 
 			this._super(OjElement, '_constructor', [source, context]);
 
-			OjElement.register(this);
-
 			this.setHAlign(this._h_align);
 			this.setVAlign(this._v_align);
 		},
@@ -270,12 +268,16 @@ OJ.extendClass(
 
 		'_processAttributes' : function(dom, context){
 			var attrs = dom.attributes,
-				ln, attr;
+          priority = ['var', 'id'],
+          ln = priority.length,
+				  attr;
 
-      // variable reference
-			if((attr = dom.attributes['var']) && this._processAttribute(dom, attr, context)){
-				dom.removeAttribute('var');
-			}
+      // process priority attributes first reference
+      for(; ln--;){
+        if((attr = dom.attributes[priority[ln]]) && this._processAttribute(dom, attr, context)){
+          dom.removeAttribute(priority[ln]);
+        }
+      }
 
 			// class name
 			dom.removeAttribute('class-name');
@@ -478,10 +480,16 @@ OJ.extendClass(
 		},
 
 		'_onDomOjMouseEvent' : function(evt){
-			var proxy = OjElement.element(this);
+      var proxy = OjElement.element(this);
 
 			if(proxy && proxy._processEvent(evt)){
-				proxy._onEvent(OjMouseEvent.convertDomEvent(evt));
+        evt = OjMouseEvent.convertDomEvent(evt);
+
+        proxy._onEvent(evt);
+
+        if(evt.getType() == OjMouseEvent.DOWN && proxy.hasEventListener(OjMouseEvent.UP_OUTSIDE)){
+          OJ.addEventListener(OjMouseEvent.UP, proxy, '_onOjMouseUp');
+        }
 			}
 		},
 
@@ -594,6 +602,16 @@ OJ.extendClass(
 			this._page_y = page_y;
 		},
 
+    '_onOjMouseUp' : function(evt){
+      OJ.removeEventListener(OjMouseEvent.UP, this, '_onOjMouseUp');
+
+      if(this.hitTestPoint(evt.getPageX(), evt.getPageY())){
+        return;
+      }
+
+      this.dispatchEvent(evt);
+    },
+
 		'_onScroll' : function(evt){
 			var x, y;
 
@@ -654,25 +672,29 @@ OJ.extendClass(
 		// customize this functionality for dom events so that they work
 		'_updateTouchStartListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.CLICK, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
-				this._proxy.ontouchstart = null;
+				this._eventProxy.ontouchstart = null;
 			}
 		},
 
 		'_updateTouchMoveListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.MOVE, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){//}, OjScrollEvent.SCROLL)){
-				this._proxy.ontouchmove = null;
+				this._eventProxy.ontouchmove = null;
 			}
 		},
 
 		'_updateTouchEndListeners' : function(){
-			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.CLICK, OjDragEvent.END)){
-				this._proxy.ontouchcancel = this._proxy.ontouchend = this._proxy.ontouchleave = null;
+			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.UP_OUTSIDE, OjMouseEvent.CLICK, OjDragEvent.END)){
+				this._eventProxy.ontouchcancel = this._eventProxy.ontouchend = this._eventProxy.ontouchleave = null;
 			}
 		},
 
 		'addEventListener' : function(type){
 			var is_touch = OJ.isTouchCapable(),
-				proxy = this._proxy;
+				  proxy = this._proxy;
+
+      if(proxy == document.body){
+        proxy = window;
+      }
 
 			this._super(OjElement, 'addEventListener', arguments);
 
@@ -728,6 +750,14 @@ OJ.extendClass(
 					proxy.onmouseup = this._onDomOjMouseEvent;
 				}
 			}
+      else if(type == OjMouseEvent.UP_OUTSIDE){
+        if(is_touch){
+          proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousedown = this._onDomOjMouseEvent;
+				}
+      }
 
 			// drag events
 			else if(OjDragEvent.isDragEvent(type)){
@@ -787,6 +817,10 @@ OJ.extendClass(
 		'removeEventListener' : function(type, context, callback){
 			var proxy = this._proxy;
 
+      if(proxy == document.body){
+        proxy = window;
+      }
+
 			this._super(OjElement, 'removeEventListener', arguments);
 
 			// scroll events
@@ -818,7 +852,7 @@ OJ.extendClass(
 				}
 			}
 			else if(type == OjMouseEvent.DOWN){
-				if(!this.hasEventListeners(OjMouseEvent.DOWN, OjDragEvent.DRAG)){
+				if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.UP_OUTSIDE, OjDragEvent.DRAG)){
 					proxy.onmousedown = null;
 
 					this._updateTouchStartListeners();
@@ -848,6 +882,15 @@ OJ.extendClass(
 					this._updateTouchEndListeners();
 				}
 			}
+      else if(type == OjMouseEvent.UP_OUTSIDE){
+        if(!this.hasEventListener(OjMouseEvent.DOWN)){
+          proxy.onmousedown = null;
+
+          OJ.removeEventListener(OjMouseEvent.UP, proxy, '_onOjMouseUp');
+
+          this._updateTouchEndListeners();
+        }
+      }
 
 			// drag events
 			else if(OjDragEvent.isDragEvent(type)){
@@ -1202,7 +1245,13 @@ OJ.extendClass(
 				return
 			}
 
+      // unregister the old id
+      OjElement.unregister(this);
+
 			this._dom.id = this._id = val;
+
+      // register the new id
+      OjElement.register(this);
 		},
 
 		'setName' : function(val){

@@ -6,11 +6,10 @@ OJ.importJs('oj.data.OjObject');
 OJ.extendClass(
 	'OjActionable', [OjObject],
 	{
-		'_props_' : {
-			'eventProxy' : null
-		},
 
 		'_prevent_dispatch' : false,
+
+//    '_eventProxy' : null,
 
 
 		'_constructor' : function(){
@@ -110,7 +109,7 @@ OJ.extendClass(
 		},
 
 
-		'setEventProxy' : function(proxy){
+		'_setEventProxy' : function(proxy){
 			if(this._eventProxy){
 				this.removeAllListeners();
 

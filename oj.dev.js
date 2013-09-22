@@ -124,32 +124,6 @@ window.OJ = function Oj(){
 			});
 		},
 
-		// event handling functions
-		'_onTouchEvent' : function(evt){
-			var touches = evt.changedTouches, first = touches[0], type = '';
-			switch(evt.type){
-				case 'touchstart':
-					type = 'mousedown';
-					break;
-				case 'touchmove':
-					type = 'mousemove';
-					break;
-				case 'touchend':
-					type = 'mouseup';
-					break;
-				default: return;
-			}
-			var simulatedEvent = document.createEvent('MouseEvent');
-			simulatedEvent.initMouseEvent(
-				type, true, true, window, 1,
-				first.screenX, first.screenY,
-				first.clientX, first.clientY, false,
-				false, false, false, 0, null
-			);
-			first.target.dispatchEvent(simulatedEvent);
-			evt.preventDefault();
-		},
-
 		// public functions
 		'addEventListener' : function(type, context, func){
       this._handleEvent('add', type, context, func);
@@ -397,7 +371,7 @@ window.OJ = function Oj(){
 		},
 
 		'guid' : function(){
-			return (arguments.length ? arguments[0]._class_name : 'func') + '_' + this._guid++;
+			return (arguments.length ? 'OJ' : 'func') + '_' + this._guid++;
 		},
 		'implementInterface' : function(/*intrfc1, intrfc2, ..., def*/){
 			var key, intrfc,
@@ -1513,10 +1487,10 @@ function onDomReady(){
 	tmp.bulkSet(OJ);
 	tmp.addCss('OJ');
 	window.OJ = tmp;
-	// dispatch load event
-	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
 	// setup the dom event proxy
 	OJ._setProxy(document.body);
+  // dispatch load event
+	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
 	// hack so that we can capture taps in iOS
 	if(OJ._os == OJ.IOS){
 		tmp.dom().onclick = function(){};
@@ -1563,7 +1537,6 @@ function onDomReady(){
 }
 // on oj ready event handler
 function onOjReady(){
-//    trace(OjStyleElement.getStyle(document.body, 'minWidth'));
 	if(isEmpty(OjStyleElement.getStyle(document.body, 'minWidth'))){
 		return;
 	}
@@ -1999,10 +1972,8 @@ window.toJson = function(obj){
 OJ.extendClass(
 	'OjActionable', [OjObject],
 	{
-		'_props_' : {
-			'eventProxy' : null
-		},
 		'_prevent_dispatch' : false,
+//    '_eventProxy' : null,
 
 		'_constructor' : function(){
 			this._eventProxy = this;
@@ -2078,7 +2049,7 @@ OJ.extendClass(
 			EventManager.dispatchEvent(this._eventProxy, evt);
 		},
 
-		'setEventProxy' : function(proxy){
+		'_setEventProxy' : function(proxy){
 			if(this._eventProxy){
 				this.removeAllListeners();
 				// todo: add in a way to transfer existing listeners to the new proxy
@@ -2222,6 +2193,9 @@ OJ.extendManager(
 			if(evt.isCanceled()){
 				return;
 			}
+      if(target == window){
+        target = OJ;
+      }
 			var events = this._events,
 				target_id = target.id(),
 				listener, listeners, key;
@@ -2247,7 +2221,7 @@ OJ.extendManager(
 		'addEventListener' : function(target, type, context, callback){
 			// make sure the callback is a function
 			callback = isString(callback) ? context[callback] : callback;
-			// get the unique ids needed to qualify listeners
+      // get the unique ids needed to qualify listeners
 			var events = this._events,
 				target_id = target.id(),
 				context_id = context == window ? 'window' : context.id(),
@@ -2273,7 +2247,7 @@ OJ.extendManager(
 		},
 		'dispatchEvent' : function(target, evt){
 			var type = evt.getType(),
-				parent;
+				  parent;
 			evt._target = evt._target ? evt._target : target;
 			evt._currentTarget = target;
 			this._dispatchEvents(evt, type, target);
@@ -2288,12 +2262,12 @@ OJ.extendManager(
 			}
 		},
 		'hasEventListener' : function(target, type){
-			var events = this._events;
-			if(events[type] && events[type][target.id()]){
-				return true;
-			}
-			return false;
+      var events = this._events[type];
+			return events && events[target.id()];
 		},
+    'hasEventListeners' : function(type){
+      return this._events[type] ? true : false;
+    },
 		'_removeEventListener' : function(target_id, type, context_id, guid){
 			var events = this._events,
 				index = this._index,
@@ -2323,7 +2297,7 @@ OJ.extendManager(
 			}
 		},
 		'removeAllListeners' : function(target){
-			var target_id = target.id(),
+      var target_id = target.id(),
 				events, evt;
 			if(events = this._index[target_id]){
 				for(evt in events){
@@ -2333,7 +2307,7 @@ OJ.extendManager(
 			}
 		},
 		'removeEventListener' : function(target, type, context, callback){
-			var events = this._events,
+      var events = this._events,
 				target_id = target.id(),
 				context_id = context.id(),
 				guid;
@@ -3525,13 +3499,13 @@ OJ.extendClass(
 			// set the dom
 			// if no source present then create one
 			this._setDom(source, context);
+      OjElement.register(this);
 		},
 		'_destructor' : function(/*depth = 0*/){
 			OjElement.unregister(this);
 			// remove from parent
 			this.setParent(null);
 			if(this._dom){
-				delete this._dom.ojElm;
 				delete this._dom.ojProxy;
 				// release the vars
 				this._dom = this._proxy = null;
@@ -3542,19 +3516,32 @@ OJ.extendClass(
 
 		'_setDom' : function(dom_elm){
 			this._setProxy(this._dom = dom_elm);
-			this._dom.ojElm = this.id();
+			this._dom.id = this.getId();
 		},
 		'_setProxy' : function(dom_elm){
 			if(this._proxy){
 				this._proxy.ojProxy = null;
 			}
-			this._proxy = dom_elm;
-			dom_elm.ojProxy = this.id();
+			(this._proxy = dom_elm).ojProxy = this.getId();
 		},
 		'_isDisplayed' : function(){ },
 		'_isNotDisplayed' : function(){ },
 
-		// Non-Stlye Getter & Setter Functions
+		'_setIsDisplayed' : function(displayed){
+			if(this._is_displayed == displayed){
+				return;
+			}
+			if(this._is_displayed = displayed){
+				this._isDisplayed();
+				this.dispatchEvent(new OjEvent(OjEvent.ADDED_TO_DISPLAY));
+			}
+			else{
+				this._isNotDisplayed();
+				this.dispatchEvent(new OjEvent(OjEvent.REMOVED_FROM_DISPLAY));
+			}
+		},
+
+		// Non-Style Getter & Setter Functions
 		'dom' : function(){
 			return this._dom;
 		},
@@ -3568,6 +3555,7 @@ OJ.extendClass(
 		'parent' : function(){
 			return OjElement.element(this._dom.parentNode);
 		},
+
 		'getParent' : function(){
 			return OjElement.element(this._dom.parentNode);
 		},
@@ -3578,30 +3566,17 @@ OJ.extendClass(
 			else if(parent = this.parent()){
 				parent.removeChild(this);
 			}
-		},
-		'_setIsDisplayed' : function(displayed){
-			if(this._is_displayed == displayed){
-				return;
-			}
-			if(this._is_displayed = displayed){
-				this._isDisplayed();
-				this.dispatchEvent(new OjEvent(OjEvent.ADDED_TO_DISPLAY));
-			}
-			else{
-				this._isNotDisplayed();
-				this.dispatchEvent(new OjEvent(OjEvent.REMOVED_FROM_DISPLAY));
-			}
 		}
 	},
 	{
 		'_elms' : {},
 		'byId' : function(id){
 			var elms = this._elms,
-				elm;
+				  elm;
 			if(elms[id]){
 				return elms[id];
 			}
-			return (elm = document.getElementById(id)) && elm.ojProxy ? elms[elm.ojProxy] : null;
+			return (elm = document.getElementById(id)) ? elms[elm.id] : null;
 		},
 		'elm' : function(tag){
 			return document.createElement(tag);
@@ -3611,12 +3586,12 @@ OJ.extendClass(
 				return null;
 			}
 			if(isDomElement(obj)){
-				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.ojProxy);
+				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
 			}
 			if(isObjective(obj)){
 				return obj;
 			}
-			return new OjStyleElement(obj);
+			return obj == window ? OJ : new OjStyleElement(obj);
 		},
 		'hasDomElement' : function(haystack, needle){
 			if(haystack == needle){
@@ -3650,11 +3625,11 @@ OJ.extendClass(
 			return null;
 		},
 		'register' : function(elm){
-			this._elms[elm.id()] = elm;
+			this._elms[elm.getId()] = elm;
 //			trace(Object.keys(this._elms).length);
 		},
 		'unregister' : function(elm){
-			delete this._elms[elm.id()];
+			delete this._elms[elm.getId()];
 //			trace(Object.keys(this._elms).length);
 		}
 	}
@@ -3900,6 +3875,7 @@ OJ.extendClass(
 		'RIGHT_UP'     : 'onMouseRightUp',
 		'RIGHT_DOWN'   : 'onMouseRightDown',
 		'UP'           : 'onMouseUp',
+    'UP_OUTSIDE'   : 'onMouseUpOutside',
 		'WHEEL'        : 'onMouseWheel'
 	}
 );
@@ -4262,7 +4238,6 @@ OJ.extendClass(
 				}
 			}
 			this._super(OjElement, '_constructor', [source, context]);
-			OjElement.register(this);
 			this.setHAlign(this._h_align);
 			this.setVAlign(this._v_align);
 		},
@@ -4356,11 +4331,15 @@ OJ.extendClass(
 		},
 		'_processAttributes' : function(dom, context){
 			var attrs = dom.attributes,
-				ln, attr;
-      // variable reference
-			if((attr = dom.attributes['var']) && this._processAttribute(dom, attr, context)){
-				dom.removeAttribute('var');
-			}
+          priority = ['var', 'id'],
+          ln = priority.length,
+				  attr;
+      // process priority attributes first reference
+      for(; ln--;){
+        if((attr = dom.attributes[priority[ln]]) && this._processAttribute(dom, attr, context)){
+          dom.removeAttribute(priority[ln]);
+        }
+      }
 			// class name
 			dom.removeAttribute('class-name');
 			// class path
@@ -4516,9 +4495,13 @@ OJ.extendClass(
 			}
 		},
 		'_onDomOjMouseEvent' : function(evt){
-			var proxy = OjElement.element(this);
+      var proxy = OjElement.element(this);
 			if(proxy && proxy._processEvent(evt)){
-				proxy._onEvent(OjMouseEvent.convertDomEvent(evt));
+        evt = OjMouseEvent.convertDomEvent(evt);
+        proxy._onEvent(evt);
+        if(evt.getType() == OjMouseEvent.DOWN && proxy.hasEventListener(OjMouseEvent.UP_OUTSIDE)){
+          OJ.addEventListener(OjMouseEvent.UP, proxy, '_onOjMouseUp');
+        }
 			}
 		},
 		'_onDomOjKeyboardEvent' : function(evt){
@@ -4608,6 +4591,13 @@ OJ.extendClass(
 			this._page_x = page_x;
 			this._page_y = page_y;
 		},
+    '_onOjMouseUp' : function(evt){
+      OJ.removeEventListener(OjMouseEvent.UP, this, '_onOjMouseUp');
+      if(this.hitTestPoint(evt.getPageX(), evt.getPageY())){
+        return;
+      }
+      this.dispatchEvent(evt);
+    },
 		'_onScroll' : function(evt){
 			var x, y;
 			// for native scroll events
@@ -4656,22 +4646,25 @@ OJ.extendClass(
 		// customize this functionality for dom events so that they work
 		'_updateTouchStartListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.CLICK, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
-				this._proxy.ontouchstart = null;
+				this._eventProxy.ontouchstart = null;
 			}
 		},
 		'_updateTouchMoveListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.MOVE, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){//}, OjScrollEvent.SCROLL)){
-				this._proxy.ontouchmove = null;
+				this._eventProxy.ontouchmove = null;
 			}
 		},
 		'_updateTouchEndListeners' : function(){
-			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.CLICK, OjDragEvent.END)){
-				this._proxy.ontouchcancel = this._proxy.ontouchend = this._proxy.ontouchleave = null;
+			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.UP_OUTSIDE, OjMouseEvent.CLICK, OjDragEvent.END)){
+				this._eventProxy.ontouchcancel = this._eventProxy.ontouchend = this._eventProxy.ontouchleave = null;
 			}
 		},
 		'addEventListener' : function(type){
 			var is_touch = OJ.isTouchCapable(),
-				proxy = this._proxy;
+				  proxy = this._proxy;
+      if(proxy == document.body){
+        proxy = window;
+      }
 			this._super(OjElement, 'addEventListener', arguments);
 			if(type == OjScrollEvent.SCROLL){
 				this._scrollable = true;
@@ -4722,6 +4715,14 @@ OJ.extendClass(
 					proxy.onmouseup = this._onDomOjMouseEvent;
 				}
 			}
+      else if(type == OjMouseEvent.UP_OUTSIDE){
+        if(is_touch){
+          proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
+				}
+				else{
+					proxy.onmousedown = this._onDomOjMouseEvent;
+				}
+      }
 			// drag events
 			else if(OjDragEvent.isDragEvent(type)){
 				this._draggable = true;
@@ -4771,6 +4772,9 @@ OJ.extendClass(
 		},
 		'removeEventListener' : function(type, context, callback){
 			var proxy = this._proxy;
+      if(proxy == document.body){
+        proxy = window;
+      }
 			this._super(OjElement, 'removeEventListener', arguments);
 			// scroll events
 			if(type == OjScrollEvent.SCROLL){
@@ -4796,7 +4800,7 @@ OJ.extendClass(
 				}
 			}
 			else if(type == OjMouseEvent.DOWN){
-				if(!this.hasEventListeners(OjMouseEvent.DOWN, OjDragEvent.DRAG)){
+				if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.UP_OUTSIDE, OjDragEvent.DRAG)){
 					proxy.onmousedown = null;
 					this._updateTouchStartListeners();
 				}
@@ -4823,6 +4827,13 @@ OJ.extendClass(
 					this._updateTouchEndListeners();
 				}
 			}
+      else if(type == OjMouseEvent.UP_OUTSIDE){
+        if(!this.hasEventListener(OjMouseEvent.DOWN)){
+          proxy.onmousedown = null;
+          OJ.removeEventListener(OjMouseEvent.UP, proxy, '_onOjMouseUp');
+          this._updateTouchEndListeners();
+        }
+      }
 			// drag events
 			else if(OjDragEvent.isDragEvent(type)){
 				if(!this.hasEventListeners(OjDragEvent.DRAG, OjDragEvent.END, OjDragEvent.START)){
@@ -5104,7 +5115,11 @@ OJ.extendClass(
 			if(this._id == val){
 				return
 			}
+      // unregister the old id
+      OjElement.unregister(this);
 			this._dom.id = this._id = val;
+      // register the new id
+      OjElement.register(this);
 		},
 		'setName' : function(val){
 			if(this._name == val){

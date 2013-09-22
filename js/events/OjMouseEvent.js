@@ -100,6 +100,7 @@ OJ.extendClass(
 		'RIGHT_UP'     : 'onMouseRightUp',
 		'RIGHT_DOWN'   : 'onMouseRightDown',
 		'UP'           : 'onMouseUp',
+    'UP_OUTSIDE'   : 'onMouseUpOutside',
 		'WHEEL'        : 'onMouseWheel'
 	}
 );

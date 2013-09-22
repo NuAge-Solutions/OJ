@@ -74,6 +74,10 @@ OJ.extendManager(
 				return;
 			}
 
+      if(target == window){
+        target = OJ;
+      }
+
 			var events = this._events,
 				target_id = target.id(),
 				listener, listeners, key;
@@ -108,7 +112,7 @@ OJ.extendManager(
 			// make sure the callback is a function
 			callback = isString(callback) ? context[callback] : callback;
 
-			// get the unique ids needed to qualify listeners
+      // get the unique ids needed to qualify listeners
 			var events = this._events,
 				target_id = target.id(),
 				context_id = context == window ? 'window' : context.id(),
@@ -139,7 +143,7 @@ OJ.extendManager(
 
 		'dispatchEvent' : function(target, evt){
 			var type = evt.getType(),
-				parent;
+				  parent;
 
 			evt._target = evt._target ? evt._target : target;
 			evt._currentTarget = target;
@@ -160,14 +164,14 @@ OJ.extendManager(
 		},
 
 		'hasEventListener' : function(target, type){
-			var events = this._events;
+      var events = this._events[type];
 
-			if(events[type] && events[type][target.id()]){
-				return true;
-			}
-
-			return false;
+			return events && events[target.id()];
 		},
+
+    'hasEventListeners' : function(type){
+      return this._events[type] ? true : false;
+    },
 
 		'_removeEventListener' : function(target_id, type, context_id, guid){
 			var events = this._events,
@@ -206,7 +210,7 @@ OJ.extendManager(
 		},
 
 		'removeAllListeners' : function(target){
-			var target_id = target.id(),
+      var target_id = target.id(),
 				events, evt;
 
 			if(events = this._index[target_id]){
@@ -219,7 +223,7 @@ OJ.extendManager(
 		},
 
 		'removeEventListener' : function(target, type, context, callback){
-			var events = this._events,
+      var events = this._events,
 				target_id = target.id(),
 				context_id = context.id(),
 				guid;

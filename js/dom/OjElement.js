@@ -24,6 +24,8 @@ OJ.extendClass(
 			// set the dom
 			// if no source present then create one
 			this._setDom(source, context);
+
+      OjElement.register(this);
 		},
 
 		'_destructor' : function(/*depth = 0*/){
@@ -33,7 +35,6 @@ OJ.extendClass(
 			this.setParent(null);
 
 			if(this._dom){
-				delete this._dom.ojElm;
 				delete this._dom.ojProxy;
 
 				// release the vars
@@ -48,7 +49,7 @@ OJ.extendClass(
 		'_setDom' : function(dom_elm){
 			this._setProxy(this._dom = dom_elm);
 
-			this._dom.ojElm = this.id();
+			this._dom.id = this.getId();
 		},
 
 		'_setProxy' : function(dom_elm){
@@ -56,9 +57,7 @@ OJ.extendClass(
 				this._proxy.ojProxy = null;
 			}
 
-			this._proxy = dom_elm;
-
-			dom_elm.ojProxy = this.id();
+			(this._proxy = dom_elm).ojProxy = this.getId();
 		},
 
 		'_isDisplayed' : function(){ },
@@ -66,7 +65,25 @@ OJ.extendClass(
 		'_isNotDisplayed' : function(){ },
 
 
-		// Non-Stlye Getter & Setter Functions
+		'_setIsDisplayed' : function(displayed){
+			if(this._is_displayed == displayed){
+				return;
+			}
+
+			if(this._is_displayed = displayed){
+				this._isDisplayed();
+
+				this.dispatchEvent(new OjEvent(OjEvent.ADDED_TO_DISPLAY));
+			}
+			else{
+				this._isNotDisplayed();
+
+				this.dispatchEvent(new OjEvent(OjEvent.REMOVED_FROM_DISPLAY));
+			}
+		},
+
+
+		// Non-Style Getter & Setter Functions
 		'dom' : function(){
 			return this._dom;
 		},
@@ -85,6 +102,7 @@ OJ.extendClass(
 			return OjElement.element(this._dom.parentNode);
 		},
 
+
 		'getParent' : function(){
 			return OjElement.element(this._dom.parentNode);
 		},
@@ -95,23 +113,6 @@ OJ.extendClass(
 			else if(parent = this.parent()){
 				parent.removeChild(this);
 			}
-		},
-
-		'_setIsDisplayed' : function(displayed){
-			if(this._is_displayed == displayed){
-				return;
-			}
-
-			if(this._is_displayed = displayed){
-				this._isDisplayed();
-
-				this.dispatchEvent(new OjEvent(OjEvent.ADDED_TO_DISPLAY));
-			}
-			else{
-				this._isNotDisplayed();
-
-				this.dispatchEvent(new OjEvent(OjEvent.REMOVED_FROM_DISPLAY));
-			}
 		}
 	},
 	{
@@ -119,13 +120,13 @@ OJ.extendClass(
 
 		'byId' : function(id){
 			var elms = this._elms,
-				elm;
+				  elm;
 
 			if(elms[id]){
 				return elms[id];
 			}
 
-			return (elm = document.getElementById(id)) && elm.ojProxy ? elms[elm.ojProxy] : null;
+			return (elm = document.getElementById(id)) ? elms[elm.id] : null;
 		},
 
 		'elm' : function(tag){
@@ -138,14 +139,14 @@ OJ.extendClass(
 			}
 
 			if(isDomElement(obj)){
-				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.ojProxy);
+				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
 			}
 
 			if(isObjective(obj)){
 				return obj;
 			}
 
-			return new OjStyleElement(obj);
+			return obj == window ? OJ : new OjStyleElement(obj);
 		},
 
 		'hasDomElement' : function(haystack, needle){
@@ -191,12 +192,12 @@ OJ.extendClass(
 		},
 
 		'register' : function(elm){
-			this._elms[elm.id()] = elm;
+			this._elms[elm.getId()] = elm;
 //			trace(Object.keys(this._elms).length);
 		},
 
 		'unregister' : function(elm){
-			delete this._elms[elm.id()];
+			delete this._elms[elm.getId()];
 //			trace(Object.keys(this._elms).length);
 		}
 	}

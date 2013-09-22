@@ -157,40 +157,6 @@ window.OJ = function Oj(){
 		},
 
 
-		// event handling functions
-		'_onTouchEvent' : function(evt){
-			var touches = evt.changedTouches, first = touches[0], type = '';
-
-			switch(evt.type){
-				case 'touchstart':
-					type = 'mousedown';
-					break;
-
-				case 'touchmove':
-					type = 'mousemove';
-					break;
-
-				case 'touchend':
-					type = 'mouseup';
-					break;
-
-				default: return;
-			}
-
-			var simulatedEvent = document.createEvent('MouseEvent');
-			simulatedEvent.initMouseEvent(
-				type, true, true, window, 1,
-				first.screenX, first.screenY,
-				first.clientX, first.clientY, false,
-				false, false, false, 0, null
-			);
-
-			first.target.dispatchEvent(simulatedEvent);
-
-			evt.preventDefault();
-		},
-
-
 		// public functions
 		'addEventListener' : function(type, context, func){
       this._handleEvent('add', type, context, func);
@@ -499,7 +465,7 @@ window.OJ = function Oj(){
 
 
 		'guid' : function(){
-			return (arguments.length ? arguments[0]._class_name : 'func') + '_' + this._guid++;
+			return (arguments.length ? 'OJ' : 'func') + '_' + this._guid++;
 		},
 
 		'implementInterface' : function(/*intrfc1, intrfc2, ..., def*/){
@@ -1935,11 +1901,11 @@ function onDomReady(){
 
 	window.OJ = tmp;
 
-	// dispatch load event
-	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
-
 	// setup the dom event proxy
 	OJ._setProxy(document.body);
+
+  // dispatch load event
+	OJ.dispatchEvent(new OjEvent(OjEvent.LOAD));
 
 	// hack so that we can capture taps in iOS
 	if(OJ._os == OJ.IOS){
@@ -1997,7 +1963,6 @@ function onDomReady(){
 
 // on oj ready event handler
 function onOjReady(){
-//    trace(OjStyleElement.getStyle(document.body, 'minWidth'));
 	if(isEmpty(OjStyleElement.getStyle(document.body, 'minWidth'))){
 		return;
 	}
