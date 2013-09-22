@@ -111,6 +111,10 @@ OJ.extendClass(
 		},
 
 
+    'getId' : function(){
+      return this.id();
+    },
+
 		'getParent' : function(){
 			return OjElement.element(this._dom.parentNode);
 		},
@@ -147,7 +151,7 @@ OJ.extendClass(
 			}
 
 			if(isDomElement(obj)){
-				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
+        return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
 			}
 
 			if(isObjective(obj)){

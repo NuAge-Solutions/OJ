@@ -3554,6 +3554,9 @@ OJ.extendClass(
 			return OjElement.element(this._dom.parentNode);
 		},
 
+    'getId' : function(){
+      return this.id();
+    },
 		'getParent' : function(){
 			return OjElement.element(this._dom.parentNode);
 		},
@@ -3584,7 +3587,7 @@ OJ.extendClass(
 				return null;
 			}
 			if(isDomElement(obj)){
-				return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
+        return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
 			}
 			if(isObjective(obj)){
 				return obj;
@@ -5104,6 +5107,9 @@ OJ.extendClass(
 				}
 			}
 		},
+    'getId' : function(){
+      return this._id;
+    },
 		'setId' : function(val){
 			if(this._id == val){
 				return
@@ -9998,7 +10004,7 @@ OJ.extendManager(
 		},
 
 		'_onHide' : function(evt){
-			var holder = this._modal_holder,
+      var holder = this._modal_holder,
 				modal = evt.getCurrentTarget().getTarget();
 			// remove the modal from the holder
 			holder.removeChild(modal);
@@ -10010,7 +10016,7 @@ OJ.extendManager(
 				holder.hide();
 			}
 			// dispatch hide event
-			modal.dispatchEvent(new OjEvent(this.HIDE));
+      modal.dispatchEvent(new OjEvent(this.HIDE));
 			// check to see if this modal is self destructing
 			if(modal.getSelfDestruct()){
 				OJ.destroy(modal, modal.getSelfDestruct());

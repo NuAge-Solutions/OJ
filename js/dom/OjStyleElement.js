@@ -1234,6 +1234,10 @@ OJ.extendClass(
 			}
 		},
 
+    'getId' : function(){
+      return this._id;
+    },
+
 		'setId' : function(val){
 			if(this._id == val){
 				return
