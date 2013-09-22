@@ -9,24 +9,24 @@ OJ.extendClass(
 
 		'_prevent_dispatch' : false,
 
-//    '_eventProxy' : null,
+//    '_actionable' : null,
 
 
 		'_constructor' : function(){
-			this._eventProxy = this;
+			this._actionable = this;
 
 			this._super(OjObject, '_constructor', arguments);
 		},
 
 		'_destructor' : function(){
 			// dispatch a destroy event and then destroy all active listeners
-			if(this._eventProxy){
+			if(this._actionable){
 
 				this.dispatchEvent(new OjEvent(OjEvent.DESTROY));
 
 				this.removeAllListeners();
 
-				this._eventProxy = null;
+				this._actionable = null;
 			}
 
 			return this._super(OjObject, '_destructor', arguments);
@@ -59,16 +59,16 @@ OJ.extendClass(
 
 
 		'addEventListener' : function(type, context, callback){
-			EventManager.addEventListener(this._eventProxy, type, context, callback);
+			EventManager.addEventListener(this._actionable, type, context, callback);
 		},
 
 		'hasEventListener' : function(type){
-			return EventManager.hasEventListener(this._eventProxy, type);
+			return EventManager.hasEventListener(this._actionable, type);
 		},
 
 		'hasEventListeners' : function(type/*|types, type*/){
 			var args = arguments,
-				ln = args.length;
+				  ln = args.length;
 
 			if(ln == 1){
 				if(isArray(args[0])){
@@ -84,7 +84,7 @@ OJ.extendClass(
 			}
 
 			for(; ln--;){
-				if(!EventManager.hasEventListener(this._eventProxy, args[ln])){
+				if(!EventManager.hasEventListener(this._actionable, args[ln])){
 					return false;
 				}
 			}
@@ -93,11 +93,11 @@ OJ.extendClass(
 		},
 
 		'removeAllListeners' : function(){
-			return EventManager.removeAllListeners(this._eventProxy);
+			return EventManager.removeAllListeners(this._actionable);
 		},
 
 		'removeEventListener' : function(type, context, callback){
-			EventManager.removeEventListener(this._eventProxy, type, context, callback);
+			EventManager.removeEventListener(this._actionable, type, context, callback);
 		},
 
 		'dispatchEvent' : function(evt){
@@ -105,18 +105,7 @@ OJ.extendClass(
 				return;
 			}
 
-			EventManager.dispatchEvent(this._eventProxy, evt);
-		},
-
-
-		'_setEventProxy' : function(proxy){
-			if(this._eventProxy){
-				this.removeAllListeners();
-
-				// todo: add in a way to transfer existing listeners to the new proxy
-			}
-
-			this._eventProxy = proxy;
+			EventManager.dispatchEvent(this._actionable, evt);
 		}
 	},
   {

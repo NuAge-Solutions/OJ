@@ -494,7 +494,7 @@ OJ.extendClass(
 		},
 
 		'_onDomOjKeyboardEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 
 			if(proxy && proxy._processEvent(evt)){
 				proxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
@@ -502,7 +502,7 @@ OJ.extendClass(
 		},
 
 		'_onDomOjFocusEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 
 			if(proxy && proxy._processEvent(evt)){
 				proxy._onEvent(OjFocusEvent.convertDomEvent(evt));
@@ -510,7 +510,7 @@ OJ.extendClass(
 		},
 
 		'_onDomScrollEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 
 			if(proxy && proxy._processEvent(evt)){
 				proxy._onScroll(OjScrollEvent.convertDomEvent(evt));
@@ -518,7 +518,7 @@ OJ.extendClass(
 		},
 
 		'_onDomTouchEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 
 			if(proxy && proxy._processEvent(evt)){
         return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
@@ -672,31 +672,29 @@ OJ.extendClass(
 		// customize this functionality for dom events so that they work
 		'_updateTouchStartListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.CLICK, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
-				this._eventProxy.ontouchstart = null;
+				this._getEventProxy().ontouchstart = null;
 			}
 		},
 
 		'_updateTouchMoveListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.MOVE, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){//}, OjScrollEvent.SCROLL)){
-				this._eventProxy.ontouchmove = null;
+				this._getEventProxy().ontouchmove = null;
 			}
 		},
 
 		'_updateTouchEndListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.UP_OUTSIDE, OjMouseEvent.CLICK, OjDragEvent.END)){
-				this._eventProxy.ontouchcancel = this._eventProxy.ontouchend = this._eventProxy.ontouchleave = null;
+        var proxy = this._getEventProxy();
+
+				proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = null;
 			}
 		},
 
 		'addEventListener' : function(type){
 			var is_touch = OJ.isTouchCapable(),
-				  proxy = this._proxy;
+				  proxy = this._getEventProxy();
 
-      if(proxy == document.body){
-        proxy = window;
-      }
-
-			this._super(OjElement, 'addEventListener', arguments);
+      this._super(OjElement, 'addEventListener', arguments);
 
 			if(type == OjScrollEvent.SCROLL){
 				this._scrollable = true;
@@ -711,7 +709,7 @@ OJ.extendClass(
 			// mouse events
 			else if(type == OjMouseEvent.CLICK){
 				if(is_touch){
-					proxy.ontouchstart = proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave =this._onDomTouchEvent;
+					proxy.ontouchstart = proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
 				}
 				else{
 					proxy.onclick = this._onDomOjMouseEvent;
@@ -815,11 +813,7 @@ OJ.extendClass(
 		},
 
 		'removeEventListener' : function(type, context, callback){
-			var proxy = this._proxy;
-
-      if(proxy == document.body){
-        proxy = window;
-      }
+			var proxy = this._getEventProxy();
 
 			this._super(OjElement, 'removeEventListener', arguments);
 
@@ -1248,7 +1242,7 @@ OJ.extendClass(
       // unregister the old id
       OjElement.unregister(this);
 
-			this._dom.id = this._id = val;
+			this._proxy.ojProxy = this._dom.id = this._id = val;
 
       // register the new id
       OjElement.register(this);
@@ -1539,8 +1533,8 @@ OJ.extendClass(
 			return this._proxy.offsetLeft;
 		},
 		'getPageX' : function(){
-			if(this._dom.getBoundingClientRect){
-				return this._dom.getBoundingClientRect().left;
+			if(this._proxy.getBoundingClientRect){
+				return this._proxy.getBoundingClientRect().left;
 			}
 
 			// add backup solution
@@ -1555,8 +1549,8 @@ OJ.extendClass(
 			return this._proxy.offsetTop;
 		},
 		'getPageY' : function(){
-			if(this._dom.getBoundingClientRect){
-				return this._dom.getBoundingClientRect().top;
+			if(this._proxy.getBoundingClientRect){
+				return this._proxy.getBoundingClientRect().top;
 			}
 
 			// add backup solution

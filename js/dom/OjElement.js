@@ -60,6 +60,14 @@ OJ.extendClass(
 			(this._proxy = dom_elm).ojProxy = this.getId();
 		},
 
+    '_getEventProxy' : function(){
+      if(this._proxy == document.body){
+        return window;
+      }
+
+      return this._proxy;
+    },
+
 		'_isDisplayed' : function(){ },
 
 		'_isNotDisplayed' : function(){ },

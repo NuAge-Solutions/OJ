@@ -1973,18 +1973,18 @@ OJ.extendClass(
 	'OjActionable', [OjObject],
 	{
 		'_prevent_dispatch' : false,
-//    '_eventProxy' : null,
+//    '_actionable' : null,
 
 		'_constructor' : function(){
-			this._eventProxy = this;
+			this._actionable = this;
 			this._super(OjObject, '_constructor', arguments);
 		},
 		'_destructor' : function(){
 			// dispatch a destroy event and then destroy all active listeners
-			if(this._eventProxy){
+			if(this._actionable){
 				this.dispatchEvent(new OjEvent(OjEvent.DESTROY));
 				this.removeAllListeners();
-				this._eventProxy = null;
+				this._actionable = null;
 			}
 			return this._super(OjObject, '_destructor', arguments);
 		},
@@ -2011,14 +2011,14 @@ OJ.extendClass(
 		},
 
 		'addEventListener' : function(type, context, callback){
-			EventManager.addEventListener(this._eventProxy, type, context, callback);
+			EventManager.addEventListener(this._actionable, type, context, callback);
 		},
 		'hasEventListener' : function(type){
-			return EventManager.hasEventListener(this._eventProxy, type);
+			return EventManager.hasEventListener(this._actionable, type);
 		},
 		'hasEventListeners' : function(type/*|types, type*/){
 			var args = arguments,
-				ln = args.length;
+				  ln = args.length;
 			if(ln == 1){
 				if(isArray(args[0])){
 					args = args[0];
@@ -2030,31 +2030,23 @@ OJ.extendClass(
 				}
 			}
 			for(; ln--;){
-				if(!EventManager.hasEventListener(this._eventProxy, args[ln])){
+				if(!EventManager.hasEventListener(this._actionable, args[ln])){
 					return false;
 				}
 			}
 			return true;
 		},
 		'removeAllListeners' : function(){
-			return EventManager.removeAllListeners(this._eventProxy);
+			return EventManager.removeAllListeners(this._actionable);
 		},
 		'removeEventListener' : function(type, context, callback){
-			EventManager.removeEventListener(this._eventProxy, type, context, callback);
+			EventManager.removeEventListener(this._actionable, type, context, callback);
 		},
 		'dispatchEvent' : function(evt){
 			if(this._prevent_dispatch || evt.isCanceled()){
 				return;
 			}
-			EventManager.dispatchEvent(this._eventProxy, evt);
-		},
-
-		'_setEventProxy' : function(proxy){
-			if(this._eventProxy){
-				this.removeAllListeners();
-				// todo: add in a way to transfer existing listeners to the new proxy
-			}
-			this._eventProxy = proxy;
+			EventManager.dispatchEvent(this._actionable, evt);
 		}
 	},
   {
@@ -3524,6 +3516,12 @@ OJ.extendClass(
 			}
 			(this._proxy = dom_elm).ojProxy = this.getId();
 		},
+    '_getEventProxy' : function(){
+      if(this._proxy == document.body){
+        return window;
+      }
+      return this._proxy;
+    },
 		'_isDisplayed' : function(){ },
 		'_isNotDisplayed' : function(){ },
 
@@ -4505,25 +4503,25 @@ OJ.extendClass(
 			}
 		},
 		'_onDomOjKeyboardEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 			if(proxy && proxy._processEvent(evt)){
 				proxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
 			}
 		},
 		'_onDomOjFocusEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 			if(proxy && proxy._processEvent(evt)){
 				proxy._onEvent(OjFocusEvent.convertDomEvent(evt));
 			}
 		},
 		'_onDomScrollEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 			if(proxy && proxy._processEvent(evt)){
 				proxy._onScroll(OjScrollEvent.convertDomEvent(evt));
 			}
 		},
 		'_onDomTouchEvent' : function(evt){
-			var proxy = OjElement.byId(this.ojProxy);
+			var proxy = OjElement.element(this);
 			if(proxy && proxy._processEvent(evt)){
         return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
 			}
@@ -4646,26 +4644,24 @@ OJ.extendClass(
 		// customize this functionality for dom events so that they work
 		'_updateTouchStartListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.DOWN, OjMouseEvent.CLICK, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
-				this._eventProxy.ontouchstart = null;
+				this._getEventProxy().ontouchstart = null;
 			}
 		},
 		'_updateTouchMoveListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.MOVE, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){//}, OjScrollEvent.SCROLL)){
-				this._eventProxy.ontouchmove = null;
+				this._getEventProxy().ontouchmove = null;
 			}
 		},
 		'_updateTouchEndListeners' : function(){
 			if(!this.hasEventListeners(OjMouseEvent.UP, OjMouseEvent.UP_OUTSIDE, OjMouseEvent.CLICK, OjDragEvent.END)){
-				this._eventProxy.ontouchcancel = this._eventProxy.ontouchend = this._eventProxy.ontouchleave = null;
+        var proxy = this._getEventProxy();
+				proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = null;
 			}
 		},
 		'addEventListener' : function(type){
 			var is_touch = OJ.isTouchCapable(),
-				  proxy = this._proxy;
-      if(proxy == document.body){
-        proxy = window;
-      }
-			this._super(OjElement, 'addEventListener', arguments);
+				  proxy = this._getEventProxy();
+      this._super(OjElement, 'addEventListener', arguments);
 			if(type == OjScrollEvent.SCROLL){
 				this._scrollable = true;
 				proxy.onscroll = this._onDomScrollEvent;
@@ -4676,7 +4672,7 @@ OJ.extendClass(
 			// mouse events
 			else if(type == OjMouseEvent.CLICK){
 				if(is_touch){
-					proxy.ontouchstart = proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave =this._onDomTouchEvent;
+					proxy.ontouchstart = proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
 				}
 				else{
 					proxy.onclick = this._onDomOjMouseEvent;
@@ -4771,10 +4767,7 @@ OJ.extendClass(
 			}
 		},
 		'removeEventListener' : function(type, context, callback){
-			var proxy = this._proxy;
-      if(proxy == document.body){
-        proxy = window;
-      }
+			var proxy = this._getEventProxy();
 			this._super(OjElement, 'removeEventListener', arguments);
 			// scroll events
 			if(type == OjScrollEvent.SCROLL){
@@ -5117,7 +5110,7 @@ OJ.extendClass(
 			}
       // unregister the old id
       OjElement.unregister(this);
-			this._dom.id = this._id = val;
+			this._proxy.ojProxy = this._dom.id = this._id = val;
       // register the new id
       OjElement.register(this);
 		},
@@ -5360,8 +5353,8 @@ OJ.extendClass(
 			return this._proxy.offsetLeft;
 		},
 		'getPageX' : function(){
-			if(this._dom.getBoundingClientRect){
-				return this._dom.getBoundingClientRect().left;
+			if(this._proxy.getBoundingClientRect){
+				return this._proxy.getBoundingClientRect().left;
 			}
 			// add backup solution
 		},
@@ -5373,8 +5366,8 @@ OJ.extendClass(
 			return this._proxy.offsetTop;
 		},
 		'getPageY' : function(){
-			if(this._dom.getBoundingClientRect){
-				return this._dom.getBoundingClientRect().top;
+			if(this._proxy.getBoundingClientRect){
+				return this._proxy.getBoundingClientRect().top;
 			}
 			// add backup solution
 		},
