@@ -7,12 +7,11 @@ window.OJ = function Oj(){
 	return {
 //		'_analytics' : null,  '_browser' : null,  '_browser_version' : null,  '_compiled_theme_path' : null,  '_css_prefix'  : null,
 //
-//		'_engine' : null,  '_library' : null,  '_metadata' : null,  '_metas' : null,  '_os' : null,  '_root' : null,
-//
-//		'_theme_elm' : null,    '_tween' : null,
+//		'_engine' : null,  '_library' : null,  '_metadata' : null,  '_metas' : null,  '_os' : null,
+//    '_root' : null,  '_theme_elm' : null,    '_tween' : null,
 		'_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
-		'_is_supported' : true,  '_is_tablet' : false,  '_is_touch_capable' : false,  '_loaded' : {},
-		'_protocol' : 'http',
+		'_is_supported' : true,  '_is_tablet' : false,  '_is_touch_capable' : false,  '_is_webview' : false,  '_loaded' : {},
+		'_protocol' : 'http',  '_os_version' : '',
 		'_settings' : {
 			'assetsPath' : 'assets',
 			'cssExt' : '.css',  'cssPath' : 'css',
@@ -591,6 +590,9 @@ window.OJ = function Oj(){
 		'getBrowser' : function(){
 			return this._browser;
 		},
+    'getBrowserIsWebView' : function(){
+      return this._is_webview;
+    },
 		'getBrowserVersion' : function(){
 			return this._browser_version;
 		},
@@ -606,6 +608,9 @@ window.OJ = function Oj(){
 		'getOs' : function(){
 			return this._os;
 		},
+    'getOsVersion' : function(){
+      return this._os_version;
+    },
 		'getPixelRatio' : function(){
 			return window.devicePixelRatio || 1;
 		},
@@ -791,15 +796,18 @@ window.OJ = function Oj(){
 	OJ._browser_version = detector.version(navigator.userAgent) || detector.version(navigator.appVersion);
 	// detect OS
 	var platform = navigator.platform.substring(0, 3).toLowerCase(),
-		user_agent =  navigator.userAgent.toLowerCase();
+		  user_agent =  navigator.userAgent.toLowerCase();
 	if(user_agent.indexOf('android') > -1){
 		OJ._os = OJ.ANDROID;
 		OJ._is_tablet = !(OJ._is_mobile = (user_agent.indexOf('mobile') > -1));
 		OJ._is_touch_capable = true;
 	}
 	else if(platform == 'iph' || platform == 'ipa' || platform == 'ipo'){
+    var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
 		OJ._os = OJ.IOS;
 		OJ._is_tablet = !(OJ._is_mobile = (platform != 'ipa'));
+    OJ._is_webview = /(iphone|ipod|ipad).*applewebkit(?!.*safari)/i.test(user_agent);
+    OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join('.');
 		// check for in app
 		if(!OJ._browser_version){
 			OJ._browser_version = OJ.IN_APP;
@@ -6040,6 +6048,17 @@ OJ.extendClass(
 	}
 );
 
+// normalize browser diff on requestAnimationFrame function
+(function(){
+  var vendors = ['o', 'ms', 'webkit', 'moz'],
+      ln = vendors.length,
+      vendor;
+  for(; ln-- && !window.requestAnimationFrame;){
+    vendor = vendors[ln];
+    window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+  }
+})();
 
 OJ.extendClass(
 	'OjTween', [OjActionable],
@@ -6105,7 +6124,7 @@ OJ.extendClass(
 			this._calculateDelta();
       this._start = Date.time();
 			// only create the time once
-      if(window.requestAnimationFrame){
+      if(OjTween.USE_RAF){
         if(!this._onAnimationFrame){
           this._onAnimationFrame = this._onTick.bind(this);
         }
@@ -6148,19 +6167,11 @@ OJ.extendClass(
 		'reverse' : function(){
 			// todo: implement tween reverse
 		}
-	}
-);
-// normalize browser diff on requestAnimationFrame function
-(function(){
-  var vendors = ['o', 'ms', 'webkit', 'moz'],
-      ln = vendors.length,
-      vendor;
-  for(; ln-- && !window.requestAnimationFrame;){
-    vendor = vendors[ln];
-    window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+	},
+  {
+    'USE_RAF' : (OJ.getOs() != OJ.IOS || OJ.getOsVersion().compareVersion('6.9') == 1 || !OJ.getBrowserIsWebView()) && window.requestAnimationFrame
   }
-})();
+);
 
 
 OJ.extendClass(

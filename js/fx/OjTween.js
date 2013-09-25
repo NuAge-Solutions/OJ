@@ -4,7 +4,20 @@ OJ.importJs('oj.fx.OjTweenEvent');
 OJ.importJs('oj.timer.OjTimer');
 
 
-'use strict';
+// normalize browser diff on requestAnimationFrame function
+(function(){
+  var vendors = ['o', 'ms', 'webkit', 'moz'],
+      ln = vendors.length,
+      vendor;
+
+  for(; ln-- && !window.requestAnimationFrame;){
+    vendor = vendors[ln];
+
+    window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+  }
+})();
+
 
 OJ.extendClass(
 	'OjTween', [OjActionable],
@@ -87,7 +100,7 @@ OJ.extendClass(
       this._start = Date.time();
 
 			// only create the time once
-      if(window.requestAnimationFrame){
+      if(OjTween.USE_RAF){
         if(!this._onAnimationFrame){
           this._onAnimationFrame = this._onTick.bind(this);
         }
@@ -141,19 +154,8 @@ OJ.extendClass(
 		'reverse' : function(){
 			// todo: implement tween reverse
 		}
-	}
-);
-
-// normalize browser diff on requestAnimationFrame function
-(function(){
-  var vendors = ['o', 'ms', 'webkit', 'moz'],
-      ln = vendors.length,
-      vendor;
-
-  for(; ln-- && !window.requestAnimationFrame;){
-    vendor = vendors[ln];
-
-    window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+	},
+  {
+    'USE_RAF' : (OJ.getOs() != OJ.IOS || OJ.getOsVersion().compareVersion('6.9') == 1 || !OJ.getBrowserIsWebView()) && window.requestAnimationFrame
   }
-})();
+);
