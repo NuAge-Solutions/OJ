@@ -1135,10 +1135,10 @@ Object.concat = function(obj, obj2/*, ...objs*/){
 
 // string functions
 String.string = function(val){
-	if(!val){
-		return '';
+  if(isSet(val)){
+		return isObject(val) ? val.toString() : String(val);
 	}
-	return isObject(val) ? val.toString() : String(val);
+  return '';
 };
 String.prototype.lcFirst = function(){
 	return this.charAt(0).toLowerCase() + this.slice(1);
@@ -1323,7 +1323,7 @@ function toXml(obj){
 }
 // value detection functions
 function isEmpty(obj){
-	return isUnset(obj) || obj == false ||
+	return isUnset(obj) || obj === false ||
 		(isString(obj) && obj.trim() == '') ||
 		(isArray(obj) && obj.length == 0) ||
 		(isObject(obj) && isEmptyObject(obj)) ||
@@ -5129,7 +5129,7 @@ OJ.extendClass(
 		},
 		'setText' : function(str){
 			this.removeAllChildren();
-			this._dom.innerHTML = str ? str.toString() : null;
+			this._dom.innerHTML = String.string(str).html();
 			// we may want to process this html, just a thought
 		},
 		// Css Functions
@@ -5597,7 +5597,7 @@ OJ.extendClass(
 			return this._dom.nodeValue;
 		},
 		'setText' : function(str){
-			this._dom.nodeValue = str ? str.toString() : null;
+      this._dom.nodeValue = String.string(str);
 		}
 	}
 );
@@ -7827,6 +7827,9 @@ OJ.extendComponent(
 			this._suffix = val ? val.toString() : null;
 			this.redraw();
 		},
+    'getText' : function(){
+      return this._text;
+    },
 		'setText' : function(val){
 			if(this._text == val){
 				return;
@@ -8237,7 +8240,9 @@ window.OjIFlowNavController = {
 
 	'showCancel' : function(){
 		if(arguments.length){
-			this._show_cancel = arguments[0];
+			if(!(this._show_cancel = arguments[0]) && this._cancel_btn){
+        this._unset('_cancel_btn');
+      }
 		}
 		return this._show_cancel;
 	},
@@ -9579,7 +9584,7 @@ OJ.extendComponent(
 				target = target.getTargetId();
 			}
 			this._target = target;
-		}
+    }
 	},
 	{
 		'_TAGS' : ['a']
@@ -9617,7 +9622,7 @@ OJ.extendComponent(
 		},
 
 		'getLabel' : function(){
-			return this.getText();
+      return this.getText();
 		},
 		'setLabel' : function(label){
 			this.setText(label);

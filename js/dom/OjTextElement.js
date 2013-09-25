@@ -37,7 +37,7 @@ OJ.extendClass(
 			return this._dom.nodeValue;
 		},
 		'setText' : function(str){
-			this._dom.nodeValue = str ? str.toString() : null;
+      this._dom.nodeValue = String.string(str);
 		}
 	}
 );

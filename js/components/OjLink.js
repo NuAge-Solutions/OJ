@@ -168,7 +168,7 @@ OJ.extendComponent(
 			}
 
 			this._target = target;
-		}
+    }
 	},
 	{
 		'_TAGS' : ['a']

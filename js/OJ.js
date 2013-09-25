@@ -1427,11 +1427,11 @@ Object.concat = function(obj, obj2/*, ...objs*/){
 
 // string functions
 String.string = function(val){
-	if(!val){
-		return '';
+  if(isSet(val)){
+		return isObject(val) ? val.toString() : String(val);
 	}
 
-	return isObject(val) ? val.toString() : String(val);
+  return '';
 };
 
 String.prototype.lcFirst = function(){
@@ -1671,7 +1671,7 @@ function toXml(obj){
 
 // value detection functions
 function isEmpty(obj){
-	return isUnset(obj) || obj == false ||
+	return isUnset(obj) || obj === false ||
 		(isString(obj) && obj.trim() == '') ||
 		(isArray(obj) && obj.length == 0) ||
 		(isObject(obj) && isEmptyObject(obj)) ||

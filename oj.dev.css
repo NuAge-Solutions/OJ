@@ -682,6 +682,9 @@ body.is-mobile, body.is-tablet {
 		.OjAlert.no-buttons > .pane > .content {
 			padding-bottom: 10px;
 		}
+            .OjAlert > .pane > .content > .OjLabel {
+                text-align: center;
+            }
 
 		.OjAlert > .pane > .buttons {
 			padding: 10px 0px 20px;

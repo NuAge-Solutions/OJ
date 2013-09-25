@@ -90,6 +90,9 @@ OJ.extendComponent(
 			this.redraw();
 		},
 
+    'getText' : function(){
+      return this._text;
+    },
 		'setText' : function(val){
 			if(this._text == val){
 				return;

@@ -44,7 +44,7 @@ OJ.extendComponent(
 
 
 		'getLabel' : function(){
-			return this.getText();
+      return this.getText();
 		},
 		'setLabel' : function(label){
 			this.setText(label);

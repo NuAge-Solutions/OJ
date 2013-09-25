@@ -235,7 +235,9 @@ window.OjIFlowNavController = {
 
 	'showCancel' : function(){
 		if(arguments.length){
-			this._show_cancel = arguments[0];
+			if(!(this._show_cancel = arguments[0]) && this._cancel_btn){
+        this._unset('_cancel_btn');
+      }
 		}
 
 		return this._show_cancel;

@@ -1267,7 +1267,7 @@ OJ.extendClass(
 		'setText' : function(str){
 			this.removeAllChildren();
 
-			this._dom.innerHTML = str ? str.toString() : null;
+			this._dom.innerHTML = String.string(str).html();
 
 			// we may want to process this html, just a thought
 		},
