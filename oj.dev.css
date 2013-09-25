@@ -771,6 +771,8 @@ body.is-mobile, body.is-tablet {
 			border-bottom-left-radius: 0px;
 
 			text-align: center;
+
+            overflow: hidden;
 		}
 			.OjModal > .pane > .bar .title {
 				color: #444444;
