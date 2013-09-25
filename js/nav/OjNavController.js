@@ -1,8 +1,6 @@
 OJ.importJs('oj.components.OjComponent');
 
 
-'use strict';
-
 OJ.defineClass(
   'OjINavController',
   {
@@ -13,6 +11,7 @@ OJ.defineClass(
 
     '_setupStack' : function(){
       this._stack.addEventListener(OjStackEvent.CHANGE, this, '_onStackChange');
+
       // if we already have stuff in the stack then trigger a change event so the display gets updated properly
       var ln = this._stack.numElms();
 

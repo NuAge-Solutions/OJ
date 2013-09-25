@@ -657,8 +657,10 @@ window.OJ = function Oj(){
 
 			var val = arguments[1];
 
+      this._settings[key] = val;
+
 			if(key == 'theme'){
-				var ln, elms,
+        var ln, elms,
             old_path = this._compiled_theme_path,
 					  path = this._getThemePath(val);
 
@@ -669,7 +671,7 @@ window.OJ = function Oj(){
 
 				elms = document.getElementsByTagName('link');
 
-				this._compiled_theme_path = this._path;
+				this._compiled_theme_path = path;
 
 				for(ln = elms.length; ln--;){
 					if(elms[ln].getAttribute('href').indexOf(old_path) > -1){
@@ -681,8 +683,6 @@ window.OJ = function Oj(){
 
 				this._theme_elm = this.loadCss(path, true);
 			}
-
-			this._settings[key] = val;
 		},
 
 		'settings' : function(settings){
@@ -730,6 +730,26 @@ window.OJ = function Oj(){
 
 			return source;
 		},
+
+    'unset' : function(context, args){
+      var ln = args.length,
+          prop = args[0],
+          props;
+
+      if(isArray(args[0])){
+        ln = (props = args[0]).length;
+
+        for(; ln--;){
+          args[0] = props[ln];
+
+          context._unset.apply(context, args);
+        }
+
+        return;
+      }
+
+      context[prop] = OJ.destroy(context[prop], ln > 1 ? args[1] : 0);
+    },
 
 		// getter & setters
 		'getAssetPath' : function(pkg, path){

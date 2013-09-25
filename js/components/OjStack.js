@@ -14,8 +14,6 @@ OJ.importJs('oj.fx.OjTweenSet');
 OJ.importCss('oj.components.OjStack');
 
 
-'use strict';
-
 OJ.extendComponent(
 	'OjStack', [OjCollectionComponent],
 	{

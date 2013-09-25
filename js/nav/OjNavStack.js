@@ -1,8 +1,6 @@
 OJ.importJs('oj.components.OjStack');
 
 
-'use strict';
-
 OJ.extendComponent(
 	'OjNavStack', [OjStack],
 	{

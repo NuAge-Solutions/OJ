@@ -135,22 +135,7 @@ OJ.defineClass(
     },
 
     '_unset' : function(prop/*|props, depth*/){
-      var args = arguments,
-        ln = args.length, props;
-
-      if(isArray(args[0])){
-        ln = (props = args[0]).length;
-
-        for(; ln--;){
-          args[0] = props[ln];
-
-          this._unset.apply(this, args);
-        }
-
-        return;
-      }
-
-      this[prop] = OJ.destroy(this[prop], ln > 1 ? args[1] : 0);
+      OJ.unset(this, arguments);
     },
 
     /**
@@ -274,6 +259,10 @@ OJ.defineClass(
     }
   },
   {
+    '_unset' : function(prop/*|props, depth*/){
+      OJ.unset(this, arguments);
+    },
+
     'importData' : function(data){
       var i, c, obj, key;
 

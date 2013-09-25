@@ -118,6 +118,10 @@ OJ.extendManager(
 			return false;
 		},
 
+    '_processDefault' : function(args){
+      return args.length > 1 ? args[1] : null;
+    },
+
 		'_setCookie' : function(key, data){
 			var expires = new Date();
 			var lifespan = arguments.length > 2 ? arguments[2] : this.FOREVER;
@@ -211,26 +215,10 @@ OJ.extendManager(
 
 
 		// Regular Data Caching Functions
-		'getData' : function(key){
+		'getData' : function(key/*, default*/){
 			throw new Error('No getData() defined.');
 
 			return;
-
-//					var data = ;
-//
-//					if(!data){
-//						return null;
-//					}
-//
-//					if(isObject(data)){
-//						data = OjObject.importData(data);
-//
-//						return data.getData();
-//					}
-
-			var data = this._getCachedData(key);
-
-			return data ? data.getData() : null;
 		},
 
 		'setData' : function(key, value/*, lifespan*/){
@@ -247,10 +235,10 @@ OJ.extendManager(
 
 
 		// Cookie Caching Functions
-		'getCookie' : function(key){
+		'getCookie' : function(key/*, default*/){
 			var data = this._getCookie(key);
 
-			return data ? data.getData() : null;
+			return data ? data.getData() : this._processDefault(arguments);
 		},
 
 		'setCookie' : function(key, value/*, lifespan*/){
@@ -265,7 +253,7 @@ OJ.extendManager(
 
 
 		// LocalData Caching Functions
-		'getLocalData' : function(key){
+		'getLocalData' : function(key/*, default*/){
 			var data = this._getLocalData(key);
 
 			if(this._isDataExpired(data)){
@@ -274,7 +262,7 @@ OJ.extendManager(
 				return null;
 			}
 
-			return data ? data.getData() : null;
+			return data ? data.getData() : this._processDefault(arguments);
 		},
 
 		'setLocalData' : function(key, value/*, lifespan*/){

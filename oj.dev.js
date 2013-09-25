@@ -517,8 +517,9 @@ window.OJ = function Oj(){
 				return this._settings[key];
 			}
 			var val = arguments[1];
+      this._settings[key] = val;
 			if(key == 'theme'){
-				var ln, elms,
+        var ln, elms,
             old_path = this._compiled_theme_path,
 					  path = this._getThemePath(val);
 				// check for change
@@ -526,7 +527,7 @@ window.OJ = function Oj(){
 					return;
 				}
 				elms = document.getElementsByTagName('link');
-				this._compiled_theme_path = this._path;
+				this._compiled_theme_path = path;
 				for(ln = elms.length; ln--;){
 					if(elms[ln].getAttribute('href').indexOf(old_path) > -1){
 						elms[ln].setAttribute('href', path);
@@ -535,7 +536,6 @@ window.OJ = function Oj(){
 				}
 				this._theme_elm = this.loadCss(path, true);
 			}
-			this._settings[key] = val;
 		},
 		'settings' : function(settings){
 			var key;
@@ -570,6 +570,20 @@ window.OJ = function Oj(){
 			}
 			return source;
 		},
+    'unset' : function(context, args){
+      var ln = args.length,
+          prop = args[0],
+          props;
+      if(isArray(args[0])){
+        ln = (props = args[0]).length;
+        for(; ln--;){
+          args[0] = props[ln];
+          context._unset.apply(context, args);
+        }
+        return;
+      }
+      context[prop] = OJ.destroy(context[prop], ln > 1 ? args[1] : 0);
+    },
 		// getter & setters
 		'getAssetPath' : function(pkg, path){
 			return this._root + pkg + '/' + this._('assetsPath') + '/' + path + this.getVersionQuery();
@@ -1685,17 +1699,7 @@ OJ.defineClass(
       }
     },
     '_unset' : function(prop/*|props, depth*/){
-      var args = arguments,
-        ln = args.length, props;
-      if(isArray(args[0])){
-        ln = (props = args[0]).length;
-        for(; ln--;){
-          args[0] = props[ln];
-          this._unset.apply(this, args);
-        }
-        return;
-      }
-      this[prop] = OJ.destroy(this[prop], ln > 1 ? args[1] : 0);
+      OJ.unset(this, arguments);
     },
     /**
      * Bulk Getter
@@ -1795,6 +1799,9 @@ OJ.defineClass(
     }
   },
   {
+    '_unset' : function(prop/*|props, depth*/){
+      OJ.unset(this, arguments);
+    },
     'importData' : function(data){
       var i, c, obj, key;
       if(isArray(data)){
@@ -2998,6 +3005,9 @@ OJ.extendManager(
 			}
 			return false;
 		},
+    '_processDefault' : function(args){
+      return args.length > 1 ? args[1] : null;
+    },
 		'_setCookie' : function(key, data){
 			var expires = new Date();
 			var lifespan = arguments.length > 2 ? arguments[2] : this.FOREVER;
@@ -3070,22 +3080,9 @@ OJ.extendManager(
 		},
 
 		// Regular Data Caching Functions
-		'getData' : function(key){
+		'getData' : function(key/*, default*/){
 			throw new Error('No getData() defined.');
 			return;
-//					var data = ;
-//
-//					if(!data){
-//						return null;
-//					}
-//
-//					if(isObject(data)){
-//						data = OjObject.importData(data);
-//
-//						return data.getData();
-//					}
-			var data = this._getCachedData(key);
-			return data ? data.getData() : null;
 		},
 		'setData' : function(key, value/*, lifespan*/){
 			throw new Error('No setData() defined.');
@@ -3097,9 +3094,9 @@ OJ.extendManager(
 		},
 
 		// Cookie Caching Functions
-		'getCookie' : function(key){
+		'getCookie' : function(key/*, default*/){
 			var data = this._getCookie(key);
-			return data ? data.getData() : null;
+			return data ? data.getData() : this._processDefault(arguments);
 		},
 		'setCookie' : function(key, value/*, lifespan*/){
 			var ln = arguments.length;
@@ -3110,13 +3107,13 @@ OJ.extendManager(
 		},
 
 		// LocalData Caching Functions
-		'getLocalData' : function(key){
+		'getLocalData' : function(key/*, default*/){
 			var data = this._getLocalData(key);
 			if(this._isDataExpired(data)){
 				this.unsetLocalData(key);
 				return null;
 			}
-			return data ? data.getData() : null;
+			return data ? data.getData() : this._processDefault(arguments);
 		},
 		'setLocalData' : function(key, value/*, lifespan*/){
 			var args = arguments,
@@ -7634,7 +7631,6 @@ OJ.extendComponent(
 	}
 );
 
-
 OJ.defineClass(
   'OjINavController',
   {
@@ -8571,182 +8567,183 @@ window.OjICollection = {
 	}
 };
 
+OJ.defineClass(
+  'OjICollectionComponent', {
+    // properties
+    '_props_' : {
+      'itemRenderer' : null
+    },
+  //  '_item_events' : null,  '_items' : null,  '_rendered' : null,  '_renderer' : null,
 
-window.OjICollectionComponent = {
-	// properties
-	'_props_' : {
-		'itemRenderer' : null
-	},
-//  '_item_events' : null,  '_items' : null,  '_rendered' : null,  '_renderer' : null,
+    // helper functions
+    '_getContainer' : function(){
+      return this._items;
+    },
+    '_setElmFuncs' : function(container){
+      return this._elm_funcs = {
+        'addElm'        : 'addItem',
+        'addElmAt'      : 'addItemAt',
+        'getElmAt'      : 'getItemAt',
+        'getElms'       : 'getItems',
+        'hasElm'        : 'hasItem',
+        'indexOfElm'    : 'indexOfItem',
+        'moveElm'       : 'moveItem',
+        'numElms'       : 'numItems',
+        'removeAllElms' : 'removeAllItems',
+        'removeElm'     : 'removeItem',
+        'removeElmAt'   : 'removeItemAt',
+        'replaceElm'    : 'replaceItem',
+        'replaceElmAt'  : 'replaceItemAt',
+        'setElms'       : 'setItems'
+      };
+    },
+    '_setup' : function(){
+      var items = (this._items = new OjCollection());
+      items.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+      items.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+      items.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+      items.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
+      this._rendered = {};
+      this._item_events = {};
+    },
+    '_teardown' : function(){
+      // remove any item listeners
+      var key;
+      for(key in this._item_events){
+        this._removeItemListener(this._item_events[key]);
+      }
+      // remove the items collection
+      this._unset('_items');
+      // clear out the helper vars
+      this._rendered = this._item_events = null;
+    },
 
-	// helper functions
-	'_getContainer' : function(){
-		return this._items;
-	},
-	'_setElmFuncs' : function(container){
-		return this._elm_funcs = {
-			'addElm'        : 'addItem',
-			'addElmAt'      : 'addItemAt',
-			'getElmAt'      : 'getItemAt',
-			'getElms'       : 'getItems',
-			'hasElm'        : 'hasItem',
-			'indexOfElm'    : 'indexOfItem',
-			'moveElm'       : 'moveItem',
-			'numElms'       : 'numItems',
-			'removeAllElms' : 'removeAllItems',
-			'removeElm'     : 'removeItem',
-			'removeElmAt'   : 'removeItemAt',
-			'replaceElm'    : 'replaceItem',
-			'replaceElmAt'  : 'replaceItemAt',
-			'setElms'       : 'setItems'
-		};
-	},
-	'_setup' : function(){
-		var items = (this._items = new OjCollection());
-		items.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-		items.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-		items.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-		items.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
-		this._rendered = {};
-		this._item_events = {};
-	},
-	'_teardown' : function(){
-		// remove any item listeners
-		var key;
-		for(key in this._item_events){
-			this._removeItemListener(this._item_events[key]);
-		}
-		// remove the items collection
-		this._unset('_items');
-		// clear out the helper vars
-		this._rendered = this._item_events = null;
-	},
+    // event functions
+    '_addItemListener' : function(type){
+      // apply the event listener to all the rendered items if it hasn't already been
+      if(!this._item_events[type]){
+        var evt = this._convertItemEventType(type),
+            key;
+        if(evt){
+          for(key in this._rendered){
+            this._rendered[key].addEventListener(evt[0], this, evt[1]);
+          }
+          this._item_events[type] = evt[0];
+        }
+      }
+    },
+    '_convertItemEventType' : function(type){
+      // convert the item event into a mouse event
+      if(type == OjCollectionEvent.ITEM_CLICK){
+        return [OjMouseEvent.CLICK, '_onItemClick'];
+      }
+      if(type == OjCollectionEvent.ITEM_OVER){
+        return [OjMouseEvent.OVER, '_onItemOver'];
+      }
+      if(type == OjCollectionEvent.ITEM_OUT){
+        return [OjMouseEvent.OUT, '_onItemOut'];
+      }
+      return null;
+    },
+    '_dispatchItemEvent' : function(type, evt){
+      var item = evt.getCurrentTarget();
+      if(this._itemRenderer){
+        item = item.getData();
+      }
+      this.dispatchEvent(new OjCollectionEvent(type, item, this._items.indexOfItem(item)));
+    },
+    '_removeItemListener' : function(type){
+      // make sure that no other listeners for this type exist
+      if(!this.hasEventListener(type)){
+        var evt = this._convertItemEventType(type),
+          key;
+        if(evt){
+          // un-apply the event listener to all the rendered items
+          for(key in this._rendered){
+            this._rendered[key].removeEventListener(evt[0], this, evt[1]);
+          }
+          // remove the record fo this item event
+          delete this._item_events[type];
+        }
+      }
+    },
 
-	// event functions
-	'_addItemListener' : function(type){
-		// apply the event listener to all the rendered items if it hasn't already been
-		if(!this._item_events[type]){
-			var evt = this._convertItemEventType(type),
-				key;
-			if(evt){
-				for(key in this._rendered){
-                    this._rendered[key].addEventListener(evt[0], this, evt[1]);
-				}
-				this._item_events[type] = evt[0];
-			}
-		}
-	},
-	'_convertItemEventType' : function(type){
-		// convert the item event into a mouse event
-		if(type == OjCollectionEvent.ITEM_CLICK){
-			return [OjMouseEvent.CLICK, '_onItemClick'];
-		}
-		if(type == OjCollectionEvent.ITEM_OVER){
-			return [OjMouseEvent.OVER, '_onItemOver'];
-		}
-		if(type == OjCollectionEvent.ITEM_OUT){
-			return [OjMouseEvent.OUT, '_onItemOut'];
-		}
-		return null;
-	},
-	'_dispatchItemEvent' : function(type, evt){
-		var item = evt.getCurrentTarget();
-		if(this._itemRenderer){
-			item = item.getData();
-		}
-		this.dispatchEvent(new OjCollectionEvent(type, item, this._items.indexOfItem(item)));
-	},
-	'_removeItemListener' : function(type){
-		// make sure that no other listeners for this type exist
-		if(!this.hasEventListener(type)){
-			var evt = this._convertItemEventType(type),
-				key;
-			if(evt){
-				// un-apply the event listener to all the rendered items
-				for(key in this._rendered){
-					this._rendered[key].removeEventListener(evt[0], this, evt[1]);
-				}
-				// remove the record fo this item event
-				delete this._item_events[type];
-			}
-		}
-	},
+    // event listeners
+    '_onItemAdd' : function(evt){},
+    '_onItemClick' : function(evt){
+      this._dispatchItemEvent(OjCollectionEvent.ITEM_CLICK, evt);
+    },
+    '_onItemOut' : function(evt){
+      this._dispatchItemEvent(OjCollectionEvent.ITEM_OUT, evt);
+    },
+    '_onItemOver' : function(evt){
+      this._dispatchItemEvent(OjCollectionEvent.ITEM_OVER, evt);
+    },
+    '_onItemMove' : function(evt){},
+    '_onItemRemove' : function(evt){
+      delete this._rendered[evt.getItem().id()];
+    },
+    '_onItemReplace' : function(evt){
+      delete this._rendered[evt.getOldItem().id()];
+    },
 
-	// event listeners
-	'_onItemAdd' : function(evt){},
-	'_onItemClick' : function(evt){
-		this._dispatchItemEvent(OjCollectionEvent.ITEM_CLICK, evt);
-	},
-	'_onItemOut' : function(evt){
-		this._dispatchItemEvent(OjCollectionEvent.ITEM_OUT, evt);
-	},
-	'_onItemOver' : function(evt){
-		this._dispatchItemEvent(OjCollectionEvent.ITEM_OVER, evt);
-	},
-	'_onItemMove' : function(evt){},
-	'_onItemRemove' : function(evt){
-		delete this._rendered[evt.getItem().id()];
-	},
-	'_onItemReplace' : function(evt){
-		delete this._rendered[evt.getOldItem().id()];
-	},
+    'renderItem' : function(item){
+      if(!item){
+        return null;
+      }
+      var key, evt,
+        id = item.id();
+      // if we have already rendered the item then just return the cached value
+      if(this._rendered[id]){
+        return this._rendered[id];
+      }
+      item = this._itemRenderer ? new this._itemRenderer(this, item) : item;
+      for(key in this._item_events){
+        evt = this._convertItemEventType(key);
+        item.addEventListener(evt[0], this, evt[1]);
+      }
+      return this._rendered[id] = item;
+    },
+    'renderItemAt' : function(index){
+      return this.renderItem(this._items.getItemAt(index));
+    },
 
-	'renderItem' : function(item){
-		if(!item){
-			return null;
-		}
-		var key, evt,
-			id = item.id();
-		// if we have already rendered the item then just return the cached value
-		if(this._rendered[id]){
-            return this._rendered[id];
-		}
-		item = this._itemRenderer ? new this._itemRenderer(this, item) : item;
-		for(key in this._item_events){
-			evt = this._convertItemEventType(key);
-			item.addEventListener(evt[0], this, evt[1]);
-		}
-		return this._rendered[id] = item;
-	},
-	'renderItemAt' : function(index){
-		return this.renderItem(this._items.getItemAt(index));
-	},
-
-	'setItemRenderer' : function(val){
-		val = isString(val) ? OJ.stringToClass(val) : val;
-		if(val == this._itemRenderer){
-			return;
-		}
-		this._itemRenderer = val;
-	}
-};
+    'setItemRenderer' : function(val){
+      val = isString(val) ? OJ.stringToClass(val) : val;
+      if(val == this._itemRenderer){
+        return;
+      }
+      this._itemRenderer = val;
+    }
+  }
+);
 
 OJ.extendComponent(
-	'OjCollectionComponent', [OjComponent],
-	OJ.implementInterface(
-		OjICollectionComponent,
-		{
-			'_constructor' : function(){
-				this._super(OjComponent, '_constructor', arguments);
-				// run the collection component setup
-				this._setup();
-			},
-			'_destructor' : function(){
-				// run the collection component teardown
-				this._teardown();
-				this._super(OjComponent, '_destructor', arguments);
-			},
+	'OjCollectionComponent', [OjICollectionComponent, OjComponent],
+	{
+    '_constructor' : function(){
+      this._super(OjComponent, '_constructor', arguments);
+      // run the collection component setup
+      this._setup();
+    },
+    '_destructor' : function(){
+      // run the collection component teardown
+      this._teardown();
+      this._super(OjComponent, '_destructor', arguments);
+    },
 
-			'addEventListener' : function(type, target, func){
-				this._super(OjComponent, 'addEventListener', arguments);
-				this._addItemListener(type);
-			},
-			'removeEventListener' : function(type, target, func){
-				this._super(OjComponent, 'removeEventListener', arguments);
-				this._removeItemListener(type);
-			}
-		}
-	)
+    'addEventListener' : function(type, target, func){
+      this._super(OjComponent, 'addEventListener', arguments);
+      this._addItemListener(type);
+    },
+    'removeEventListener' : function(type, target, func){
+      this._super(OjComponent, 'removeEventListener', arguments);
+      this._removeItemListener(type);
+    }
+  },
+  {
+    '_TAGS' : ['collection']
+  }
 );
 
 
@@ -8881,7 +8878,6 @@ OjTransition.DEFAULT = new OjTransition(OjTransition.NONE, 250);
 /*
  * Note: Stack requires defined dimensions for transitions to work properly
  */
-
 
 OJ.extendComponent(
 	'OjStack', [OjCollectionComponent],
@@ -9336,7 +9332,6 @@ OJ.extendComponent(
 		'_TAGS' : ['stack']
 	}
 );
-
 
 OJ.extendComponent(
 	'OjNavStack', [OjStack],
@@ -10004,7 +9999,7 @@ OJ.extendManager(
 		},
 
 		'_onHide' : function(evt){
-      var holder = this._modal_holder,
+			var holder = this._modal_holder,
 				modal = evt.getCurrentTarget().getTarget();
 			// remove the modal from the holder
 			holder.removeChild(modal);
@@ -10016,7 +10011,7 @@ OJ.extendManager(
 				holder.hide();
 			}
 			// dispatch hide event
-      modal.dispatchEvent(new OjEvent(this.HIDE));
+			modal.dispatchEvent(new OjEvent(this.HIDE));
 			// check to see if this modal is self destructing
 			if(modal.getSelfDestruct()){
 				OJ.destroy(modal, modal.getSelfDestruct());
@@ -11065,83 +11060,99 @@ OJ.extendClass(
 
 
 OJ.extendComponent(
-	'OjList', [OjView],
+	'OjList', [OjICollectionComponent, OjView],
 	{
 		'_props_' : {
-			'dataProvider' : null,
-			'direction'    : 'vertical', // OjList.VERTICAL,
-			'itemRenderer' : OjListItem
+			'direction'    : null, // OjList.VERTICAL,
+			'itemRenderer' : null
 		},
-//		'_item_events' : null,
-
-		'_constructor' : function(/*data_provider, item_renderer, direction*/){
-			var args = arguments,
-				ln = arguments.length;
-			this._super(OjView, '_constructor', []);
-			// setup the display
+    '_constructor' : function(/*data_provider, item_renderer, direction*/){
+      this._super(OjView, '_constructor', arguments);
+      // run the collection component setup
+      this._setup();
+      // setup the display
 			this.addCss(['vertical']);
 			this.container.addCss(['items', 'cf']);
-			// process arguments
-			this._item_events = {};
-			if(ln){
-				if(ln > 1){
-					this.setItemRenderer(args[1]);
-					if(ln > 2){
-						this.setDirection(args[2]);
-					}
-				}
-				this.setDataProvider(args[0]);
-			}
-			else{
-				this.setDataProvider(new OjCollection());
-			}
-		},
+      // process arguments
+      this._processArguments(arguments, {
+        'elms' : [],
+        'itemRenderer' : OjListItem,
+        'direction' : 'vertical'
+      });
+    },
+    '_destructor' : function(){
+      // run the collection component teardown
+      this._teardown();
+      this._super(OjView, '_destructor', arguments);
+    },
 
-		'_createItem' : function(data, index){
-			var key,
-				item = new this._itemRenderer(this, data);
-			this.addElmAt(item, index);
-			// add event listeners that have been added to the others
-			for(key in this._item_events){
-				item.addEventListener(key, this, this._item_events[key]);
-			}
-			return this._redrawItem(item, data, index);
-		},
-		'_destroyItem' : function(index){
-			OJ.destroy(this.removeElmAt(index), true);
-		},
-		'_redrawItem' : function(item, data, index){
-			if(!item){
-				return;
-			}
-			this._updateClasses(item, index);
-			item.setData(data);
-			return item;
-		},
-		'_redrawItems' : function(){
-			var new_ln = this.numItems(),
-				old_ln = this.numElms(),
-				delta = new_ln - old_ln,
-				i;
-			if(delta > 0){
-				for(i = 0; i < delta; i++){
-					this._createItem(this.getItemAt(old_ln + i), old_ln + i);
-				}
-			}
-			else if(delta < 0){
-				for(; old_ln-- > new_ln;){
-					this._destroyItem(old_ln);
-				}
-				old_ln = new_ln;
-			}
-			for(; old_ln--;){
-				this._redrawItem(this.getElmAt(old_ln), this.getItemAt(old_ln), old_ln);
-			}
-		},
+    'addEventListener' : function(type, target, func){
+      this._super(OjView, 'addEventListener', arguments);
+      this._addItemListener(type);
+    },
+    'removeEventListener' : function(type, target, func){
+      this._super(OjView, 'removeEventListener', arguments);
+      this._removeItemListener(type);
+    },
+
+//		'_createItem' : function(data, index){
+//			var key,
+//				item = new this._itemRenderer(this, data);
+//
+//			this.addElmAt(item, index);
+//
+//			// add event listeners that have been added to the others
+//			for(key in this._item_events){
+//				item.addEventListener(key, this, this._item_events[key]);
+//			}
+//
+//			return this._redrawItem(item, data, index);
+//		},
+//
+//		'_destroyItem' : function(index){
+//			OJ.destroy(this.removeElmAt(index), true);
+//		},
+//
+//		'_redrawItem' : function(item, data, index){
+//			if(!item){
+//				return;
+//			}
+//
+//			this._updateClasses(item, index);
+//
+//			item.setData(data);
+//
+//			return item;
+//		},
+//
+//		'_redrawItems' : function(){
+//			var new_ln = this.numItems(),
+//				old_ln = this.numElms(),
+//				delta = new_ln - old_ln,
+//				i;
+//
+//			if(delta > 0){
+//				for(i = 0; i < delta; i++){
+//					this._createItem(this.getItemAt(old_ln + i), old_ln + i);
+//				}
+//			}
+//			else if(delta < 0){
+//				for(; old_ln-- > new_ln;){
+//					this._destroyItem(old_ln);
+//				}
+//
+//				old_ln = new_ln;
+//			}
+//
+//			for(; old_ln--;){
+//				this._redrawItem(this.getElmAt(old_ln), this.getItemAt(old_ln), old_ln);
+//			}
+//		},
+//
 		'_updateClasses' : function(item, index){
-			var class_add = [];
-			var class_remove = [];
-			var ln = this.numItems();
+			var class_add = [],
+        class_remove = [],
+        ln = this.container.numChildren();
 			if(index == 0){
 				class_add.push('first');
 			}
@@ -11167,178 +11178,163 @@ OJ.extendComponent(
 		},
 
 		// render functions
-		'redraw' : function(){
-			if(this._super(OjView, 'redraw', arguments)){
-				this._redrawItems();
-				return true;
-			}
-			return false;
-		},
-		'redrawItem' : function(item){
-			var index = this.indexOfItem(item);
-			this._redrawItem(this.getElmAt(index), item, index);
-		},
-		'redrawItemAt' : function(index){
-			this._redrawItem(this.getElmAt(index), this.getItemAt(index), index);
-		},
-
-		// item management functions
-		'addItem' : function(item){
-			return this._dataProvider.addItem(item);
-		},
-		'addItemAt' : function(item, index){
-			return this._dataProvider.addItemAt(item, index);
-		},
-		'getItemAt' : function(index){
-			return this._dataProvider.getItemAt(index);
-		},
-		'indexOfItem' : function(item){
-			return this._dataProvider.indexOfItem(item);
-		},
-		'hasItem' : function(item){
-			return this._dataProvider.hasItem(item);
-		},
-		'numItems' : function(){
-			return this._dataProvider.numItems();
-		},
-		'removeItem' : function(item){
-			return this._dataProvider.removeItem(item);
-		},
-		'removeItemAt' : function(index) {
-			return this._dataProvider.removeItemAt(index);
-		},
-
-		// event listener functions
-		'addEventListener' : function(type, target, func){
-			var ln,
-				item_evt, item_callback;
-			if(type == OjListEvent.ITEM_CLICK){
-				item_evt = OjMouseEvent.CLICK;
-				item_callback = '_onItemClick';
-			}
-			else if(type == OjListEvent.ITEM_OVER){
-				item_evt = OjMouseEvent.OVER;
-				item_callback = '_onItemOver';
-			}
-			else if(type == OjListEvent.ITEM_OUT){
-				item_evt = OjMouseEvent.OUT;
-				item_callback = '_onItemOut';
-			}
-			if(item_evt && !this._item_events[item_evt]){
-				ln = this.numItems();
-				for(; ln--;){
-					this.getElmAt(ln).addEventListener(item_evt, this, item_callback);
-				}
-				this._item_events[item_evt] = item_callback;
-			}
-			return this._super(OjView, 'addEventListener', arguments);
-		},
-		'removeEventListener' : function(type, target, func){
-			var rtrn = this._super(OjView, 'removeEventListener', arguments);
-			if(!this.hasEventListener(type)){
-				var item_evt, item_callback;
-				if(type == OjListEvent.ITEM_CLICK){
-					item_evt = OjMouseEvent.CLICK;
-					item_callback = '_onItemClick';
-				}
-				else if(type == OjListEvent.ITEM_OVER){
-					item_evt = OjMouseEvent.OVER;
-					item_callback = '_onItemOver';
-				}
-				else if(type == OjListEvent.ITEM_OUT){
-					item_evt = OjMouseEvent.OUT;
-					item_callback = '_onItemOut';
-				}
-				var ln = this.numItems();
-				while(ln-- > 0){
-					this.getElmAt(ln).removeEventListener(item_evt, this, item_callback);
-				}
-				delete this._item_events[item_evt];
-			}
-			return rtrn;
-		},
+//		'redraw' : function(){
+//			if(this._super(OjView, 'redraw', arguments)){
+//				this._redrawItems();
+//
+//				return true;
+//			}
+//
+//			return false;
+//		},
+//
+//		'redrawItem' : function(item){
+//			var index = this.indexOfItem(item);
+//
+//			this._redrawItem(this.getElmAt(index), item, index);
+//		},
+//
+//		'redrawItemAt' : function(index){
+//			this._redrawItem(this.getElmAt(index), this.getItemAt(index), index);
+//		},
+//
+//
+//		// event listener functions
+//		'addEventListener' : function(type, target, func){
+//			var ln,
+//				item_evt, item_callback;
+//
+//			if(type == OjListEvent.ITEM_CLICK){
+//				item_evt = OjMouseEvent.CLICK;
+//				item_callback = '_onItemClick';
+//			}
+//			else if(type == OjListEvent.ITEM_OVER){
+//				item_evt = OjMouseEvent.OVER;
+//				item_callback = '_onItemOver';
+//			}
+//			else if(type == OjListEvent.ITEM_OUT){
+//				item_evt = OjMouseEvent.OUT;
+//				item_callback = '_onItemOut';
+//			}
+//
+//			if(item_evt && !this._item_events[item_evt]){
+//				ln = this.numItems();
+//
+//				for(; ln--;){
+//					this.getElmAt(ln).addEventListener(item_evt, this, item_callback);
+//				}
+//
+//				this._item_events[item_evt] = item_callback;
+//			}
+//
+//			return this._super(OjView, 'addEventListener', arguments);
+//		},
+//
+//		'removeEventListener' : function(type, target, func){
+//			var rtrn = this._super(OjView, 'removeEventListener', arguments);
+//
+//			if(!this.hasEventListener(type)){
+//				var item_evt, item_callback;
+//
+//				if(type == OjListEvent.ITEM_CLICK){
+//					item_evt = OjMouseEvent.CLICK;
+//					item_callback = '_onItemClick';
+//				}
+//				else if(type == OjListEvent.ITEM_OVER){
+//					item_evt = OjMouseEvent.OVER;
+//					item_callback = '_onItemOver';
+//				}
+//				else if(type == OjListEvent.ITEM_OUT){
+//					item_evt = OjMouseEvent.OUT;
+//					item_callback = '_onItemOut';
+//				}
+//
+//				var ln = this.numItems();
+//
+//				while(ln-- > 0){
+//					this.getElmAt(ln).removeEventListener(item_evt, this, item_callback);
+//				}
+//
+//				delete this._item_events[item_evt];
+//			}
+//
+//			return rtrn;
+//		},
 		'_onItemAdd' : function(evt){
-			var item = this._createItem(evt.getItem(), evt.getIndex()),
-				// update the classes on the other items now that there is a new guy in town
-				ln = this.numItems(),
-				i = Math.max(evt.getIndex() - 1, 0);
-			for(i; i < ln; i++){
-				this._updateClasses(this.getElmAt(i), i);
+      var item = this.renderItem(evt.getItem()),
+          // update the classes on the other items now that there is a new guy in town
+          ln = this.container.numChildren(),
+          i = Math.max(evt.getIndex() - 1, 0);
+      this.container.addChildAt(item, evt.getIndex());
+      for(; ln-- > i;){
+				this._updateClasses(this.container.getChildAt(ln), ln);
 			}
-			item = ln = i = null;
-			// let everyone else know that we just added an item
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_ADD, evt.getItem(), evt.getIndex()));
+      this._super(OjICollectionComponent, '_onItemAdd', arguments);
 		},
 		'_onItemMove' : function(evt){
-			var ln = this.numItems(),
-				i, item;
-			for(; ln--;){
-				item = this.getElmAt(ln);
-				if(item.getData() == evt.getItem()){
-					this.moveElm(item, evt.getIndex());
-					if(ln > evt.getIndex()){
-						i = evt.getIndex();
-					}
-					else{
-						i = ln;
-						ln = evt.getIndex();
-					}
-					for(; ln-- > i;){
-						this._updateClasses(this.getElmAt(ln), ln);
-					}
-					break;
-				}
-			}
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_MOVE, evt.getItem(), evt.getIndex()));
+      this._super(OjICollectionComponent, '_onItemMove', arguments);
+//			var ln = this.numItems(),
+//				i, item;
+//
+//			for(; ln--;){
+//				item = this.getElmAt(ln);
+//
+//				if(item.getData() == evt.getItem()){
+//					this.moveElm(item, evt.getIndex());
+//
+//					if(ln > evt.getIndex()){
+//						i = evt.getIndex();
+//					}
+//					else{
+//						i = ln;
+//
+//						ln = evt.getIndex();
+//					}
+//
+//					for(; ln-- > i;){
+//						this._updateClasses(this.getElmAt(ln), ln);
+//					}
+//
+//					break;
+//				}
+//			}
+//
+//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_MOVE, evt.getItem(), evt.getIndex()));
 		},
 		'_onItemRemove' : function(evt){
-			this._destroyItem(evt.getIndex());
-			var ln = this.numItems(), i = Math.max(evt.getIndex() - 1, 0);
-			for(i; i < ln; i++){
-				this._updateClasses(this.getElmAt(i), i);
+//		  this._destroyItem(evt.getIndex());
+      var ln = this.container.numChildren() - 1,
+          i = evt.getIndex();
+      OJ.destroy(this.container.removeChildAt(i));
+			for(i = Math.max(i - 1, 0); ln-- > i;){
+				this._updateClasses(this.container.getChildAt(ln), ln);
 			}
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_REMOVE, evt.getItem(), evt.getIndex()));
+      this._super(OjICollectionComponent, '_onItemRemove', arguments);
 		},
 		'_onItemReplace' : function(evt){
-			this._redrawItem(this.getElmAt(evt.getIndex()), evt.getItem(), evt.getIndex());
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_REPLACE, evt.getItem(), evt.getIndex()));
+      this._super(OjICollectionComponent, '_onItemReplace', arguments);
+//			this._redrawItem(this.getElmAt(evt.getIndex()), evt.getItem(), evt.getIndex());
+//
+//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_REPLACE, evt.getItem(), evt.getIndex()));
 		},
 
 		'_onItemClick' : function(evt){
-			var index = this.indexOfElm(evt.getCurrentTarget());
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_CLICK, this._dataProvider.getItemAt(index), index));
+      this._super(OjICollectionComponent, '_onItemClick', arguments);
+//			var index = this.indexOfElm(evt.getCurrentTarget());
+//
+//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_CLICK, this._dataProvider.getItemAt(index), index));
 		},
 		'_onItemOver' : function(evt){
-			var index = this.indexOfElm(evt.getCurrentTarget());
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OVER, this._dataProvider.getItemAt(index), index));
+      this._super(OjICollectionComponent, '_onItemOver', arguments);
+//			var index = this.indexOfElm(evt.getCurrentTarget());
+//
+//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OVER, this._dataProvider.getItemAt(index), index));
 		},
 		'_onItemOut' : function(evt){
-			var index = this.indexOfElm(evt.getCurrentTarget());
-			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OUT, this._dataProvider.getItemAt(index), index));
-		},
-
-		'setDataProvider' : function(dp){
-			if(this._dataProvider == dp){
-				return ;
-			}
-			// remove previous dp event listeners
-			if(this._dataProvider){
-				this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-				this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-				this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-				this._dataProvider.removeEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
-			}
-			this._dataProvider = OjCollection.collection(dp);
-			// make sure that we always have a valid dp object
-			if(!this._dataProvider){
-				this._dataProvider = new OjCollection();
-			}
-			// add event listeners for item changes
-			this._dataProvider.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-			this._dataProvider.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-			this._dataProvider.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-			this._dataProvider.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
-			this.redraw(true);
+      this._super(OjICollectionComponent, '_onItemOut', arguments);
+//			var index = this.indexOfElm(evt.getCurrentTarget());
+//
+//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OUT, this._dataProvider.getItemAt(index), index));
 		},
 
 		'setDirection' : function(direction){
@@ -11348,10 +11344,6 @@ OJ.extendComponent(
 				}
 				this.container.addCss([this._direction = direction]);
 			}
-		},
-		'setItemRenderer' : function(renderer){
-			this._itemRenderer = isString(renderer) ? window[renderer] : renderer;
-			// todo: OjList - make change in item renderer force a redraw of all items
 		}
 	},
 	{
