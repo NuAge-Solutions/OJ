@@ -110,6 +110,14 @@ OJ.defineClass(
       this.dispatchEvent(new OjCollectionEvent(type, item, this._items.indexOfItem(item)));
     },
 
+    '_releaseItem' : function(item){
+      var id = item.id();
+
+      OJ.destroy(item);
+
+      delete this._rendered[id];
+    },
+
     '_removeItemListener' : function(type){
       // make sure that no other listeners for this type exist
       if(!this.hasEventListener(type)){
@@ -161,7 +169,7 @@ OJ.defineClass(
       }
 
       var key, evt,
-        id = item.id();
+          id = item.id();
 
       // if we have already rendered the item then just return the cached value
       if(this._rendered[id]){
