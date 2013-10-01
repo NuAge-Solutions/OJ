@@ -57,7 +57,8 @@ OJ.extendManager(
 				if(timer._duration < tick - timer._last_tick){
 					timer._last_tick = tick;
 
-					setTimeout('TimerManager._timerTick("' + key + '")', 1);
+					setTimeout('TimerManager._timerTick("' + key + '")', 0);
+//          TimerManager._timerTick(key);
 				}
 			}
 		},

@@ -1,6 +1,6 @@
 OJ.importJs('oj.form.OjFilterBox');
 OJ.importJs('oj.form.OjToken');
-OJ.importJs('oj.list.OjList');
+OJ.importJs('oj.components.OjList');
 
 OJ.importCss('oj.form.OjTokenInput');
 
@@ -35,7 +35,7 @@ OJ.extendClass(
 			}
 
 			// setup event listeners
-			this.valueHldr.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onListItemRemove');
+			this.valueHldr.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onListItemRemove');
 
 			this.filterBox.addEventListener(OjEvent.CHANGE, this, '_onFilterChange');
 		},

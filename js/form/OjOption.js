@@ -1,4 +1,4 @@
-OJ.importJs('oj.list.OjLabelItemRenderer');
+OJ.importJs('oj.renderers.OjLabelItemRenderer');
 OJ.importJs('oj.events.OjMouseEvent');
 
 OJ.importCss('oj.form.OjOption');

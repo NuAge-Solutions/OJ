@@ -84,7 +84,12 @@ OJ.extendClass(
 			var key;
 
 			for(key in this._delta){
-				this._target[key](this._easing(time, this._from_cache[key], this._delta[key], this._duration, 0, 0));
+        this._target[key](
+          Math.round(
+            this._easing(time, this._from_cache[key], this._delta[key], this._duration, 0, 0)
+            * 1000
+          ) / 1000
+        );
 			}
 		},
 

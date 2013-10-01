@@ -545,7 +545,11 @@ OJ.extendComponent(
 			val = this._processIndex(val);
 
 			// create the change event
-			evt = new OjStackEvent(OjStackEvent.CHANGE, item = this.getElmAt(val), this._transition, val, this._prev_index);
+			evt = new OjStackEvent(
+        OjStackEvent.CHANGE, item = this.getElmAt(val),
+        this._trans_out || this._alwaysTrans ? this._transition : OjTransition.DEFAULT,
+        val, this._prev_index
+      );
 
 			this._addActive(item, val);
 

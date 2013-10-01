@@ -30,9 +30,9 @@ OJ.extendClass(
 			'to'       : null
 		},
 
-//	  '_animationFrame': null,	'_callback': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
+//	  '_animationFrame': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
 
-		'_delta' : 0,
+		'_delta' : 0,  '_progress' : 0,
 
 
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
@@ -41,14 +41,18 @@ OJ.extendClass(
       this._processArguments(arguments, {
         'setFrom'     : null,
         'setTo'       : null,
-        'setDuration' : 500,
+        'setDuration' : 250,
         'setEasing'   : OjEasing.NONE
       });
+
+      this._onAnimationFrame = this._onTick.bind(this);
 		},
 
 
 		'_destructor' : function(){
-			this._unset('_timer');
+      this.stop();
+
+			this._unset(['_timer', '_onAnimationFrame']);
 
 			return this._super(OjActionable, '_destructor', arguments);
 		},
@@ -79,7 +83,7 @@ OJ.extendClass(
 
         this._onComplete(evt);
 			}
-      else if(this._onAnimationFrame){
+      else if(this._animationFrame){
         this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
       }
 		},
@@ -97,31 +101,14 @@ OJ.extendClass(
 
 			this._calculateDelta();
 
-      this._start = Date.time();
+      this._start = Date.time() - this._progress;
 
-			// only create the time once
+      // only create the time once
       if(OjTween.USE_RAF){
-        if(!this._onAnimationFrame){
-          this._onAnimationFrame = this._onTick.bind(this);
-        }
-
         this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
       }
       else{
-        this._timer;
-
-        if(!this._timer){
-          this._timer = new OjTimer();
-
-          this._timer.addEventListener(OjTimer.TICK, this, '_onTick');
-        }
-        else{
-          this._timer.stop();
-        }
-
-        this._timer.setDuration(1000 / this._quality);
-
-        this._timer.start();
+        this._interval = setInterval(this._onAnimationFrame, 1000 / this._quality);
       }
 		},
 
@@ -129,26 +116,23 @@ OJ.extendClass(
       if(this._animationFrame){
         window.cancelAnimationFrame(this._animationFrame);
 
-        this._animationFrame = null;
+        return this._animationFrame = null;
       }
-      else if(this._timer){
-        this._timer.pause();
-      }
+
+      this._interval = clearInterval(this._interval);
+      this._progress = Date.time() - this._start;
 		},
 
 		'stop' : function(){
-      if(this._animationFrame){
-        window.cancelAnimationFrame(this._animationFrame);
+      this.pause();
 
-        this._animationFrame = null;
-      }
-      else if(this._timer){
-        this._timer.stop();
-      }
+      this._progress = this._start = 0;
 		},
 
 		'restart' : function(){
-			this._timer.restart();
+      this.stop();
+
+      this.start();
 		},
 
 		'reverse' : function(){

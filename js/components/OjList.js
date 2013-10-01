@@ -8,7 +8,7 @@ OJ.extendComponent(
     },
 
     '_constructor' : function(/*data_provider, item_renderer, direction*/){
-      this._super(OjList, '_constructor', []);
+      this._super(OjCollectionComponent, '_constructor', []);
 
       this._processArguments(arguments, {
         'items' : undefined,

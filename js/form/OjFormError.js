@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.OjItemRenderer');
+OJ.importJs('oj.renderers.OjItemRenderer');
 
 
 'use strict';

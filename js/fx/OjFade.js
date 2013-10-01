@@ -50,7 +50,7 @@ OJ.extendClass(
 
 
 		'start' : function(){
-			// for some reason this happens every once and awhile
+      // for some reason this happens every once and awhile
 			if(!this._target){
 				return;
 			}

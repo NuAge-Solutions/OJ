@@ -1,11 +1,11 @@
-OJ.importJs('oj.components.OjItemRenderer');
+OJ.importJs('oj.renderers.OjItemRenderer');
 OJ.importJs('oj.components.OjLabel');
 
 
 OJ.extendClass(
 	'OjLabelItemRenderer', [OjItemRenderer],
 	{
-		'_template' : 'oj.list.OjLabelItemRenderer',
+		'_template' : 'oj.renderers.OjLabelItemRenderer',
 
 
 		'_redrawData' : function(){

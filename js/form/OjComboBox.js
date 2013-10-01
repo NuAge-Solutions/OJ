@@ -1,7 +1,7 @@
 OJ.importJs('oj.components.OjButton');
 OJ.importJs('oj.form.OjInput');
 OJ.importJs('oj.data.OjCollection');
-OJ.importJs('oj.list.OjList');
+OJ.importJs('oj.components.OjList');
 
 OJ.importCss('oj.form.OjComboBox');
 
@@ -26,7 +26,7 @@ OJ.extendClass(
 			this._super(OjInput, '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
 
 			this._list = new OjList();
-			this._list.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
+			this._list.addEventListener(OjCollectionEvent.ITEM_CLICK, this, '_onItemClick');
 
 			this._options_dp = this._list.getDataProvider();
 

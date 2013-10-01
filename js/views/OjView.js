@@ -1,10 +1,8 @@
 OJ.importJs('oj.components.OjComponent');
 OJ.importJs('oj.components.OjOverlay');
 
-OJ.importCss('oj.nav.OjView');
+OJ.importCss('oj.views.OjView');
 
-
-'use strict';
 
 OJ.extendComponent(
 	'OjView', [OjComponent],
@@ -29,13 +27,13 @@ OJ.extendComponent(
 //
 //		'_overlay' : null,  '_unload_checkpoints' : null,  '_unloading_icon' : null,
 
-		'_loading_msg' : 'Loading',  '_template' : 'oj.nav.OjView',  '_loaded' : false,
+		'_loading_msg' : 'Loading',  '_template' : 'oj.views.OjView',  '_loaded' : false,
 
 		'_unloading_msg' : 'UnLoading',
 
 
 		'_constructor' : function(/*content, title, short_title*/){
-			this._super(OjComponent, '_constructor', []);
+      this._super(OjComponent, '_constructor', []);
 
 			// setup vars
 			this._load_checkpoints = {};
@@ -69,10 +67,7 @@ OJ.extendComponent(
 		'_destructor' : function(){
 			this.unload();
 
-			this._unset('_actionView');
-			this._unset('_cancelView');
-			this._unset('_titleView');
-			this._unset('_overlay');
+			this._unset(['_actionView', '_cancelView', '_titleView', '_overlay']);
 
 			return this._super(OjComponent, '_destructor', arguments);
 		},
@@ -135,21 +130,21 @@ OJ.extendComponent(
 		},
 
 		'_showOverlay' : function(/*msg, icon*/){
-			var args = arguments,
-				ln = args.length,
-				msg = ln ? args[0] : null,
-				icon = ln > 1 ? args[1] : null,
-				overlay = this._overlay;
-
-			if(overlay){
-				overlay.setMessage(msg);
-				overlay.setIcon(icon);
-			}
-			else{
-				overlay = this._overlay = new OjOverlay(msg, icon);
-			}
-
-			overlay.show(this);
+//			var args = arguments,
+//				ln = args.length,
+//				msg = ln ? args[0] : null,
+//				icon = ln > 1 ? args[1] : null,
+//				overlay = this._overlay;
+//
+//			if(overlay){
+//				overlay.setMessage(msg);
+//				overlay.setIcon(icon);
+//			}
+//			else{
+//				overlay = this._overlay = new OjOverlay(msg, icon);
+//			}
+//
+//			overlay.show(this);
 		},
 
 		'_unload' : function(){

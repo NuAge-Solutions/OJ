@@ -5745,7 +5745,8 @@ OJ.extendManager(
 				timer = this._timers[key];
 				if(timer._duration < tick - timer._last_tick){
 					timer._last_tick = tick;
-					setTimeout('TimerManager._timerTick("' + key + '")', 1);
+					setTimeout('TimerManager._timerTick("' + key + '")', 0);
+//          TimerManager._timerTick(key);
 				}
 			}
 		},
@@ -6070,21 +6071,23 @@ OJ.extendClass(
 			'quality'  : 60,  // frame rate
 			'to'       : null
 		},
-//	  '_animationFrame': null,	'_callback': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
-		'_delta' : 0,
+//	  '_animationFrame': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
+		'_delta' : 0,  '_progress' : 0,
 
 		'_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
 			this._super(OjActionable, '_constructor', []);
       this._processArguments(arguments, {
         'setFrom'     : null,
         'setTo'       : null,
-        'setDuration' : 500,
+        'setDuration' : 250,
         'setEasing'   : OjEasing.NONE
       });
+      this._onAnimationFrame = this._onTick.bind(this);
 		},
 
 		'_destructor' : function(){
-			this._unset('_timer');
+      this.stop();
+			this._unset(['_timer', '_onAnimationFrame']);
 			return this._super(OjActionable, '_destructor', arguments);
 		},
 
@@ -6108,7 +6111,7 @@ OJ.extendClass(
 				this.stop();
         this._onComplete(evt);
 			}
-      else if(this._onAnimationFrame){
+      else if(this._animationFrame){
         this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
       }
 		},
@@ -6122,47 +6125,30 @@ OJ.extendClass(
 				return;
 			}
 			this._calculateDelta();
-      this._start = Date.time();
-			// only create the time once
+      this._start = Date.time() - this._progress;
+      // only create the time once
       if(OjTween.USE_RAF){
-        if(!this._onAnimationFrame){
-          this._onAnimationFrame = this._onTick.bind(this);
-        }
         this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
       }
       else{
-        this._timer;
-        if(!this._timer){
-          this._timer = new OjTimer();
-          this._timer.addEventListener(OjTimer.TICK, this, '_onTick');
-        }
-        else{
-          this._timer.stop();
-        }
-        this._timer.setDuration(1000 / this._quality);
-        this._timer.start();
+        this._interval = setInterval(this._onAnimationFrame, 1000 / this._quality);
       }
 		},
 		'pause' : function(){
       if(this._animationFrame){
         window.cancelAnimationFrame(this._animationFrame);
-        this._animationFrame = null;
+        return this._animationFrame = null;
       }
-      else if(this._timer){
-        this._timer.pause();
-      }
+      this._interval = clearInterval(this._interval);
+      this._progress = Date.time() - this._start;
 		},
 		'stop' : function(){
-      if(this._animationFrame){
-        window.cancelAnimationFrame(this._animationFrame);
-        this._animationFrame = null;
-      }
-      else if(this._timer){
-        this._timer.stop();
-      }
+      this.pause();
+      this._progress = this._start = 0;
 		},
 		'restart' : function(){
-			this._timer.restart();
+      this.stop();
+      this.start();
 		},
 		'reverse' : function(){
 			// todo: implement tween reverse
@@ -6233,7 +6219,12 @@ OJ.extendClass(
 		'_tick' : function(time){
 			var key;
 			for(key in this._delta){
-				this._target[key](this._easing(time, this._from_cache[key], this._delta[key], this._duration, 0, 0));
+        this._target[key](
+          Math.round(
+            this._easing(time, this._from_cache[key], this._delta[key], this._duration, 0, 0)
+            * 1000
+          ) / 1000
+        );
 			}
 		},
 
@@ -6369,7 +6360,7 @@ OJ.extendClass(
 		},
 
 		'start' : function(){
-			// for some reason this happens every once and awhile
+      // for some reason this happens every once and awhile
 			if(!this._target){
 				return;
 			}
@@ -7359,7 +7350,7 @@ OJ.extendComponent(
 		'_unloading_msg' : 'UnLoading',
 
 		'_constructor' : function(/*content, title, short_title*/){
-			this._super(OjComponent, '_constructor', []);
+      this._super(OjComponent, '_constructor', []);
 			// setup vars
 			this._load_checkpoints = {};
 			this._unload_checkpoints = {};
@@ -7384,10 +7375,7 @@ OJ.extendComponent(
 		},
 		'_destructor' : function(){
 			this.unload();
-			this._unset('_actionView');
-			this._unset('_cancelView');
-			this._unset('_titleView');
-			this._unset('_overlay');
+			this._unset(['_actionView', '_cancelView', '_titleView', '_overlay']);
 			return this._super(OjComponent, '_destructor', arguments);
 		},
 
@@ -7433,19 +7421,21 @@ OJ.extendComponent(
 			}
 		},
 		'_showOverlay' : function(/*msg, icon*/){
-			var args = arguments,
-				ln = args.length,
-				msg = ln ? args[0] : null,
-				icon = ln > 1 ? args[1] : null,
-				overlay = this._overlay;
-			if(overlay){
-				overlay.setMessage(msg);
-				overlay.setIcon(icon);
-			}
-			else{
-				overlay = this._overlay = new OjOverlay(msg, icon);
-			}
-			overlay.show(this);
+//			var args = arguments,
+//				ln = args.length,
+//				msg = ln ? args[0] : null,
+//				icon = ln > 1 ? args[1] : null,
+//				overlay = this._overlay;
+//
+//			if(overlay){
+//				overlay.setMessage(msg);
+//				overlay.setIcon(icon);
+//			}
+//			else{
+//				overlay = this._overlay = new OjOverlay(msg, icon);
+//			}
+//
+//			overlay.show(this);
 		},
 		'_unload' : function(){
 			this._loaded = true;
@@ -9309,7 +9299,11 @@ OJ.extendComponent(
 			}
 			val = this._processIndex(val);
 			// create the change event
-			evt = new OjStackEvent(OjStackEvent.CHANGE, item = this.getElmAt(val), this._transition, val, this._prev_index);
+			evt = new OjStackEvent(
+        OjStackEvent.CHANGE, item = this.getElmAt(val),
+        this._trans_out || this._alwaysTrans ? this._transition : OjTransition.DEFAULT,
+        val, this._prev_index
+      );
 			this._addActive(item, val);
 			// transition in the new active container
 			// but only if we are transitioning out an old active
@@ -9981,9 +9975,9 @@ OJ.extendManager(
 			return modal.is('OjModal') && OJ.isMobile()
 		},
 		'_transIn' : function(modal){
-			var anim  = new OjFade(modal, OjFade.IN),
-				pane = modal.pane,
-				h, y;
+			var anim  = new OjFade(modal, OjFade.IN, 250),
+				  pane = modal.pane,
+				  h, y;
 			// transition the alert/modal
 			anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
 			anim.start();
@@ -9992,12 +9986,12 @@ OJ.extendManager(
 				y = pane.getY();
 				pane.setY(y + h);
 				// transition the modal
-				anim = new OjMove(pane, OjMove.Y, y, 250, OjEasing.OUT);
+				anim = new OjMove(pane, OjMove.Y, y, anim.getDuration(), OjEasing.OUT);
 				anim.start();
 			}
 		},
 		'_transOut' : function(modal){
-			var anim = new OjFade(modal, OjFade.OUT),
+			var anim = new OjFade(modal, OjFade.OUT, 250),
 				pane = modal.pane,
 				h, y;
 			// transition the alert/modal
@@ -10007,7 +10001,7 @@ OJ.extendManager(
 				h = pane.getHeight();
 				y = pane.getY();
 				// transition the modal
-				anim = new OjMove(modal.pane, OjMove.Y, y + h, 250, OjEasing.OUT);
+				anim = new OjMove(modal.pane, OjMove.Y, y + h, anim.getDuration(), OjEasing.OUT);
 				anim.start();
 			}
 		},
@@ -10497,52 +10491,6 @@ OJ.extendComponent(
 	}
 );
 
-
-OJ.extendComponent(
-	'OjItemRenderer', [OjComponent],
-	{
-		'_props_' : {
-			'data'  : null,
-			'group' : null
-		},
-
-		'_constructor' : function(/*group, data*/){
-			this._super(OjComponent, '_constructor', []);
-			var args = arguments,
-				ln = args.length;
-			if(ln){
-				this.setGroup(args[0]);
-				if(ln > 1){
-					this.setData(args[1]);
-				}
-			}
-		},
-
-		'_redrawData' : function(){
-			return this._is_displayed;
-		},
-
-		'redraw' : function(){
-			if(this._super(OjComponent, 'redraw', arguments)){
-				this._redrawData();
-				return true;
-			}
-			return false;
-		},
-
-		'setData' : function(data){
-			if(this._data == data){
-				return;
-			}
-			this._data = data;
-			this._redrawData();
-		}
-	},
-	{
-		'_TAGS' : ['item']
-	}
-);
-
 OJ.extendComponent(
   'OjList', [OjCollectionComponent],
   {
@@ -10550,7 +10498,7 @@ OJ.extendComponent(
 			'direction' : null // OjList.VERTICAL,
     },
     '_constructor' : function(/*data_provider, item_renderer, direction*/){
-      this._super(OjList, '_constructor', []);
+      this._super(OjCollectionComponent, '_constructor', []);
       this._processArguments(arguments, {
         'items' : undefined,
         'itemRenderer' : OjItemRenderer,
@@ -10670,6 +10618,52 @@ OJ.extendClass(
 		'LANDSCAPE_LEFT' : 90,
 		'LANDSCAPE_RIGHT' : -90,
 		'CHANGE'  : 'onOrienationChange'
+	}
+);
+
+
+OJ.extendComponent(
+	'OjItemRenderer', [OjComponent],
+	{
+		'_props_' : {
+			'data'  : null,
+			'group' : null
+		},
+
+		'_constructor' : function(/*group, data*/){
+			this._super(OjComponent, '_constructor', []);
+			var args = arguments,
+				ln = args.length;
+			if(ln){
+				this.setGroup(args[0]);
+				if(ln > 1){
+					this.setData(args[1]);
+				}
+			}
+		},
+
+		'_redrawData' : function(){
+			return this._is_displayed;
+		},
+
+		'redraw' : function(){
+			if(this._super(OjComponent, 'redraw', arguments)){
+				this._redrawData();
+				return true;
+			}
+			return false;
+		},
+
+		'setData' : function(data){
+			if(this._data == data){
+				return;
+			}
+			this._data = data;
+			this._redrawData();
+		}
+	},
+	{
+		'_TAGS' : ['item']
 	}
 );
 
@@ -11023,421 +11017,6 @@ OJ.extendClass(
 );
 
 
-OJ.extendComponent(
-	'OjListItem', [OjItemRenderer],
-	{
-		'_props_' : {
-			'showAccessory' : false,
-			'showIcon'      : false
-		},
-		'accessory' : null,  'content' : null,  'icon' : null,
-
-		'_constructor' : function(/*group, data*/){
-			this._super(OjItemRenderer, '_constructor', arguments);
-      this.addChild(this.accessory = new OjStyleElement('<div class="accessory" valign="m"></div>'));
-			this.addChild(this.icon = new OjImage());
-			this.addChild(this.content = new OjStyleElement('<div class="content" valign="m"></div>'));
-			this.icon.addCss('-icon');
-		},
-		'_destructor' : function(/*depth = 0*/){
-			if(this._data && this._data.is && this._data.is('OjActionable')){
-				this._data.removeEventListener(OjEvent.CHANGE, this, '_onDataChange');
-			}
-			this._list = this._data = null;
-			return this._super(OjItemRenderer, '_destructor', arguments);
-		},
-
-		'_redrawAccessory' : function(){
-			if(this._showAccessory){
-				this.removeCss(['no-accessory']);
-			}
-			else{
-				this.addCss(['no-accessory']);
-			}
-		},
-		'_redrawData' : function(){
-			this.content.setText(this._data);
-		},
-		'_redrawIcon' : function(){
-			if(this._showIcon){
-				this.removeCss(['no-icon']);
-			}
-			else{
-				this.addCss(['no-icon']);
-			}
-		},
-
-		'redraw' : function(){
-			if(this._super(OjItemRenderer, 'redraw', arguments)){
-				this._redrawData();
-				this._redrawAccessory();
-				this._redrawIcon();
-				return true;
-			}
-			return false;
-		},
-
-		'_onDataChange' : function(evt){
-			this._redrawData();
-		},
-
-		'setData' : function(data){
-			if(this._data && this._data.is && this._data.is('OjActionable')){
-				this._data.removeEventListener(OjEvent.CHANGE, this, '_onDataChange');
-			}
-			this._data = data;
-			if(this._data && this._data.is && this._data.is('OjActionable')){
-				this._data.addEventListener(OjEvent.CHANGE, this, '_onDataChange');
-			}
-			this.redraw();
-		},
-		'setShowAccessory' : function(val){
-			if(this._showAccessory == val){
-				return;
-			}
-			this._showAccessory = val;
-			this.redraw();
-		},
-		'setShowIcon' : function(val){
-			if(this._showIcon == val){
-				return;
-			}
-			this._showIcon = val;
-			this.redraw();
-		}
-	},
-	{
-		'_TAGS' : ['listitem']
-	}
-);
-
-
-OJ.extendClass(
-	'OjListEvent', [OjEvent],
-	{
-		'_get_props_' : {
-			'item'  : null,
-			'index' : null
-		},
-
-		'_constructor' : function(type, item, index/*, bubbles, cancelable*/){
-			var args = [type];
-			this._item = item;
-			this._index = index;
-			if(arguments.length > 2){
-				args = args.slice.call(arguments, 2);
-				args.unshift(type);
-			}
-			this._super(OjEvent, '_constructor', args);
-		}
-	},
-	{
-		'ITEM_ADD'     : 'onItemAdd',
-		'ITEM_MOVE'    : 'onItemMove',
-		'ITEM_REMOVE'  : 'onItemRemove',
-		'ITEM_REPLACE' : 'onItemReplace',
-		'ITEM_CLICK' : 'onItemClick',
-		'ITEM_OVER'  : 'onItemOver',
-		'ITEM_OUT'   : 'onItemOut'
-	}
-);
-
-
-OJ.extendComponent(
-	'OjList', [OjICollectionComponent, OjView],
-	{
-		'_props_' : {
-			'direction'    : null, // OjList.VERTICAL,
-			'itemRenderer' : null
-		},
-    '_constructor' : function(/*data_provider, item_renderer, direction*/){
-      this._super(OjView, '_constructor', arguments);
-      // run the collection component setup
-      this._setup();
-      // setup the display
-			this.addCss(['vertical']);
-			this.container.addCss(['items', 'cf']);
-      // process arguments
-      this._processArguments(arguments, {
-        'elms' : [],
-        'itemRenderer' : OjListItem,
-        'direction' : 'vertical'
-      });
-    },
-    '_destructor' : function(){
-      // run the collection component teardown
-      this._teardown();
-      this._super(OjView, '_destructor', arguments);
-    },
-
-    'addEventListener' : function(type, target, func){
-      this._super(OjView, 'addEventListener', arguments);
-      this._addItemListener(type);
-    },
-    'removeEventListener' : function(type, target, func){
-      this._super(OjView, 'removeEventListener', arguments);
-      this._removeItemListener(type);
-    },
-
-//		'_createItem' : function(data, index){
-//			var key,
-//				item = new this._itemRenderer(this, data);
-//
-//			this.addElmAt(item, index);
-//
-//			// add event listeners that have been added to the others
-//			for(key in this._item_events){
-//				item.addEventListener(key, this, this._item_events[key]);
-//			}
-//
-//			return this._redrawItem(item, data, index);
-//		},
-//
-//		'_destroyItem' : function(index){
-//			OJ.destroy(this.removeElmAt(index), true);
-//		},
-//
-//		'_redrawItem' : function(item, data, index){
-//			if(!item){
-//				return;
-//			}
-//
-//			this._updateClasses(item, index);
-//
-//			item.setData(data);
-//
-//			return item;
-//		},
-//
-//		'_redrawItems' : function(){
-//			var new_ln = this.numItems(),
-//				old_ln = this.numElms(),
-//				delta = new_ln - old_ln,
-//				i;
-//
-//			if(delta > 0){
-//				for(i = 0; i < delta; i++){
-//					this._createItem(this.getItemAt(old_ln + i), old_ln + i);
-//				}
-//			}
-//			else if(delta < 0){
-//				for(; old_ln-- > new_ln;){
-//					this._destroyItem(old_ln);
-//				}
-//
-//				old_ln = new_ln;
-//			}
-//
-//			for(; old_ln--;){
-//				this._redrawItem(this.getElmAt(old_ln), this.getItemAt(old_ln), old_ln);
-//			}
-//		},
-//
-		'_updateClasses' : function(item, index){
-			var class_add = [],
-        class_remove = [],
-        ln = this.container.numChildren();
-			if(index == 0){
-				class_add.push('first');
-			}
-			else{
-				class_remove.push('first');
-			}
-			if(index + 1 == ln || ln == 1){
-				class_add.push('last');
-			}
-			else{
-				class_remove.push('last');
-			}
-			if(index == 0 || index % 2 == 0){
-				class_add.push('even');
-				class_remove.push('odd');
-			}
-			else{
-				class_add.push('odd');
-				class_remove.push('even');
-			}
-			item.addCss(class_add);
-			item.removeCss(class_remove);
-		},
-
-		// render functions
-//		'redraw' : function(){
-//			if(this._super(OjView, 'redraw', arguments)){
-//				this._redrawItems();
-//
-//				return true;
-//			}
-//
-//			return false;
-//		},
-//
-//		'redrawItem' : function(item){
-//			var index = this.indexOfItem(item);
-//
-//			this._redrawItem(this.getElmAt(index), item, index);
-//		},
-//
-//		'redrawItemAt' : function(index){
-//			this._redrawItem(this.getElmAt(index), this.getItemAt(index), index);
-//		},
-//
-//
-//		// event listener functions
-//		'addEventListener' : function(type, target, func){
-//			var ln,
-//				item_evt, item_callback;
-//
-//			if(type == OjListEvent.ITEM_CLICK){
-//				item_evt = OjMouseEvent.CLICK;
-//				item_callback = '_onItemClick';
-//			}
-//			else if(type == OjListEvent.ITEM_OVER){
-//				item_evt = OjMouseEvent.OVER;
-//				item_callback = '_onItemOver';
-//			}
-//			else if(type == OjListEvent.ITEM_OUT){
-//				item_evt = OjMouseEvent.OUT;
-//				item_callback = '_onItemOut';
-//			}
-//
-//			if(item_evt && !this._item_events[item_evt]){
-//				ln = this.numItems();
-//
-//				for(; ln--;){
-//					this.getElmAt(ln).addEventListener(item_evt, this, item_callback);
-//				}
-//
-//				this._item_events[item_evt] = item_callback;
-//			}
-//
-//			return this._super(OjView, 'addEventListener', arguments);
-//		},
-//
-//		'removeEventListener' : function(type, target, func){
-//			var rtrn = this._super(OjView, 'removeEventListener', arguments);
-//
-//			if(!this.hasEventListener(type)){
-//				var item_evt, item_callback;
-//
-//				if(type == OjListEvent.ITEM_CLICK){
-//					item_evt = OjMouseEvent.CLICK;
-//					item_callback = '_onItemClick';
-//				}
-//				else if(type == OjListEvent.ITEM_OVER){
-//					item_evt = OjMouseEvent.OVER;
-//					item_callback = '_onItemOver';
-//				}
-//				else if(type == OjListEvent.ITEM_OUT){
-//					item_evt = OjMouseEvent.OUT;
-//					item_callback = '_onItemOut';
-//				}
-//
-//				var ln = this.numItems();
-//
-//				while(ln-- > 0){
-//					this.getElmAt(ln).removeEventListener(item_evt, this, item_callback);
-//				}
-//
-//				delete this._item_events[item_evt];
-//			}
-//
-//			return rtrn;
-//		},
-		'_onItemAdd' : function(evt){
-      var item = this.renderItem(evt.getItem()),
-          // update the classes on the other items now that there is a new guy in town
-          ln = this.container.numChildren(),
-          i = Math.max(evt.getIndex() - 1, 0);
-      this.container.addChildAt(item, evt.getIndex());
-      for(; ln-- > i;){
-				this._updateClasses(this.container.getChildAt(ln), ln);
-			}
-      this._super(OjICollectionComponent, '_onItemAdd', arguments);
-		},
-		'_onItemMove' : function(evt){
-      this._super(OjICollectionComponent, '_onItemMove', arguments);
-//			var ln = this.numItems(),
-//				i, item;
-//
-//			for(; ln--;){
-//				item = this.getElmAt(ln);
-//
-//				if(item.getData() == evt.getItem()){
-//					this.moveElm(item, evt.getIndex());
-//
-//					if(ln > evt.getIndex()){
-//						i = evt.getIndex();
-//					}
-//					else{
-//						i = ln;
-//
-//						ln = evt.getIndex();
-//					}
-//
-//					for(; ln-- > i;){
-//						this._updateClasses(this.getElmAt(ln), ln);
-//					}
-//
-//					break;
-//				}
-//			}
-//
-//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_MOVE, evt.getItem(), evt.getIndex()));
-		},
-		'_onItemRemove' : function(evt){
-//		  this._destroyItem(evt.getIndex());
-      var ln = this.container.numChildren() - 1,
-          i = evt.getIndex();
-      OJ.destroy(this.container.removeChildAt(i));
-			for(i = Math.max(i - 1, 0); ln-- > i;){
-				this._updateClasses(this.container.getChildAt(ln), ln);
-			}
-      this._super(OjICollectionComponent, '_onItemRemove', arguments);
-		},
-		'_onItemReplace' : function(evt){
-      this._super(OjICollectionComponent, '_onItemReplace', arguments);
-//			this._redrawItem(this.getElmAt(evt.getIndex()), evt.getItem(), evt.getIndex());
-//
-//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_REPLACE, evt.getItem(), evt.getIndex()));
-		},
-
-		'_onItemClick' : function(evt){
-      this._super(OjICollectionComponent, '_onItemClick', arguments);
-//			var index = this.indexOfElm(evt.getCurrentTarget());
-//
-//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_CLICK, this._dataProvider.getItemAt(index), index));
-		},
-		'_onItemOver' : function(evt){
-      this._super(OjICollectionComponent, '_onItemOver', arguments);
-//			var index = this.indexOfElm(evt.getCurrentTarget());
-//
-//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OVER, this._dataProvider.getItemAt(index), index));
-		},
-		'_onItemOut' : function(evt){
-      this._super(OjICollectionComponent, '_onItemOut', arguments);
-//			var index = this.indexOfElm(evt.getCurrentTarget());
-//
-//			this.dispatchEvent(new OjListEvent(OjListEvent.ITEM_OUT, this._dataProvider.getItemAt(index), index));
-		},
-
-		'setDirection' : function(direction){
-			if(this._direction != direction){
-				if(this._direction){
-					this.container.removeCss([this._direction]);
-				}
-				this.container.addCss([this._direction = direction]);
-			}
-		}
-	},
-	{
-		'HORIZONTAL' : 'horizontal',
-		'VERTICAL'   : 'vertical',
-		'_TAGS' : ['list']
-	}
-);
-
-
 OJ.extendClass(
 	'OjComboBox', [OjInput],
 	{
@@ -11450,7 +11029,7 @@ OJ.extendClass(
 			this._options_index = [];
 			this._super(OjInput, '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
 			this._list = new OjList();
-			this._list.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
+			this._list.addEventListener(OjCollectionEvent.ITEM_CLICK, this, '_onItemClick');
 			this._options_dp = this._list.getDataProvider();
 			if(ln > 2){
 				if(ln > 3){
@@ -12103,7 +11682,6 @@ OJ.extendClass(
 );
 
 
-
 OJ.extendComponent(
 	'OjSelector', [OjInput],
 	{
@@ -12121,11 +11699,11 @@ OJ.extendComponent(
 			this._value = [];
 			this._super(OjInput, '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
 			// setup the list listeners
-			this.input.addEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
-			this.input.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
-			this.input.addEventListener(OjListEvent.ITEM_MOVE, this, '_onItemMove');
-			this.input.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onItemRemove');
-			this.input.addEventListener(OjListEvent.ITEM_REPLACE, this, '_onItemReplace');
+			this.input.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+			this.input.addEventListener(OjCollectionEvent.ITEM_CLICK, this, '_onItemClick');
+			this.input.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+			this.input.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+			this.input.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
 			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
 			// set options if available
 			if(ln > 3){
@@ -12366,7 +11944,7 @@ OJ.extendClass(
 				this.setValue(arguments[2]);
 			}
 			// setup event listeners
-			this.valueHldr.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onListItemRemove');
+			this.valueHldr.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onListItemRemove');
 			this.filterBox.addEventListener(OjEvent.CHANGE, this, '_onFilterChange');
 		},
 
@@ -13099,4 +12677,103 @@ OJ.extendClass(
 			return OJ._guid++;
 		}
 	}
+);
+
+
+OJ.extendComponent(
+	'OjListItem', [OjItemRenderer],
+	{
+		'_props_' : {
+			'showAccessory' : false,
+			'showIcon'      : false
+		},
+		'accessory' : null,  'content' : null,  'icon' : null,
+
+		'_constructor' : function(/*group, data*/){
+			this._super(OjItemRenderer, '_constructor', arguments);
+      this.addChild(this.accessory = new OjStyleElement('<div class="accessory" valign="m"></div>'));
+			this.addChild(this.icon = new OjImage());
+			this.addChild(this.content = new OjStyleElement('<div class="content" valign="m"></div>'));
+			this.icon.addCss('-icon');
+		},
+		'_destructor' : function(/*depth = 0*/){
+			if(this._data && this._data.is && this._data.is('OjActionable')){
+				this._data.removeEventListener(OjEvent.CHANGE, this, '_onDataChange');
+			}
+			this._list = this._data = null;
+			return this._super(OjItemRenderer, '_destructor', arguments);
+		},
+
+		'_redrawAccessory' : function(){
+			if(this._showAccessory){
+				this.removeCss(['no-accessory']);
+			}
+			else{
+				this.addCss(['no-accessory']);
+			}
+		},
+		'_redrawData' : function(){
+			this.content.setText(this._data);
+		},
+		'_redrawIcon' : function(){
+			if(this._showIcon){
+				this.removeCss(['no-icon']);
+			}
+			else{
+				this.addCss(['no-icon']);
+			}
+		},
+
+		'redraw' : function(){
+			if(this._super(OjItemRenderer, 'redraw', arguments)){
+				this._redrawData();
+				this._redrawAccessory();
+				this._redrawIcon();
+				return true;
+			}
+			return false;
+		},
+
+		'_onDataChange' : function(evt){
+			this._redrawData();
+		},
+
+		'setData' : function(data){
+			if(this._data && this._data.is && this._data.is('OjActionable')){
+				this._data.removeEventListener(OjEvent.CHANGE, this, '_onDataChange');
+			}
+			this._data = data;
+			if(this._data && this._data.is && this._data.is('OjActionable')){
+				this._data.addEventListener(OjEvent.CHANGE, this, '_onDataChange');
+			}
+			this.redraw();
+		},
+		'setShowAccessory' : function(val){
+			if(this._showAccessory == val){
+				return;
+			}
+			this._showAccessory = val;
+			this.redraw();
+		},
+		'setShowIcon' : function(val){
+			if(this._showIcon == val){
+				return;
+			}
+			this._showIcon = val;
+			this.redraw();
+		}
+	},
+	{
+		'_TAGS' : ['listitem']
+	}
+);
+
+OJ.extendComponent(
+  'OjListView', [OjView],
+  {
+    '_template' : '<div><list var=container></list></div>'
+  },
+  {
+    '_TAGS' : ['listview']
+  }
 );

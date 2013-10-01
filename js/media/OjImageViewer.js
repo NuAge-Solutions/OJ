@@ -1,4 +1,4 @@
-OJ.importJs('oj.nav.OjView');
+OJ.importJs('oj.views.OjView');
 OJ.importJs('oj.media.OjImage');
 
 OJ.importCss('oj.media.OjImageViewer');

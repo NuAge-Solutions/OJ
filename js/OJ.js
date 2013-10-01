@@ -1889,7 +1889,7 @@ function onDomReady(){
 	OJ.importJs('oj.timer.OjTimerManager');
 	OJ.importJs('oj.utils.OjHistoryManager');
 	OJ.importJs('oj.window.OjWindowManager');
-	OJ.importJs('oj.nav.OjView');
+	OJ.importJs('oj.views.OjView');
 	OJ.importJs('oj.events.OjTransformEvent');
 	OJ.importJs('oj.fx.OjFade');
 	OJ.importJs('oj.fx.OjTweenSet');

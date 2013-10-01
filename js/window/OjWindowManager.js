@@ -94,9 +94,9 @@ OJ.extendManager(
 		},
 
 		'_transIn' : function(modal){
-			var anim  = new OjFade(modal, OjFade.IN),
-				pane = modal.pane,
-				h, y;
+			var anim  = new OjFade(modal, OjFade.IN, 250),
+				  pane = modal.pane,
+				  h, y;
 
 			// transition the alert/modal
 			anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
@@ -109,13 +109,13 @@ OJ.extendManager(
 				pane.setY(y + h);
 
 				// transition the modal
-				anim = new OjMove(pane, OjMove.Y, y, 250, OjEasing.OUT);
+				anim = new OjMove(pane, OjMove.Y, y, anim.getDuration(), OjEasing.OUT);
 				anim.start();
 			}
 		},
 
 		'_transOut' : function(modal){
-			var anim = new OjFade(modal, OjFade.OUT),
+			var anim = new OjFade(modal, OjFade.OUT, 250),
 				pane = modal.pane,
 				h, y;
 
@@ -128,7 +128,7 @@ OJ.extendManager(
 				y = pane.getY();
 
 				// transition the modal
-				anim = new OjMove(modal.pane, OjMove.Y, y + h, 250, OjEasing.OUT);
+				anim = new OjMove(modal.pane, OjMove.Y, y + h, anim.getDuration(), OjEasing.OUT);
 				anim.start();
 			}
 		},

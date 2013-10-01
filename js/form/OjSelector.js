@@ -1,15 +1,12 @@
 OJ.importJs('oj.data.OjCollection');
 OJ.importJs('oj.form.OjRadioOption');
 OJ.importJs('oj.form.OjInput');
-OJ.importJs('oj.list.OjLabelItemRenderer');
-OJ.importJs('oj.list.OjList');
-OJ.importJs('oj.list.OjListEvent');
-
+OJ.importJs('oj.renderers.OjLabelItemRenderer');
+OJ.importJs('oj.components.OjList');
+OJ.importJs('oj.events.OjCollectionEvent');
 
 OJ.importCss('oj.form.OjSelector');
 
-
-'use strict';
 
 OJ.extendComponent(
 	'OjSelector', [OjInput],
@@ -33,11 +30,11 @@ OJ.extendComponent(
 			this._super(OjInput, '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
 
 			// setup the list listeners
-			this.input.addEventListener(OjListEvent.ITEM_ADD, this, '_onItemAdd');
-			this.input.addEventListener(OjListEvent.ITEM_CLICK, this, '_onItemClick');
-			this.input.addEventListener(OjListEvent.ITEM_MOVE, this, '_onItemMove');
-			this.input.addEventListener(OjListEvent.ITEM_REMOVE, this, '_onItemRemove');
-			this.input.addEventListener(OjListEvent.ITEM_REPLACE, this, '_onItemReplace');
+			this.input.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+			this.input.addEventListener(OjCollectionEvent.ITEM_CLICK, this, '_onItemClick');
+			this.input.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+			this.input.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+			this.input.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
 			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
 
 			// set options if available
