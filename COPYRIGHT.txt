@@ -14,9 +14,9 @@ You should have received a copy of the GNU General Public License
 along with this program as the file LICENSE.txt; if not, please see
 http://www.gnu.org/licenses/gpl.txt.
 
-Objective JavaScript is a registered trademark of NuAge Solutions.
+Objective JavaScript and Objective-JS are registered trademarks of NuAge Solutions.
 
-OJ includes works under other copyright notices and distributed
+Objective JavaScript includes works under other copyright notices and distributed
 according to the terms of the GNU General Public License or a compatible
 license, including:
 

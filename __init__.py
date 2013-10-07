@@ -36,7 +36,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all', package=N
 
     # get the build profiles
     try:
-        build_profiles = loadJson(path.join('build', 'profiles.json'))
+        build_profiles = loadJson(path.join('buildtools', 'profiles.json'))
 
         if not package:
             if '' in build_profiles and 'package' in build_profiles['']:
@@ -52,7 +52,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all', package=N
         build_profiles = {'': {'package': package, 'includes': ['*'], 'excludes': []}}
 
     # get the build lists
-    build_list_path = path.join('build', 'list.json')
+    build_list_path = path.join('buildtools', 'list.json')
 
     try:
         build_lists = loadJson(build_list_path)
@@ -70,6 +70,14 @@ def compile(src, mode='prod', output=False, profiles=None, type='all', package=N
 
     has_all = 'all' in profiles
 
+    # make sure profile build dirs exist
+    for key in build_profiles:
+        if key and (has_all or key in profiles):
+            p = path.join('builds', build_profiles[key]['name'])
+
+            if not os.path.exists(p):
+                os.makedirs(p)
+
     # compile themes
     # note: this only needs to be done once since themes are independent from build profiles
     if type in ['all', 'theme']:
@@ -84,7 +92,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all', package=N
             )
 
     # compile templates
-    tmp = path.join('build', 'templates.html')
+    tmp = path.join('buildtools', 'templates.html')
     tmplt_str = ''
     sep = '<template:divider/>'
     templates = {}
@@ -107,7 +115,7 @@ def compile(src, mode='prod', output=False, profiles=None, type='all', package=N
 
     # compress the templates html
     call(
-        'java -jar "' + path.join('build', 'htmlcompressor.jar') + '" --remove-quotes --remove-intertag-spaces -o "' +
+        'java -jar "' + path.join('buildtools', 'htmlcompressor.jar') + '" --remove-quotes --remove-intertag-spaces -o "' +
         tmp + '" "' + tmp + '"', shell=True
     )
 
@@ -423,7 +431,12 @@ def saveJson(dest, obj):
 
 def updatePackage(name, ext, contents, profile, mode, msg=None):
     profile_ext = ('.' + profile) if profile else '.'
-    dev_path = path.join(name + profile_ext + ('' if profile_ext == '.' else '-') + 'dev.' + ext)
+    directory = path.join('builds', '')
+
+    if profile:
+        directory = path.join('builds', profile, '')
+
+    dev_path = directory + path.join(name + profile_ext + ('' if profile_ext == '.' else '-') + 'dev.' + ext)
 
     filePutContents(dev_path, contents)
 
@@ -431,9 +444,9 @@ def updatePackage(name, ext, contents, profile, mode, msg=None):
         if msg:
             print(msg)
 
-        prod_path = path.join(name + profile_ext + ('' if profile_ext == '.' else '.') + ext)
+        prod_path = directory + path.join(name + profile_ext + ('' if profile_ext == '.' else '.') + ext)
 
-        call('java -jar "' + path.join('build', 'yuicompressor.jar') + '" -o "' + prod_path + '" "' + dev_path + '"', shell=True)
+        call('java -jar "' + path.join('buildtools', 'yuicompressor.jar') + '" -o "' + prod_path + '" "' + dev_path + '"', shell=True)
 
         if ext == 'js':
             filePutContents(

@@ -1,37 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
     <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+        <meta content="utf-8" http-equiv="encoding" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-        <meta content="utf-8" http-equiv="encoding">
-        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <title>Objective-JS Development Example</title>
 
-        <title>Postcard on the Run</title>
+        <link rel="stylesheet" type="text/css" href="https://raw.github.com/NuAge-Solutions/OJ/master/builds/oj.css" />
+        <link rel="stylesheet" type="text/css" href="builds/nw.css" />
 
-        <script type="text/javascript" language="javascript" src="/js/oj.js"></script>
-        <script type="text/javascript" language="javascript" src="/js/nw.js"></script>
-        <script type="text/javascript" language="javascript">
-            // set OJ configs
-            OJ.setVersion('0.0.1');
-            OJ.setTarget('#POTR');
-            OJ.setTheme('potr');
-            OJ.setMode(OJ.DEV);
-
-            OJ.setInit(
-                function(){
-                   // load the required classes
-                   OJ.importJs('oj.app.AppManager');
-                   OJ.importJs('potr.apps.MobileApp');
-                   
-                   var app = new PotrMobileApp();
-                   
-                   // create a new instance of the port app
-                   OjAppManager.setActive(app);
-                }
-            );
-        </script>
+        <script language="javascript" type="text/javascript" src="https://raw.github.com/NuAge-Solutions/OJ/master/builds/oj.js"></script>
+        <script language="javascript" type="text/javascript" src="builds/nw.js"></script>
     </head>
-    
-    <body><div id="POTR" class="loading"></div></body>
+
+    <body id="OJ" mode="development"></body>
 </html>
