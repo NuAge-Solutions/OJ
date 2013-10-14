@@ -1,8 +1,0 @@
-{
-    "" : {
-        "name" : "oj",
-        "package" : "oj",
-        "includes" : ["*"],
-        "excludes" : ["oj.layout.*"]
-    }
-}
