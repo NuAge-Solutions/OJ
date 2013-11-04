@@ -11,15 +11,11 @@ window.OJ = function Oj(){
 //    '_root' : null,  '_theme_elm' : null,    '_tween' : null,
 		'_events' : [],  '_guid' : 85,  '_is_landscape' : true,  '_is_mobile' : false,  '_is_ready' : false,
 		'_is_supported' : true,  '_is_tablet' : false,  '_is_touch_capable' : false,  '_is_webview' : false,  '_loaded' : {},
-		'_protocol' : 'http',  '_os_version' : '',
+		'_packages' : {},  '_protocol' : 'http',  '_os_version' : '',
 		'_settings' : {
-			'assetsPath' : 'assets',
-			'cssExt' : '.css',  'cssPath' : 'css',
-			'dimUnit' : 'px',  'fontUnit' : 'px',  'init' : null,
-			'jsPath' : 'js',  'jsExt' : '.js',  'lazyLoad' : true,  'mode' : 'loading',
-			'target' : '#OJ',  'theme' : null,  'themePath' : 'themes',
-			'tplPath' : 'templates',  'tplExt' : '.html',  'version' : '0.0.0',
-			'waitForCss' : true,
+			'cssExt' : '.css',  'dimUnit' : 'px',  'fontUnit' : 'px',
+			'init' : null,  'jsExt' : '.js',  'mode' : 'loading',  'target' : '#OJ',
+      'theme' : null,  'version' : '0.0.0',  'waitForCss' : true,
 			'supportMessage' : 'Our apologies. Your browser is currently not supported. ' +
 				'Please try again with a more recent version of <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a>, ' +
 				'<a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a>, ' +
@@ -97,6 +93,9 @@ window.OJ = function Oj(){
 			}
 			return this._root + this._getClassPath(this._('jsPath'), path, this._('jsExt')) + this.getVersionQuery();
 		},
+    '_getModeSuffix' : function(){
+      return this._('mode') == this.DEV ? '-dev' : '';
+    },
 		'_getTemplateImportPath' : function(path){
 			if(path.indexOf('/') != -1){
 				return path;
@@ -107,12 +106,12 @@ window.OJ = function Oj(){
 			if(!path || path.indexOf('/') != -1){
 				return path;
 			}
-			var parts = path.split('.'),
-				prefix = parts.length == 1 ? path + '.' : '';
-			return this._root + this._getClassPath(
-        null, prefix + path + '-theme',
-        (this._('mode') == this.DEV ? '.dev' : '') + this._('cssExt')
-      ) + this.getVersionQuery();
+			var parts = path.split('.');
+      if(parts.length == 1){
+        parts.push(path);
+      }
+      parts.splice(1, 0, 'themes');
+			return this._root + parts.join('/') + this._getModeSuffix() + this._('cssExt') + this.getVersionQuery();
 		},
 		'_handleEvent' : function(action, type, context, func){
 			this._events.push({
@@ -197,6 +196,29 @@ window.OJ = function Oj(){
 				eval(js);
 			}
 		},
+    'loadPackage' : function(pkg){
+      // check to see if this package is already loaded
+      if(this._packages[pkg]){
+        return;
+      }
+      // calculate what to load
+      var pkg_path = pkg.split('.');
+      if(pkg_path.length > 1){
+        pkg_path.splice(1, 0, 'packages');
+      }
+      // create an empty record so we know not to load this package again
+      var data = this._packages[pkg] = {
+        'loaded' : false,
+        'path' : this._root + '/' + pkg_path.join('/')
+      };
+      this.loadCss(data.path + '/main' + this._getModeSuffix() + this._('cssExt') + this.getVersionQuery(), true);
+      this.loadJs(data.path + '/main' + this._getModeSuffix() + this._('jsExt') + this.getVersionQuery(), true);
+    },
+    'registerPackage' : function(pkg, ns){
+      var data = this._packages[pkg];
+      data.namespace = ns;
+      data.loaded = true;
+    },
 		'async' : function(context, func/*, ...args*/){
 			setTimeout(func.apply(context, Array.array(arguments).slice(2)), 1);
 		},
@@ -287,14 +309,25 @@ window.OJ = function Oj(){
 				}
 			}
 			// copy the prototype as our starting point of inheritance
+      proto['_class_names'] = []; // zero out the class names so that the order ends up correct
       for(ln = parents.length; ln--;){
         parent = parents[ln].prototype;
 				for(key in parent){
           if(key == '_class_name'){
             continue;
           }
-					if(key == '_class_names' || key == '_post_compile_'){
-            proto[key] = parent[key].concat(proto[key] || []);
+					if(key == '_class_names'){
+            var ary = parent[key].clone(),
+                ln2 = ary.length;
+            for(; ln2--;){
+              if(proto[key].indexOf(ary[ln2]) > -1){
+                ary.splice(ln2, 1);
+              }
+            }
+            proto[key] = proto[key].concat(ary);
+          }
+          else if(key == '_post_compile_'){
+            proto[key] = parent[key].clone().concat(proto[key] || []);
           }
           else if(key == '_props_' || key == '_get_props_' || key == '_set_props_'){
             props[key] = Object.concat(props[key] ? props[key] : {}, parent[key]);
@@ -304,6 +337,8 @@ window.OJ = function Oj(){
 					}
 				}
 			}
+      // add the namespace back into the classnames
+      proto._class_names.push(ns);
       // concat the props
       for(key in props){
         // if no proto props then begin exit process
@@ -584,8 +619,15 @@ window.OJ = function Oj(){
       context[prop] = OJ.destroy(context[prop], ln > 1 ? args[1] : 0);
     },
 		// getter & setters
-		'getAssetPath' : function(pkg, path){
-			return this._root + pkg + '/' + this._('assetsPath') + '/' + path + this.getVersionQuery();
+		'getAssetPath' : function(path, file){
+      // search for package
+      var parts = path.split('.'),
+          ln = parts.length,
+          pkg;
+//      if(ln > 1){
+//        pkg = this._packages[path.]
+//      }
+			return this._root + pkg + '/' + this._('assetsPath') + 'assets/' + file + this.getVersionQuery();
 		},
 		'getBrowser' : function(){
 			return this._browser;
@@ -690,7 +732,15 @@ window.OJ = function Oj(){
 		OJ._protocol = src.substring(0, index);
 	}
 	else{
-		path = window.location.href + (src.charAt(0) == '/' ? src.substr(1) : src);
+    path = window.location.href.split('/');
+    // detect root
+    if(src.charAt(0) == '/'){
+      path = path.slice(0, 3);
+    }
+    else{
+      path.pop();
+    }
+    path = path.join('/') + src;
 		OJ._protocol = window.location.protocol.substring(-1);
 	}
 	path = path.split('/');
@@ -951,6 +1001,18 @@ Array.prototype.equalize = function(obj){
 		obj.push(v);
 	}
 	return obj;
+};
+Array.prototype.unique = function(){
+  var ary = [],
+      ln = this.length,
+      item;
+  for(; ln--;){
+    item = this[ln];
+    if(ary.indexOf(item) < 0){
+      ary.unshift(item);
+    }
+  }
+  return ary;
 };
 Array.slice = function(ary, start/*, end*/){
 	var args = Array.array(arguments);
@@ -12769,9 +12831,20 @@ OJ.extendComponent(
 );
 
 OJ.extendComponent(
-  'OjListView', [OjView],
+  'OjListViewItemRenderer', [OjItemRenderer],
   {
-    '_template' : '<div><list var=container></list></div>'
+  }
+);
+
+OJ.extendComponent(
+  'OjListView', [OjView, OjList],
+  {
+    '_itemRenderer' : OjListViewItemRenderer,
+
+    '_constructor' : function(){
+      this._super(OjView, '_constructor', arguments);
+
+    }
   },
   {
     '_TAGS' : ['listview']

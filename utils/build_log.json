@@ -136,6 +136,7 @@
         "js/nav/OjTabNavController.js",
         "js/net/OjRpc.js",
         "js/renderers/OjListItem.js",
+        "js/renderers/OjListViewItemRenderer.js",
         "js/views/OjListView.js"
       ]
     },
