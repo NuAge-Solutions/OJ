@@ -781,9 +781,7 @@ window.OJ = function Oj(){
           props;
 
       if(isArray(args[0])){
-        ln = (props = args[0]).length;
-
-        for(; ln--;){
+        for(ln = (props = args[0]).length; ln--;){
           args[0] = props[ln];
 
           context._unset.apply(context, args);
@@ -796,17 +794,18 @@ window.OJ = function Oj(){
     },
 
 		// getter & setters
-		'getAssetPath' : function(path, file){
+		'getAssetPath' : function(path/*, file*/){
       // search for package
       var parts = path.split('.'),
           ln = parts.length,
-          pkg;
+          pkg = parts[0],
+          file = arguments.length > 1 ? arguments[1] : null;
 
 //      if(ln > 1){
 //        pkg = this._packages[path.]
 //      }
 
-			return this._root + pkg + '/' + this._('assetsPath') + 'assets/' + file + this.getVersionQuery();
+			return this._root + pkg + '/assets/' + (file ? file + this.getVersionQuery() : '');
 		},
 
 		'getBrowser' : function(){

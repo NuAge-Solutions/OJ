@@ -62,6 +62,10 @@ OJ.extendComponent(
 			if(short_title){
 				this.setShortTitle(short_title);
 			}
+
+      if(this._static.ICON){
+        this.setIcon(this._static.ICON);
+      }
 		},
 
 		'_destructor' : function(){
@@ -254,12 +258,31 @@ OJ.extendComponent(
 			}
 		},
 
+    'getIcon' : function(){
+      return OjImage.image(this._icon, true); // this will clone the icon so that we don't run into the icon accidentally getting messed up
+    },
+    'setIcon' : function(icon){
+      if(this._icon == icon){
+        return;
+      }
+
+      this._icon = icon;
+
+      this.dispatchEvent(new OjEvent(OjView.ICON_CHANGE, false));
+    },
+
 		'setTitle' : function(title){
+      if(this._title == title){
+        return;
+      }
+
 			this._title = title;
 
 			if(!this._shortTitle){
 				this._shortTitle = title;
 			}
+
+      this.dispatchEvent(new OjEvent(OjView.TITLE_CHANGE, false));
 		}
 	},
 	{
@@ -273,8 +296,10 @@ OJ.extendComponent(
 		'LEFT'       : 'left',
 		'RIGHT'      : 'right',
 
-		'LOAD'   : 'onViewLoad',
-		'UNLOAD' : 'onViewUnload',
+    'ICON_CHANGE'  : 'onTitleChange',
+		'LOAD'         : 'onViewLoad',
+    'TITLE_CHANGE' : 'onTitleChange',
+		'UNLOAD'       : 'onViewUnload',
 
 		'_TAGS' : ['view']
 	}

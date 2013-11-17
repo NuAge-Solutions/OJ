@@ -150,6 +150,12 @@ OJ.extendClass(
 		},
 
 
+    'clone' : function(){
+      var media = this._super(OjComponent, 'clone', arguments);
+      media.setSource(this._source);
+
+      return media;
+    },
 		'isLoaded' : function(){
 			return this._loaded;
 		},

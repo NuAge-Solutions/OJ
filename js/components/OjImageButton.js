@@ -10,13 +10,11 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*image*/){
-			var args = arguments;
-
 			this._super(OjButton, '_constructor', []);
 
-			if(args.length){
-				this.setIcon(args[0]);
-			}
+      this._processArguments(arguments, {
+        'setIcon' : null
+      })
 
 			this.removeChild(this.label);
 		},

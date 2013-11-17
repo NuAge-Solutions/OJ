@@ -29,7 +29,8 @@
         "css/form/OjSwitch.css",
         "css/form/OjTextArea.css",
         "css/form/OjTokenInput.css",
-        "css/menu/OjMenu.css"
+        "css/menu/OjMenu.css",
+        "css/nav/OjTabNavController.css"
       ],
       "js" : [
         "js/OJ.js",
@@ -162,7 +163,7 @@
       "oj.form.OjSelector" : "<div><div var=wrapper><label var=label></label><div var=psuedoInput><span var=prefix class=prefix></span><span var=stem><list var=input item-renderer=OjOption></list><label var=dflt></label></span><span var=suffix class=suffix></span></div></div></div>",
       "oj.components.OjSpinner" : "<div><div var=wrapper></div></div>",
       "oj.table.OjTableRow" : "<tr></tr>",
-      "oj.components.OjLink" : "<a><span var=icon></span><span var=label></span></a>",
+      "oj.components.OjLink" : "<a><span var=icon v-align=m></span><span var=label v-align=m></span></a>",
       "oj.window.OjModal" : "<div><div var=underlay></div><div var=pane><flownav var=bar v-align=m cancel-label=Close></flownav><navstack var=container class=content></navstack><div var=buttons v-align=m></div></div></div>"
     }
   }

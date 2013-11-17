@@ -112,14 +112,16 @@ OJ.extendComponent(
 	{
 		'_TAGS' : ['img', 'image'],
 
-		'image' : function(img){
-			if(isString(img)){
-				return new OjImage(img);
-			}
+		'image' : function(img/*, clone=false*/){
+      if(img){
+        if(isString(img)){
+          return new OjImage(img);
+        }
 
-			if(img.is('OjImage')){
-				return img;
-			}
+        if(img.is('OjImage')){
+          return arguments.length > 1 && arguments[1] ? img.clone() : img;
+        }
+      }
 
 			return null;
 		}

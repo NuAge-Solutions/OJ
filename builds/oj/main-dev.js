@@ -609,8 +609,7 @@ window.OJ = function Oj(){
           prop = args[0],
           props;
       if(isArray(args[0])){
-        ln = (props = args[0]).length;
-        for(; ln--;){
+        for(ln = (props = args[0]).length; ln--;){
           args[0] = props[ln];
           context._unset.apply(context, args);
         }
@@ -619,15 +618,16 @@ window.OJ = function Oj(){
       context[prop] = OJ.destroy(context[prop], ln > 1 ? args[1] : 0);
     },
 		// getter & setters
-		'getAssetPath' : function(path, file){
+		'getAssetPath' : function(path/*, file*/){
       // search for package
       var parts = path.split('.'),
           ln = parts.length,
-          pkg;
+          pkg = parts[0],
+          file = arguments.length > 1 ? arguments[1] : null;
 //      if(ln > 1){
 //        pkg = this._packages[path.]
 //      }
-			return this._root + pkg + '/' + this._('assetsPath') + 'assets/' + file + this.getVersionQuery();
+			return this._root + pkg + '/assets/' + (file ? file + this.getVersionQuery() : '');
 		},
 		'getBrowser' : function(){
 			return this._browser;
@@ -2622,13 +2622,16 @@ OJ.extendClass(
 	},
 	{
 		'url' : function(obj){
-			if(isString(obj)){
-				return new OjUrl(obj)
-			}
-			if(isObject(obj) && obj.is('OjUrl')){
-				return obj;
-			}
-			return new OjUrl();
+      if(obj){
+        if(isString(obj)){
+          return new OjUrl(obj)
+        }
+        if(isObject(obj) && obj.is('OjUrl')){
+          return obj;
+        }
+        return new OjUrl();
+      }
+      return null;
 		}
 	}
 );
@@ -7130,6 +7133,11 @@ OJ.extendClass(
 			this.dispatchEvent(new OjEvent(OjEvent.LOAD));
 		},
 
+    'clone' : function(){
+      var media = this._super(OjComponent, 'clone', arguments);
+      media.setSource(this._source);
+      return media;
+    },
 		'isLoaded' : function(){
 			return this._loaded;
 		},
@@ -7282,13 +7290,15 @@ OJ.extendComponent(
 	},
 	{
 		'_TAGS' : ['img', 'image'],
-		'image' : function(img){
-			if(isString(img)){
-				return new OjImage(img);
-			}
-			if(img.is('OjImage')){
-				return img;
-			}
+		'image' : function(img/*, clone=false*/){
+      if(img){
+        if(isString(img)){
+          return new OjImage(img);
+        }
+        if(img.is('OjImage')){
+          return arguments.length > 1 && arguments[1] ? img.clone() : img;
+        }
+      }
 			return null;
 		}
 	}
@@ -7434,6 +7444,9 @@ OJ.extendComponent(
 			if(short_title){
 				this.setShortTitle(short_title);
 			}
+      if(this._static.ICON){
+        this.setIcon(this._static.ICON);
+      }
 		},
 		'_destructor' : function(){
 			this.unload();
@@ -7578,11 +7591,25 @@ OJ.extendComponent(
 				this.addCss(['no-header']);
 			}
 		},
+    'getIcon' : function(){
+      return OjImage.image(this._icon, true); // this will clone the icon so that we don't run into the icon accidentally getting messed up
+    },
+    'setIcon' : function(icon){
+      if(this._icon == icon){
+        return;
+      }
+      this._icon = icon;
+      this.dispatchEvent(new OjEvent(OjView.ICON_CHANGE, false));
+    },
 		'setTitle' : function(title){
+      if(this._title == title){
+        return;
+      }
 			this._title = title;
 			if(!this._shortTitle){
 				this._shortTitle = title;
 			}
+      this.dispatchEvent(new OjEvent(OjView.TITLE_CHANGE, false));
 		}
 	},
 	{
@@ -7594,8 +7621,10 @@ OJ.extendComponent(
 		'BOTTOM'     : 'bottom',
 		'LEFT'       : 'left',
 		'RIGHT'      : 'right',
-		'LOAD'   : 'onViewLoad',
-		'UNLOAD' : 'onViewUnload',
+    'ICON_CHANGE'  : 'onTitleChange',
+		'LOAD'         : 'onViewLoad',
+    'TITLE_CHANGE' : 'onTitleChange',
+		'UNLOAD'       : 'onViewUnload',
 		'_TAGS' : ['view']
 	}
 );
@@ -9539,22 +9568,15 @@ OJ.extendComponent(
 			'url'          : null
 		},
 		'_v_align' : OjStyleElement.MIDDLE,
-		'_template' : '<a><span var=icon></span><span var=label></span></a>',
+		'_template' : '<a><span var=icon v-align=m></span><span var=label v-align=m></span></a>',
 
 		'_constructor' : function(/*label, url, target*/){
-			var args = arguments,
-				ln = args.length;
 			this._super(OjLabel, '_constructor', []);
-			// process arguments
-			if(ln){
-				this.setText(args[0]);
-				if(ln > 1){
-					this.setUrl(args[1]);
-					if(ln > 2){
-						this.setTarget(args[2]);
-					}
-				}
-			}
+      this._processArguments(arguments, {
+        'setText' : null,
+        'setUrl' : null,
+        'setTarget' : null
+      });
 		},
 		'_destructor' : function(){
 			// just to make sure that the document mouse move event listener gets removed
@@ -9578,7 +9600,7 @@ OJ.extendComponent(
 			);
 		},
 		'_updateIcon' : function(val){
-			this.icon.removeAllChildren();
+      this.icon.removeAllChildren();
 			if(val){
 				this.icon.addChild(val);
 			}
@@ -9586,7 +9608,7 @@ OJ.extendComponent(
 
 		'_onClick' : function(evt){
 			if(this._url){
-				WindowManager.open(this._url, this._target, {'width' : this._targetWidth, 'height' : this._targetHeight});
+        WindowManager.open(this._url, this._target, {'width' : this._targetWidth, 'height' : this._targetHeight});
 			}
 		},
 		'_onMouseOver' : function(evt){
@@ -9626,7 +9648,7 @@ OJ.extendComponent(
 			}
 		},
 		'setIcon' : function(icon){
-			if(this._icon == (icon = OjImage.image(icon))){
+      if(this._icon == (icon = OjImage.image(icon))){
 				return;
 			}
 			this._updateIcon(this._icon = icon);
@@ -9670,15 +9692,11 @@ OJ.extendComponent(
 		'_default_h_align' : OjStyleElement.CENTER,
 
 		'_constructor' : function(/*label, icon*/){
-			var args = arguments,
-				ln = args.length;
 			this._super(OjLink, '_constructor', []);
-			if(ln){
-				this.setText(args[0]);
-				if(ln > 1){
-					this.setIcon(args[1]);
-				}
-			}
+      this._processArguments(arguments, {
+        'setText' : null,
+        'setIcon' : null
+      });
 		},
 
 		'redraw' : function(){
@@ -10515,11 +10533,10 @@ OJ.extendComponent(
 		'_v_align' : OjStyleElement.TOP,
 
 		'_constructor' : function(/*image*/){
-			var args = arguments;
 			this._super(OjButton, '_constructor', []);
-			if(args.length){
-				this.setIcon(args[0]);
-			}
+      this._processArguments(arguments, {
+        'setIcon' : null
+      })
 			this.removeChild(this.label);
 		},
 		'_processDomSourceChildren' : function(dom_elm, component){
@@ -12609,9 +12626,11 @@ OJ.extendComponent(
 		'_prev_active' : null,
 
 		'_addViewButton' : function(view, index){
-			var btn = new OjButton(view.getShortTitle(), view.getIcon());
+      var btn = new OjButton(view.getShortTitle(), view.getIcon());
 			btn.setVAlign(OjStyleElement.TOP);
 			btn.addEventListener(OjMouseEvent.CLICK, this, '_onTabClick');
+      view.addEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
+      view.addEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
 			this.addChildAt(btn, index);
 		},
 		'_processDomSourceChildren' : function(dom, context){
@@ -12619,13 +12638,14 @@ OJ.extendComponent(
 		},
 		'_removeViewButton' : function(view, index){
 			OJ.destroy(this.removeElmAt(index));
+      view.removeEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
+      view.removeEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
 		},
 		'_updateActiveBtn' : function(){
-//			if(this._prev_active){
-//				this._prev_active.setIsActive(false);
-//			}
-//
-//			(this._prev_active = this.getChildAt(this._stack.getActiveIndex())).setIsActive(true);
+			if(this._prev_active){
+				this._prev_active.setIsActive(false);
+			}
+			(this._prev_active = this.getChildAt(this._stack.getActiveIndex())).setIsActive(true);
 		},
 		// event listener callbacks
 		'_onStackChange' : function(evt){
@@ -12644,6 +12664,17 @@ OJ.extendComponent(
 			this._stack.setActiveIndex(this.indexOfChild(evt.getCurrentTarget()));
 			this._updateActiveBtn();
 		},
+    '_onViewIconChange' : function(evt){
+      var view = evt.getCurrentTarget();
+      this.getChildAt(this._stack.indexOfElm(view)).setIcon(view.getIcon());
+      trace('icon change');
+    },
+    '_onViewTitleChange' : function(evt){
+      var view = evt.getCurrentTarget();
+      this.getChildAt(this._stack.indexOfElm(view)).setLabel(view.getShortTitle());
+      trace('title change');
+    },
+
 		// getter & setters
 		'setStack' : function(stack){
 			if(this._stack == stack){

@@ -1,7 +1,7 @@
 OJ.importJs('oj.nav.OjNavController');
 
+OJ.importCss('oj.nav.OjTabNavController');
 
-'use strict';
 
 OJ.extendComponent(
 	'OjTabNavController', [OjNavController],
@@ -10,9 +10,12 @@ OJ.extendComponent(
 
 
 		'_addViewButton' : function(view, index){
-			var btn = new OjButton(view.getShortTitle(), view.getIcon());
+      var btn = new OjButton(view.getShortTitle(), view.getIcon());
 			btn.setVAlign(OjStyleElement.TOP);
 			btn.addEventListener(OjMouseEvent.CLICK, this, '_onTabClick');
+
+      view.addEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
+      view.addEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
 
 			this.addChildAt(btn, index);
 		},
@@ -23,14 +26,17 @@ OJ.extendComponent(
 
 		'_removeViewButton' : function(view, index){
 			OJ.destroy(this.removeElmAt(index));
+
+      view.removeEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
+      view.removeEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
 		},
 
 		'_updateActiveBtn' : function(){
-//			if(this._prev_active){
-//				this._prev_active.setIsActive(false);
-//			}
-//
-//			(this._prev_active = this.getChildAt(this._stack.getActiveIndex())).setIsActive(true);
+			if(this._prev_active){
+				this._prev_active.setIsActive(false);
+			}
+
+			(this._prev_active = this.getChildAt(this._stack.getActiveIndex())).setIsActive(true);
 		},
 
 		// event listener callbacks
@@ -59,6 +65,22 @@ OJ.extendComponent(
 
 			this._updateActiveBtn();
 		},
+
+    '_onViewIconChange' : function(evt){
+      var view = evt.getCurrentTarget();
+
+      this.getChildAt(this._stack.indexOfElm(view)).setIcon(view.getIcon());
+      trace('icon change');
+    },
+
+    '_onViewTitleChange' : function(evt){
+      var view = evt.getCurrentTarget();
+
+      this.getChildAt(this._stack.indexOfElm(view)).setLabel(view.getShortTitle());
+
+      trace('title change');
+    },
+
 
 		// getter & setters
 		'setStack' : function(stack){

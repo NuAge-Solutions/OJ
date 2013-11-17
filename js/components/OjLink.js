@@ -24,23 +24,13 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*label, url, target*/){
-			var args = arguments,
-				ln = args.length;
-
 			this._super(OjLabel, '_constructor', []);
 
-			// process arguments
-			if(ln){
-				this.setText(args[0]);
-
-				if(ln > 1){
-					this.setUrl(args[1]);
-
-					if(ln > 2){
-						this.setTarget(args[2]);
-					}
-				}
-			}
+      this._processArguments(arguments, {
+        'setText' : null,
+        'setUrl' : null,
+        'setTarget' : null
+      });
 		},
 
 		'_destructor' : function(){
@@ -71,7 +61,7 @@ OJ.extendComponent(
 		},
 
 		'_updateIcon' : function(val){
-			this.icon.removeAllChildren();
+      this.icon.removeAllChildren();
 
 			if(val){
 				this.icon.addChild(val);
@@ -81,7 +71,7 @@ OJ.extendComponent(
 
 		'_onClick' : function(evt){
 			if(this._url){
-				WindowManager.open(this._url, this._target, {'width' : this._targetWidth, 'height' : this._targetHeight});
+        WindowManager.open(this._url, this._target, {'width' : this._targetWidth, 'height' : this._targetHeight});
 			}
 		},
 
@@ -132,7 +122,7 @@ OJ.extendComponent(
 		},
 
 		'setIcon' : function(icon){
-			if(this._icon == (icon = OjImage.image(icon))){
+      if(this._icon == (icon = OjImage.image(icon))){
 				return;
 			}
 

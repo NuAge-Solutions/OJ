@@ -12,18 +12,12 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*label, icon*/){
-			var args = arguments,
-				ln = args.length;
-
 			this._super(OjLink, '_constructor', []);
 
-			if(ln){
-				this.setText(args[0]);
-
-				if(ln > 1){
-					this.setIcon(args[1]);
-				}
-			}
+      this._processArguments(arguments, {
+        'setText' : null,
+        'setIcon' : null
+      });
 		},
 
 

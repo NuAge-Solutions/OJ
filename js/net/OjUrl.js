@@ -240,15 +240,19 @@ OJ.extendClass(
 	},
 	{
 		'url' : function(obj){
-			if(isString(obj)){
-				return new OjUrl(obj)
-			}
+      if(obj){
+        if(isString(obj)){
+          return new OjUrl(obj)
+        }
 
-			if(isObject(obj) && obj.is('OjUrl')){
-				return obj;
-			}
+        if(isObject(obj) && obj.is('OjUrl')){
+          return obj;
+        }
 
-			return new OjUrl();
+        return new OjUrl();
+      }
+
+      return null;
 		}
 	}
 );
