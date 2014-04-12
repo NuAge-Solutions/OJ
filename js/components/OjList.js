@@ -1,5 +1,6 @@
 OJ.importJs('oj.components.OjCollectionComponent');
 
+
 OJ.extendComponent(
   'OjList', [OjCollectionComponent],
   {
@@ -11,9 +12,9 @@ OJ.extendComponent(
       this._super(OjCollectionComponent, '_constructor', []);
 
       this._processArguments(arguments, {
-        'items' : undefined,
-        'itemRenderer' : OjItemRenderer,
-        'direction' : OjList.VERTICAL
+        'setDataProvider' : undefined,
+        'setItemRenderer' : OjItemRenderer,
+        'setDirection' : OjList.VERTICAL
       });
     },
 
@@ -74,6 +75,27 @@ OJ.extendComponent(
       this.addCss([this._direction = val]);
 
       return true;
+    },
+
+    'setDataProvider' : function(provider){
+      if(this._super(OjCollectionComponent, 'setDataProvider', arguments)){
+        // remove all the old rendered items
+        var key,
+            ln = this._items.numItems();
+
+        this.container.removeAllChildren();
+
+        for(key in this._rendered){
+          OJ.destroy(this._rendered[key]);
+        }
+
+        this._rendered = {};
+
+        // render the new items
+        for(; ln--;){
+          this.container.addChildAt(this.renderItem(this._items.getItemAt(ln)), 0);
+        }
+      }
     }
   },
   {

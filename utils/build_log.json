@@ -106,6 +106,7 @@
         "js/components/OjFieldset.js",
         "js/components/OjImageButton.js",
         "js/components/OjList.js",
+        "js/data/OjData.js",
         "js/data/OjPackage.js",
         "js/events/OjEventPhase.js",
         "js/events/OjOrientationEvent.js",

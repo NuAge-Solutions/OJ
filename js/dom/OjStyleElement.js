@@ -211,7 +211,9 @@ OJ.extendClass(
 				return true;
 			}
 			else if(nm == 'id'){
-				this.setId(val);
+				if(!isEmpty(val) && val != 'null'){
+          this.setId(val);
+        }
 			}
 			else if(nm == 'var'){
 				if(!isEmpty(val) && context){

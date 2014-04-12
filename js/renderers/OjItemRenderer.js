@@ -1,8 +1,6 @@
 OJ.importJs('oj.components.OjComponent');
 
 
-'use strict';
-
 OJ.extendComponent(
 	'OjItemRenderer', [OjComponent],
 	{
@@ -15,16 +13,10 @@ OJ.extendComponent(
 		'_constructor' : function(/*group, data*/){
 			this._super(OjComponent, '_constructor', []);
 
-			var args = arguments,
-				ln = args.length;
-
-			if(ln){
-				this.setGroup(args[0]);
-
-				if(ln > 1){
-					this.setData(args[1]);
-				}
-			}
+      this._processArguments(arguments, {
+        'setGroup' : null,
+        'setData' : null
+      });
 		},
 
 

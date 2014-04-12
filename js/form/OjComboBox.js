@@ -1,21 +1,20 @@
 OJ.importJs('oj.components.OjButton');
 OJ.importJs('oj.form.OjInput');
 OJ.importJs('oj.data.OjCollection');
+OJ.importJs('oj.data.OjData');
 OJ.importJs('oj.components.OjList');
 
 OJ.importCss('oj.form.OjComboBox');
 
 
-'use strict';
-
 OJ.extendClass(
 	'OjComboBox', [OjInput],
 	{
-		'_options' : null,  '_options_dp' : null,  '_options_index' : null,
+//		'_options' : null,  '_options_dp' : null,  '_options_index' : null,  '_selected' : null,
+//
+//    '_selected_index' : null,  '_trigger_evt' : null,  '_tween' : null,  '_list' : null,
 
-		'_selected' : null,  '_selected_index' : null,  '_trigger_evt' : null,  '_tween' : null,
-
-		'_list' : null,  '_list_visible' : false,  '_ignore_click' : false,  '_allow_none' : false,  '_none_lbl' : '-- Select -- ',
+    '_list_visible' : false,  '_ignore_click' : false,  '_allow_none' : false,  '_none_lbl' : '-- Select -- ',
 
 
 		'_constructor' : function(/*name, label, value, options*/){
@@ -39,11 +38,22 @@ OJ.extendClass(
 			}
 
 			// setup event listeners
-			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
-
-			this.psuedoInput.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+//			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
+//
+//			this.psuedoInput.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
 		},
 
+    '_setDom' : function(dom_elm){
+			this._super(OjInput, '_setDom', arguments);
+
+			var select = new OjStyleElement('<select class="input"></select>');
+
+      this.stem.replaceChild(this.input, select);
+
+      this.input = select;
+
+      this.dflt.hide();
+		},
 
 		'_showList' : function(){
 			// check to see if the list is already shown
@@ -112,53 +122,80 @@ OJ.extendClass(
 
 
 		'_redrawList' : function(){
-			var old_ln  = this._options_dp.numItems(), new_ln = 0, key;
+      this.input.removeAllChildren();
 
-			this._options_index = [];
+      var ln = this._options.length;
 
-			for(key in this._options){
-				if(old_ln > new_ln){
-					if(this._options_dp.getItemAt(new_ln) != this._options[key]){
-						this._options_dp.setItemAt(this._options[key], new_ln);
-					}
-				}
-				else{
-					this._options_dp.addItem(this._options[key]);
-				}
+      for(; ln--;){
+        this.input.addChildAt(
+          new OjStyleElement(
+            OJ.tokensReplace(
+              '<option value="[%value]">[%label]</option>',
+              {
+                'value' : this._options[ln].getId(),
+                'label' : this._options[ln].getLabel()
+              }
+            )
+          ),
+          0
+        );
+      }
 
-				this._options_index.push(key);
+      return;
 
-				new_ln++;
-			}
-
-			while(old_ln-- > new_ln){
-				this._options_dp.removeItemAt(old_ln);
-			}
-
-			if(this._allow_none){
-				if(this._options_dp.getItemAt(0) != this._none_lbl){
-					this._options_dp.addItemAt(this._none_lbl, 0);
-				}
-			}
-			else if(this._options_dp.getItemAt(0) == this._none_lbl){
-				this._options_dp.removeItemAt(0);
-			}
+//			var old_ln  = this._options_dp.numItems(),
+//          new_ln = 0, key;
+//
+//			this._options_index = [];
+//
+//			for(key in this._options){
+//				if(old_ln > new_ln){
+//					if(this._options_dp.getItemAt(new_ln) != this._options[key]){
+//						this._options_dp.setItemAt(this._options[key], new_ln);
+//					}
+//				}
+//				else{
+//					this._options_dp.addItem(this._options[key]);
+//				}
+//
+//				this._options_index.push(key);
+//
+//				new_ln++;
+//			}
+//
+//			for(; old_ln-- > new_ln; ){
+//				this._options_dp.removeItemAt(old_ln);
+//			}
+//
+//			if(this._allow_none){
+//				if(this._options_dp.getItemAt(0) != this._none_lbl){
+//					this._options_dp.addItemAt(this._none_lbl, 0);
+//				}
+//			}
+//			else if(this._options_dp.getItemAt(0) == this._none_lbl){
+//				this._options_dp.removeItemAt(0);
+//			}
 		},
 
 		'_redrawValue' : function(){
-			var value, item_renderer = this.getItemRenderer();
+//      this.input.dom().value = this._value;
 
-			if(
-				!this.valueHldr.numChildren() ||
-					!(value = this.valueHldr.getChildAt(0)).is(item_renderer)
-				){
-				this.valueHldr.removeAllChildren();
+      return;
 
-				this.valueHldr.addChild(new item_renderer(this._selected));
-			}
-			else{
-				value.setData(this._selected);
-			}
+//			var value,
+//          item_renderer = this.getItemRenderer();
+//
+//			if(
+//				!this.valueHldr.numChildren() ||
+//					!(value = this.valueHldr.getChildAt(0)).is(item_renderer)
+//				){
+//				this.valueHldr.removeAllChildren();
+//
+//				this.valueHldr.addChild(new item_renderer(this._selected));
+//			}
+//			else{
+//				value.setData(this._selected);
+//			}
 		},
 
 
@@ -215,13 +252,32 @@ OJ.extendClass(
 			return this._options;
 		},
 		'setOptions' : function(options){
-			this._options = options;
+      if(options == this._options){
+        return;
+      }
+
+      var i;
+
+      this._options = [];
+
+      if(isObject(options)){
+        for(i in options){
+          this._options.push(new OjData(i, options[i]));
+        }
+      }
+      else if(isArray(options) && (i = options.length) && !isObject(options[0])){
+        for(; i--;){
+          this._options.splice(0, 0, new OjData(options[i], options[i]));
+        }
+      }
 
 			this._redrawList();
 
 			this._redrawValue();
 
 			this.setValue(this._value);
+
+      return this._options;
 		},
 
 		'getSelected' : function(){
@@ -267,62 +323,94 @@ OJ.extendClass(
 			}
 		},
 
+    'getValue' : function(){
+      var ln = this._options.length,
+          id = this.input.dom().value,
+          option;
+
+      for(; ln--;){
+        option = this._options[ln];
+
+        if(option.getId() == id){
+          return option.is('OjData') ? option.getId() : option;
+        }
+      }
+
+      return null;
+    },
 		'setValue' : function(value){
-			if(isEmpty(value)){
-				value = null;
-			}
+      if(isEmpty(value)){
+        value = null;
+      }
+			else if(!isObject(value)){
+        var ln = this._options.length;
 
-			if(this._value != value || (isNull(this._selected_index) && this._options)){
-				if(this._options){
-					var cnt, ln = cnt = this._options_index.length;
+        for(; ln--;){
+          if(this._options[ln].getId() == value){
+            value = this._options[ln];
 
-					while(ln-- > 0){
-						if(this._options_index[ln] == value){
-							break;
-						}
-					}
+            break;
+          }
+        }
 
-					if(cnt){
-						if(ln == -1){
-							if(this._allow_none){
-								this._selected_index = null;
-								this._selected = this._none_lbl;
+        if(!isObject(value)){
+          value = null;
+        }
+      }
 
-								value = null
-							}
-							else{
-								this._selected_index = 0;
+//			if(this._value != value || (isNull(this._selected_index) && this._options)){
+//				if(this._options){
+//					var cnt, ln = cnt = this._options_index.length;
+//
+//					for(; ln--;){
+//						if(this._options_index[ln] == value){
+//							break;
+//						}
+//					}
+//
+//					if(cnt){
+//						if(ln == -1){
+//							if(this._allow_none){
+//								this._selected_index = null;
+//								this._selected = this._none_lbl;
+//
+//								value = null
+//							}
+//							else{
+//								this._selected_index = 0;
+//
+//								value = this._options_index[0];
+//
+//								this._selected = this._options[value];
+//							}
+//						}
+//						else{
+//							this._selected_index = ln;
+//
+//							this._selected = this._options[value];
+//						}
+//					}
+//					else{
+//						this._selected_index = null;
+//						this._selected = this._allow_none ? this._none_lbl : null;
+//
+//						value = null;
+//					}
+//
+//					ln = cnt = null;
+//				}
+//				else{
+//					this._selected_index = null;
+//					this._selected = this._none_lbl;
+//					this._value = null;
+//				}
+//
+//				this._redrawValue();
 
-								value = this._options_index[0];
-
-								this._selected = this._options[value];
-							}
-						}
-						else{
-							this._selected_index = ln;
-
-							this._selected = this._options[value];
-						}
-					}
-					else{
-						this._selected_index = null;
-						this._selected = this._allow_none ? this._none_lbl : null;
-
-						value = null;
-					}
-
-					ln = cnt = null;
-				}
-				else{
-					this._selected_index = null;
-					this._selected = this._none_lbl;
-					this._value = null;
-				}
-
-				this._redrawValue();
-
-				this._super(OjInput, 'setValue', [value]);
-			}
+				if(this._super(OjInput, 'setValue', [value])){
+          this.input.dom().value = value ? value.getId() : null;
+        }
+//			}
 		}
 	}
 );

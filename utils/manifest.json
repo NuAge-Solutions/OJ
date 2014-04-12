@@ -1,6 +1,7 @@
 {
   "name"      : "oj",
   "namespace" : "oj",
+  "source"    : "../",
 
   "excludes"  : ["*.DS_Store", "*.git", "*.gitignore", "*.svn"],
   "includes"  : [],

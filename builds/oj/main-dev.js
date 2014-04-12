@@ -405,7 +405,7 @@ window.OJ = function Oj(){
 		},
 
 		'guid' : function(){
-			return (arguments.length ? 'OJ' : 'func') + '_' + this._guid++;
+      return (arguments.length ? 'OJ' : 'func') + '_' + this._guid++;
 		},
 		'implementInterface' : function(/*intrfc1, intrfc2, ..., def*/){
 			var key, intrfc,
@@ -4353,7 +4353,9 @@ OJ.extendClass(
 				return true;
 			}
 			else if(nm == 'id'){
-				this.setId(val);
+				if(!isEmpty(val) && val != 'null'){
+          this.setId(val);
+        }
 			}
 			else if(nm == 'var'){
 				if(!isEmpty(val) && context){
@@ -7496,21 +7498,19 @@ OJ.extendComponent(
 			}
 		},
 		'_showOverlay' : function(/*msg, icon*/){
-//			var args = arguments,
-//				ln = args.length,
-//				msg = ln ? args[0] : null,
-//				icon = ln > 1 ? args[1] : null,
-//				overlay = this._overlay;
-//
-//			if(overlay){
-//				overlay.setMessage(msg);
-//				overlay.setIcon(icon);
-//			}
-//			else{
-//				overlay = this._overlay = new OjOverlay(msg, icon);
-//			}
-//
-//			overlay.show(this);
+			var args = arguments,
+				ln = args.length,
+				msg = ln ? args[0] : null,
+				icon = ln > 1 ? args[1] : null,
+				overlay = this._overlay;
+			if(overlay){
+				overlay.setMessage(msg);
+				overlay.setIcon(icon);
+			}
+			else{
+				overlay = this._overlay = new OjOverlay(msg, icon);
+			}
+			overlay.show(this);
 		},
 		'_unload' : function(){
 			this._loaded = true;
@@ -8437,7 +8437,6 @@ OJ.extendClass(
 	}
 );
 
-
 OJ.extendClass(
 	'OjCollection', [OjActionable],
 	{
@@ -8695,22 +8694,18 @@ OJ.defineClass(
       };
     },
     '_setup' : function(){
-      var items = (this._items = new OjCollection());
-      items.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-      items.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-      items.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-      items.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
       this._rendered = {};
       this._item_events = {};
+      this.setDataProvider(new OjCollection());
     },
     '_teardown' : function(){
-      // remove any item listeners
+      // remove all rendered items
       var key;
-      for(key in this._item_events){
-        this._removeItemListener(this._item_events[key]);
+      for(key in this._rendered){
+        OJ.destroy(this._rendered[key]);
       }
       // remove the items collection
-      this._unset('_items');
+//      this._unset('_items');  we may not want to do this since the items can now be user generated
       // clear out the helper vars
       this._rendered = this._item_events = null;
     },
@@ -8810,12 +8805,37 @@ OJ.defineClass(
       return this.renderItem(this._items.getItemAt(index));
     },
 
+    'getDataProvider' : function(){
+      return this._items;
+    },
+    'setDataProvider' : function(data_provider){
+      data_provider = OjCollection.collection(data_provider);
+      if(this._items == data_provider){
+        return;
+      }
+      // cleanup the old items if it existed
+      if(this._items){
+        this._items.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+        this._items.removeEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+        this._items.removeEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+        this._items.removeEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
+      }
+      // setup the new items
+      this._items = data_provider;
+      data_provider.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+      data_provider.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+      data_provider.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+      data_provider.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
+      return true;
+    },
     'setItemRenderer' : function(val){
       val = isString(val) ? OJ.stringToClass(val) : val;
       if(val == this._itemRenderer){
         return;
       }
       this._itemRenderer = val;
+      this._rend
+      return true;
     }
   }
 );
@@ -10579,9 +10599,9 @@ OJ.extendComponent(
     '_constructor' : function(/*data_provider, item_renderer, direction*/){
       this._super(OjCollectionComponent, '_constructor', []);
       this._processArguments(arguments, {
-        'items' : undefined,
-        'itemRenderer' : OjItemRenderer,
-        'direction' : OjList.VERTICAL
+        'setDataProvider' : undefined,
+        'setItemRenderer' : OjItemRenderer,
+        'setDirection' : OjList.VERTICAL
       });
     },
 
@@ -10624,12 +10644,44 @@ OJ.extendComponent(
       }
       this.addCss([this._direction = val]);
       return true;
+    },
+    'setDataProvider' : function(provider){
+      if(this._super(OjCollectionComponent, 'setDataProvider', arguments)){
+        // remove all the old rendered items
+        var key,
+            ln = this._items.numItems();
+        this.container.removeAllChildren();
+        for(key in this._rendered){
+          OJ.destroy(this._rendered[key]);
+        }
+        this._rendered = {};
+        // render the new items
+        for(; ln--;){
+          this.container.addChildAt(this.renderItem(this._items.getItemAt(ln)), 0);
+        }
+      }
     }
   },
   {
     'HORIZONTAL' : 'horz',
 		'VERTICAL'   : 'vert',
     '_TAGS' : ['list']
+  }
+);
+
+OJ.extendClass(
+  'OjData', [OjActionable], {
+    '_props_' : {
+      'id' : null,
+      'label' : null
+    },
+    '_constructor' : function(/*id, label*/){
+      this._super(OjActionable, '_constructor', []);
+      this._processArguments(arguments, {
+        'setId' : undefined,
+        'setLabel' : undefined
+      });
+    }
   }
 );
 
@@ -10700,7 +10752,6 @@ OJ.extendClass(
 	}
 );
 
-
 OJ.extendComponent(
 	'OjItemRenderer', [OjComponent],
 	{
@@ -10711,14 +10762,10 @@ OJ.extendComponent(
 
 		'_constructor' : function(/*group, data*/){
 			this._super(OjComponent, '_constructor', []);
-			var args = arguments,
-				ln = args.length;
-			if(ln){
-				this.setGroup(args[0]);
-				if(ln > 1){
-					this.setData(args[1]);
-				}
-			}
+      this._processArguments(arguments, {
+        'setGroup' : null,
+        'setData' : null
+      });
 		},
 
 		'_redrawData' : function(){
@@ -10890,29 +10937,18 @@ OJ.extendClass(
 
 		'_constructor' : function(/*name, label, value, validators*/){
 			this._super(OjComponent, '_constructor', []);
-			var args = arguments,
-				ln = args.length;
 			this._errors = [];
 			this._validators = [];
 			// detect default mode
 			if(!isUndefined(this.input.dom().placeholder)){
 				this._unset('dflt');
 			}
-			if(ln){
-				this.setName(args[0]);
-				if(ln > 1){
-					this.setLabel(args[1]);
-					if(ln > 2){
-						this.setValue(args[2]);
-						if(ln > 3){
-							this.setValidators(args[3]);
-						}
-					}
-				}
-			}
-			if(!this._label){
-				this.setLabel(this._label);
-			}
+      this._processArguments(arguments, {
+        'setName' : null,
+        'setLabel' : null,
+        'setValue' : null,
+        'setValidators' : []
+      });
 			if(this.input){
 				if(!this._value){
 					this.setValue(this.input._dom.value);
@@ -10925,7 +10961,7 @@ OJ.extendClass(
 				this.hide();
 			}
 			else{
-				ln = this._class_names.length;
+				var ln = this._class_names.length;
 				for(; ln--;){
 					this.addCss(this._class_names[ln]);
 					if(this._class_names[ln] == 'OjInput'){
@@ -11072,16 +11108,18 @@ OJ.extendClass(
 			return this._value;
 		},
 		'setValue' : function(value){
-			if(value != this._value){
-				this._value = value;
-				if(this.input._dom.value != value){
-					this.input._dom.value = String.string(value);
-				}
-				this._redrawDefault();
-				if(this._ready){
-					this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
-				}
+			if(value == this._value){
+        return;
 			}
+      this._value = value;
+      if(this.input._dom.value != value){
+        this.input._dom.value = String.string(value);
+      }
+      this._redrawDefault();
+      if(this._ready){
+        this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+      }
+      return true;
 		}
 	},
 	{
@@ -11099,9 +11137,10 @@ OJ.extendClass(
 OJ.extendClass(
 	'OjComboBox', [OjInput],
 	{
-		'_options' : null,  '_options_dp' : null,  '_options_index' : null,
-		'_selected' : null,  '_selected_index' : null,  '_trigger_evt' : null,  '_tween' : null,
-		'_list' : null,  '_list_visible' : false,  '_ignore_click' : false,  '_allow_none' : false,  '_none_lbl' : '-- Select -- ',
+//		'_options' : null,  '_options_dp' : null,  '_options_index' : null,  '_selected' : null,
+//
+//    '_selected_index' : null,  '_trigger_evt' : null,  '_tween' : null,  '_list' : null,
+    '_list_visible' : false,  '_ignore_click' : false,  '_allow_none' : false,  '_none_lbl' : '-- Select -- ',
 
 		'_constructor' : function(/*name, label, value, options*/){
 			var ln = arguments.length;
@@ -11117,10 +11156,17 @@ OJ.extendClass(
 				this.setValue(arguments[2]);
 			}
 			// setup event listeners
-			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
-			this.psuedoInput.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
+//			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
+//
+//			this.psuedoInput.addEventListener(OjMouseEvent.CLICK, this, '_onClick');
 		},
-
+    '_setDom' : function(dom_elm){
+			this._super(OjInput, '_setDom', arguments);
+			var select = new OjStyleElement('<select class="input"></select>');
+      this.stem.replaceChild(this.input, select);
+      this.input = select;
+      this.dflt.hide();
+		},
 		'_showList' : function(){
 			// check to see if the list is already shown
 			if(this._list_visible){
@@ -11170,44 +11216,73 @@ OJ.extendClass(
 		},
 
 		'_redrawList' : function(){
-			var old_ln  = this._options_dp.numItems(), new_ln = 0, key;
-			this._options_index = [];
-			for(key in this._options){
-				if(old_ln > new_ln){
-					if(this._options_dp.getItemAt(new_ln) != this._options[key]){
-						this._options_dp.setItemAt(this._options[key], new_ln);
-					}
-				}
-				else{
-					this._options_dp.addItem(this._options[key]);
-				}
-				this._options_index.push(key);
-				new_ln++;
-			}
-			while(old_ln-- > new_ln){
-				this._options_dp.removeItemAt(old_ln);
-			}
-			if(this._allow_none){
-				if(this._options_dp.getItemAt(0) != this._none_lbl){
-					this._options_dp.addItemAt(this._none_lbl, 0);
-				}
-			}
-			else if(this._options_dp.getItemAt(0) == this._none_lbl){
-				this._options_dp.removeItemAt(0);
-			}
+      this.input.removeAllChildren();
+      var ln = this._options.length;
+      for(; ln--;){
+        this.input.addChildAt(
+          new OjStyleElement(
+            OJ.tokensReplace(
+              '<option value="[%value]">[%label]</option>',
+              {
+                'value' : this._options[ln].getId(),
+                'label' : this._options[ln].getLabel()
+              }
+            )
+          ),
+          0
+        );
+      }
+      return;
+//			var old_ln  = this._options_dp.numItems(),
+//          new_ln = 0, key;
+//
+//			this._options_index = [];
+//
+//			for(key in this._options){
+//				if(old_ln > new_ln){
+//					if(this._options_dp.getItemAt(new_ln) != this._options[key]){
+//						this._options_dp.setItemAt(this._options[key], new_ln);
+//					}
+//				}
+//				else{
+//					this._options_dp.addItem(this._options[key]);
+//				}
+//
+//				this._options_index.push(key);
+//
+//				new_ln++;
+//			}
+//
+//			for(; old_ln-- > new_ln; ){
+//				this._options_dp.removeItemAt(old_ln);
+//			}
+//
+//			if(this._allow_none){
+//				if(this._options_dp.getItemAt(0) != this._none_lbl){
+//					this._options_dp.addItemAt(this._none_lbl, 0);
+//				}
+//			}
+//			else if(this._options_dp.getItemAt(0) == this._none_lbl){
+//				this._options_dp.removeItemAt(0);
+//			}
 		},
 		'_redrawValue' : function(){
-			var value, item_renderer = this.getItemRenderer();
-			if(
-				!this.valueHldr.numChildren() ||
-					!(value = this.valueHldr.getChildAt(0)).is(item_renderer)
-				){
-				this.valueHldr.removeAllChildren();
-				this.valueHldr.addChild(new item_renderer(this._selected));
-			}
-			else{
-				value.setData(this._selected);
-			}
+//      this.input.dom().value = this._value;
+      return;
+//			var value,
+//          item_renderer = this.getItemRenderer();
+//
+//			if(
+//				!this.valueHldr.numChildren() ||
+//					!(value = this.valueHldr.getChildAt(0)).is(item_renderer)
+//				){
+//				this.valueHldr.removeAllChildren();
+//
+//				this.valueHldr.addChild(new item_renderer(this._selected));
+//			}
+//			else{
+//				value.setData(this._selected);
+//			}
 		},
 
 		'_onClick' : function(evt){
@@ -11251,10 +11326,25 @@ OJ.extendClass(
 			return this._options;
 		},
 		'setOptions' : function(options){
-			this._options = options;
+      if(options == this._options){
+        return;
+      }
+      var i;
+      this._options = [];
+      if(isObject(options)){
+        for(i in options){
+          this._options.push(new OjData(i, options[i]));
+        }
+      }
+      else if(isArray(options) && (i = options.length) && !isObject(options[0])){
+        for(; i--;){
+          this._options.splice(0, 0, new OjData(options[i], options[i]));
+        }
+      }
 			this._redrawList();
 			this._redrawValue();
 			this.setValue(this._value);
+      return this._options;
 		},
 		'getSelected' : function(){
 			return this._selected;
@@ -11294,51 +11384,86 @@ OJ.extendClass(
 				}
 			}
 		},
+    'getValue' : function(){
+      var ln = this._options.length,
+          id = this.input.dom().value,
+          option;
+      for(; ln--;){
+        option = this._options[ln];
+        if(option.getId() == id){
+          return option.is('OjData') ? option.getId() : option;
+        }
+      }
+      return null;
+    },
 		'setValue' : function(value){
-			if(isEmpty(value)){
-				value = null;
-			}
-			if(this._value != value || (isNull(this._selected_index) && this._options)){
-				if(this._options){
-					var cnt, ln = cnt = this._options_index.length;
-					while(ln-- > 0){
-						if(this._options_index[ln] == value){
-							break;
-						}
-					}
-					if(cnt){
-						if(ln == -1){
-							if(this._allow_none){
-								this._selected_index = null;
-								this._selected = this._none_lbl;
-								value = null
-							}
-							else{
-								this._selected_index = 0;
-								value = this._options_index[0];
-								this._selected = this._options[value];
-							}
-						}
-						else{
-							this._selected_index = ln;
-							this._selected = this._options[value];
-						}
-					}
-					else{
-						this._selected_index = null;
-						this._selected = this._allow_none ? this._none_lbl : null;
-						value = null;
-					}
-					ln = cnt = null;
-				}
-				else{
-					this._selected_index = null;
-					this._selected = this._none_lbl;
-					this._value = null;
-				}
-				this._redrawValue();
-				this._super(OjInput, 'setValue', [value]);
-			}
+      if(isEmpty(value)){
+        value = null;
+      }
+			else if(!isObject(value)){
+        var ln = this._options.length;
+        for(; ln--;){
+          if(this._options[ln].getId() == value){
+            value = this._options[ln];
+            break;
+          }
+        }
+        if(!isObject(value)){
+          value = null;
+        }
+      }
+//			if(this._value != value || (isNull(this._selected_index) && this._options)){
+//				if(this._options){
+//					var cnt, ln = cnt = this._options_index.length;
+//
+//					for(; ln--;){
+//						if(this._options_index[ln] == value){
+//							break;
+//						}
+//					}
+//
+//					if(cnt){
+//						if(ln == -1){
+//							if(this._allow_none){
+//								this._selected_index = null;
+//								this._selected = this._none_lbl;
+//
+//								value = null
+//							}
+//							else{
+//								this._selected_index = 0;
+//
+//								value = this._options_index[0];
+//
+//								this._selected = this._options[value];
+//							}
+//						}
+//						else{
+//							this._selected_index = ln;
+//
+//							this._selected = this._options[value];
+//						}
+//					}
+//					else{
+//						this._selected_index = null;
+//						this._selected = this._allow_none ? this._none_lbl : null;
+//
+//						value = null;
+//					}
+//
+//					ln = cnt = null;
+//				}
+//				else{
+//					this._selected_index = null;
+//					this._selected = this._none_lbl;
+//					this._value = null;
+//				}
+//
+//				this._redrawValue();
+				if(this._super(OjInput, 'setValue', [value])){
+          this.input.dom().value = value ? value.getId() : null;
+        }
+//			}
 		}
 	}
 );
@@ -11789,6 +11914,17 @@ OJ.extendComponent(
 				this.setOptions(args[3]);
 			}
 		},
+    '_setDom' : function(dom_elm){
+			this._super(OjInput, '_setDom', arguments);
+//
+//      var list = new OjList();
+//      list.setItemRenderer(OjOption);
+//      list.addCss('input');
+//
+//      this.stem.replaceChild(this.input, list);
+//
+//      this.input = list;
+		},
 
 		'_processDomSourceChild' : function(dom_elm, component){
 			if(OjElement.isTextNode(dom_elm)){
@@ -11804,17 +11940,15 @@ OJ.extendComponent(
 				return;
 			}
 			if(this._selectionMax && this._selectionMax == this._value.length){
-				this.input.getElmAt(
-					this.input.indexOfItem(this._value.shift())
-				).setIsSelected(false);
+        this.input.renderItem(this._value.shift()).setIsSelected(false);
 			}
 			option.setIsSelected(true);
 			this._value.push(data);
 			this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
 		},
 		'_toggleOptionAt' : function(index){
-			var option = this.input.getElmAt(index),
-				data = this.input.getItemAt(index);
+			var option = this.input.renderItemAt(index),
+				  data = this.input.getElmAt(index);
 			if(option.getIsSelected()){
 				this._unselectOption(option, data);
 			}
@@ -11832,18 +11966,18 @@ OJ.extendComponent(
 			this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
 		},
 		'_updateSelection' : function(){
-			// make sure we remove any stale values and replace with fresh if possible
+      // make sure we remove any stale values and replace with fresh if possible
 			var ln = this._value.length;
 			for(; ln--;){
-				if(this.input.indexOfItem(this._value[ln]) == -1){
+				if(this.input.indexOfElm(this._value[ln]) == -1){
 					this._value.splice(ln, 1);
 				}
 			}
 			// make sure we have the at least the min amount selected
-			var i = 0,
-				ln2 = this.input.numItems();
+      var i = 0,
+				ln2 = this.input.numElms();
 			for(; (ln = this._value.length) < this._selectionMin && i < ln2; i++){
-				this._selectOption(this.input.getElmAt(i), this.input.getItemAt(i));
+				this._selectOption(this.input.renderItemAt(i), this.input.getElmAt(i));
 			}
 		},
 		'_onItemAdd' : function(evt){
@@ -11891,7 +12025,7 @@ OJ.extendComponent(
 		},
 
 		'getOptions' : function(){
-			return this.input.getDataProvider();
+      return this.input.getDataProvider();
 		},
 		'setOptions' : function(val){
 			// check to make sure we don't do extra work
@@ -11899,23 +12033,22 @@ OJ.extendComponent(
 				return;
 			}
 			// get the old selected indices
-			var indices = [];
-			var ln = this._value.length;
+			var indices = [],
+          ln = this._value.length,
+          options, index, ln2;
 			for(; ln--;){
-				indices.unshift(this.input.indexOfItem(this._value[ln]));
+				indices.unshift(this.input.indexOfElm(this._value[ln]));
 			}
 			this._value = [];
 			// set the new options
 			this.input.setDataProvider(val);
 			// get the new options
-			var options = this.getOptions();
-			ln = options.numItems()
+			ln = (options = this.getOptions()).numItems();
 			// try to select previous selected indices
-			var index,
-				ln2 = indices.length;
+			ln2 = indices.length;
 			for(; ln2--;){
 				if((index = indices[ln2]) < ln){
-					this._selectOption(this.input.getElmAt(index), this.input.getItemAt(index));
+					this._selectOption(this.input.renderItemAt(index), options.getItemAt(index));
 				}
 			}
 			this.redraw();
@@ -11925,9 +12058,9 @@ OJ.extendComponent(
 			if(this._value != val){
 				if(this._value = val){
 					var options = this.getOptions(),
-						ln = options.numItems();
+						  ln = options.numItems();
 					for(; ln--;){
-						this.input.getElmAt(ln).setIsSelected(val.indexOf(options.getItemAt(ln)) > -1);
+						this.input.renderItemAt(ln).setIsSelected(val.indexOf(options.getItemAt(ln)) > -1);
 					}
 				}
 				this.dispatchEvent(new OjEvent(OjEvent.CHANGE));

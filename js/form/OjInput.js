@@ -29,9 +29,6 @@ OJ.extendClass(
 		'_constructor' : function(/*name, label, value, validators*/){
 			this._super(OjComponent, '_constructor', []);
 
-			var args = arguments,
-				ln = args.length;
-
 			this._errors = [];
 			this._validators = [];
 
@@ -40,25 +37,12 @@ OJ.extendClass(
 				this._unset('dflt');
 			}
 
-			if(ln){
-				this.setName(args[0]);
-
-				if(ln > 1){
-					this.setLabel(args[1]);
-
-					if(ln > 2){
-						this.setValue(args[2]);
-
-						if(ln > 3){
-							this.setValidators(args[3]);
-						}
-					}
-				}
-			}
-
-			if(!this._label){
-				this.setLabel(this._label);
-			}
+      this._processArguments(arguments, {
+        'setName' : null,
+        'setLabel' : null,
+        'setValue' : null,
+        'setValidators' : []
+      });
 
 			if(this.input){
 				if(!this._value){
@@ -74,7 +58,7 @@ OJ.extendClass(
 				this.hide();
 			}
 			else{
-				ln = this._class_names.length;
+				var ln = this._class_names.length;
 
 				for(; ln--;){
 					this.addCss(this._class_names[ln]);
@@ -261,19 +245,23 @@ OJ.extendClass(
 			return this._value;
 		},
 		'setValue' : function(value){
-			if(value != this._value){
-				this._value = value;
-
-				if(this.input._dom.value != value){
-					this.input._dom.value = String.string(value);
-				}
-
-				this._redrawDefault();
-
-				if(this._ready){
-					this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
-				}
+			if(value == this._value){
+        return;
 			}
+
+      this._value = value;
+
+      if(this.input._dom.value != value){
+        this.input._dom.value = String.string(value);
+      }
+
+      this._redrawDefault();
+
+      if(this._ready){
+        this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+      }
+
+      return true;
 		}
 	},
 	{

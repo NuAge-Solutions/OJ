@@ -43,6 +43,18 @@ OJ.extendComponent(
 			}
 		},
 
+    '_setDom' : function(dom_elm){
+			this._super(OjInput, '_setDom', arguments);
+//
+//      var list = new OjList();
+//      list.setItemRenderer(OjOption);
+//      list.addCss('input');
+//
+//      this.stem.replaceChild(this.input, list);
+//
+//      this.input = list;
+		},
+
 
 		'_processDomSourceChild' : function(dom_elm, component){
 			if(OjElement.isTextNode(dom_elm)){
@@ -62,9 +74,7 @@ OJ.extendComponent(
 			}
 
 			if(this._selectionMax && this._selectionMax == this._value.length){
-				this.input.getElmAt(
-					this.input.indexOfItem(this._value.shift())
-				).setIsSelected(false);
+        this.input.renderItem(this._value.shift()).setIsSelected(false);
 			}
 
 			option.setIsSelected(true);
@@ -75,8 +85,8 @@ OJ.extendComponent(
 		},
 
 		'_toggleOptionAt' : function(index){
-			var option = this.input.getElmAt(index),
-				data = this.input.getItemAt(index);
+			var option = this.input.renderItemAt(index),
+				  data = this.input.getElmAt(index);
 
 			if(option.getIsSelected()){
 				this._unselectOption(option, data);
@@ -101,21 +111,21 @@ OJ.extendComponent(
 		},
 
 		'_updateSelection' : function(){
-			// make sure we remove any stale values and replace with fresh if possible
+      // make sure we remove any stale values and replace with fresh if possible
 			var ln = this._value.length;
 
 			for(; ln--;){
-				if(this.input.indexOfItem(this._value[ln]) == -1){
+				if(this.input.indexOfElm(this._value[ln]) == -1){
 					this._value.splice(ln, 1);
 				}
 			}
 
 			// make sure we have the at least the min amount selected
-			var i = 0,
-				ln2 = this.input.numItems();
+      var i = 0,
+				ln2 = this.input.numElms();
 
 			for(; (ln = this._value.length) < this._selectionMin && i < ln2; i++){
-				this._selectOption(this.input.getElmAt(i), this.input.getItemAt(i));
+				this._selectOption(this.input.renderItemAt(i), this.input.getElmAt(i));
 			}
 		},
 
@@ -179,7 +189,7 @@ OJ.extendComponent(
 
 
 		'getOptions' : function(){
-			return this.input.getDataProvider();
+      return this.input.getDataProvider();
 		},
 		'setOptions' : function(val){
 			// check to make sure we don't do extra work
@@ -188,12 +198,12 @@ OJ.extendComponent(
 			}
 
 			// get the old selected indices
-			var indices = [];
-
-			var ln = this._value.length;
+			var indices = [],
+          ln = this._value.length,
+          options, index, ln2;
 
 			for(; ln--;){
-				indices.unshift(this.input.indexOfItem(this._value[ln]));
+				indices.unshift(this.input.indexOfElm(this._value[ln]));
 			}
 
 			this._value = [];
@@ -202,17 +212,14 @@ OJ.extendComponent(
 			this.input.setDataProvider(val);
 
 			// get the new options
-			var options = this.getOptions();
-
-			ln = options.numItems()
+			ln = (options = this.getOptions()).numItems();
 
 			// try to select previous selected indices
-			var index,
-				ln2 = indices.length;
+			ln2 = indices.length;
 
 			for(; ln2--;){
 				if((index = indices[ln2]) < ln){
-					this._selectOption(this.input.getElmAt(index), this.input.getItemAt(index));
+					this._selectOption(this.input.renderItemAt(index), options.getItemAt(index));
 				}
 			}
 
@@ -225,10 +232,10 @@ OJ.extendComponent(
 			if(this._value != val){
 				if(this._value = val){
 					var options = this.getOptions(),
-						ln = options.numItems();
+						  ln = options.numItems();
 
 					for(; ln--;){
-						this.input.getElmAt(ln).setIsSelected(val.indexOf(options.getItemAt(ln)) > -1);
+						this.input.renderItemAt(ln).setIsSelected(val.indexOf(options.getItemAt(ln)) > -1);
 					}
 				}
 

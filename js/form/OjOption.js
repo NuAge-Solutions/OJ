@@ -4,8 +4,6 @@ OJ.importJs('oj.events.OjMouseEvent');
 OJ.importCss('oj.form.OjOption');
 
 
-'use strict';
-
 OJ.extendClass(
 	'OjOption', [OjItemRenderer],
 	{

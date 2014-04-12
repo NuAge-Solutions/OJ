@@ -134,21 +134,21 @@ OJ.extendComponent(
 		},
 
 		'_showOverlay' : function(/*msg, icon*/){
-//			var args = arguments,
-//				ln = args.length,
-//				msg = ln ? args[0] : null,
-//				icon = ln > 1 ? args[1] : null,
-//				overlay = this._overlay;
-//
-//			if(overlay){
-//				overlay.setMessage(msg);
-//				overlay.setIcon(icon);
-//			}
-//			else{
-//				overlay = this._overlay = new OjOverlay(msg, icon);
-//			}
-//
-//			overlay.show(this);
+			var args = arguments,
+				ln = args.length,
+				msg = ln ? args[0] : null,
+				icon = ln > 1 ? args[1] : null,
+				overlay = this._overlay;
+
+			if(overlay){
+				overlay.setMessage(msg);
+				overlay.setIcon(icon);
+			}
+			else{
+				overlay = this._overlay = new OjOverlay(msg, icon);
+			}
+
+			overlay.show(this);
 		},
 
 		'_unload' : function(){

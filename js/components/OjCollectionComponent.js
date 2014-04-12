@@ -38,28 +38,23 @@ OJ.defineClass(
     },
 
     '_setup' : function(){
-      var items = (this._items = new OjCollection());
-
-      items.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-      items.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-      items.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-      items.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
-
       this._rendered = {};
 
       this._item_events = {};
+
+      this.setDataProvider(new OjCollection());
     },
 
     '_teardown' : function(){
-      // remove any item listeners
+      // remove all rendered items
       var key;
 
-      for(key in this._item_events){
-        this._removeItemListener(this._item_events[key]);
+      for(key in this._rendered){
+        OJ.destroy(this._rendered[key]);
       }
 
       // remove the items collection
-      this._unset('_items');
+//      this._unset('_items');  we may not want to do this since the items can now be user generated
 
       // clear out the helper vars
       this._rendered = this._item_events = null;
@@ -192,6 +187,35 @@ OJ.defineClass(
     },
 
 
+    'getDataProvider' : function(){
+      return this._items;
+    },
+    'setDataProvider' : function(data_provider){
+      data_provider = OjCollection.collection(data_provider);
+
+      if(this._items == data_provider){
+        return;
+      }
+
+      // cleanup the old items if it existed
+      if(this._items){
+        this._items.removeEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+        this._items.removeEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+        this._items.removeEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+        this._items.removeEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
+      }
+
+      // setup the new items
+      this._items = data_provider;
+
+      data_provider.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
+      data_provider.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
+      data_provider.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
+      data_provider.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
+
+      return true;
+    },
+
     'setItemRenderer' : function(val){
       val = isString(val) ? OJ.stringToClass(val) : val;
 
@@ -200,6 +224,10 @@ OJ.defineClass(
       }
 
       this._itemRenderer = val;
+
+      this._rend
+
+      return true;
     }
   }
 );

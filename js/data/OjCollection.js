@@ -2,8 +2,6 @@ OJ.importJs('oj.events.OjActionable');
 OJ.importJs('oj.events.OjCollectionEvent');
 
 
-'use strict';
-
 OJ.extendClass(
 	'OjCollection', [OjActionable],
 	{

@@ -509,7 +509,7 @@ window.OJ = function Oj(){
 
 
 		'guid' : function(){
-			return (arguments.length ? 'OJ' : 'func') + '_' + this._guid++;
+      return (arguments.length ? 'OJ' : 'func') + '_' + this._guid++;
 		},
 
 		'implementInterface' : function(/*intrfc1, intrfc2, ..., def*/){
