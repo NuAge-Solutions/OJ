@@ -1,0 +1,53 @@
+.OjOption {
+	padding: 3px 10px;
+
+	cursor: pointer;
+}
+	.OjOption .indicator {
+		display: block;
+		position: absolute;
+
+		height: 0px;
+
+		left: -50px;
+
+		overflow: hidden;
+	}
+	.OjCheckedOption .indicator,
+	.OjRadioOption .indicator {
+		display: inline-block;
+
+		position: relative;
+
+		height: auto;
+
+		left: auto;
+
+		margin-right: 5px;
+
+		overflow:visible;
+	}
+
+    .OjCheckedOption .indicator input,
+    .OjRadioOption .indicator input {
+        position: relative;
+
+        top: auto;
+        left: auto;
+
+        width: auto;
+        height: auto;
+    }
+
+	.OjOption .OjItemRenderer {
+		display: block;
+	}
+	.OjCheckedOption .OjItemRenderer,
+	.OjRadioOption .OjItemRenderer {
+		display: inline-block;
+	}
+		.OjOption .OjItemRenderer .OjItemRenderer {
+			padding: 0px;
+
+			border: none;
+		}

@@ -1,0 +1,85 @@
+.flow-nav-controller {
+	display: block;
+
+	height: 40px;
+
+	background: #4c4c4c; /* Old browsers */
+	background: -moz-linear-gradient(top,  #4c4c4c 0%, #2c2c2c 50%, #000000 51%, #131313 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4c4c4c), color-stop(50%,#2c2c2c), color-stop(51%,#000000), color-stop(100%,#131313)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #4c4c4c 0%,#2c2c2c 50%,#000000 51%,#131313 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #4c4c4c 0%,#2c2c2c 50%,#000000 51%,#131313 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #4c4c4c 0%,#2c2c2c 50%,#000000 51%,#131313 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #4c4c4c 0%,#2c2c2c 50%,#000000 51%,#131313 100%); /* W3C */
+
+	overflow: hidden;
+}
+	.flow-nav-controller > .top,
+	.flow-nav-controller > .bottom {
+		position: absolute;
+
+		top: 0px;
+		left: 0px;
+        bottom: 0px;
+        right: 0px;
+
+		z-index: 1;
+	}
+
+	.flow-nav-controller > * > .left,
+	.flow-nav-controller > * > .title,
+	.flow-nav-controller > * > .right {
+		position: absolute;
+
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 80%;
+
+		padding: 0px;
+
+		text-align: left;
+
+		z-index: 3;
+
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+	}
+	.flow-nav-controller > * > .title {
+        left: 20%;
+        right: 20%;
+
+        padding: 0px 10px;
+
+		color: #FFFFFF;
+		font-size: 16px;
+		text-align: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        -webkit-align-content: center;
+        align-content: center;
+
+        -webkit-align-items: center;
+        align-items: center;
+
+        -webkit-justify-content: center;
+        justify-content: center;
+	}
+        .flow-nav-controller > * > .title > * {
+            width: 100%;
+            height: 100%;
+
+            text-align: center;
+        }
+
+	.flow-nav-controller > * > .right {
+        left: 80%;
+        right: 0px;
+
+        padding: 0px;
+
+		text-align: right;
+	}

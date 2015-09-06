@@ -1,0 +1,59 @@
+.OjButton {
+    padding: 2px 10px;
+
+	background: #ADB2B8; /* Old browsers */
+
+	border: 1px solid #4C4E50;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+
+	font-size: 0px;
+	line-height: 0px;
+	text-decoration: none;
+	text-align: center;
+
+	cursor: pointer;
+}
+.OjButton:hover {
+	text-decoration: none;
+}
+.OjButton.disabled {
+	cursor: not-allowed;
+}
+    .OjButton .icn {
+        font-size: 12px;
+    }
+	.OjButton .lbl {
+		font-size: 12px;
+        line-height: normal;
+
+		vertical-align: middle;
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+
+/* Image Button CSS */
+.OjButton.OjImageButton {
+	width: auto;
+	height: auto;
+
+	padding: 0px;
+
+	background: none;
+
+	border: none;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+
+	-moz-box-shadow:    none;
+	-webkit-box-shadow: none;
+	box-shadow:         none;
+}

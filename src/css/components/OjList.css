@@ -1,0 +1,19 @@
+.OjList {
+	display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+.OjList.horz {
+    -webkit-flex-flow: row wrap;
+    flex-flow: row wrap;
+}
+.OjList.vert {
+    -webkit-flex-flow: column wrap;
+    flex-flow: column wrap;
+}
+
+.OjListItem .content {
+    line-height: normal;
+}

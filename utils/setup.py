@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-__author__ = "Tony Osibov"
-
 # dependencies
 import argparse
 import os
@@ -9,7 +7,7 @@ import urllib
 import sys
 
 # setup script arguments
-parser = argparse.ArgumentParser(description='Compile Objective-JS Package.')
+parser = argparse.ArgumentParser(description='Setup Objective-JS Package.')
 
 parser.add_argument('package', type=str, help='The package name.')
 
@@ -23,6 +21,7 @@ package = args.package.lower()
 
 if args.destination:
     os.chdir(args.destination)
+
 # otherwise create the dir and move there
 else:
     os.mkdir(package)
@@ -30,7 +29,14 @@ else:
     os.chdir(package)
 
 # make sure all the dirs exist
-dirs = ['assets', 'builds', 'css', 'js', 'templates', 'themes', 'utils']
+dirs = ['builds', 'dependencies', 'src']
+
+for d in dirs:
+    if not os.path.isdir(d):
+        os.mkdir(d)
+
+# make sure all src dirs exist
+dirs = ['src/assets', 'src/css', 'src/js', 'src/templates', 'src/themes']
 
 for d in dirs:
     if not os.path.isdir(d):
@@ -38,7 +44,7 @@ for d in dirs:
 
 # make sure these files exist
 package = args.package.upper()
-files = ['css/' + package + '.css', 'js/' + package + '.js']
+files = ['src/css/' + package + '.css', 'src/js/' + package + '.js']
 
 for f in files:
     open(f, 'a').close()

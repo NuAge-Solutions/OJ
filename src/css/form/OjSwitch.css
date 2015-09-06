@@ -1,0 +1,116 @@
+.OjSwitch.OjInput {
+    width: 50px;
+	height: 30px;
+    min-height: 30px;
+	background: none;
+	border: none;
+
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+
+	-moz-box-shadow:    none;
+	-webkit-box-shadow: none;
+	box-shadow:         none;
+}
+	.OjSwitch.OjInput > .wrapper {
+		background: none;
+		border: none;
+
+		-webkit-border-radius: 0px;
+		-moz-border-radius: 0px;
+		border-radius: 0px;
+
+		-moz-box-shadow:    none;
+		-webkit-box-shadow: none;
+		box-shadow:         none;
+	}
+		.OjSwitch.OjInput > .wrapper > .psuedoInput {
+            background: transparent;
+
+			-webkit-border-radius: 15px;
+			-moz-border-radius: 15px;
+			border-radius: 15px;
+
+            border: 2px solid;
+		}
+        .OjSwitch.OjInput.off > .wrapper > .psuedoInput {
+            border-color: #DDD
+        }
+        .OjSwitch.OjInput.on > .wrapper > .psuedoInput {
+            border-color: #22c064
+        }
+			.OjSwitch > .wrapper > .psuedoInput .slider {
+				display: block;
+				position: absolute;
+
+				top: 0px;
+                left: 0px;
+
+				width: 100%;
+				height: 100%;
+
+				overflow: visible;
+			}
+				.OjSwitch > .wrapper > .psuedoInput .slider .prefix_lbl,
+                .OjSwitch > .wrapper > .psuedoInput .slider .suffix_lbl {
+					display: inline-block;
+
+					width: 50%;
+					height: 100%;
+
+                    border-radius: 11px;
+
+                    border: none;
+
+                    z-index: 1;
+				}
+                .OjSwitch > .wrapper > .psuedoInput .slider .prefix_lbl {
+                    border-top-right-radius: 0px;
+                    border-bottom-right-radius: 0px;
+                }
+                .OjSwitch > .wrapper > .psuedoInput .slider .suffix_lbl {
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                }
+
+                .OjSwitch.off > .wrapper > .psuedoInput .slider .prefix_lbl,
+                .OjSwitch.off > .wrapper > .psuedoInput .slider .suffix_lbl {
+                    background: transparent;
+                }
+                .OjSwitch.on > .wrapper > .psuedoInput .slider .prefix_lbl,
+                .OjSwitch.on > .wrapper > .psuedoInput .slider .suffix_lbl {
+                    background: #22c064;
+                }
+
+				.OjSwitch > .wrapper > .psuedoInput .slider .stem {
+					position: absolute;
+
+					display: block;
+
+					top: 0px;
+
+					width: 26px;
+					height: 26px;
+                    min-height: 26px;
+
+                    margin: 0px;
+
+					border-radius: 50%;
+
+					background: #FFF;
+
+					-moz-box-shadow:    0px 1px 3px 0px rgba(0, 0, 0, .3);
+					-webkit-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .3);
+					box-shadow:         0px 1px 3px 0px rgba(0, 0, 0, .3);
+
+                    z-index: 3;
+				}
+                .OjSwitch.off > .wrapper > .psuedoInput .slider .stem {
+                    left: 0px;
+                    right: auto;
+                }
+                .OjSwitch.on > .wrapper > .psuedoInput .slider .stem {
+                    left: auto;
+                    right: 0px;
+                }

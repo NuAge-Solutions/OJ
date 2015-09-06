@@ -1,0 +1,28 @@
+{
+
+  "oj" : {
+
+    "source" : "src",
+
+    "packages" : {
+
+      "oj" : {
+
+        "assets" : ["*"],
+        "assets_exclude" : [".*"],
+
+        "classes" : ["*"],
+        "classes_exclude" : ["layout/*", "tests/*"],
+
+        "pre_compiled" : ["libs/*"],
+
+        "themes" : ["*"],
+        "themes_exclude" : []
+
+      }
+
+    }
+
+  }
+
+}

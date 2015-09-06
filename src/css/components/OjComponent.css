@@ -1,0 +1,13 @@
+.OjComponent {
+	display: inline-block;
+
+	line-height: 0px;
+
+	text-align: left;
+	vertical-align: top;
+
+	z-index: 1;
+}
+.OjComponent.disabled {
+    opacity: 0.8;
+}

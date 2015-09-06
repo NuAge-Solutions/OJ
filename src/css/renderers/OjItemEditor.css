@@ -1,0 +1,24 @@
+.OjItemEditor {
+    
+}
+    .OjItemEditor > .holder {
+        z-index: 1;
+    }
+    .OjItemEditor > .actions {
+        display: none;
+
+        position: absolute;
+
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+
+        z-index: 3;
+    }
+    .OjItemEditor:HOVER > .actions,
+    .OjItemEditor.edit > .actions {
+        display: block;
+    }
+        .OjItemEditor > .actions > * {
+            margin: 0px 0px 0px 10px;
+        }
