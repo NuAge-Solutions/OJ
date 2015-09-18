@@ -90,7 +90,7 @@ OJ.extendComponent(
 		'MIN_LENGTH_ERROR' : '[%INPUT] must be at least [%MIN] characters long.',
 		'MAX_LENGTH_ERROR' : '[%INPUT] must be no more than [%MAX] characters long.',
 
-		'_TAGS' : ['textinput']
+		'_TAGS' : ['text-input']
 	}
 );
 
@@ -136,7 +136,7 @@ OJ.extendComponent(
             return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(val)
         },
 
-        '_TAGS' : ['emailinput']
+        '_TAGS' : ['email-input']
     }
 );
 
@@ -157,7 +157,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['numinput']
+        '_TAGS' : ['num-input', 'number-input']
     }
 );
 
@@ -165,9 +165,11 @@ OJ.extendComponent(
 OJ.extendComponent(
     'OjSecureInput', [OjTextInput],
     {
+        '_minLength' : 6,  '_maxLength' : 30,
+
         '_type' : OjTextInput.SECURE
     },
     {
-        '_TAGS' : ['secureinput']
+        '_TAGS' : ['secure-input']
     }
 );

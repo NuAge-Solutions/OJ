@@ -202,6 +202,6 @@ OJ.extendComponent(
 		}
 	},
     {
-        '_TAGS' : ['tokeninput']
+        '_TAGS' : ['token-input']
     }
 );

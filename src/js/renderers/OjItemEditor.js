@@ -53,5 +53,8 @@ OJ.extendComponent(
                 this.item_renderer = group.item_renderer;
             }
         }
-	}
+	},
+    {
+        '_TAGS' : ['item-editor', 'oj-e-item', 'e-item']
+    }
 );

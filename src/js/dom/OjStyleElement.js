@@ -8,7 +8,8 @@ OJ.importJs('oj.events.OjUiEvent');
 OJ.importJs('oj.events.OjScrollEvent');
 OJ.importJs('oj.events.OjTouchEvent');
 OJ.importJs('oj.events.OjTransformEvent');
-OJ.importJs('oj.libs.hammer');
+OJ.importJs('oj.libs.Hammer');
+OJ.importJs('oj.libs.Propagating');
 
 
 OJ.extendClass(
@@ -226,7 +227,7 @@ OJ.extendClass(
                     }
                 }
 
-                this.addEventListener(OJ.attributeToFunc(nm), target, solo ? setter[0] : setter[1]);
+                this.addEventListener(OJ.attributeToProp(nm), target, solo ? setter[0] : setter[1]);
 
                 return true;
             }
@@ -506,13 +507,14 @@ OJ.extendClass(
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
+
                 evt = OjUiEvent.convertDomEvent(evt);
 
                 proxy._onEvent(evt);
 
-                if(evt.type == OjUiEvent.DOWN && proxy.hasEventListener(OjUiEvent.UP_OUTSIDE)){
-                    OJ.addEventListener(OjUiEvent.UP, proxy, '_onOjMouseUp');
-                }
+                //if(evt.type == OjUiEvent.DOWN && proxy.hasEventListener(OjUiEvent.UP_OUTSIDE)){
+                //    OJ.addEventListener(OjUiEvent.UP, proxy, '_onOjMouseUp');
+                //}
             }
         },
 
@@ -727,7 +729,7 @@ OJ.extendClass(
                     settings['cssProps'] = {};
                 }
 
-                self._hammer = new Hammer(self._getEventProxy(), settings);
+                self._hammer = propagating(new Hammer(self._getEventProxy(), settings));
 
                 self._hammer.on(
                     'tap doubletap press',
@@ -736,6 +738,8 @@ OJ.extendClass(
                         new_evt._type = map[evt.type];
 
                         self._onEvent(new_evt);
+
+                        evt.stopPropagation();
                     }
                 );
             }

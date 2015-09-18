@@ -31,33 +31,33 @@ OJ.extendManager(
         },
 
         '_constructor' : function(manager){
-            this._super(OjActionable, '_constructor', []);
+            var self = this;
+
+            self._super(OjActionable, '_constructor', []);
 
             if(manager){
-                this._modals = manager._modals;
-                this._modal_holder = manager._modal_holder;
-                this._overlay = manager._overlay;
+                self._modals = manager._modals;
+                self._modal_holder = manager._modal_holder;
+                self._overlay = manager._overlay;
 
                 if(!OJ.is_ready){
                     OJ.removeEventListener(OjEvent.READY, manager, '_onOjReady');
-                    OJ.addEventListener(OjEvent.READY, this, '_onOjReady');
+                    OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
                 }
 
                 OJ.destroy(manager);
             }
             else{
-                this._modals = [];
+                self._modals = [];
 
-                this._modal_holder = new OjStyleElement();
-                this._modal_holder.addCss('WindowManager');
-
-                this._modal_holder.hide();
+                self._modal_holder = new OjStyleElement();
+                self._modal_holder.addCss('WindowManager');
 
                 if(OJ.is_ready){
-                    this._onOjReady(null);
+                    self._onOjReady(null);
                 }
                 else{
-                    OJ.addEventListener(OjEvent.READY, this, '_onOjReady');
+                    OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
                 }
             }
         },
@@ -167,6 +167,7 @@ OJ.extendManager(
             // check to see if the modal holder is empty
             // if it is empty then hide it since there is nothing more to show
             if(!holder.numChildren){
+                holder.removeCss('active');
                 holder.hide();
             }
 
@@ -182,11 +183,21 @@ OJ.extendManager(
         },
 
         '_onOjReady' : function(evt){
-            OJ.removeEventListener(OjEvent.READY, this, '_onOjReady');
+            var self = this,
+                holder = self._modal_holder;
 
-            document.body.appendChild(this._modal_holder.dom);
+            OJ.removeEventListener(OjEvent.READY, self, '_onOjReady');
 
-            this._modal_holder._setIsDisplayed(true);
+            document.body.appendChild(holder.dom);
+
+            holder._setIsDisplayed(true);
+
+            setTimeout(
+                function(){
+                    holder.hide();
+                },
+                250
+            );
         },
 
 
@@ -408,6 +419,7 @@ OJ.extendManager(
 
             // make sure the holder is visible
             if(!holder.isVisible){
+                holder.addCss('active');
                 holder.show();
             }
 

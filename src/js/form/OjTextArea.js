@@ -29,6 +29,6 @@ OJ.extendComponent(
 		}
 	},
 	{
-		'_TAGS' : ['textarea']
+		'_TAGS' : ['textarea', 'text-area']
 	}
 );

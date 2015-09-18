@@ -482,20 +482,24 @@ window.OJ = function Oj(){
                 setTimeout(func.apply(context, Array.array(arguments).slice(2)), 1);
             },
 
-            'attributeToFunc' : function(attr){
-                var parts = attr.split('-'), ln = parts.length;
+            'attributeToProp' : function(attr){
+                var str = '';
 
-                for(; ln--;){
-                    if(ln){
-                        parts[ln] = parts[ln].ucFirst();
-                    }
-                }
+                parts = attr.split('-').forEach(function(item, i){
+                    str += i ? item.ucFirst() : item;
+                });
 
-                return parts.join('');
+                return str;
             },
 
-            'attributeToProp' : function(attr){
-                return attr.replace('-', '_');
+            'propToAttribute' : function(prop){
+                var str = '';
+
+                prop.split(/(?=[A-Z])/).forEach(function(item, i){
+                    str += (i ? '-' : '') + item.toLowerCase();
+                });
+
+                return str;
             },
 
             'byId' : function(id){
@@ -719,14 +723,14 @@ window.OJ = function Oj(){
                 return c.prototype.constructor = c;
             },
 
-            'extendComponent' : function(ns, parents, def/*, static_def*/){
-                var args = arguments,
-                    tags = arguments.length > 3 ? args[3]._TAGS : null,
+            'extendComponent' : function(ns, parents, def, static_def){
+                var self = this,
+                    tags = static_def ? static_def._TAGS : null,
                     ln = tags ? tags.length : 0,
-                    cls = this.extendClass.apply(this, args);
+                    cls = self.extendClass.apply(self, arguments);
 
                 // register class name as tag
-                OjStyleElement.registerComponentTag(ns.toLowerCase(), ns);
+                OjStyleElement.registerComponentTag(OJ.propToAttribute(ns), ns);
 
                 // register special tags
                 for(; ln--;){

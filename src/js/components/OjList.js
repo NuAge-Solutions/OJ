@@ -39,7 +39,16 @@ OJ.extendComponent(
 
 
         '_onItemAdd' : function(evt){
-            this.container.insertChildAt(this.renderItem(evt.item, evt.index), evt.index);
+            var self = this,
+                container = self.container;
+
+            evt.items.forEach(function(item, i){
+                container.insertChildAt(
+                    self.renderItem(item, evt.index + i),
+                    evt.index + i
+                );
+            });
+
 
             this._updateListCss();
 
@@ -47,30 +56,43 @@ OJ.extendComponent(
         },
 
         '_onItemMove' : function(evt){
-            var i = evt.index;
+            var self = this,
+                container = self.container;
 
-            this.container.moveChild(this.renderItem(evt.item, i), i);
+            evt.items.forEach(function(item, i){
+                container.moveChild(
+                    self.renderItem(item, evt.index + i),
+                    evt.index
+                );
+            });
 
-            this._super(OjCollectionComponent, '_onItemMove', arguments);
+            self._super(OjCollectionComponent, '_onItemMove', arguments);
         },
 
         '_onItemRemove' : function(evt){
-            var item = this.container.removeChildAt(evt.index);
+            var self = this,
+                container = self.container;
 
-            this._updateListCss();
+            evt.items.forEachReverse(function(item, i){
+                container.removeChildAt(evt.index + i);
+            });
 
-            this._super(OjCollectionComponent, '_onItemRemove', arguments);
+            self._updateListCss();
 
-            this._releaseItem(item);
+            self._super(OjCollectionComponent, '_onItemRemove', arguments);
+
         },
 
         '_onItemReplace' : function(evt){
-            var i = evt.index,
-                item = this.container.replaceChildAt(this.renderItem(evt.item, i), i);
+            print('on item remove', evt);
+            var self = this,
+                container = self.container;
 
-            this._super(OjCollectionComponent, '_onItemReplace', arguments);
+            evt.items.forEachReverse(function(item, i){
+                container.replaceChildAt(self.renderItem(item, evt.index + i), evt.index + i)
+            });
 
-            this._releaseItem(item);
+            self._super(OjCollectionComponent, '_onItemReplace', arguments);
         },
 
 
@@ -102,32 +124,25 @@ OJ.extendComponent(
         },
 
         '=elms' : function(val){
-            var self = this;
+            var self = this,
+                container = self.container,
+                elms = self._elms;
 
-            if(self._elms == val){
+            if(elms == val){
                 return;
             }
 
             self._super(OjCollectionComponent, '=elms', arguments);
 
-            // remove all the old rendered items
-            var key,
-                container = self.container,
-                rendered = self._rendered;
-
-            container.removeAllChildren();
-
-            for(key in rendered){
-                OJ.destroy(rendered[key]);
-            }
-
+            // reset rendered object
             self._rendered = {};
 
             // render the new items
-            self._elms.forEachReverse(function(item, i){
-                container.prependChild(self.renderItem(item, i));
+            self._elms.forEach(function(item, i){
+                container.appendChild(self.renderItem(item, i));
             });
 
+            // update the css
             self._updateListCss();
         }
     },

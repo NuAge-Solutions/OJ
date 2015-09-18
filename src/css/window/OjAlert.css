@@ -1,8 +1,6 @@
 .WindowManager {
     position: fixed;
 
-
-
     top: 0px;
     left: 0px;
     bottom: 0px;
@@ -11,6 +9,10 @@
     overflow: hidden;
 
     z-index: 9999;
+}
+/* this is a hack for ios */
+.is-ios .WindowManager.active {
+    position: absolute;
 }
 
 .OjAlert {

@@ -83,6 +83,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['navstack']
+        '_TAGS' : ['nav-stack']
     }
 );

@@ -47,6 +47,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['item']
+        '_TAGS' : ['item', 'item-renderer']
     }
 );

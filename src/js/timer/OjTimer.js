@@ -13,7 +13,7 @@ OJ.extendClass(
 		},
 
 		'_get_props_' : {
-			'count' : 0,
+            'count' : 0,
             'paused' : null,
             'running' : null,
 			'state' : null,

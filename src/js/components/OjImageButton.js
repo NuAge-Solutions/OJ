@@ -6,9 +6,6 @@ OJ.importJs('oj.components.OjButton');
 OJ.extendComponent(
 	'OjImageButton', [OjButton],
 	{
-		'_v_align' : OjStyleElement.TOP,
-
-
 		'_constructor' : function(/*image*/){
             this._super(OjButton, '_constructor', []);
 
@@ -45,6 +42,6 @@ OJ.extendComponent(
 		}
 	},
 	{
-		'_TAGS' : ['imagebutton']
+		'_TAGS' : ['oj-i-button', 'i-button', 'image-button']
 	}
 );

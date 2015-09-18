@@ -37,6 +37,6 @@ OJ.extendComponent(
 		}
 	},
 	{
-		'_TAGS' : ['imageviewer']
+		'_TAGS' : ['image-viewer']
 	}
 );

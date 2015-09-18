@@ -302,12 +302,12 @@ OJ.extendClass(
         },
 
         'replace' : function(){
-            // add dispatch replace event
+            // todo: add dispatch replace event
             return this._callArrayFunc('replace', arguments);
         },
 
         'replaceAll' : function(){
-            // add dispatch replace event
+            // todo: add dispatch replace event
 
             return this._callArrayFunc('replaceAll', arguments);
         },

@@ -123,6 +123,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['tabnav']
+        '_TAGS' : ['tab-nav', 'tab-nav-controller']
     }
 );

@@ -192,6 +192,10 @@ OJ.extendManager(
 
 		'length' : function(){
 			return this._list.length;
-		}
+		},
+
+        'reload' : function(){
+            window.location.reload(true);
+        }
 	}
 );

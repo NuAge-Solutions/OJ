@@ -95,6 +95,6 @@ OJ.extendComponent(
 		'MAX_SIZE_ERROR' : '[%INPUT] must be no more than [%MAX] MB.',
 
 
-		'_TAGS' : ['fileinput']
+		'_TAGS' : ['file-input']
 	}
 );

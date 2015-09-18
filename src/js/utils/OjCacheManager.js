@@ -77,7 +77,7 @@ OJ.extendManager(
 			}
 
 			if(isObject(data)){
-				var type = data['_class_name'];
+                var type = data[OjObject.TYPE_KEY];
 
 				if(
 					isUndefined(type) ||
@@ -141,9 +141,10 @@ OJ.extendManager(
 			}
 			else{
 				data = {
-					'_class_name' : typeof data,
-					'value'       : data
+					'value' : data
 				};
+
+                data[OjObject.TYPE_KEY] = typeof data
 			}
 
 			return toJson(data);

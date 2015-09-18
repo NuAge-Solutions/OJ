@@ -110,6 +110,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['listitem']
+        '_TAGS' : ['list-item', 'oj-li', 'li']
     }
 );

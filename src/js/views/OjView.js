@@ -315,6 +315,6 @@ OJ.extendComponent(
         'TITLE_CHANGE' : 'onTitleChange',
         'UNLOAD' : 'onViewUnload',
 
-        '_TAGS' : ['view', 'oj-view']
+        '_TAGS' : ['view']
     }
 );

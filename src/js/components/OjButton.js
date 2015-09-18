@@ -10,8 +10,6 @@ OJ.extendComponent(
             'label' : null
         },
 
-		'_default_h_align' : OjStyleElement.CENTER,
-
 
 		'_constructor' : function(/*label, icon*/){
 			this._super(OjLink, '_constructor', []);

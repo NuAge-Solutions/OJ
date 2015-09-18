@@ -342,7 +342,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['flownav'],
+        '_TAGS' : ['flow-nav', 'flow-nav-controller'],
 
         'BACK' : 'onFlowNavBack'
     }

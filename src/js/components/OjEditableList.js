@@ -44,6 +44,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['elist']
+        '_TAGS' : ['e-list', 'edit-list']
     }
 );

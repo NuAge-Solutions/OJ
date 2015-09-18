@@ -20,6 +20,10 @@ OJ.extendClass(
 			'timeout'     : 30000
 		},
 
+        '_get_props_' : {
+            'response_headers' : null
+        },
+
         '_error_thrown' : false,
 
 		'_is_xdomain' : false,  '_policy' : null,  '_url' : null,  '_xhr' : null,
@@ -401,6 +405,10 @@ OJ.extendClass(
 				CacheManager.setCacheUrlRequestData(this.request, this.data, this.policy);
 			}
 		},
+
+        '.response_headers' : function(){
+            return this._xhr ? this._xhr.getAllResponseHeaders() : {};
+        },
 
         'getResponseHeader' : function(header){
             return this._xhr.getResponseHeader(header);

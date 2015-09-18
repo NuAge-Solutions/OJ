@@ -195,6 +195,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['nav', 'navcontroller']
+        '_TAGS' : ['nav', 'nav-controller']
     }
 );

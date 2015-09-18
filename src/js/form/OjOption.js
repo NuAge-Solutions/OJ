@@ -141,3 +141,30 @@ OJ.extendClass(
 		}
 	}
 );
+
+
+
+
+OJ.extendComponent(
+	'OjCheckedOption', [OjOption],
+	{},
+	{
+		'_TAGS' : ['oj-checkbox', 'checkbox']
+	}
+);
+
+
+
+OJ.extendComponent(
+	'OjRadioOption', [OjOption],
+	{
+		'_constructor' : function(){
+			this._super(OjOption, '_constructor', arguments);
+
+			this.input.setAttr('type', 'radio');
+		}
+	},
+    {
+		'_TAGS' : ['oj-radio', 'radio']
+	}
+);

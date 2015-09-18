@@ -18,8 +18,6 @@ OJ.extendComponent(
 			'url'          : null
 		},
 
-		'_v_align' : OjStyleElement.MIDDLE,
-
 		'_template' : 'oj.components.OjLink',
 
 
@@ -184,6 +182,6 @@ OJ.extendComponent(
         }
 	},
 	{
-		'_TAGS' : ['a']
+		'_TAGS' : ['a', 'link']
 	}
 );

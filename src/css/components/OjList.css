@@ -10,8 +10,8 @@
     flex-flow: row wrap;
 }
 .OjList.vert {
-    -webkit-flex-flow: column wrap;
-    flex-flow: column wrap;
+    -webkit-flex-flow: column nowrap;
+    flex-flow: column nowrap;
 }
 
 .OjListItem .content {

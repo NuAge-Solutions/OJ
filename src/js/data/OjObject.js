@@ -261,9 +261,12 @@ OJ.extendClass(
         },
 
         'exportData' : function(){
-            return {
-                '_class' : this.oj_class_name
-            }
+            var self = this,
+                data = {};
+
+            data[self._static.TYPE_KEY] = self.oj_class_name;
+
+            return data;
         },
 
         'importData' : function(data){
@@ -311,6 +314,9 @@ OJ.extendClass(
         }
     },
     {
+        'TYPE_KEY' : '__type__',
+
+
         '_unset' : function(prop/*|props, depth*/){
             OJ.unset(this, arguments);
         },
@@ -324,7 +330,7 @@ OJ.extendClass(
                 }
             }
             else if(isObject(data)){
-                cls = data._class;
+                cls = data[OjObject.TYPE_KEY];
 
                 if(cls){
                     c = OJ.stringToClass(cls);

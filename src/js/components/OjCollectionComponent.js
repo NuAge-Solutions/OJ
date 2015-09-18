@@ -89,14 +89,6 @@ OJ.extendComponent(
             self.dispatchEvent(new OjCollectionEvent(type, [item], self.elms.indexOf(item)));
         },
 
-        '_releaseItem' : function(item){
-            if(item){
-                OJ.destroy(item);
-
-                delete this._rendered[item.id];
-            }
-        },
-
         '_removeItemListener' : function(type){
             // make sure that no other listeners for this type exist
             if(!this.hasEventListener(type)){
@@ -219,7 +211,7 @@ OJ.extendComponent(
             var self = this,
                 cls = self.item_renderer,
                 key, evt,
-                id = isObjective(item) ? item.id : (isUnset(index) ? item.toString() : index);
+                id = isObjective(item) ? item.oj_id : (isUnset(index) ? item.toString() : index);
 
             // if we have already rendered the item then just return the cached value
             if(self._rendered[id]){
@@ -243,13 +235,16 @@ OJ.extendComponent(
 
         'unrenderItem' : function(item){
             var self = this,
-                id = item.id,
+                id = item.oj_id,
                 elm = self._rendered[id];
 
             if(elm){
-                OJ.destroy(elm);
-
                 delete self._rendered[id];
+
+                // only destroy it if we made it.
+                if(item != elm){
+                    OJ.destroy(elm);
+                }
             }
         },
 
@@ -293,6 +288,12 @@ OJ.extendComponent(
                 elms.removeEventListener(press_evt, self, press_func);
                 elms.removeEventListener(remove_evt, self, remove_func);
                 elms.removeEventListener(replace_evt, self, replace_func);
+
+                if(elms){
+                    elms.forEachReverse(function(item){
+                        self.unrenderItem(item);
+                    });
+                }
             }
 
             // setup the new items
