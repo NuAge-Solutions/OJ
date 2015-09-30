@@ -1,5 +1,5 @@
 OJ.importJs('oj.data.OjArray');
-OJ.importJs('oj.form.OjRadioOption');
+OJ.importJs('oj.form.OjOption');
 OJ.importJs('oj.form.OjInput');
 OJ.importJs('oj.renderers.OjLabelItemRenderer');
 OJ.importJs('oj.components.OjList');

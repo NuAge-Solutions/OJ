@@ -152,7 +152,7 @@ if(!proto.clean){
 }
 
 if(!proto.regexSpecialChars){
-    proto.regexSpecialChars = new RegExp('[.*+?|()\\[\\]{}\\\\]', 'g'); // .*+?|()[]{}\
+    proto.regexSpecialChars = new RegExp('[.*+?$|()\\[\\]{}\\\\]', 'g'); // .*+?$|()[]{}\
 }
 
 if(!proto.regexEscape){

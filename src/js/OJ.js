@@ -492,11 +492,13 @@ window.OJ = function Oj(){
                 return str;
             },
 
-            'propToAttribute' : function(prop){
+            'propToAttribute' : function(prop, sep){
                 var str = '';
 
+                sep = sep || '-';
+
                 prop.split(/(?=[A-Z])/).forEach(function(item, i){
-                    str += (i ? '-' : '') + item.toLowerCase();
+                    str += (i ? sep : '') + item.toLowerCase();
                 });
 
                 return str;

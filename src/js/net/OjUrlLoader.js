@@ -12,7 +12,7 @@ OJ.extendClass(
 	'OjUrlLoader', [OjActionable],
 	{
 		'_props_' : {
-			'async'       : false,
+			'async'       : true,
 			'data'        : null,
             'callback'    : null,
 			'contentType' : OjUrlRequest.QUERY_STRING,
