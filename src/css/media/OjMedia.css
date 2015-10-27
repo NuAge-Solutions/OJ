@@ -1,3 +1,7 @@
+.OjIcon, .OjMedia {
+    box-sizing: content-box;
+}
+
 .OjMedia {
 	display: inline-block;
 

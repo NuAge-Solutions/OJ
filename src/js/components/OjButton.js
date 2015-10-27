@@ -12,9 +12,13 @@ OJ.extendComponent(
 
 
 		'_constructor' : function(/*label, icon*/){
-			this._super(OjLink, '_constructor', []);
+			var self = this;
 
-			this._processArguments(arguments, {
+            self._super(OjLink, '_constructor', []);
+
+            self.addCss('flexbox', 'no-select');
+
+			self._processArguments(arguments, {
 				'text' : undefined,
 				'icon' : undefined
 			});

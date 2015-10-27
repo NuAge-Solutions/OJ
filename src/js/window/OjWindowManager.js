@@ -166,7 +166,7 @@ OJ.extendManager(
 
             // check to see if the modal holder is empty
             // if it is empty then hide it since there is nothing more to show
-            if(!holder.numChildren){
+            if(!holder.num_children){
                 holder.removeCss('active');
                 holder.hide();
             }
@@ -175,7 +175,7 @@ OJ.extendManager(
             modal.dispatchEvent(new OjEvent(this.HIDE));
 
             // check to see if this modal is self destructing
-            var destruct = modal.selfDestruct;
+            var destruct = modal.self_destruct;
 
             if(destruct){
                 OJ.destroy(modal, destruct);
@@ -192,19 +192,23 @@ OJ.extendManager(
 
             holder._setIsDisplayed(true);
 
-            setTimeout(
-                function(){
-                    holder.hide();
-                },
-                250
-            );
+            holder.hide();
+
+            // not sure why we had a timeout here... seems to be working fine without it
+            //setTimeout(
+            //    function(){
+            //
+            //    },
+            //    250
+            //);
         },
 
 
-        'alert' : function(/*message, title, buttons, cancel_label*/){
-            var alrt = this.makeAlert.apply(this, arguments);
+        'alert' : function(/*message, title, buttons, cancel_label, callback*/){
+            var self = this,
+                alrt = self.makeAlert.apply(self, arguments);
 
-            this.show(alrt);
+            self.show(alrt);
 
             return alrt;
         },
@@ -235,9 +239,9 @@ OJ.extendManager(
 
             // update the modal
             modal.addCss('browser');
-            modal.selfDestruct = OjAlert.DEEP;
-            modal.paneWidth = this._calcWindowWidth(width, fullscreen);
-            modal.paneHeight = this._calcWindowHeight(height, fullscreen);
+            modal.self_destruct = OjAlert.DEEP;
+            modal.pane_width = this._calcWindowWidth(width, fullscreen);
+            modal.pane_height = this._calcWindowHeight(height, fullscreen);
 
             return this.show(modal);
         },
@@ -250,10 +254,10 @@ OJ.extendManager(
                 fullscreen = this._isMobileModal(modal);
             }
 
-            modal.selfDestruct = OjAlert.DEEP;
+            modal.self_destruct = OjAlert.DEEP;
             modal.isFullscreen = fullscreen;
-            modal.paneWidth = this._calcWindowWidth(width, fullscreen);
-            modal.paneHeight = this._calcWindowHeight(height, fullscreen);
+            modal.pane_width = this._calcWindowWidth(width, fullscreen);
+            modal.pane_height = this._calcWindowHeight(height, fullscreen);
 
             this.show(modal);
 
@@ -291,49 +295,18 @@ OJ.extendManager(
             viewer.width = [100, '%'];
             viewer.height = [100, '%'];
 
-            modal.selfDestruct = OjAlert.DEEP;
-            modal.paneWidth = this._calcWindowWidth(width, fullscreen);
-            modal.paneHeight = ln > 3 ? args[3] : this._calcWindowHeight(height, fullscreen);
+            modal.self_destruct = OjAlert.DEEP;
+            modal.pane_width = this._calcWindowWidth(width, fullscreen);
+            modal.pane_height = ln > 3 ? args[3] : this._calcWindowHeight(height, fullscreen);
 
             return this.show(modal);
         },
 
-        'makeAlert' : function(/*message, title, buttons = [], cancel_label = 'OK', width = 400, height = auto*/){
-            var args = arguments,
-                ln = args.length,
-                params = [
-                    ln ? args[0] : null,
-                    ln > 1 ? args[1] : null,
-                    ln > 2 ? args[2] : [],
-                    OjAlert.OK
-                ],
-                alrt;
-
-            // load in the passed buttons array
-            if(ln > 3){
-                params[3] = args[3];
-            }
-            // default the cancel label
-            else if(ln > 2){
-                params[3] = OjAlert.CANCEL;
-            }
-
+        'makeAlert' : function(content, title, buttons, cancel_label, callback){
             // make the new alert
-            alrt = this._alertClass.makeNew(params);
-
-            // hide the buttons if we have no buttons and no cancel label
-            if(!params[2] && !params[3]){
-                alrt.hideButtons();
-            }
-
-            // set the pane height and width
-            alrt.paneWidth = ln > 4 ? args[4] : 400;
-
-            if(ln > 5){
-                alrt.paneHeight = args[5];
-            }
-
-            return alrt;
+            return this._alertClass.makeNew([
+                content, title, buttons || [], cancel_label || OjAlert.CANCEL, callback
+            ]);
         },
 
         'makeModal' : function(/*content, title*/){
@@ -341,7 +314,7 @@ OJ.extendManager(
         },
 
         'moveToTop' : function(modal){
-            this._modal_holder.moveChild(modal, this._modal_holder.numChildren - 1);
+            this._modal_holder.moveChild(modal, this._modal_holder.num_children - 1);
         },
 
         'open' : function(url/*, target, params*/){

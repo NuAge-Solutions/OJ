@@ -1,13 +1,9 @@
 .OjValue {
 
 }
-    .OjValue > .wrapper {
-        display: table-row;
+    .OjValue > .lbl {
+
     }
-        .OjValue > .wrapper > .label {
-            display: table-cell;
-        }
-        .OjValue > .wrapper > .value {
-            display: table-cell;
-            padding-left: 10px;
-        }
+    .OjValue > .val {
+        padding-left: 10px;
+    }

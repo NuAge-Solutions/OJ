@@ -1,6 +1,6 @@
 String.string = function(val){
     if(isSet(val)){
-        return isObject(val) ? val.toString() : String(val);
+        return isObject(val) && val.toString ? val.toString() : String(val);
     }
 
     return '';

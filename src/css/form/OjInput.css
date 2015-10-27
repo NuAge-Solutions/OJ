@@ -9,9 +9,6 @@
 
 	border: 1px solid #BBBBBB;
 
-    font-size: 0px;
-    line-height: 0px;
-
 	clear: both;
 
     overflow: hidden;
@@ -48,7 +45,6 @@
 		color: #000000;
 		font-size: 16px;
 		font-weight: bold;
-		line-height: normal;
 
 		vertical-align: top;
 

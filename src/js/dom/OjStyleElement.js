@@ -3,6 +3,7 @@ OJ.importJs('oj.dom.OjCssTranslate');
 OJ.importJs('oj.events.OjDragEvent');
 OJ.importJs('oj.events.OjEvent');
 OJ.importJs('oj.events.OjFocusEvent');
+OJ.importJs('oj.events.OjGestureRecognizer');
 OJ.importJs('oj.events.OjKeyboardEvent');
 OJ.importJs('oj.events.OjUiEvent');
 OJ.importJs('oj.events.OjScrollEvent');
@@ -52,7 +53,7 @@ OJ.extendClass(
         '_get_props_' : {
             'dom' : null,
             'isVisible' : null,
-            'numChildren' : null
+            'num_children' : null
         },
 
         '_alpha' : 1,
@@ -130,6 +131,8 @@ OJ.extendClass(
 
 
         '_constructor' : function(source, context){
+            var self = this;
+
             // set the source
             // if dom element then we are done
             if(source && !source.nodeType){
@@ -175,31 +178,35 @@ OJ.extendClass(
                 }
             }
 
-            this._super(OjElement, '_constructor', [source, context]);
+            self._super(OjElement, '_constructor', [source, context]);
 
-            this.hAlign = this._hAlign;
-            this.vAlign = this._vAlign;
+            self.hAlign = this._hAlign;
+            self.vAlign = this._vAlign;
         },
 
         '_destructor' : function(/*depth = 0*/){
-            // remove the timers
-            this._unset('_move_timer', '_scroll_timer');
-
             // remove the children
-            var args = arguments,
+            var self = this,
+                args = arguments,
                 depth = args.length ? args[0] : 0,
-                ln = this.numChildren;
+                ln = self.num_children;
 
             // remove the children
             for(; ln--;){
-                OJ.destroy(this.getChildAt(ln), depth);
+                OJ.destroy(self.getChildAt(ln), depth);
             }
 
             // release the vars
-            this._owner = null;
+            self._owner = null;
+
+            // cleanup hammer & gesture recognizers
+            self._cleanupHammer();
+
+            // remove the timers
+            self._unset('_move_timer', '_scroll_timer');
 
             // continue on with the destruction
-            return this._super(OjElement, '_destructor', arguments);
+            return self._super(OjElement, '_destructor', args);
         },
 
 
@@ -474,7 +481,7 @@ OJ.extendClass(
 
             self._super(OjElement, '_setIsDisplayed', arguments);
 
-            for(ln = self.numChildren; ln--;){
+            for(ln = self.num_children; ln--;){
                 if(child = self.getChildAt(ln)){
                     child._setIsDisplayed(displayed);
                 }
@@ -706,10 +713,22 @@ OJ.extendClass(
         // event listener overrides
         // customize this functionality for dom events so that they work
         '_cleanupHammer' : function(){
-            if(this._hammer){
-                //this._hammer.destroy();
-                //this._hammer = null;
+            var self = this,
+                hammer = self._hammer;
+
+            if(hammer){
+                hammer.destroy();
+
+                self._hammer = null;
             }
+        },
+
+        '_newHammer' : function(settings){
+            settings = settings || {};
+
+            settings.preset = [];
+
+            return propagating(new Hammer(this._getEventProxy(), settings));
         },
 
         '_setupHammer' : function(){
@@ -720,16 +739,14 @@ OJ.extendClass(
                     'press' : ui.LONG_PRESS,
                     'tap' : ui.PRESS
                 },
-                settings = {
-                    preset: []
-                };
+                settings = {};
 
             if(!self._hammer){
                 if(['input', 'textarea'].indexOf(self.dom.tagName.toLowerCase()) > -1){
                     settings['cssProps'] = {};
                 }
 
-                self._hammer = propagating(new Hammer(self._getEventProxy(), settings));
+                self._hammer = self._newHammer(settings);
 
                 self._hammer.on(
                     'tap doubletap press',
@@ -868,6 +885,7 @@ OJ.extendClass(
             // focus events
             else if(type == OjFocusEvent.IN){
                 proxy.onfocus = self._onDomOjFocusEvent;
+                //proxy.onfocusin = self._onDomOjFocusEvent;
             }
             else if(type == OjFocusEvent.OUT){
                 proxy.onblur = self._onDomOjFocusEvent;
@@ -893,6 +911,10 @@ OJ.extendClass(
             else if(type == OjDomEvent.CHANGE){
                 proxy.onchange = self._onOjDomEvent;
             }
+        },
+
+        'addGestureRecognizer' : function(recognizer){
+            recognizer._add(this._setupHammer());
         },
 
         'removeEventListener' : function(type, context, callback){
@@ -1030,10 +1052,14 @@ OJ.extendClass(
             }
         },
 
+        'removeGestureRecognizer' : function(recognizer){
+            recognizer._remove(this._setupHammer())
+        },
+
 
         // Child Management Functions
         'appendChild' : function(child){
-            return this.insertChildAt(child, this.numChildren);
+            return this.insertChildAt(child, this.num_children);
         },
 
         'insertChildAt' : function(child, index){
@@ -1043,7 +1069,7 @@ OJ.extendClass(
                 return child;
             }
 
-            if(index >= this.numChildren){
+            if(index >= this.num_children){
                 dom.appendChild(child.dom);
             }
             else{
@@ -1058,7 +1084,7 @@ OJ.extendClass(
 
         'forChild' : function(callback, complete, context){
             var self = this,
-                ln = self.numChildren,
+                ln = self.num_children,
                 i = 0;
 
             context = context || self;
@@ -1076,7 +1102,7 @@ OJ.extendClass(
 
         'forChildReverse' : function(callback, complete, context){
             var self = this,
-                ln = self.numChildren;
+                ln = self.num_children;
 
             context = context || self;
 
@@ -1118,7 +1144,7 @@ OJ.extendClass(
         },
 
         'removeAllChildren' : function(){
-            var ln = this.numChildren,
+            var ln = this.num_children,
                 ary = [];
 
             for(; ln--;){
@@ -1147,7 +1173,7 @@ OJ.extendClass(
         },
 
         'removeChildAt' : function(index){
-            if(index < 0 || index >= this.numChildren){
+            if(index < 0 || index >= this.num_children){
                 return null;
             }
 
@@ -1169,7 +1195,7 @@ OJ.extendClass(
         'replaceChildAt' : function(child, index){
             var rtrn;
 
-            if(index >= this.numChildren){
+            if(index >= this.num_children){
                 this.appendChild(child);
             }
             else{
@@ -1184,7 +1210,7 @@ OJ.extendClass(
 
         '.children' : function(){
             var ary = [],
-                ln = this.numChildren;
+                ln = this.num_children;
 
             for(; ln--;){
                 ary.unshift(this.getChildAt(ln));
@@ -1203,7 +1229,7 @@ OJ.extendClass(
             }
         },
 
-        '.numChildren' : function(){
+        '.num_children' : function(){
             return this.dom.childNodes.length;
         },
 

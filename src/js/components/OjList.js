@@ -29,7 +29,7 @@ OJ.extendComponent(
         },
 
         '_updateListCss' : function(){
-            if(this.container.numChildren){
+            if(this.container.num_children){
                 this.removeCss('is-empty');
             }
             else{
@@ -84,7 +84,6 @@ OJ.extendComponent(
         },
 
         '_onItemReplace' : function(evt){
-            print('on item remove', evt);
             var self = this,
                 container = self.container;
 

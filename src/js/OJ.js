@@ -794,6 +794,10 @@ window.OJ = function Oj(){
                 return this.loadJs(this._getJsImportPath(path), true, false);
             },
 
+            'include' : function(path){
+                // TODO: actually make the include file function do something... or not
+            },
+
             'merge' : function(obj, obj2/*, ...objs*/){
                 var args = Array.array(arguments);
                 args.unshift({});
@@ -899,12 +903,6 @@ window.OJ = function Oj(){
 
                         break;
                     }
-                }
-            },
-
-            'render' : function(elm){
-                if(this.renderer){
-                    this.renderer.dom.appendChild(elm = isObjective(elm) ? elm.dom : elm);
                 }
             },
 
@@ -1537,9 +1535,6 @@ function onDomReady(){
     var tmp = new OjView();
     tmp.alpha = 0;
 
-    // add the rendering div
-    tmp.appendChild(tmp.renderer = new OjStyleElement('<div class="renderer"></div>'));
-
     // handle events added before we could do anything with them
     var evt,
         i = 0,
@@ -1677,7 +1672,7 @@ function onOjReady(){
     if(!OJ.is_supported){
         var alrt = WindowManager.makeAlert(OJ.support_message, 'Unsupported Browser');
         alrt.hideButtons();
-        alrt.paneWidth = 425;
+        alrt.pane_width = 425;
 
         WindowManager.show(alrt);
 

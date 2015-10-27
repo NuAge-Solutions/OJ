@@ -1,11 +1,11 @@
 /* Standard HTML Element Styles */
-* {
+*, *:before, *:after {
 	position: relative;
 
 	margin: 0px;
 	padding: 0px;
 
-	vertical-align: top;
+    box-sizing: inherit;
 }
 *:focus {
 	outline: none;
@@ -21,11 +21,12 @@ html, body {
 	margin: 0px;
 	padding: 0px;
 
+    box-sizing: border-box;
+
 	background: transparent;
 
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 14px;
-	line-height: 0px;
 	text-align: left;
 	vertical-align: top;
 
@@ -51,6 +52,8 @@ body.is-mobile, body.is-tablet {
     -webkit-user-select: none !important;
     -ms-user-select: none !important;
     user-select: none !important;
+
+    cursor: default;
 }
 
 
@@ -138,19 +141,15 @@ body.is-mobile, body.is-tablet {
 	zoom: 1;
 }
 
-p, span {
-    line-height: normal;
-
+a, blockquote, label, p, pre {
     -webkit-touch-callout: text;
     -webkit-user-select: text;
     -khtml-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
-}
 
-h1, h2, h3, h4, h5, h6 {
-    line-height: normal;
+    cursor: text;
 }
 
 

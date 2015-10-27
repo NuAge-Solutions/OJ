@@ -10,7 +10,7 @@ OJ.extendComponent(
 	{
         '_props_' : {
             'allowNone' : true,
-            'allowDuplicate' : false,
+            'allow_duplicates' : false,
             'options' : null,
             'selected' : null
         },

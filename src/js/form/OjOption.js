@@ -1,4 +1,4 @@
-OJ.importJs('oj.renderers.OjLabelItemRenderer');
+OJ.importJs('oj.renderers.OjTextRenderer');
 OJ.importJs('oj.events.OjUiEvent');
 
 OJ.importCss('oj.form.OjOption');
@@ -23,7 +23,7 @@ OJ.extendClass(
 			// process the arguments
 			var args = arguments,
 				ln = args.length,
-				renderer = OjLabelItemRenderer;
+				renderer = OjTextRenderer;
 
 			if(ln > 1){
 				var tmp = args[1];
@@ -115,7 +115,7 @@ OJ.extendClass(
 			else{
 				this._selector = null;
 
-				this.dataRenderer = OjLabelItemRenderer;
+				this.dataRenderer = OjTextRenderer;
 
 				this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
 			}

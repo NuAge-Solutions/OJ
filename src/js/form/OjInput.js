@@ -27,46 +27,48 @@ OJ.extendClass(
 
 
         '_constructor' : function(/*name, label, value, validators*/){
-            this._super(OjComponent, '_constructor', []);
+            var self = this;
 
-            this._errors = [];
-            this._validators = [];
+            self._super(OjComponent, '_constructor', []);
+
+            self._errors = [];
+            self._validators = [];
 
             // detect default mode
-            var has_input = 'input' in this;
+            var has_input = 'input' in self;
 
             if(has_input && !isUndefined(this.input.dom.placeholder)){
-                this._unset('dflt');
+                self._unset('dflt');
             }
 
-            this._processArguments(arguments, {
-                'name' : null,
+            self._processArguments(arguments, {
+                'name' : self.oj_id,
                 'label' : null,
                 'value' : null,
                 'validators' : []
             });
 
             if(has_input){
-                if(!this._value){
-                    this.value = this.input.dom.value;
+                if(!self._value){
+                    self.value = self.input.dom.value;
                 }
 
-                this.input.addEventListener(OjFocusEvent.IN, this, '_onInputFocusIn');
-                this.input.addEventListener(OjFocusEvent.OUT, this, '_onInputFocusOut');
-                this.input.addEventListener(OjDomEvent.CHANGE, this, '_onInputChange');
+                self.input.addEventListener(OjFocusEvent.IN, self, '_onInputFocusIn');
+                self.input.addEventListener(OjFocusEvent.OUT, self, '_onInputFocusOut');
+                self.input.addEventListener(OjDomEvent.CHANGE, self, '_onInputChange');
             }
 
-            if(this.oj_class_name == 'OjInput'){
-                this.hide();
+            if(self.oj_class_name == 'OjInput'){
+                self.hide();
             }
             else{
-                var ln = this._supers.length,
+                var ln = self._supers.length,
                     cls;
 
                 for(; ln--;){
-                    cls = this._supers[ln];
+                    cls = self._supers[ln];
 
-                    this.addCss(OJ.classToString(cls));
+                    self.addCss(OJ.classToString(cls));
 
                     if(cls == OjInput){
                         break;
@@ -74,9 +76,9 @@ OJ.extendClass(
                 }
             }
 
-            this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+            self.addEventListener(OjUiEvent.PRESS, self, '_onClick');
 
-            this._ready = true;
+            self._ready = true;
         },
 
 
@@ -324,25 +326,22 @@ OJ.extendClass(
             this._validators = Array.array(validators);
         },
 
-        '.value' : function(){
-            return this._value;
-        },
         '=value' : function(value){
-            if(value == this._value){
+            var self = this;
+
+            if(value == self._value){
                 return;
             }
 
-            this._value = value;
+            self._value = value;
 
-            this._redrawValue();
+            self._redrawValue();
 
-            this._redrawDefault();
+            self._redrawDefault();
 
-            if(this._ready){
-                this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+            if(self._ready){
+                self.dispatchEvent(new OjEvent(OjEvent.CHANGE));
             }
-
-            return true;
         }
     },
     {

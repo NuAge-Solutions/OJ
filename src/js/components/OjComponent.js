@@ -459,7 +459,7 @@ OJ.extendClass(
             'indexOfElm' : 'indexOfChild',
             'insertElmAt' : 'insertChildAt',
             'moveElm' : 'moveChild',
-            'numElms' : 'numChildren',
+            'numElms' : 'num_children',
             'prependElm' : 'prependChild',
             'removeAllElms' : 'removeAllChildren',
             'removeElm' : 'removeChild',

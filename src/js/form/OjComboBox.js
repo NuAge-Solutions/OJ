@@ -10,11 +10,15 @@ OJ.importCss('oj.form.OjComboBox');
 OJ.extendClass(
     'OjComboBox', [OjInput],
     {
-//		'_options' : null,  '_options_dp' : null,  '_options_index' : null,  '_selected' : null,
-//
-//    '_selected_index' : null,  '_trigger_evt' : null,  '_tween' : null,  '_list' : null,
+        '_props_' : {
+            'allow_none' : null,
+            'item_renderer' : null,
+            'options' : null,
+            'selected' : null,
+            'selected_index' : null
+        },
 
-        '_list_visible' : false, '_ignore_click' : false, '_allow_none' : false, '_none_lbl' : '-- Select -- ',
+        '_list_visible' : false, '_ignore_click' : false, '_none_lbl' : '-- Select -- ',
 
 
         '_constructor' : function(/*name, label, value, options*/){
@@ -142,60 +146,10 @@ OJ.extendClass(
             }
 
             return;
-
-//			var old_ln  = this._options_dp.numItems(),
-//          new_ln = 0, key;
-//
-//			this._options_index = [];
-//
-//			for(key in this._options){
-//				if(old_ln > new_ln){
-//					if(this._options_dp.getItemAt(new_ln) != this._options[key]){
-//						this._options_dp.setItemAt(this._options[key], new_ln);
-//					}
-//				}
-//				else{
-//					this._options_dp.addItem(this._options[key]);
-//				}
-//
-//				this._options_index.push(key);
-//
-//				new_ln++;
-//			}
-//
-//			for(; old_ln-- > new_ln; ){
-//				this._options_dp.removeItemAt(old_ln);
-//			}
-//
-//			if(this._allow_none){
-//				if(this._options_dp.getItemAt(0) != this._none_lbl){
-//					this._options_dp.addItemAt(this._none_lbl, 0);
-//				}
-//			}
-//			else if(this._options_dp.getItemAt(0) == this._none_lbl){
-//				this._options_dp.removeItemAt(0);
-//			}
         },
 
         '_redrawValue' : function(){
-//      this.input.dom.value = this._value;
-
             return;
-
-//			var value,
-//          item_renderer = this.getItemRenderer();
-//
-//			if(
-//				!this.valueHldr.numChildren ||
-//					!(value = this.valueHldr.getChildAt(0)).is(item_renderer)
-//				){
-//				this.valueHldr.removeAllChildren();
-//
-//				this.valueHldr.appendChild(new item_renderer(this._selected));
-//			}
-//			else{
-//				value.setData(this._selected);
-//			}
         },
 
 
@@ -232,13 +186,7 @@ OJ.extendClass(
         },
 
 
-        '.allowNone' : function(){
-            return this._allow_none;
-        },
-        '=allowNone' : function(allow_none){
-            this._allow_none = allow_none;
-        },
-
+        // Public Properties
         '.item_renderer' : function(){
             return this._list.item_renderer;
         },
@@ -248,70 +196,60 @@ OJ.extendClass(
             this._redrawValue();
         },
 
-        '.options' : function(){
-            return this._options;
-        },
         '=options' : function(options){
-            if(options == this._options){
+            var self = this,
+                opts = self._options,
+                key, option;
+
+            if(options == opts){
                 return;
             }
 
-            var i;
+            self._options = opts = [];
 
-            this._options = [];
+            if(isArray(options)){
+                options.forEachReverse(function(option, i){
+                    option = options[i];
 
-            if(isObject(options)){
-                for(i in options){
-                    this._options.append(new OjData(i, options[i]));
+                    opts.prepend(
+                        isObjective(option, OjData) ? option : new OjData(String.string(option), option)
+                    );
+                });
+            }
+            else if(isObject(options)){
+                for(key in options){
+                    option = options[key];
+
+                    opts.append(
+                        isObjective(option, OjData) ? option : new OjData(key, option)
+                    );
                 }
             }
-            else if(isArray(options) && (i = options.length) && !isObject(options[0])){
-                for(; i--;){
-                    this._options.prepend(new OjData(options[i], options[i]));
-                }
-            }
 
-            this._redrawList();
+            self._redrawList();
 
-            this._redrawValue();
+            self._redrawValue();
 
-            this.value = this._value;
-
-            return this._options;
+            self.value = self._value;
         },
 
-        '.selected' : function(){
-            return this._selected;
-        },
         '=selected' : function(selected){
-            if(this._selected != selected){
-                if(this._options){
-                    var key;
+            var self = this;
 
-                    for(key in this._options){
-                        if(this._options[key] == selected){
-                            this.value = key;
+            if(self._selected != selected){
+                self._selected = selected;
 
-                            return;
-                        }
-                    }
+                self.options.forEachReverse(function(option, i){
+                    if(option == selected){
+                        self._selected_index = i;
+                        self._value = option.id;
 
-                    if(this._allow_none){
-                        this.value = null;
+                        return false;
                     }
-                    else{
-                        this.selectedIndex = 0;
-                    }
-                }
-                else{
-                    this._selected = selected;
-                }
+                });
             }
         },
 
-        '.selectedIndex' : function(){
-            return this._selected_index;
-        },
         '=selectedIndex' : function(index){
             if(this._selected_index != index){
                 if(this._options){
@@ -323,95 +261,25 @@ OJ.extendClass(
             }
         },
 
-        '.value' : function(){
-            var ln = this._options.length,
-                id = this.input.dom.value,
-                option, option_id;
-
-            for(; ln--;){
-                option = this._options[ln];
-                option_id = option.id;
-
-                if(option_id == id){
-                    return option.is(OjData) ? option_id : option;
-                }
-            }
-
-            return null;
-        },
         '=value' : function(value){
-            if(isEmpty(value)){
-                value = null;
+            var self = this;
+
+            if(self._value == value){
+                return;
             }
-            else if(!isObject(value)){
-                var ln = this._options.length;
 
-                for(; ln--;){
-                    if(this._options[ln].id == value){
-                        value = this._options[ln];
+            self._super(OjInput, '=value', arguments);
 
-                        break;
-                    }
+            self.options.forEachReverse(function(option, i){
+                if(option.id == value){
+                    self._selected = option;
+                    self._selected_index = i;
+
+                    return false;
                 }
+            });
 
-                if(!isObject(value)){
-                    value = null;
-                }
-            }
-
-//			if(this._value != value || (isNull(this._selected_index) && this._options)){
-//				if(this._options){
-//					var cnt, ln = cnt = this._options_index.length;
-//
-//					for(; ln--;){
-//						if(this._options_index[ln] == value){
-//							break;
-//						}
-//					}
-//
-//					if(cnt){
-//						if(ln == -1){
-//							if(this._allow_none){
-//								this._selected_index = null;
-//								this._selected = this._none_lbl;
-//
-//								value = null
-//							}
-//							else{
-//								this._selected_index = 0;
-//
-//								value = this._options_index[0];
-//
-//								this._selected = this._options[value];
-//							}
-//						}
-//						else{
-//							this._selected_index = ln;
-//
-//							this._selected = this._options[value];
-//						}
-//					}
-//					else{
-//						this._selected_index = null;
-//						this._selected = this._allow_none ? this._none_lbl : null;
-//
-//						value = null;
-//					}
-//
-//					ln = cnt = null;
-//				}
-//				else{
-//					this._selected_index = null;
-//					this._selected = this._none_lbl;
-//					this._value = null;
-//				}
-//
-//				this._redrawValue();
-
-            if(this._super(OjInput, '=value', [value])){
-                this.input.dom.value = value ? value.id : null;
-            }
-//			}
+            self.input.selectedIndex = self._selected_index;
         }
     }
 );

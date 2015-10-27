@@ -37,18 +37,18 @@ OJ.extendComponent(
 
 
 		'isValid' : function(){
-			var valid = this._super(OjInput, 'isValid', arguments);
+            var self = this,
+                valid = self._super(OjInput, 'isValid', arguments),
+                ln = self._value ? self._value.length : 0;
 
-			var ln = this._value ? this._value.length : 0;
-
-			if(this.min_length && ln < this.min_length){
-                this._errors.append(this._formatError(OjTextInput.MIN_LENGTH_ERROR));
+			if(self.min_length && ln < self.min_length){
+                self._errors.append(self._formatError(OjTextInput.MIN_LENGTH_ERROR));
 
 				valid = false;
 			}
 
-			if(this.max_length && ln > this.max_length){
-				this._errors.append(this._formatError(OjTextInput.MAX_LENGTH_ERROR));
+			if(self.max_length && ln > self.max_length){
+				self._errors.append(self._formatError(OjTextInput.MAX_LENGTH_ERROR));
 
 				valid = false;
 			}
@@ -67,18 +67,17 @@ OJ.extendComponent(
         },
 
 		'=value' : function(value){
+            var self = this;
+
             if(isSet(value)){
                 value = String.string(value);
 
-                if(value.length > this.max_length){
-    //				this.input._dom.value = value.slice(0, this.max_length);
-    //
-    //				return;
-                    value = value.slice(0, this.max_length);
+                if(value.length > self.max_length){
+                    value = value.slice(0, self.max_length);
                 }
             }
 
-			return this._super(OjInput, '=value', [value]);
+			return self._super(OjInput, '=value', [value]);
 		}
 	},
 	{
@@ -87,8 +86,8 @@ OJ.extendComponent(
         'NUMBER' : 'number',
         'SECURE' : 'password',
 
-		'MIN_LENGTH_ERROR' : '[%INPUT] must be at least [%MIN] characters long.',
-		'MAX_LENGTH_ERROR' : '[%INPUT] must be no more than [%MAX] characters long.',
+		'MIN_LENGTH_ERROR' : '[%INPUT] must be at least [%MIN] characters.',
+		'MAX_LENGTH_ERROR' : '[%INPUT] must be no more than [%MAX] characters.',
 
 		'_TAGS' : ['text-input']
 	}
@@ -99,8 +98,8 @@ OJ.extendComponent(
     'OjEmailInput', [OjTextInput],
     {
         '_props_' : {
-            'maxLength' : 254,
-            'minLength' : 3
+            'max_length' : 254,
+            'min_length' : 3
         },
 
         '_type' : OjTextInput.EMAIL,
@@ -119,11 +118,11 @@ OJ.extendComponent(
         },
 
 
-        '=maxLength' : function(val){
+        '=max_length' : function(val){
             throw new Error('Cannot set the max length of an email. This is a fixed value.');
         },
 
-        '=minLength' : function(val){
+        '=min_length' : function(val){
             throw new Error('Cannot set the min length of an email. This is a fixed value.');
         }
     },
@@ -147,7 +146,7 @@ OJ.extendComponent(
         '_type' : OjTextInput.NUMBER,
 
         '.value' : function(){
-            var val = this._super(OjTextInput, '.value', []);
+            var val = this._value;
 
             if(isEmpty(val)){
                 return 0;
@@ -165,7 +164,7 @@ OJ.extendComponent(
 OJ.extendComponent(
     'OjSecureInput', [OjTextInput],
     {
-        '_minLength' : 6,  '_maxLength' : 30,
+        '_min_length' : 6,  '_max_length' : 30,
 
         '_type' : OjTextInput.SECURE
     },

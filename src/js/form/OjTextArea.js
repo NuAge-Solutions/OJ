@@ -9,8 +9,8 @@ OJ.extendComponent(
 	'OjTextArea', [OjInput],
 	{
         '_props_' : {
-			'minLength' : 0,
-			'maxLength' : 0
+			'min_length' : 0,
+			'max_length' : 0
 		},
 
 		'_setDom' : function(dom_elm){

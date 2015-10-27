@@ -12,15 +12,15 @@ OJ.extendComponent(
             'footer' : null,
             'header' : null,
             'icon' : null,
-            'shortTitle' : null,
+            'short_title' : null,
             'stack' : null,
             'title' : null
         },
 
         '_get_props_' : {
-            'actionView' : null,
-            'cancelView' : null,
-            'titleView' : null
+            'action_view' : null,
+            'cancel_view' : null,
+            'title_view' : null
         },
 
 //		'_elm_funcs' : null,  '_load_checkpoints' : null,  '_loading_icon' : null,
@@ -60,7 +60,7 @@ OJ.extendComponent(
             this.title = title;
 
             if(short_title){
-                this.shortTitle = short_title;
+                this.short_title = short_title;
             }
 
             if(this._static.ICON){
@@ -71,7 +71,7 @@ OJ.extendComponent(
         '_destructor' : function(){
             this.unload();
 
-            this._unset(['_actionView', '_cancelView', '_titleView', '_overlay']);
+            this._unset(['_action_view', '_cancel_view', '_title_view', '_overlay']);
 
             return this._super(OjComponent, '_destructor', arguments);
         },
@@ -106,18 +106,19 @@ OJ.extendComponent(
             this.dispatchEvent(new OjEvent(OjView.LOAD));
         },
 
-        '_loadCheckpoint' : function(/*checkpoint*/){
-            var args = arguments;
+        '_loadCheckpoint' : function(checkpoint){
+            var self = this,
+                checkpoints = self._load_checkpoints;
 
-            if(args.length){
-                this._load_checkpoints[args[0]] = true;
+            if(checkpoint){
+                checkpoints[checkpoint] = true;
             }
 
-            if(this._checkpointsCompleted(this._load_checkpoints)){
-                this._load();
+            if(self._checkpointsCompleted(checkpoints)){
+                self._load();
             }
             else{
-                this._showOverlay(this._loading_msg, this._loading_icon);
+                self._showOverlay(self._loading_msg, self._loading_icon);
             }
         },
 
@@ -292,8 +293,8 @@ OJ.extendComponent(
 
             this._title = title;
 
-            if(!this._shortTitle){
-                this._shortTitle = title;
+            if(!this._short_title){
+                this._short_title = title;
             }
 
             this.dispatchEvent(new OjEvent(OjView.TITLE_CHANGE, false));

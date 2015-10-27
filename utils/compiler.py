@@ -114,12 +114,6 @@ class Compiler (object):
         if path in self.build[self._namespace][JS]:
             return ''
 
-        needle = 'OJ.importJs('
-        ln = len(needle) + 1
-        index = 0
-        prefix = ''
-        suffix = ''
-
         # check to see if we are allowed to include
         pkg_path = path.replace(self._js_src + os.path.sep, '')
 
@@ -140,7 +134,33 @@ class Compiler (object):
         # get the file contents
         contents = file_get_contents(path)
 
+        # search for include statements
+        needle = 'OJ.include('
+        ln = len(needle) + 1
+        index = 0
+
+        while index > -1:
+            index = contents.find(needle, index)
+
+            if index > -1:
+                end = contents.find(')', index)
+
+                try:
+                    include = os.path.join(self._source, contents[index + ln:end - 1])
+
+                    contents = contents[:index] + file_get_contents(include) + contents[end + 1:]
+
+                except Exception as e:
+                    print(e)
+                    index = end
+
         # search for js import statements
+        needle = 'OJ.importJs('
+        ln = len(needle) + 1
+        index = 0
+        prefix = ''
+        suffix = ''
+
         while index > -1:
             index = contents.find(needle, index)
 
@@ -180,8 +200,6 @@ class Compiler (object):
         return '\n'.join([prefix, contents, suffix])
 
     def _process_package(self, name, source, package):
-        # os.chdir(source)
-
         trace('Compiling Package "' + name + '"', newline=True)
 
         # parse name
@@ -200,6 +218,7 @@ class Compiler (object):
         self._namespace = parts[0]
         self._package = package
         self._pre_compiled = package.get('pre_compiled', [])
+        self._source = source
         self._templates_src = os.path.join(source, 'templates')
         self._themes_exc = package.get('themes_exclude', [])
         self._themes_inc = package.get('themes', ['*'])

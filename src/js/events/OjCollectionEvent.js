@@ -7,7 +7,7 @@ OJ.extendClass(
 		'_get_props_' : {
             'items'    : null,
 			'index'  : null,
-			'oldItems' : null
+			'old_items' : null
 		},
 
 
@@ -17,7 +17,7 @@ OJ.extendClass(
 
 			self._items = items;
 			self._index = index;
-            self._oldItems = old_items;
+            self._old_items = old_items;
 
             if(isSet(bubbles)){
                 params.append(bubbles);
@@ -36,7 +36,7 @@ OJ.extendClass(
 
             evt._items = self._items;
             evt._index = self._index;
-            evt._oldItems = self._oldItems;
+            evt._old_items = self._old_items;
 
             return evt;
         }

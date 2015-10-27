@@ -1,16 +1,8 @@
 .OjLink {
 	cursor: pointer;
-	line-height: normal;
 
 	overflow: hidden;
 	text-overflow: ellipsis;
-
-    -webkit-touch-callout: text;
-    -webkit-user-select: text;
-    -khtml-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
 
     -webkit-justify-content: center;
     justify-content: center;

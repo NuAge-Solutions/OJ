@@ -11,31 +11,34 @@ OJ.extendClass(
     {
         '_props_' : {
             'buttons' : null,
+            'callback' : null,
+            'cancel_label' : null,
             'content' : null,
-            'paneHeight' : null,
-            'paneWidth' : null,
-            'selfDestruct' : 0, // OjAlert.NONE
+            'pane_height' : null,
+            'pane_width' : null,
+            'self_destruct' : 0, // OjAlert.NONE
             'title' : null
         },
 
         '_template' : 'oj.window.OjAlert',
 
 
-        '_constructor' : function(/*content, title, buttons, cancel_label*/){
+        '_constructor' : function(/*content, title, buttons, cancel_label, callback*/){
             this._super(OjComponent, '_constructor', []);
 
             // setup the display
             if(this.oj_class_name.indexOf('Alert') > -1){
-                this.btns.appendChild(this.cancelBtn = new OjButton(OjAlert.OK));
+                this.btns.appendChild(this.cancel_btn = new OjButton(OjAlert.OK));
 
-                this.cancelBtn.addEventListener(OjUiEvent.PRESS, this, '_onCancelPress');
+                this.cancel_btn.addEventListener(OjUiEvent.PRESS, this, '_onCancelPress');
             }
 
             this._processArguments(arguments, {
                 'content' : undefined,
                 'title' : undefined,
                 'buttons' : undefined,
-                'cancelBtn.label' : OjAlert.CANCEL
+                'cancel_label' : OjAlert.CANCEL,
+                'callback' : undefined
             });
         },
 
@@ -53,14 +56,17 @@ OJ.extendClass(
 
 
         '_onButtonClick' : function(evt){
-            this.dispatchEvent(
-                new OjAlertEvent(
-                    OjAlertEvent.BUTTON_PRESS,
-                    this.btns.indexOfChild(evt.currentTarget)
-                )
-            );
+            var self = this,
+                callback = self.callback,
+                index = self.btns.indexOfChild(evt.currentTarget);
 
-            WindowManager.hide(this);
+            self.dispatchEvent( new OjAlertEvent(OjAlertEvent.BUTTON_PRESS, index) );
+
+            WindowManager.hide(self);
+
+            if(callback){
+                callback(index);
+            }
         },
 
         '_onCancelPress' : function(evt){
@@ -68,9 +74,16 @@ OJ.extendClass(
         },
 
         'cancel' : function(){
-            this.dispatchEvent(new OjEvent(OjEvent.CANCEL));
+            var self = this,
+                callback = self.callback;
 
-            WindowManager.hide(this);
+            self.dispatchEvent( new OjEvent(OjEvent.CANCEL) );
+
+            WindowManager.hide(self);
+
+            if(callback){
+                callback(-1);
+            }
         },
 
         'hideButtons' : function(){
@@ -97,7 +110,7 @@ OJ.extendClass(
             this._buttons = buttons = buttons ? buttons.clone() : [];
 
             var num_btns = buttons.length,
-                ln = this.btns.numChildren - 1,
+                ln = this.btns.num_children - 1,
                 diff = num_btns - ln, btn;
 
             if(diff > 0){
@@ -120,28 +133,30 @@ OJ.extendClass(
             }
         },
 
-        '.cancelLabel' : function(){
-            return this.cancelBtn.label;
+        '.cancel_label' : function(){
+            return this.cancel_btn.label;
         },
-        '=cancelLabel' : function(label){
-            return this.cancelBtn.label = label;
+        '=cancel_label' : function(label){
+            return this.cancel_btn.label = label;
         },
 
         '=content' : function(content){
-            if(this._content == content){
+            var self = this,
+                container = self.container;
+
+            if(self._content == content){
                 return;
             }
 
-            this.container.removeAllChildren();
+            container.removeAllChildren();
 
-            this._content = content;
+            self._content = content;
 
             if(isString(content)){
-                this.container.text = content.replaceAll('\n', '<br />');
+                content = new OjStyleElement('<p>' + content.replaceAll('\n', '<br />') + '</p>');
             }
-            else{
-                this.container.appendChild(content);
-            }
+
+            container.appendChild(content);
         },
 
         '=title' : function(title){
@@ -152,17 +167,17 @@ OJ.extendClass(
             this.bar.text = this._title = title;
         },
 
-        '.paneHeight' : function(){
+        '.pane_height' : function(){
             return this.pane.height;
         },
-        '=paneHeight' : function(val/*, unit*/){
+        '=pane_height' : function(val/*, unit*/){
             this.pane.height = Array.array(arguments);
         },
 
-        '.paneWidth' : function(){
+        '.pane_width' : function(){
             return this.pane.width;
         },
-        '=paneWidth' : function(val/*, unit*/){
+        '=pane_width' : function(val/*, unit*/){
             this.pane.width = Array.array(arguments);
         }
     },

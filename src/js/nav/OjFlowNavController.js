@@ -17,6 +17,7 @@ OJ.extendComponent(
             'cancel_icon' : null,
             'cancel_label' : 'Cancel',
             'cancel_visible' : false,
+            'default_title' : null,
             'title' : null
         },
 
@@ -42,7 +43,7 @@ OJ.extendComponent(
 
         // helper functions
         '_makeBackButton' : function(view){
-            var btn = new OjButton(view.shortTitle);
+            var btn = new OjButton(view.short_title);
             btn.addCss('back-button');
 
             return btn;
@@ -56,10 +57,11 @@ OJ.extendComponent(
         },
 
         '_makeTitle' : function(title){
-            var elm = new OjLabel(title);
-            elm.vAlign = OjStyleElement.MIDDLE;
+            if(isObjective(title)){
+                return title;
+            }
 
-            return elm;
+            return new OjStyleElement('<div>' + title + '</div>');
         },
 
         '_update' : function(view, transition, index, old_index){
@@ -74,20 +76,20 @@ OJ.extendComponent(
 
             // process the left, title & right components
             // setup the vars
-            var t = self.top, tl = self.topLeft, tt = self.topTitle, tr = self.topRight,
-                b = self.bottom, bl = self.btmLeft, bt = self.btmTitle, br = self.btmRight,
-                left = tl.numChildren ? tl.getChildAt(0) : null,
-                center = tt.numChildren ? tt.getChildAt(0) : null,
-                right = tr.numChildren ? tr.getChildAt(0) : null,
-                action_view = view.actionView,
-                cancel_view = view.cancelView,
-                title_view = view.titleView,
+            var t = self.top, tl = self.top_left, tt = self.top_title, tr = self.top_right,
+                b = self.bottom, bl = self.btm_left, bt = self.btm_title, br = self.btm_right,
+                left = tl.num_children ? tl.getChildAt(0) : null,
+                center = tt.num_children ? tt.getChildAt(0) : null,
+                right = tr.num_children ? tr.getChildAt(0) : null,
+                action_view = view.action_view,
+                cancel_view = view.cancel_view,
+                title_view = view.title_view,
                 evt = OjUiEvent,
                 stack = self.stack,
                 title;
 
             // if there is no title view than try to make one from the title
-            if(!title_view && (title = view.title)){
+            if( !title_view && ((title = view.title) || (title = self.default_title)) ){
                 title_view = self._makeTitle(title);
             }
 
@@ -245,9 +247,9 @@ OJ.extendComponent(
         '_onTweenComplete' : function(evt){
             this._unset('_tween');
 
-            this.btmLeft.removeAllChildren();
-            this.btmTitle.removeAllChildren();
-            this.btmRight.removeAllChildren();
+            this.btm_left.removeAllChildren();
+            this.btm_title.removeAllChildren();
+            this.btm_right.removeAllChildren();
 
             this.removeCss('animating');
         },
@@ -296,19 +298,20 @@ OJ.extendComponent(
 
         // public properties
         '=title' : function(title){
-            var self = this;
+            var self = this,
+                hldr = self.top_title;
 
             if(self._title == title){
                 return;
             }
+            
+            self._title = title;
 
-            if(!self.titleLbl){
-                self.titleLbl = self._makeTitle();
-
-                self.topTitle.appendChild(self.titleLbl);
-            }
-
-            self.titleLbl.text = self._title = title;
+            hldr.removeAllChildren();
+            
+            hldr.appendChild(
+                self._makeTitle(title)
+            );
         },
 
         '=cancel_label' : function(val){

@@ -37,13 +37,15 @@ OJ.extendComponent(
 
 
         '=data' : function(data){
-            if(this._data == data){
+            var self = this;
+
+            if(self._data == data){
                 return;
             }
 
-            this._data = data;
+            self._data = data;
 
-            this._redrawData();
+            self._redrawData();
         }
     },
     {

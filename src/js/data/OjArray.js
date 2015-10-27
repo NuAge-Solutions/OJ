@@ -5,7 +5,7 @@ OJ.extendClass(
     'OjArray', [OjActionable],
     {
         '_props_' : {
-            'allowDuplicate' : true,
+            'allow_duplicates' : true,
             'first' : null,
             'last' : null,
             'length' : null
@@ -54,7 +54,7 @@ OJ.extendClass(
         },
 
         '_checkDuplicate' : function(item){
-            if(!this.allowDuplicates && this.contains(item)){
+            if(!this.allow_duplicates && this.contains(item)){
                 throw 'Duplicate value not allowed.';
             }
         },
@@ -90,18 +90,19 @@ OJ.extendClass(
         '_setIndex' : function(index, item){
             var self = this,
                 col_evt = OjCollectionEvent,
-                items = self._items;
+                items = self._items,
+                old_item = items[index];
 
             // check for change
-            if(items[index] == item){
+            if(old_item == item){
                 return
             }
 
-            this._checkDuplicate(item)
+            self._checkDuplicate(item)
 
 			items[index] = item;
 
-			self.dispatchEvent(new col_evt(col_evt.ITEM_REPLACE, [item], index));
+			self.dispatchEvent(new col_evt(col_evt.ITEM_REPLACE, [item], index, [old_item]));
 
             return item;
         },
@@ -141,7 +142,7 @@ OJ.extendClass(
             var self = this,
                 obj = new self._static(self._items.clone());
 
-            obj.allowDuplicates = self.allowDuplicates;
+            obj.allow_duplicates = self.allow_duplicates;
 
             return obj;
         },
@@ -157,7 +158,7 @@ OJ.extendClass(
             self._super(OjActionable, 'dispatchEvent', arguments);
 
             if(col_evt.isChangeEvent(evt)){
-                self.dispatchEvent(new col_evt(col_evt.ITEM_CHANGE, evt.items, evt.index, evt.oldItems));
+                self.dispatchEvent(new col_evt(col_evt.ITEM_CHANGE, evt.items, evt.index, evt.old_items));
             }
         },
 

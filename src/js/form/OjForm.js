@@ -8,7 +8,7 @@ OJ.extendComponent(
             'cancelLabel' : 'Cancel',
             'data' : null,
             'resetLabel' : 'Reset',
-            'submitLabel' : 'Submit'
+            'submit_label' : 'Submit'
         },
 
         '_get_props_' : {
@@ -17,6 +17,20 @@ OJ.extendComponent(
             'is_valid' : null
         },
 
+
+        '_showFormError' : function(){
+            var self = this,
+                msg = '';
+
+            self._errors.forEachReverse(function(item){
+                msg = '\n' + item.error + msg;
+            });
+
+            WindowManager.alert(
+				'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
+				'Form Error'
+			);
+        },
 
 		'_onSubmitClick' : function(evt){
             var self = this,
@@ -27,6 +41,18 @@ OJ.extendComponent(
             }
         },
 
+        'blur' : function(){
+            var self = this,
+                rtrn = self._super(OjView, 'blur', arguments),
+                inputs = self.inputs,
+                key;
+
+			for(key in inputs){
+                inputs[key].blur();
+            }
+
+            return rtrn;
+        },
 
 		'focus' : function(){
 			var self = this,
@@ -73,29 +99,22 @@ OJ.extendComponent(
                return true;
             }
 
-            self._errors.forEachReverse(function(item){
-                msg = '\n' + item.error + msg;
-            });
-
-			WindowManager.alert(
-				'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
-				'Form Error'
-			);
+            this._showFormError();
 
 			return false;
 		},
 
 
-        '.actionView' : function(){
+        '.action_view' : function(){
             var self = this;
 
-            if(!self._actionView){
-                (self._actionView = new OjButton(self._submitLabel)).addEventListener(
+            if(!self._action_view){
+                (self._action_view = new OjButton(self._submit_label)).addEventListener(
                     OjUiEvent.PRESS, self, '_onSubmitClick'
                 );
             }
 
-            return self._actionView;
+            return self._action_view;
         },
 
         '.data' : function(){
@@ -162,15 +181,15 @@ OJ.extendComponent(
 			return !errors.length;
         },
 
-        '=submitLabel' : function(val){
-            if(this._submitLabel == val){
+        '=submit_label' : function(val){
+            if(this._submit_label == val){
                 return;
             }
 
-            this._submitLabel = val;
+            this._submit_label = val;
 
-            if(this._actionView){
-                this._actionView.label = val;
+            if(this._action_view){
+                this._action_view.label = val;
             }
         }
 	},

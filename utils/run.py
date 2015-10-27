@@ -15,7 +15,10 @@ def run(src_path):
 
     parser.add_argument(
         'packages', type=str, nargs='*', default=ALL,
-        help='The package(s) you want to compile. Will build all packages if nothing is specified.'
+        help='Action "add": The classes you want to add. At least one class must be specified.\n' +
+             'Action "compile": The packages you want to compile. Will build all packages if nothing is specified.\n' +
+             'Action "remove": The classes you want to remove. At least one class must be specified.\n' +
+             'Action "setup": The first argument is the package name and the second is the destination.'
     )
 
     parser.add_argument(
@@ -97,4 +100,4 @@ def run(src_path):
     elif args.action == 'setup':
         from utils.manage import setup
 
-        setup(src_path)
+        setup(src_path, *args.packages)

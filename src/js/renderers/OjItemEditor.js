@@ -1,5 +1,5 @@
 OJ.importJs('oj.renderers.OjItemRenderer');
-OJ.importJs('oj.renderers.OjLabelItemRenderer');
+OJ.importJs('oj.renderers.OjTextRenderer');
 OJ.importJs('oj.components.OjButton');
 
 OJ.importCss('oj.renderers.OjItemEditor')
@@ -9,7 +9,7 @@ OJ.extendComponent(
 	'OjItemEditor', [OjItemRenderer],
 	{
         '_props_' : {
-            'item_renderer' : OjLabelItemRenderer
+            'item_renderer' : OjTextRenderer
         },
 
 		'_template' : 'oj.renderers.OjItemEditor',

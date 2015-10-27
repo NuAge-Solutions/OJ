@@ -1,7 +1,7 @@
 OJ.importJs('oj.data.OjArray');
 OJ.importJs('oj.form.OjOption');
 OJ.importJs('oj.form.OjInput');
-OJ.importJs('oj.renderers.OjLabelItemRenderer');
+OJ.importJs('oj.renderers.OjTextRenderer');
 OJ.importJs('oj.components.OjList');
 OJ.importJs('oj.events.OjCollectionEvent');
 
@@ -12,7 +12,7 @@ OJ.extendComponent(
     'OjSelector', [OjInput],
     {
         '_props_' : {
-            'item_renderer' : OjLabelItemRenderer,
+            'item_renderer' : OjTextRenderer,
             'selectionMin' : 0,
             'selectionMax' : 1
         },

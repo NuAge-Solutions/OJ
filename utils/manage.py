@@ -96,5 +96,66 @@ def remove(src, classes=[], types=ALL):
             _remove(path, JS, JS)
 
 
-def setup(src):
-    pass
+def setup(src, package, destination):
+    lc_package = package.lower()
+    uc_package = package.upper()
+
+    # get the destination if there is any
+    os.chdir(destination)
+
+    # make sure all the dirs exist
+    dirs = ['builds', 'dependencies', 'src']
+
+    for d in dirs:
+        if not os.path.isdir(d):
+            os.mkdir(d)
+
+    # make sure all src dirs exist
+    dirs = [
+        os.path.join('src', 'assets'),
+        os.path.join('src', 'css'),
+        os.path.join('src', 'includes'),
+        os.path.join('src', 'js'),
+        os.path.join('src', 'templates'),
+        os.path.join('src', 'themes')
+    ]
+
+    for d in dirs:
+        if not os.path.isdir(d):
+            os.mkdir(d)
+
+    # make sure these files exist
+    files = [
+        (os.path.join(src, 'utils', 'genesis', 'index.html'), os.path.join('builds', 'index.html')),
+        (os.path.join(src, 'utils', 'genesis', 'index-dev.html'), os.path.join('builds', 'index-dev.html')),
+        (os.path.join(src, 'utils', 'genesis', 'manifest.json'), 'manifest.json'),
+        (os.path.join(src, 'utils', 'genesis', 'oj.py'), 'oj.py'),
+        (os.path.join(src, 'utils', 'genesis', 'package.css'), os.path.join('src', 'css', uc_package + '.css')),
+        (os.path.join(src, 'utils', 'genesis', 'package.js'), os.path.join('src', 'js', uc_package + '.js')),
+    ]
+
+    for (s, d) in files:
+        if not os.path.isfile(d):
+            with open(s, 'r') as f:
+                data = f.read().replace(
+                    '{package}', package
+                ).replace(
+                    '{lc_package}', lc_package
+                ).replace(
+                    '{uc_package}', uc_package
+                )
+
+                with open(d, 'w') as f2:
+                    f2.write(data)
+
+                    # make sure py files are executable
+                    if d[-3:] == '.py':
+                        mode = os.stat(d).st_mode
+                        mode |= (mode & 0o444) >> 2    # copy R bits to X
+                        os.chmod(d, mode)
+
+    # make sure the oj dependency exists
+    dependency = os.path.join('dependencies', 'oj')
+
+    if not os.path.exists(dependency):
+        os.symlink(src, dependency)

@@ -11,6 +11,11 @@
 	.OjStack > * {
 		position: relative;
 
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
 		z-index: 1;
 	}
 	.OjStack.animating > * {
@@ -21,10 +26,6 @@
 
 		width: 100%;
 		height: 100%;
-
-		-moz-box-sizing: border-box;
-		-webkit-box-sizing: border-box;
-		box-sizing: border-box;
 	}
 	.OjStack.animating > *.prev-active {
 		z-index: 3;

@@ -124,7 +124,7 @@ OJ.extendClass(
         '=buttons' : function(val){
             this._super(OjAlert, '=buttons', arguments);
 
-            if(this.btns.numChildren){
+            if(this.btns.num_children){
                 this.btns.show();
             }
             else{

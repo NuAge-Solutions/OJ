@@ -3,8 +3,11 @@
 # dependencies
 import argparse
 import os
-import urllib
-import sys
+import stat
+
+
+# get the oj source path
+oj_path = os.path.realpath(os.path.join(__file__, os.pardir, os.pardir))
 
 # setup script arguments
 parser = argparse.ArgumentParser(description='Setup Objective-JS Package.')
@@ -17,16 +20,20 @@ parser.add_argument('--destination', type=str, help='The path to the directory o
 args = parser.parse_args()
 
 # change dir if we have a destination
-package = args.package.lower()
+package = args.package.title()
 
+lc_package = package.lower()
+uc_package = package.upper()
+
+# get the destination if there is any
 if args.destination:
     os.chdir(args.destination)
 
-# otherwise create the dir and move there
-else:
-    os.mkdir(package)
-
-    os.chdir(package)
+# # otherwise create the dir and move there
+# else:
+#     os.mkdir(lc_package)
+#
+#     os.chdir(lc_package)
 
 # make sure all the dirs exist
 dirs = ['builds', 'dependencies', 'src']
@@ -36,56 +43,50 @@ for d in dirs:
         os.mkdir(d)
 
 # make sure all src dirs exist
-dirs = ['src/assets', 'src/css', 'src/js', 'src/templates', 'src/themes']
+dirs = [
+    os.path.join('src', 'assets'),
+    os.path.join('src', 'css'),
+    os.path.join('src', 'js'),
+    os.path.join('src', 'templates'),
+    os.path.join('src', 'themes')
+]
 
 for d in dirs:
     if not os.path.isdir(d):
         os.mkdir(d)
 
 # make sure these files exist
-package = args.package.upper()
-files = ['src/css/' + package + '.css', 'src/js/' + package + '.js']
+files = [
+    (os.path.join(oj_path, 'utils', 'genesis', 'index.html'), os.path.join('builds', 'index.html')),
+    (os.path.join(oj_path, 'utils', 'genesis', 'index-dev.html'), os.path.join('builds', 'index-dev.html')),
+    (os.path.join(oj_path, 'utils', 'genesis', 'manifest.json'), 'manifest.json'),
+    (os.path.join(oj_path, 'utils', 'genesis', 'oj.py'), 'oj.py'),
+    (os.path.join(oj_path, 'utils', 'genesis', 'package.css'), os.path.join('src', 'css', uc_package + '.css')),
+    (os.path.join(oj_path, 'utils', 'genesis', 'package.js'), os.path.join('src', 'js', uc_package + '.js')),
+]
 
-for f in files:
-    open(f, 'a').close()
+for (s, d) in files:
+    if not os.path.isfile(d):
+        with open(s, 'r') as f:
+            data = f.read().replace(
+                '{package}', package
+            ).replace(
+                '{lc_package}', lc_package
+            ).replace(
+                '{uc_package}', uc_package
+            )
 
+            with open(d, 'w') as f2:
+                f2.write(data)
 
-# download all the necessary files
-files = {
-    'https://raw.github.com/NuAge-Solutions/OJ/master/utils/compiler.py': 'utils/compiler.py',
-    'https://raw.github.com/NuAge-Solutions/OJ/master/utils/htmlcompressor.jar': 'utils/htmlcompressor.jar',
-    'https://raw.github.com/NuAge-Solutions/OJ/master/utils/yuicompressor.jar': 'utils/yuicompressor.jar',
-    'https://raw.github.com/NuAge-Solutions/OJ/master/utils/__init__.py': 'utils/__init__.py'
-}
-v = sys.version_info[0]
+                # make sure py files are executable
+                if d[-3:] == '.py':
+                    mode = os.stat(d).st_mode
+                    mode |= (mode & 0o444) >> 2    # copy R bits to X
+                    os.chmod(d, mode)
 
-for f in files:
-    if v == 3:
-        urllib.request.urlretrieve(f, files[f])
-    else:
-        urllib.urlretrieve(f, files[f])
+# make sure the oj dependency exists
+dependency = os.path.join('dependencies', 'oj')
 
-
-# make sure we have a build profile
-path = 'utils/manifest.json'
-
-if not os.path.isfile(path):
-    f = open(path, 'w')
-    f.write(
-        ('{\n' +
-            '\t"name" : "%s",\n' +
-            '\t"namespace" : "%s",\n\n' +
-            '\t"excludes"  : ["*.DS_Store", "*.git", "*.gitignore", "*.svn"],\n' +
-            '\t"includes"  : [],\n' +
-            '\t"themes"    : [],\n\n' +
-            '\t"packages" : {\n' +
-                '\t\t"" : {\n' +
-                    '\t\t\t"dependencies" : [],\n' +
-                    '\t\t\t"excludes" : [],\n' +
-                    '\t\t\t"includes" : ["*"]\n' +
-                '\t\t}\n' +
-            '\t}\n' +
-        '}') % args.package.lower(), args.package.lower()
-    )
-    f.close()
-
+if not os.path.exists(dependency):
+    os.symlink(oj_path, dependency)

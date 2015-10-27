@@ -96,6 +96,8 @@ OJ.extendComponent(
                 trans = self.transition,
                 index = -1;
 
+            args = Array.array(args);
+
             // detect transition flag
             switch(func){
                 case 'removeAllElms':
@@ -184,7 +186,9 @@ OJ.extendComponent(
         },
 
         '_dispatchChangeComplete' : function(){
-            this.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, this._active, this._transition, this._activeIndex, this._prev_index));
+            var self = this;
+
+            self.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, self._active, self._transition, self._activeIndex, self._prev_index));
         },
 
         '_makeTransIn' : function(direction){
@@ -198,7 +202,7 @@ OJ.extendComponent(
             }
 
             elm = container.getChildAt(
-                Math.bounds(container.numChildren - 1, 0, 1)
+                Math.bounds(container.num_children - 1, 0, 1)
             );
 
             switch(this._transition.effect){
@@ -296,29 +300,22 @@ OJ.extendComponent(
             return param;
         },
 
-        '_removeActive' : function(/*item*/){
-            var args = arguments,
-                ln, elm,
-                item = args.length ? args[0] : this.getElmAt(this._activeIndex);
+        '_removeActive' : function(item){
+            var self = this,
+                elm = item || self.getElmAt(self._activeIndex);
 
-            if(item){
-                elm = item;
-
-                // find the matching elm
-                if(this._item_renderer){
-                    ln = this.container.numChildren;
-
+            if(elm){
+                if(self._item_renderer){
+                    // find the matching elm
                     // NOTE: this will not function properly if it can't find a match since it sets the elm on each pass
-                    for(; ln--;){
-                        elm = this.container.getChildAt(ln);
-
-                        if(elm.data == item){
-                            break;
+                    self.container.children.forEachReverse(function(x){
+                        if(x.data == item){
+                            return false;
                         }
-                    }
+                    });
                 }
 
-                this._removeActiveElm(elm);
+                self._removeActiveElm(elm);
             }
         },
 
@@ -396,19 +393,19 @@ OJ.extendComponent(
         },
 
         '_onItemReplace' : function(evt){
-            this._super(OjCollectionComponent, '_onItemReplace', arguments);
+            var self = this,
+                item = evt.items.first,
+                index = evt.index,
+                active_index = self._activeIndex;
 
-            var item = evt.items.first,
-                index = evt.index;
+            self._super(OjCollectionComponent, '_onItemReplace', arguments);
 
-            this.dispatchEvent(new OjStackEvent(OjStackEvent.REPLACE, item, this._transition, index));
+            self.dispatchEvent(new OjStackEvent(OjStackEvent.REPLACE, item, self._transition, index));
 
-            if(this._activeIndex == index){
-                // remove the old active
-                this._removeActive(this._active);
+            if(active_index == index){
+                self._current_index = -1;
 
-                // add the new active
-                this._addActive(item, this._activeIndex);
+                self.activeIndex = index;
             }
         },
 

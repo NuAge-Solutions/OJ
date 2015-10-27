@@ -1,0 +1,30 @@
+{
+
+  "oj" : "dependencies/oj/manifest.json",
+
+  "{lc_package}" : {
+
+    "source" : "src",
+
+    "packages" : {
+
+      "{lc_package}" : {
+
+        "assets" : ["*"],
+        "assets_exclude" : [".*"],
+
+        "classes" : ["*"],
+        "classes_exclude" : [],
+
+        "pre_compiled" : [],
+
+        "themes" : ["*"],
+        "themes_exclude" : []
+
+      }
+
+    }
+
+  }
+
+}

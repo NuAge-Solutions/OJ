@@ -87,19 +87,22 @@ OJ.extendClass(
 			return false;
 		},
 
-		'PRESS'        : 'onPress',
-		'DOUBLE_PRESS' : 'onDoublePress',
-		'DOWN'         : 'onDown',
-        'LONG_PRSS'    : 'onLongPress',
-		'MIDDLE_PRESS' : 'onMiddlePress',
+		'PRESS'           : 'onPress',
+		'DOUBLE_PRESS'    : 'onDoublePress',
+		'MIDDLE_PRESS'    : 'onMiddlePress',
+        'RIGHT_PRESS'  : 'onRightPress',
+
+        'DOWN'            : 'onDown',
+		'RIGHT_DOWN'   : 'onRightDown',
+
+        'UP'           : 'onUp',
+    	'UP_OUTSIDE'   : 'onUpOutside',
+        'RIGHT_UP'     : 'onRightUp',
+
 		'MOVE'         : 'onMove',
 		'OVER'         : 'onOver',
 		'OUT'          : 'onOut',
-		'RIGHT_PRESS'  : 'onRightPress',
-		'RIGHT_UP'     : 'onRightUp',
-		'RIGHT_DOWN'   : 'onRightDown',
-		'UP'           : 'onUp',
-    	'UP_OUTSIDE'   : 'onUpOutside',
+
 		'WHEEL'        : 'onWheel'
 	}
 );

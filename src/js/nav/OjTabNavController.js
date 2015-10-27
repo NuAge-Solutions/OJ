@@ -10,7 +10,7 @@ OJ.extendComponent(
 
 
         '_addViewButton' : function(view, index){
-            var btn = new OjButton(view.shortTitle, view.icon);
+            var btn = new OjButton(view.short_title, view.icon);
             btn.vAlign = OjStyleElement.TOP;
             btn.addEventListener(OjUiEvent.PRESS, this, '_onTabClick');
 
@@ -77,7 +77,7 @@ OJ.extendComponent(
         '_onViewTitleChange' : function(evt){
             var view = evt.currentTarget;
 
-            this.getChildAt(this._stack.indexOfElm(view)).label = view.shortTitle;
+            this.getChildAt(this._stack.indexOfElm(view)).label = view.short_title;
         },
 
 
