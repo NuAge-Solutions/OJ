@@ -8,42 +8,42 @@
     -webkit-justify-content: center;
     justify-content: center;
 }
-	.OjModal > .pane {
-		min-width: 300px;
-		min-height: 100px;
-		max-width: 100%;
-		max-height: 100%;
+    .OjModal > .pane {
+        min-width: 300px;
+        min-height: 100px;
+        max-width: 100%;
+        max-height: 100%;
 
-		background: #EEE;
+        background: #EEE;
 
-		border: none;
-	}
-	.is-mobile .OjModal > .pane,
+        border: none;
+    }
+    .is-mobile .OjModal > .pane,
     .OjModal.fullscreen > .pane {
         width: 100%;
-		height: 100%;
-	}
-		.OjModal > .pane > .bar {
-			position: absolute;
+        height: 100%;
+    }
+        .OjModal > .pane > .bar {
+            position: absolute;
 
-			top: 0px;
-			left: 0px;
-			right: 0px;
+            top: 0px;
+            left: 0px;
+            right: 0px;
 
-			height: 40px;
+            height: 40px;
 
-			margin: 0px;
-			padding: 0px;
+            margin: 0px;
+            padding: 0px;
 
-			background: #BBBBBB; /* Old browsers */
+            background: #BBBBBB; /* Old browsers */
 
-			border: none;
-			border-bottom: 1px solid #9A9A9A;
+            border: none;
+            border-bottom: 1px solid #9A9A9A;
 
-			text-align: center;
+            text-align: center;
 
             overflow: hidden;
-		}
+        }
         .is-ios .OjModal.fullscreen > .pane > .bar {
             height: 65px;
         }
@@ -52,45 +52,45 @@
                 top: 20px;
             }
 
-			.OjModal > .pane > .bar .title {
-				color: #444444;
-				font-size: 20px;
-				font-weight: bold;
-				text-shadow: 1px 1px 1px #DDDDDD;
-				text-align: center;
-			}
+            .OjModal > .pane > .bar .title {
+                color: #444444;
+                font-size: 20px;
+                font-weight: bold;
+                text-shadow: 1px 1px 1px #DDDDDD;
+                text-align: center;
+            }
 
-		.OjModal > .pane > .content {
-			position: absolute;
+        .OjModal > .pane > .content {
+            position: absolute;
 
-			top: 41px;
-			left: 0px;
-			right: 0px;
-			bottom: 40px;
+            top: 41px;
+            left: 0px;
+            right: 0px;
+            bottom: 40px;
 
-			margin: 0px;
-			padding: 0px;
+            margin: 0px;
+            padding: 0px;
 
-			background: none;
+            background: none;
 
-			border: none;
+            border: none;
 
-			text-shadow: none;
+            text-shadow: none;
 
             overflow: hidden;
-		}
+        }
         .is-ios .OjModal.fullscreen > .pane > .content {
             top: 66px;
         }
-		.OjModal.no-buttons > .pane > .content {
-			bottom: 0px;
-		}
-		.is-mobile .OjModal.browser > .pane > .content,
-		.is-tablet .OjModal.browser > .pane > .content {
-			overflow: auto;
+        .OjModal.no-buttons > .pane > .content {
+            bottom: 0px;
+        }
+        .is-mobile .OjModal.browser > .pane > .content,
+        .is-tablet .OjModal.browser > .pane > .content {
+            overflow: auto;
 
-			-webkit-overflow-scrolling: touch;
-		}
+            -webkit-overflow-scrolling: touch;
+        }
 
         .OjModal > .pane > .content > .OjView {
             max-width: 100%;
@@ -101,20 +101,20 @@
             -webkit-overflow-scrolling: touch;
         }
 
-		.OjModal > .pane > .buttons {
-			position: absolute;
+        .OjModal > .pane > .buttons {
+            position: absolute;
 
-			bottom: 40px;
-			left: 0px;
-			right: 0px;
+            bottom: 40px;
+            left: 0px;
+            right: 0px;
 
-			height: 40px;
+            height: 40px;
 
-			text-align: center;
-		}
-		.OjModal.no-buttons > .pane > .buttons {
-			display: none;
-		}
-			.OjModal > .window > .pane > .buttons > * {
-				margin: 0px 50px;
-			}
+            text-align: center;
+        }
+        .OjModal.no-buttons > .pane > .buttons {
+            display: none;
+        }
+            .OjModal > .window > .pane > .buttons > * {
+                margin: 0px 50px;
+            }

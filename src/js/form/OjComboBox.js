@@ -1,10 +1,8 @@
-OJ.importJs('oj.components.OjButton');
-OJ.importJs('oj.form.OjInput');
-OJ.importJs('oj.data.OjArray');
-OJ.importJs('oj.data.OjData');
-OJ.importJs('oj.components.OjList');
-
-OJ.importCss('oj.form.OjComboBox');
+importJs('oj.components.OjButton');
+importJs('oj.form.OjInput');
+importJs('oj.data.OjArray');
+importJs('oj.data.OjData');
+importJs('oj.components.OjList');
 
 
 OJ.extendClass(
@@ -42,9 +40,9 @@ OJ.extendClass(
             }
 
             // setup event listeners
-//			this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
+//            this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
 //
-//			this.psuedoInput.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+//            this.psuedoInput.addEventListener(OjUiEvent.PRESS, this, '_onClick');
         },
 
         '_setDom' : function(dom_elm){
@@ -133,12 +131,9 @@ OJ.extendClass(
             for(; ln--;){
                 this.input.insertChildAt(
                     new OjStyleElement(
-                        OJ.tokensReplace(
-                            '<option value="[%value]">[%label]</option>',
-                            {
-                                'value' : this._options[ln].id,
-                                'label' : this._options[ln].label
-                            }
+                        "<option value='{0}'>{1}</option>".format(
+                            this._options[ln].id,
+                            this._options[ln].label
                         )
                     ),
                     0

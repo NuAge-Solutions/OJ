@@ -1,4 +1,4 @@
-OJ.importJs('oj.data.OjObject');
+importJs('oj.data.OjObject');
 
 
 OJ.extendClass(
@@ -7,8 +7,8 @@ OJ.extendClass(
         '_get_props_' : {
             'bubbles' : null,
             'cancelable' : null,
-            'currentTarget' : null,
-            'isCanceled' : false,
+            'current_target' : null,
+            'canceled' : false,
             'phase' : 0,
             'target' : null,
             'type' : null
@@ -27,7 +27,7 @@ OJ.extendClass(
 
         'cancel' : function(){
             if(this._cancelable){
-                this._isCanceled = true;
+                this._canceled = true;
             }
         },
 
@@ -44,7 +44,7 @@ OJ.extendClass(
             var clone = this.clone(), key;
 
             for(key in delta){
-                if(key != 'currentTarget' || key != 'phase' || key != 'target'){
+                if(key != 'current_target' || key != 'phase' || key != 'target'){
                     clone['_' + key] = delta[key];
                 }
             }

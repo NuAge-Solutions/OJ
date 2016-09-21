@@ -1,5 +1,5 @@
-OJ.importJs('oj.events.OjEvent');
-OJ.importJs('oj.media.OjMedia');
+importJs('oj.events.OjEvent');
+importJs('oj.media.OjMedia');
 
 
 OJ.extendComponent(

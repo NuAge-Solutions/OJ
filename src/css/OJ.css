@@ -1,49 +1,49 @@
 /* Standard HTML Element Styles */
 *, *:before, *:after {
-	position: relative;
+    position: relative;
 
-	margin: 0px;
-	padding: 0px;
+    margin: 0px;
+    padding: 0px;
 
     box-sizing: inherit;
 }
 *:focus {
-	outline: none;
+    outline: none;
 }
 
 html, body {
-	width: 100%;
-	min-width: 100%;
+    width: 100%;
+    min-width: 100%;
 
-	height: 100%;
-	min-height: 100%;
+    height: 100%;
+    min-height: 100%;
 
-	margin: 0px;
-	padding: 0px;
+    margin: 0px;
+    padding: 0px;
 
     box-sizing: border-box;
 
-	background: transparent;
+    background: transparent;
 
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 14px;
-	text-align: left;
-	vertical-align: top;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    text-align: left;
+    vertical-align: top;
 
-	z-index: -1;
+    z-index: -1;
 
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body:hover,
 body.is-mobile, body.is-tablet {
-	z-index: 0;
+    z-index: 0;
 }
 
 /* Utility Styles */
 .hidden {
-	display: none !important;
+    display: none !important;
 
-	z-index: -99999 !important;
+    z-index: -99999 !important;
 }
 
 .no-select, html, body {
@@ -59,63 +59,65 @@ body.is-mobile, body.is-tablet {
 
 /* Horizontal Align Styles */
 [h-align="l"] {
-	text-align: left;
+    text-align: left;
 }
 
 [h-align="c"] {
-	text-align: center;
+    text-align: center;
 }
 
 [h-align="r"] {
-	text-align: right;
+    text-align: right;
 }
 
 
 /* Vertical Align Styles */
 [v-align="t"] {
-	vertical-align: top;
+    vertical-align: top;
 }
 
 [v-align="m"] {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 [v-align="b"] {
-	vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 [v-align]:after {
-	width: 0px;
-	height: 100% !important;
+    width: 0px;
+    height: 100% !important;
 
-	content: "";
+    content: "";
 }
 
 [v-align="t"] > *,
 [v-align="t"] > .OjComponent,
 [v-align="t"]:after {
-	vertical-align: top !important;
+    vertical-align: top !important;
 }
 
 [v-align="m"] > *,
 [v-align="m"] > .OjComponent,
 [v-align="m"]:after {
-	vertical-align: middle !important;
+    vertical-align: middle !important;
 }
 
 [v-align="b"] > *,
 [v-align="b"] > .OjComponent,
 [v-align="b"]:after {
-	vertical-align: bottom !important;
+    vertical-align: bottom !important;
 }
 
 [v-align] > span,
 [v-align]:after {
-	display: inline-block;
+    display: inline-block;
 }
 
-.flexbox,
-.OjComponent.flexbox {
+
+/* FlexBox CSS */
+[flex],
+.OjComponent[flex] {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -123,22 +125,48 @@ body.is-mobile, body.is-tablet {
     display: flex;
 }
 
+[flex-h],
+.OjComponent[flex-h] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
+[flex-v],
+.OjComponent[flex-v] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
 
 /* ClearFix For Modern Browsers */
 .cf:BEFORE,
 .cf:AFTER {
-	content: "";
-	display: table;
+    content: "";
+    display: table;
 }
 
 .cf:AFTER {
-	clear: both;
+    clear: both;
 }
 
 
 /* ClearFix For IE 6/7 (trigger hasLayout) */
 .cf {
-	zoom: 1;
+    zoom: 1;
 }
 
 a, blockquote, label, p, pre {
@@ -155,21 +183,21 @@ a, blockquote, label, p, pre {
 
 /* CSS Table Styles */
 .table {
-	display: table;
+    display: table;
 }
 .row {
-	display: table-row;
+    display: table-row;
 }
 .cell {
-	display: table-cell;
+    display: table-cell;
 }
 
 /* misc helper styles */
 .fill-horz {
-	width: 100%;
+    width: 100%;
 }
 .fill-vert {
-	height: 100%;
+    height: 100%;
 }
 
 /* Smooth Scrolling */
@@ -192,33 +220,33 @@ a, blockquote, label, p, pre {
 /* OJ Styles */
 .OJ.OjComponent,
 .OJ > .container {
-	display: block;
+    display: block;
 
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 
-	z-index: 1;
+    z-index: 1;
 
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-select: none;
 }
-	.OJ > .container {
-		display: -webkit-box;
-		display: -moz-box;
-		display: -ms-flexbox;
-		display: -webkit-flex;
-		display: flex;
+    .OJ > .container {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
 
-		justify-content: center;
-		-webkit-justify-content: center;
-	}
+        justify-content: center;
+        -webkit-justify-content: center;
+    }
 
-	.OJ > .renderer {
-		position: absolute;
+    .OJ > .renderer {
+        position: absolute;
 
-		top: -99999px;
-		left: -99999px;
+        top: -99999px;
+        left: -99999px;
 
-		width: 100%;
-		height: 100%;
-	}
+        width: 100%;
+        height: 100%;
+    }

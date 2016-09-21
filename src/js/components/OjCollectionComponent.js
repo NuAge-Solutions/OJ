@@ -1,6 +1,6 @@
-OJ.importJs('oj.data.OjArray');
-OJ.importJs('oj.components.OjComponent');
-OJ.importJs('oj.events.OjCollectionEvent');
+importJs('oj.data.OjArray');
+importJs('oj.components.OjComponent');
+importJs('oj.events.OjCollectionEvent');
 
 
 OJ.extendComponent(
@@ -80,7 +80,7 @@ OJ.extendComponent(
 
         '_dispatchItemEvent' : function(type, evt){
             var self = this,
-                item = evt.currentTarget;
+                item = evt.current_target;
 
             if(self.item_renderer){
                 item = item.data;
@@ -332,7 +332,7 @@ OJ.extendComponent(
             'insertElmAt' : 'insertAt',
             'moveElm' : 'move',
             'prependElm': 'prepend',
-            'numElms' : 'length',
+            'num_elms' : 'length',
             'removeAllElms' : 'removeAll',
             'removeElm' : 'remove',
             'removeElmAt' : 'removeAt',

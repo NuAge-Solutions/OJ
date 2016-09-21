@@ -8,7 +8,7 @@ from utils import *
 class Compiler (object):
 
     # lifecycle methods
-    def __init__(self, manifest_path):
+    def __init__(self, manifest):
         super(Compiler, self).__init__()
 
         self._assets_exc = None
@@ -35,7 +35,7 @@ class Compiler (object):
         self.packages = ALL
         self.types = TYPES
 
-        self.manifest = self._load_manifest_file(manifest_path)
+        self.manifest = manifest if isinstance(manifest, dict) else load_manifest_file(manifest)
 
     # loading methods
     def _load_manifest_file(self, manifest_path):
@@ -84,7 +84,7 @@ class Compiler (object):
     def _process_css(self, contents):
         # process css imports
         # search for import css statements
-        needle = 'OJ.importCss('
+        needle = 'importCss('
         ln = len(needle) + 1
         index = 0
 
@@ -135,7 +135,7 @@ class Compiler (object):
         contents = file_get_contents(path)
 
         # search for include statements
-        needle = 'OJ.include('
+        needle = 'include('
         ln = len(needle) + 1
         index = 0
 
@@ -154,8 +154,22 @@ class Compiler (object):
                     print(e)
                     index = end
 
+        # auto add css import if one does not exist and css does exist
+        css_path = os.path.join(self._css_src, pkg_path.replace(".js", ".css"))
+
+        if os.path.exists(css_path):
+            css_path = self._namespace + "." + pkg_path.replace(os.path.sep, ".").replace(".js", "")
+
+            result = re.search(
+                "importCss\([\"|']{}[\"|']\)".format(css_path),
+                contents
+            )
+
+            if result is None:
+                contents = "importCss(\"{}\");\n".format(css_path) + contents
+
         # search for js import statements
-        needle = 'OJ.importJs('
+        needle = 'importJs('
         ln = len(needle) + 1
         index = 0
         prefix = ''
@@ -220,6 +234,7 @@ class Compiler (object):
         self._pre_compiled = package.get('pre_compiled', [])
         self._source = source
         self._templates_src = os.path.join(source, 'templates')
+        self._tests_src = os.path.join(source, 'tests')
         self._themes_exc = package.get('themes_exclude', [])
         self._themes_inc = package.get('themes', ['*'])
         self._themes_src = os.path.join(source, 'themes')
@@ -387,12 +402,35 @@ class Compiler (object):
                             if is_path_match(pre_c, p):
                                 self.build[self._namespace][JS].append(path)
 
-                                pre_compiled += file_get_contents(path) + '\n'
+                                pre_compiled += file_get_contents(path).replace("//# sourceMappingURL=", "//# map=") + '\n'
 
                                 break
 
                 except:
                     pass
+
+            #
+            # Compile Tests  (only do this for the main package once)
+            #
+            if JS in self.types and 'tests' not in self.build[self._namespace]:
+                trace('Processing Tests...', indent=1)
+
+                tests = []
+                tests_str = ""
+
+                for root, subFolders, files in os.walk(self._tests_src):
+                    for file in files:
+                        p = os.path.join(root, file)
+
+                        if p[0] != "." and os.path.isfile(p):
+                            tests.append(p)
+
+                            tests_str += file_get_contents(p) + "\n"
+
+                self.build[self._namespace]['tests'] = tests
+
+                if tests:
+                    file_put_contents(os.path.join(self._destination, "tests.js"), tests_str)
 
             # remove the css imports
             trace('Building CSS Import List...', indent=1)
@@ -433,22 +471,23 @@ class Compiler (object):
 
         # search through the contents to replace template strings
         index = 1
-        needle = '[\'|"]_template[\'|"][ ]*:[ ]*[\'|"]([\S]+)[\'|"]'
+        needle = "['|\"]_template['|\"][ ]*:[ ]*('|\")([\S]+)['|\"]"
 
         while index:
             match = re.search(needle, contents[index:])
 
             if match:
                 # get the template path
-                pkg = match.group(1)
+                quote = match.group(1)
+                pkg = match.group(2)
 
                 # if we were able to get contents continue with replacement
                 if pkg in templates:
                     html = templates[pkg]
 
                     # make the substitution
-                    contents = contents[:index + match.start(1)] + \
-                               html.replace("'", "\\'") + contents[index + match.end(1):]
+                    contents = contents[:index + match.start(1) + 1] + \
+                               html.replace(quote, "\\" + quote) + contents[index + match.end(2):]
 
                     # move the index up
                     index += len(html)
@@ -459,13 +498,36 @@ class Compiler (object):
             else:
                 index = 0
 
+        needle = 'importHtml('
+        ln = len(needle) + 1
+        index = 0
+        quote = "\""
+
+        while index > -1:
+            index = contents.find(needle, index)
+
+            if index > -1:
+                end = contents.find(')', index)
+
+                try:
+                    pkg = contents[index + ln:end - 1]
+
+                    if pkg in templates:
+                        html = templates[pkg]
+
+                    contents = contents[:index] + quote + html.replace(quote, "\\" + quote) + quote + contents[end + 1:]
+
+                except Exception as e:
+                    print(e)
+                    index = end
+
         return contents
 
     def _update_package(self, directory, name, ext, contents, pre_compiled=''):
         # setup vars
         dev_path = os.path.join(directory, name + '-dev.' + ext)
 
-        pre_compiled = pre_compiled if pre_compiled else pre_compiled + '\n'
+        pre_compiled = pre_compiled if pre_compiled else pre_compiled + "\n"
 
         # put dev file temporarily without pre_compiled
         file_put_contents(dev_path, contents)
@@ -515,13 +577,13 @@ class Compiler (object):
         if pre_compiled:
             file_put_contents(dev_path, pre_compiled + contents)
 
-    def run(self, destination, mode='prod', packages='all', types='all'):
+    def run(self, destination, mode="prod", packages="all", types="all"):
         # setup vars
         self.build = {}
         self.destination = destination
         self.mode = mode
         self.packages = packages if ALL != packages else sorted(self.manifest.keys())
-        self.types = types
+        self.types = types if ALL != types else TYPES
 
         # process packages
         processed = []
@@ -532,15 +594,15 @@ class Compiler (object):
 
             processed.append(package)
 
-            parts = package.split('.')
+            parts = package.split(".")
             root = parts[0]
 
             if root in self.manifest:
-                sub_packages = self.manifest[root]['packages']
-                source = self.manifest[root]['source']
+                sub_packages = self.manifest[root]["packages"]
+                source = self.manifest[root]["source_path"]
 
                 # check for wildcard
-                if len(parts) > 1 and parts[1] == '*':
+                if len(parts) > 1 and parts[1] == "*":
                     # process the root package first
                     self._process_package(root, source, sub_packages[root])
 
@@ -553,4 +615,4 @@ class Compiler (object):
                     self._process_package(package, source, sub_packages[package])
 
             else:
-                warning('Package "' + package + '" not found in manifest.')
+                warning("Package \"" + package + "\" not found in manifest.")

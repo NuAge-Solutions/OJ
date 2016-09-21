@@ -1,8 +1,5 @@
-OJ.importJs('oj.components.OjCollectionComponent');
-OJ.importJs('oj.renderers.OjItemRenderer');
-
-OJ.importCss('oj.components.OjList');
-
+importJs('oj.components.OjCollectionComponent');
+importJs('oj.renderers.OjItemRenderer');
 
 OJ.extendComponent(
     'OjList', [OjCollectionComponent],
@@ -41,7 +38,7 @@ OJ.extendComponent(
         '_onItemAdd' : function(evt){
             var self = this,
                 container = self.container;
-
+            
             evt.items.forEach(function(item, i){
                 container.insertChildAt(
                     self.renderItem(item, evt.index + i),

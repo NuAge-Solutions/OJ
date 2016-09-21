@@ -1,19 +1,19 @@
 .OjFilterBox {
 
 }
-	.OjFilterBox > .input-wrapper  > .input-wrapper-inner > .input-holder .value.OjTextInput {
-		margin: 0px;
-		padding: 0px;
-	}
-		.OjFilterBox > .input-wrapper > .input-wrapper-inner > .input-holder .value.OjTextInput > .input-wrapper {
-			margin: 0px;
-			padding: 0px;
+    .OjFilterBox > .input-wrapper  > .input-wrapper-inner > .input-holder .value.OjTextInput {
+        margin: 0px;
+        padding: 0px;
+    }
+        .OjFilterBox > .input-wrapper > .input-wrapper-inner > .input-holder .value.OjTextInput > .input-wrapper {
+            margin: 0px;
+            padding: 0px;
 
-			border: none;
-			background: none;
-		}
-			.OjFilterBox > .input-wrapper > .input-wrapper-inner > .input-holder .value.OjTextInput > .input-wrapper label,
-			.OjFilterBox > .input-wrapper > .input-wrapper-inner > .input-holder .value.OjTextInput > .input-wrapper .input {
-				margin: 0px;
-				padding: 0px;
-			}
+            border: none;
+            background: none;
+        }
+            .OjFilterBox > .input-wrapper > .input-wrapper-inner > .input-holder .value.OjTextInput > .input-wrapper label,
+            .OjFilterBox > .input-wrapper > .input-wrapper-inner > .input-holder .value.OjTextInput > .input-wrapper .input {
+                margin: 0px;
+                padding: 0px;
+            }

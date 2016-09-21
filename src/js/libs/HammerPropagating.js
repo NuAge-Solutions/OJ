@@ -1,0 +1,1 @@
+../../node_modules/propagating-hammerjs/propagating.js

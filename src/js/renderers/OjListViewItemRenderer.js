@@ -1,4 +1,4 @@
-OJ.importJs('oj.renderers.OjItemRenderer');
+importJs('oj.renderers.OjItemRenderer');
 
 
 OJ.extendComponent(

@@ -1,5 +1,5 @@
-OJ.importJs('oj.renderers.OjItemRenderer');
-OJ.importJs('oj.media.OjImage');
+importJs('oj.renderers.OjItemRenderer');
+importJs('oj.media.OjImage');
 
 
 OJ.extendComponent(

@@ -1,9 +1,9 @@
-OJ.importJs('oj.events.OjActionable');
+importJs('oj.events.OjActionable');
 
 
 OJ.extendManager(
-	'LayoutManager', 'OjLayoutManager', [OjActionable],
-	{
+    'LayoutManager', 'OjLayoutManager', [OjActionable],
+    {
 
-	}
+    }
 );

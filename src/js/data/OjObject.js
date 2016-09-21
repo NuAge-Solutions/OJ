@@ -1,4 +1,5 @@
 // Modify Built-In Object Class
+// Modify Built-In Object Class
 if(!Object.create){
     Object.create = function(o){
         if(arguments.length > 1){
@@ -58,15 +59,16 @@ Object.clone = function(obj){
 
 Object.concat = function(obj, obj2/*, ...objs*/){
     var key, i,
+        merged = {},
         ln = arguments.length;
 
-    for(i = 1; i < ln; i++){
+    for(i = 0; i < ln; i++){
         for(key in arguments[i]){
-            obj[key] = arguments[i][key];
+            merged[key] = arguments[i][key];
         }
     }
 
-    return obj;
+    return merged;
 };
 
 
@@ -176,6 +178,10 @@ OjObject.prototype = {
             key, val, ctx, ary, ln2, i;
 
         for(key in def){
+            if(isEmpty(key)){
+                continue;
+            }
+
             val = def[key];
 
             if(ln > count){
@@ -260,7 +266,7 @@ OJ.extendClass(
             return new cls();
         },
 
-        'exportData' : function(){
+        'exportData' : function(mode){
             var self = this,
                 data = {};
 
@@ -269,7 +275,7 @@ OJ.extendClass(
             return data;
         },
 
-        'importData' : function(data){
+        'importData' : function(data, mode){
             return data;
         },
 
@@ -316,27 +322,31 @@ OJ.extendClass(
     {
         'TYPE_KEY' : '__type__',
 
+        "CACHE": "cache",
+        'CLONE' : 'clone',
+        "DEFAULT" : "default",
+
 
         '_unset' : function(prop/*|props, depth*/){
             OJ.unset(this, arguments);
         },
 
-        'importData' : function(data){
+        'importData' : function(data, mode){
             var i, c, obj, key, cls;
 
             if(isArray(data)){
                 for(i = data.length; i--;){
-                    data[i] = OjObject.importData(data[i]);
+                    data[i] = OjObject.importData(data[i], mode);
                 }
             }
             else if(isObject(data)){
-                cls = data[OjObject.TYPE_KEY];
+                cls = data[this.TYPE_KEY];
 
                 if(cls){
                     c = OJ.stringToClass(cls);
 
-                    if(!c && cls.indexPath('.') > -1){
-                        OJ.importJs(cls);
+                    if(!c && cls.indexOf('.') > -1){
+                        importJs(cls);
 
                         c = OJ.stringToClass(cls.split('.').last)
                     }
@@ -344,36 +354,40 @@ OJ.extendClass(
                     if(c){
                         obj = new c();
 
-                        obj.importData(data);
+                        obj.importData(data, mode);
 
                         return obj;
                     }
                 }
 
                 for(key in data){
-                    data[key] = OjObject.importData(data[key]);
+                    data[key] = OjObject.importData(data[key], mode);
                 }
             }
 
             return data;
         },
 
-        'exportData' : function(obj){
-            var i, key;
+        'exportData' : function(obj, mode){
+            var key;
 
             if(isArray(obj)){
-                for(i = obj.length; i--;){
-                    obj[i] = OjObject.exportData(obj[i]);
+                for(key = obj.length; key--;){
+                    obj[key] = OjObject.exportData(obj[key], mode);
                 }
             }
             else if(isObject(obj)){
                 if(isFunction(obj.exportData)){
-                    return obj.exportData();
+                    return obj.exportData(mode);
                 }
 
                 for(key in obj){
-                    obj[key] = OjObject.exportData(obj[key]);
+                    obj[key] = OjObject.exportData(obj[key], mode);
                 }
+            }
+            // this checks for NaN since NaN does not equal itself
+            else if(obj !== obj){
+                return null;
             }
 
             return obj;

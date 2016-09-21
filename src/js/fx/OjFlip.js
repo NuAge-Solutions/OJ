@@ -1,5 +1,5 @@
-OJ.importJs('oj.fx.OjPropTween');
-OJ.importJs('oj.fx.OjTweenEvent');
+importJs('oj.fx.OjPropTween');
+importJs('oj.fx.OjTweenEvent');
 
 
 OJ.extendClass(

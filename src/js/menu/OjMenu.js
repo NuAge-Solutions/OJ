@@ -1,8 +1,4 @@
-OJ.importJs('oj.components.OjComponent');
-
-OJ.importCss('oj.menu.OjMenu');
-
-
+importJs('oj.components.OjComponent');
 
 
 OJ.extendClass(
@@ -54,14 +50,14 @@ OJ.extendClass(
                 return;
             }
 
-//				if(content.is('OjForm')){
-//					content.addEventListener(OjEvent.CANCEL, this, '_onClose');
-//					content.addEventListener(OjEvent.SUBMIT, this, '_onClose');
-//				}
+//                if(content.is('OjForm')){
+//                    content.addEventListener(OjEvent.CANCEL, this, '_onClose');
+//                    content.addEventListener(OjEvent.SUBMIT, this, '_onClose');
+//                }
 
             if(this._content){
-//					this._content.removeEventListener(OjEvent.CANCEL, this, '_onClose');
-//					this._content.removeEventListener(OjEvent.SUBMIT, this, '_onClose');
+//                    this._content.removeEventListener(OjEvent.CANCEL, this, '_onClose');
+//                    this._content.removeEventListener(OjEvent.SUBMIT, this, '_onClose');
 
                 this.replaceChild(this._content, this._content = content);
             }

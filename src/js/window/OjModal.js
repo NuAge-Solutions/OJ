@@ -1,20 +1,20 @@
-OJ.importJs('oj.events.OjDragEvent');
-OJ.importJs('oj.fx.OjTransition');
-OJ.importJs('oj.nav.OjFlowNavController');
-OJ.importJs('oj.nav.OjNavStack');
-OJ.importJs('oj.views.OjView');
-OJ.importJs('oj.window.OjAlert');
+importJs('oj.events.OjDragEvent');
+importJs('oj.fx.OjTransition');
+importJs('oj.nav.OjFlowNavController');
+importJs('oj.nav.OjNavStack');
+importJs('oj.views.OjView');
+importJs('oj.window.OjAlert');
 
 
 OJ.extendClass(
     'OjModal', [OjAlert],
     {
         '_props_' : {
-            'barVisible' : true,
-            'buttonsVisible' : null,
-            'closeVisible' : null,
-            'isFullscreen' : false,
-            'underlayVisible' : true
+            'bar_visible' : true,
+            'buttons_visible' : null,
+            'close_visible' : null,
+            'is_fullscreen' : false,
+            'underlay_visible' : true
         },
 
         '_template' : 'oj.window.OjModal',
@@ -29,8 +29,8 @@ OJ.extendClass(
             // setup controller stack relationship
             (bar = self.bar).stack = self.container;
 
-            self.closeVisible = true;
-            self.buttonsVisible = false;
+            self.close_visible = true;
+            self.buttons_visible = false;
 
             // process arguments
             if(view){
@@ -61,8 +61,8 @@ OJ.extendClass(
         },
 
 
-        '=barVisible' : function(val){
-            if(this._barVisible = val){
+        '=bar_visible' : function(val){
+            if(this._bar_visible = val){
                 this.bar.show();
 
                 //this.bar.addEventListener(OjDragEvent.DRAG, this, '_onDrag');
@@ -74,8 +74,8 @@ OJ.extendClass(
             }
         },
 
-        '=buttonsVisible' : function(val){
-            if(this._buttonsVisible = val){
+        '=buttons_visible' : function(val){
+            if(this._buttons_visible = val){
                 this.removeCss('no-buttons');
             }
             else{
@@ -83,11 +83,11 @@ OJ.extendClass(
             }
         },
 
-        '.closeVisible' : function(){
+        '.close_visible' : function(){
             return this.bar.cancel_visible;
         },
 
-        '=closeVisible' : function(val){
+        '=close_visible' : function(val){
             var self = this,
                 bar = self.bar,
                 evt = OjEvent.CANCEL;
@@ -102,8 +102,8 @@ OJ.extendClass(
             }
         },
 
-        '=isFullscreen' : function(val){
-            if(this._isFullscreen = val){
+        '=is_fullscreen' : function(val){
+            if(this._is_fullscreen = val){
                 this.addCss('fullscreen');
             }
             else{
@@ -111,8 +111,8 @@ OJ.extendClass(
             }
         },
 
-        '=underlayVisible' : function(val){
-            if(this._underlayVisible = val){
+        '=underlay_visible' : function(val){
+            if(this._underlay_visible = val){
                 this.underlay.show();
             }
             else{

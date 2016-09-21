@@ -1,4 +1,4 @@
-OJ.importJs('oj.events.OjActionable');
+importJs('oj.events.OjActionable');
 
 
 OJ.extendClass(

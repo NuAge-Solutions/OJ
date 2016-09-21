@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.OjComponent');
+importJs('oj.components.OjComponent');
 
 
 OJ.extendComponent(
@@ -71,8 +71,12 @@ OJ.extendComponent(
         '_onStackChangeComplete' : function(evt){
             // remove all views after the active view
             var stack = this.stack,
-                ln = stack.numElms,
-                i = stack.activeIndex;
+                ln = stack.num_elms,
+                i = stack.active_index;
+
+            if(stack.has_deferred){
+                return;
+            }
 
             for(; --ln > i;){
                 stack.removeElmAt(ln);
@@ -105,7 +109,7 @@ OJ.extendComponent(
                 return this.gotoViewAt(index, animated);
             }
 
-            if(index = this.activeIndex){
+            if(index = this.active_index){
                 this.replaceViewAt(0, view);
 
                 return this.gotoViewAt(0);
@@ -115,7 +119,7 @@ OJ.extendComponent(
         },
 
         'gotoViewAt' : function(index/*, animated = true*/){
-            return this.stack.activeIndex = arguments;
+            return this.stack.active_index = arguments;
         },
 
         'hasView' : function(view){
@@ -127,7 +131,7 @@ OJ.extendComponent(
         },
 
         'removeActive' : function(/*animated = true*/){
-            return this.removeViewAt(this.stack.activeIndex, arguments.length ? arguments[0] : true);
+            return this.removeViewAt(this.stack.active_index, arguments.length ? arguments[0] : true);
         },
 
         'removeView' : function(view/*, animated = true*/){
@@ -146,7 +150,7 @@ OJ.extendComponent(
             var s = this.stack,
                 args = arguments;
 
-            return s.replaceElmAt(this.activeIndex, view, args.length > 1 ? args[0] : true);
+            return s.replaceElmAt(this.active_index, view, args.length > 1 ? args[0] : true);
         },
 
         'replaceView' : function(oldView, newView/*, animated = true*/){
@@ -172,11 +176,11 @@ OJ.extendComponent(
         },
 
         '.active_index' : function(){
-            return this.stack.activeIndex;
+            return this.stack.active_index;
         },
 
         '=active_index' : function(val){
-            this.stack.activeIndex = val;
+            this.stack.active_index = val;
         },
 
         '=stack' : function(stack){

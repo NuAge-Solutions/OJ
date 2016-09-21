@@ -1,83 +1,76 @@
-OJ.importJs('oj.components.OjComponent');
-OJ.importJs('oj.components.OjOverlay');
-
-OJ.importCss('oj.views.OjView');
+importJs("oj.components.OjComponent");
+importJs("oj.components.OjOverlay");
 
 
 OJ.extendComponent(
-    'OjView', [OjComponent],
+    "OjView", [OjComponent],
     {
-        '_props_' : {
-            'controller' : null,
-            'footer' : null,
-            'header' : null,
-            'icon' : null,
-            'short_title' : null,
-            'stack' : null,
-            'title' : null
+        "_props_" : {
+            "controller" : null,
+            "footer" : null,
+            "header" : null,
+            "icon" : null,
+            "short_title" : null,
+            "stack" : null,
+            "title" : null
         },
 
-        '_get_props_' : {
-            'action_view' : null,
-            'cancel_view' : null,
-            'title_view' : null
+        "_get_props_" : {
+            "action_view" : null,
+            "cancel_view" : null,
+            "title_view" : null
         },
 
-//		'_elm_funcs' : null,  '_load_checkpoints' : null,  '_loading_icon' : null,
+//        "_elm_funcs" : null,  "_load_checkpoints" : null,  "_loading_icon" : null,
 //
-//		'_overlay' : null,  '_unload_checkpoints' : null,  '_unloading_icon' : null,
+//        "_overlay" : null,  "_unload_checkpoints" : null,  "_unloading_icon" : null,
 
-        '_loading_msg' : 'Loading', '_template' : 'oj.views.OjView', '_loaded' : false,
+        "_loading_msg" : "Loading", "_template" : "oj.views.OjView", "_loaded" : false,
 
-        '_unloading_msg' : 'UnLoading',
+        "_unloading_msg" : "UnLoading",
 
 
-        '_constructor' : function(/*content, title, short_title*/){
-            this._super(OjComponent, '_constructor', []);
+        "_constructor" : function(/*content, title, short_title, icon*/){
+            var self = this,
+                cls = self._static;
+
+            self._super(OjComponent, "_constructor", []);
 
             // setup vars
-            this._load_checkpoints = {};
-            this._unload_checkpoints = {};
+            self._load_checkpoints = {};
+            self._unload_checkpoints = {};
 
             // process arguments
-            var args = arguments,
-                ln = args.length,
-                short_title = this._static.SHORT_TITLE,
-                title = this._static.TITLE;
+            self._processArguments(arguments, {
+                "content": undefined,
+                "title" : undefined,
+                "short_title" : undefined,
+                "icon" : undefined
+            });
 
-            if(ln){
-                this.content = args[0];
-
-                if(ln > 1){
-                    title = args[1];
-
-                    if(ln > 2){
-                        short_title = args[2];
-                    }
-                }
+            if(!self.title){
+                self.title = cls.TITLE;
             }
 
-            this.title = title;
-
-            if(short_title){
-                this.short_title = short_title;
+            if(!self.short_title){
+                self.short_title = cls.SHORT_TITLE;
             }
 
-            if(this._static.ICON){
-                this.icon = this._static.ICON;
+            if(!self.icon){
+                self.icon = cls.ICON;
             }
         },
 
-        '_destructor' : function(){
+        "_destructor" : function(){
             this.unload();
 
-            this._unset(['_action_view', '_cancel_view', '_title_view', '_overlay']);
+            this._unset(["_action_view", "_cancel_view", "_title_view", "_overlay"]);
 
-            return this._super(OjComponent, '_destructor', arguments);
+            return this._super(OjComponent, "_destructor", arguments);
         },
 
 
-        '_checkpointsCompleted' : function(checkpoints){
+        "_checkpointsCompleted" : function(checkpoints){
             for(var key in checkpoints){
                 if(!checkpoints[key]){
                     return false;
@@ -87,17 +80,17 @@ OJ.extendComponent(
             return true;
         },
 
-        '_hideOverlay' : function(overlay){
+        "_hideOverlay" : function(overlay){
             if((overlay = overlay || this._overlay)){
-                overlay.addEventListener(OjEvent.HIDE, this, '_onOverlayHide');
+                overlay.addEventListener(OjEvent.HIDE, this, "_onOverlayHide");
                 overlay.hide();
             }
         },
 
-        '_load' : function(){
+        "_load" : function(){
             this._loaded = true;
 
-            this.removeCss('loading');
+            this.removeCss("loading");
 
             this.redraw();
 
@@ -106,7 +99,7 @@ OJ.extendComponent(
             this.dispatchEvent(new OjEvent(OjView.LOAD));
         },
 
-        '_loadCheckpoint' : function(checkpoint){
+        "_loadCheckpoint" : function(checkpoint){
             var self = this,
                 checkpoints = self._load_checkpoints;
 
@@ -122,7 +115,7 @@ OJ.extendComponent(
             }
         },
 
-        '_resetCheckpoints' : function(checkpoints){
+        "_resetCheckpoints" : function(checkpoints){
             var key;
 
             for(key in checkpoints){
@@ -130,7 +123,7 @@ OJ.extendComponent(
             }
         },
 
-        '_showOverlay' : function(/*msg, icon*/){
+        "_showOverlay" : function(/*msg, icon*/){
             var args = arguments,
                 ln = args.length,
                 msg = ln ? args[0] : null,
@@ -150,8 +143,8 @@ OJ.extendComponent(
             return overlay;
         },
 
-        '_unload' : function(){
-            this._loaded = true;
+        "_unload" : function(){
+            this._loaded = false;
 
             this._hideOverlay();
 
@@ -159,7 +152,7 @@ OJ.extendComponent(
             this.dispatchEvent(new OjEvent(OjView.UNLOAD));
         },
 
-        '_unloadCheckpoint' : function(/*checkpoint*/){
+        "_unloadCheckpoint" : function(/*checkpoint*/){
             var args = arguments;
 
             if(args.length){
@@ -175,39 +168,47 @@ OJ.extendComponent(
         },
 
 
-        '_onOverlayHide' : function(evt){
-            this._unset('_overlay');
+        "_onOverlayHide" : function(evt){
+            this._unset("_overlay");
         },
 
 
-        'load' : function(/*reload=false*/){
-            if((!arguments.length || !arguments[0]) && this._loaded){
+        "load" : function(reload){
+            var self = this;
+
+            if(!reload && self._loaded){
                 return false;
             }
 
-            this.addCss('loading');
+            self.addCss("loading");
 
-            this._resetCheckpoints(this._load_checkpoints);
+            self._resetCheckpoints(self._load_checkpoints);
 
-            this._loadCheckpoint();
+            self._loadCheckpoint();
 
             return true;
         },
 
-        'unload' : function(){
-            if(this._loaded){
-                this._resetCheckpoints(this._unload_checkpoints);
+        "unload" : function(){
+            var self = this;
 
-                this._unloadCheckpoint();
+            if(self._loaded){
+                self._resetCheckpoints(self._unload_checkpoints);
+
+                self._unloadCheckpoint();
+
+                return true;
             }
+
+            return false;
         },
 
 
         // getter & Setter functions
-        '.content' : function(){
+        ".content" : function(){
             return this.elms;
         },
-        '=content' : function(content){
+        "=content" : function(content){
             this.removeAllElms();
 
             if(content){
@@ -221,17 +222,17 @@ OJ.extendComponent(
             }
         },
 
-        '=footer' : function(val){
+        "=footer" : function(val){
             if(this._footer == val){
                 return;
             }
 
             if(this._footer = val){
-                this.removeCss('no-footer');
+                this.removeCss("no-footer");
 
                 if(!this.ftr){
                     var ftr = new OjStyleElement();
-                    ftr.addCss('footer');
+                    ftr.addCss("footer");
 
                     this.container.parent.insertChildAt(this.ftr = ftr, 0);
                 }
@@ -241,23 +242,23 @@ OJ.extendComponent(
                 this.ftr.appendChild(val);
             }
             else{
-                this._unset('ftr');
+                this._unset("ftr");
 
-                this.addCss('no-footer');
+                this.addCss("no-footer");
             }
         },
 
-        '=header' : function(val){
+        "=header" : function(val){
             if(this._header == val){
                 return;
             }
 
             if(this._header = val){
-                this.removeCss('no-header');
+                this.removeCss("no-header");
 
                 if(!this.hdr){
                     var hdr = new OjStyleElement();
-                    hdr.addCss('header');
+                    hdr.addCss("header");
 
                     this.container.parent.insertChildAt(this.hdr = hdr, 0);
                 }
@@ -267,16 +268,16 @@ OJ.extendComponent(
                 this.hdr.appendChild(val);
             }
             else{
-                this._unset('hdr');
+                this._unset("hdr");
 
-                this.addCss('no-header');
+                this.addCss("no-header");
             }
         },
 
-        '.icon' : function(){
-            return OjImage.image(this._icon, true); // this will clone the icon so that we don't run into the icon accidentally getting messed up
+        ".icon" : function(){
+            return OjImage.image(this._icon, true); // this will clone the icon so that we don"t run into the icon accidentally getting messed up
         },
-        '=icon' : function(icon){
+        "=icon" : function(icon){
             if(this._icon == icon){
                 return;
             }
@@ -286,7 +287,7 @@ OJ.extendComponent(
             this.dispatchEvent(new OjEvent(OjView.ICON_CHANGE, false));
         },
 
-        '=title' : function(title){
+        "=title" : function(title){
             if(this._title == title){
                 return;
             }
@@ -301,21 +302,22 @@ OJ.extendComponent(
         }
     },
     {
-        'SHORT_TITLE' : null,
-        'TITLE' : null,
+        "ICON" : null,
+        "SHORT_TITLE" : null,
+        "TITLE" : null,
 
-        'HORIZONTAL' : 'horizontal',
-        'VERTICAL' : 'vertical',
-        'TOP' : 'top',
-        'BOTTOM' : 'bottom',
-        'LEFT' : 'left',
-        'RIGHT' : 'right',
+        "HORIZONTAL" : "horizontal",
+        "VERTICAL" : "vertical",
+        "TOP" : "top",
+        "BOTTOM" : "bottom",
+        "LEFT" : "left",
+        "RIGHT" : "right",
 
-        'ICON_CHANGE' : 'onTitleChange',
-        'LOAD' : 'onViewLoad',
-        'TITLE_CHANGE' : 'onTitleChange',
-        'UNLOAD' : 'onViewUnload',
+        "ICON_CHANGE" : "onTitleChange",
+        "LOAD" : "onViewLoad",
+        "TITLE_CHANGE" : "onTitleChange",
+        "UNLOAD" : "onViewUnload",
 
-        '_TAGS' : ['view']
+        "_TAGS" : ["view"]
     }
 );

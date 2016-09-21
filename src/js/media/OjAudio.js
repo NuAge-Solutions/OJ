@@ -1,120 +1,120 @@
-OJ.importJs('oj.media.OjMedia');
+importJs('oj.media.OjMedia');
 
 
 
 
 OJ.extendComponent(
-	'OjAudio', [OjMedia],
-	{
-		'_sources' : null,
+    'OjAudio', [OjMedia],
+    {
+        '_sources' : null,
 
 
-		'_makeMedia' : function(){
-			var elm = new OjStyleElement('<audio></audio>');
+        '_makeMedia' : function(){
+            var elm = new OjStyleElement('<audio></audio>');
 
-//			elm.addEventListener('load', this._callback = this._onMediaLoad.bind(this));
+//            elm.addEventListener('load', this._callback = this._onMediaLoad.bind(this));
 
-			return elm;
-		},
+            return elm;
+        },
 
-		'_setSource' : function(url){
-			this._super(OjMedia, '_setSource', arguments);
+        '_setSource' : function(url){
+            this._super(OjMedia, '_setSource', arguments);
 
-			if(this.media){
-				this.media.setAttr('src', this._source);
-			}
-		},
-
-
-		'_onMediaLoad' : function(evt){
-
-		},
+            if(this.media){
+                this.media.attr('src', this._source);
+            }
+        },
 
 
-		'pause' : function(){
-			if(this.media){
-				this.media.dom.pause();
-			}
-		},
+        '_onMediaLoad' : function(evt){
 
-		'play' : function(){
-			if(this.media){
-				this.media.dom.play();
-			}
-		},
-
-		'stop' : function(){
-			if(this.media){
-				if(this.media.load){
-					this.media.dom.load();
-				}
-				else{
-					this.media.setAttr('src', null);
-					this.media.setAttr('src', this._source);
-				}
-			}
-		},
+        },
 
 
-		'.sources' : function(){
-			if(this._sources){
-				return this._sources.clone();
-			}
+        'pause' : function(){
+            if(this.media){
+                this.media.dom.pause();
+            }
+        },
 
-			return [];
-		},
-		'=sources' : function(sources){
-			this._sources = sources ? sources.clone() : [];
+        'play' : function(){
+            if(this.media){
+                this.media.dom.play();
+            }
+        },
 
-			var ln = this._sources.length;
+        'stop' : function(){
+            if(this.media){
+                if(this.media.load){
+                    this.media.dom.load();
+                }
+                else{
+                    this.media.attr('src', null);
+                    this.media.attr('src', this._source);
+                }
+            }
+        },
 
-			if(this.media){
-				for(var i = 0; i < ln; i++){
-					if(this.media.canPlayType(OjAudio.audioType(this._sources[i])) == ''){
 
-					}
-				}
-			}
-			else if(ln){
-				this.source = this._sources[ln];
-			}
-		}
-	},
-	{
-		'MP3' : 'audio/mpeg',
-		'MP4' : 'audio/mp4',
-		'OGG' : 'audio/ogg',
-		'WAV' : 'audio/x-wav',
+        '.sources' : function(){
+            if(this._sources){
+                return this._sources.clone();
+            }
 
-		'audioType' : function(url){
-			var parts = OjUrl.url(url).path.split('.'),
-				ext = parts.pop();
+            return [];
+        },
+        '=sources' : function(sources){
+            this._sources = sources ? sources.clone() : [];
 
-			if(!ext){
-				return null;
-			}
+            var ln = this._sources.length;
 
-			ext = ext.toLowerCase();
+            if(this.media){
+                for(var i = 0; i < ln; i++){
+                    if(this.media.canPlayType(OjAudio.audioType(this._sources[i])) == ''){
 
-			if(ext == 'mp3' || ext == 'mpeg' || ext == 'mpeg1' || ext == 'mpeg2' || ext == 'mpeg3'){
-				return this.MP3;
-			}
+                    }
+                }
+            }
+            else if(ln){
+                this.source = this._sources[ln];
+            }
+        }
+    },
+    {
+        'MP3' : 'audio/mpeg',
+        'MP4' : 'audio/mp4',
+        'OGG' : 'audio/ogg',
+        'WAV' : 'audio/x-wav',
 
-			if(ext == 'mp4' || ext == 'm4a' || ext == 'm4p' || ext == 'm4b' || ext == 'm4r' || ext == 'm4v'){
-				return this.MP4;
-			}
+        'audioType' : function(url){
+            var parts = OjUrl.url(url).path.split('.'),
+                ext = parts.pop();
 
-			if(ext == 'ogg'){
-				return this.OGG;
-			}
+            if(!ext){
+                return null;
+            }
 
-			if(ext == 'wav'){
-				return this.WAV
-			}
+            ext = ext.toLowerCase();
 
-			return null;
-		},
+            if(ext == 'mp3' || ext == 'mpeg' || ext == 'mpeg1' || ext == 'mpeg2' || ext == 'mpeg3'){
+                return this.MP3;
+            }
 
-		'_TAGS' : ['audio']
-	}
+            if(ext == 'mp4' || ext == 'm4a' || ext == 'm4p' || ext == 'm4b' || ext == 'm4r' || ext == 'm4v'){
+                return this.MP4;
+            }
+
+            if(ext == 'ogg'){
+                return this.OGG;
+            }
+
+            if(ext == 'wav'){
+                return this.WAV
+            }
+
+            return null;
+        },
+
+        '_TAGS' : ['audio']
+    }
 );

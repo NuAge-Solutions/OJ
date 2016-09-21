@@ -5,6 +5,8 @@ import re
 import shutil
 import sys
 
+from hashlib import sha1
+
 
 ALL = 'all'
 ASSETS = 'assets'
@@ -111,6 +113,16 @@ def file_put_contents(path, contents):
         f.write(contents)
 
 
+def githash(path):
+    data = file_get_contents(path)
+
+    s = sha1()
+    s.update("blob %u\0" % len(data))
+    s.update(data)
+
+    return s.hexdigest()
+
+
 def is_path_allowed(file_path, includes=[], excludes=[], pre_compiled=[]):
     file_name = os.path.basename(file_path)
 
@@ -165,6 +177,76 @@ def js_get_contents(js, path='js'):
 
 def load_json(source):
     return json.loads(file_get_contents(source))
+
+
+def load_manifest_file(manifest_path):
+        # get the manifest directory path
+        manifest_dir = os.path.dirname(manifest_path)
+
+        # load the manifest file
+        raw_manifest = load_json(manifest_path)
+
+        # update the dependencies path
+        raw_manifest["dependencies_path"] = os.path.join(
+            manifest_dir, raw_manifest.get("dependencies_path", "dependencies")
+        )
+
+        # update the source path
+        raw_manifest["source_path"] = os.path.join(
+            manifest_dir, raw_manifest.get("source_path", "src")
+        )
+
+        # discover package name
+        package = raw_manifest["packages"].keys()[0].split(".")[0]
+
+        # setup manifest
+        manifest = dict()
+        manifest[package] = raw_manifest
+
+        # process dependencies
+        if os.path.isdir(raw_manifest["dependencies_path"]):
+            for path in os.listdir(raw_manifest["dependencies_path"]):
+                if path[0] == ".":
+                    continue
+
+                path = os.path.join(raw_manifest["dependencies_path"], path, "manifest.json")
+
+                if os.path.isfile(path):
+                    manifest.update(
+                        load_manifest_file(path)
+                    )
+
+        # # process the manifest packages
+        # for key in manifest:
+        #     val = manifest[key]
+        #
+        #     # check for a package dict
+        #     if isinstance(val, dict):
+        #         pass
+        #
+        #     # its a sub-manifest path
+        #     elif val:
+        #         # process the dependency manifest
+        #         dependency = load_manifest_file(
+        #             os.path.join(manifest_dir, val)
+        #         )
+        #
+        #         # store sub-dependencies
+        #         for d in dependency:
+        #             dependencies[d] = dependency[d]
+        #
+        #         # update manifest with dependency manifest object
+        #         manifest[key] = dependency[key]
+        #
+        #     else:
+        #         manifest[key] = None
+        #
+        # # process sub-dependencies to fill in any gaps
+        # for key in dependencies:
+        #     if key not in manifest:
+        #         manifest[key] = dependencies[key]
+
+        return manifest
 
 
 def mkdir(path, *args):

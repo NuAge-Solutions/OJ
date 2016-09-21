@@ -1,9 +1,9 @@
-OJ.importJs('oj.data.OjRect');
-OJ.importJs('oj.events.OjTransformEvent');
-OJ.importJs('oj.events.OjUiEvent');
-OJ.importJs('oj.fx.OjFade');
-OJ.importJs('oj.menu.OjMenu');
-OJ.importJs('oj.window.OjWindowManager');
+importJs('oj.data.OjRect');
+importJs('oj.events.OjTransformEvent');
+importJs('oj.events.OjUiEvent');
+importJs('oj.fx.OjFade');
+importJs('oj.menu.OjMenu');
+importJs('oj.window.OjWindowManager');
 
 
 OJ.extendManager(
@@ -14,7 +14,7 @@ OJ.extendManager(
         },
 
 
-//		'_active': null,  '_menus': null,  '_tweens': null,
+//        '_active': null,  '_menus': null,  '_tweens': null,
 
 
         '_constructor' : function(){
@@ -124,7 +124,7 @@ OJ.extendManager(
         },
 
         '_onTargetClick' : function(evt){
-            var target = evt.currentTarget;
+            var target = evt.current_target;
             var menu = this._menus[target.id];
 
             if(menu && !this._active[target.id]){
@@ -133,7 +133,7 @@ OJ.extendManager(
         },
 
         '_onTargetMove' : function(evt){
-            var target = evt.currentTarget;
+            var target = evt.current_target;
             var menu = this._menus[target.id];
 
             if(menu){
@@ -142,7 +142,7 @@ OJ.extendManager(
         },
 
         '_onTransOut' : function(evt){
-            OJ.destroy(evt.currentTarget);
+            OJ.destroy(evt.current_target);
         },
 
 

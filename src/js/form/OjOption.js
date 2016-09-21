@@ -1,170 +1,168 @@
-OJ.importJs('oj.renderers.OjTextRenderer');
-OJ.importJs('oj.events.OjUiEvent');
-
-OJ.importCss('oj.form.OjOption');
+importJs('oj.renderers.OjTextRenderer');
+importJs('oj.events.OjUiEvent');
 
 
 OJ.extendClass(
-	'OjOption', [OjItemRenderer],
-	{
-		'_props_' : {
-			'dataRenderer' : null,
-			'isSelected'   : false
-		},
+    'OjOption', [OjItemRenderer],
+    {
+        '_props_' : {
+            'dataRenderer' : null,
+            'isSelected'   : false
+        },
 
-//		'_selector' : null,
+//        '_selector' : null,
 
-		'_v_align' : OjStyleElement.MIDDLE,
+        '_v_align' : OjStyleElement.MIDDLE,
 
-		'_template' : 'oj.form.OjOption',
-
-
-		'_constructor' : function(/*group|dataRenderer, data*/){
-			// process the arguments
-			var args = arguments,
-				ln = args.length,
-				renderer = OjTextRenderer;
-
-			if(ln > 1){
-				var tmp = args[1];
-
-				if(isString(tmp) || tmp.is('OjItemRenderer')){
-					renderer = tmp;
-
-					args[1] = null;
-				}
-			}
-
-			this._super(OjItemRenderer, '_constructor', arguments);
-
-			if(!this._selector){
-				this.dataRenderer = renderer;
-
-				this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
-			}
-		},
-
-		'_destructor' : function(){
-			this._selector = this._dataRenderer = null;
-
-			return this._super(OjItemRenderer, '_destructor', arguments);
-		},
+        '_template' : 'oj.form.OjOption',
 
 
-		'_processDomSourceChild' : function(dom_elm, component){
-			if(!isEmpty(dom_elm.nodeValue)){
-				this.data = (this._data ? this._data : '') + dom_elm.nodeValue;
+        '_constructor' : function(/*group|dataRenderer, data*/){
+            // process the arguments
+            var args = arguments,
+                ln = args.length,
+                renderer = OjTextRenderer;
 
-				return null;
-			}
+            if(ln > 1){
+                var tmp = args[1];
 
-			return this._super(OjItemRenderer, '_processDomSourceChild', arguments);
-		},
+                if(isString(tmp) || tmp.is('OjItemRenderer')){
+                    renderer = tmp;
 
-		'_redrawData' : function(){
-			if(this.option && this._super(OjItemRenderer, '_redrawData', arguments)){
-				this.option.data = this._data;
+                    args[1] = null;
+                }
+            }
 
-				return true;
-			}
+            this._super(OjItemRenderer, '_constructor', arguments);
 
-			return false;
-		},
+            if(!this._selector){
+                this.dataRenderer = renderer;
+
+                this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+            }
+        },
+
+        '_destructor' : function(){
+            this._selector = this._dataRenderer = null;
+
+            return this._super(OjItemRenderer, '_destructor', arguments);
+        },
 
 
-		'_onClick' : function(evt){
-			this.isSelected = !this.isSelected;
-		},
+        '_processDomSourceChild' : function(dom_elm, component){
+            if(!isEmpty(dom_elm.nodeValue)){
+                this.data = (this._data ? this._data : '') + dom_elm.nodeValue;
+
+                return null;
+            }
+
+            return this._super(OjItemRenderer, '_processDomSourceChild', arguments);
+        },
+
+        '_redrawData' : function(){
+            if(this.option && this._super(OjItemRenderer, '_redrawData', arguments)){
+                this.option.data = this._data;
+
+                return true;
+            }
+
+            return false;
+        },
 
 
-		'=dataRenderer' : function(val){
-			if(isString(val)){
-				val = OJ.stringToClass(val);
-			}
+        '_onClick' : function(evt){
+            this.isSelected = !this.isSelected;
+        },
 
-			if(this._dataRenderer == val){
-				return;
-			}
 
-			this._unset('option');
+        '=dataRenderer' : function(val){
+            if(isString(val)){
+                val = OJ.stringToClass(val);
+            }
 
-			this._dataRenderer = val;
+            if(this._dataRenderer == val){
+                return;
+            }
+
+            this._unset('option');
+
+            this._dataRenderer = val;
 
             this.option = new val(this._group, this._data)
             this.option.addCss('option');
 
-			this.appendElm(this.option);
-		},
+            this.appendElm(this.option);
+        },
 
-		'=group' : function(group){
-			if(this._group == group){
-				return;
-			}
+        '=group' : function(group){
+            if(this._group == group){
+                return;
+            }
 
-			this._super(OjItemRenderer, '=group', arguments);
+            this._super(OjItemRenderer, '=group', arguments);
 
-			var owner;
+            var owner;
 
-			if(this._group && (owner = this._group.owner) && owner.is(OjSelector)){
-				this._selector = owner;
+            if(this._group && (owner = this._group.owner) && owner.is(OjSelector)){
+                this._selector = owner;
 
-				this.dataRenderer = owner.item_renderer;
+                this.dataRenderer = owner.item_renderer;
 
-				this.removeEventListener(OjUiEvent.PRESS, this, '_onClick');
-			}
-			else{
-				this._selector = null;
+                this.removeEventListener(OjUiEvent.PRESS, this, '_onClick');
+            }
+            else{
+                this._selector = null;
 
-				this.dataRenderer = OjTextRenderer;
+                this.dataRenderer = OjTextRenderer;
 
-				this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
-			}
-		},
+                this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+            }
+        },
 
-		'=isSelected' : function(val){
-			if(this._isSelected == val){
-				return;
-			}
+        '=isSelected' : function(val){
+            if(this._isSelected == val){
+                return;
+            }
 
-			if(this._isSelected = val){
-				this.addCss('selected');
+            if(this._isSelected = val){
+                this.addCss('selected');
 
-				this.input.dom.checked = true;
-			}
-			else{
-				this.removeCss('selected');
+                this.input.dom.checked = true;
+            }
+            else{
+                this.removeCss('selected');
 
-				this.input.dom.checked = false;
-			}
+                this.input.dom.checked = false;
+            }
 
-			this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
-		}
-	}
+            this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+        }
+    }
 );
 
 
 
 
 OJ.extendComponent(
-	'OjCheckedOption', [OjOption],
-	{},
-	{
-		'_TAGS' : ['oj-checkbox', 'checkbox']
-	}
-);
-
-
-
-OJ.extendComponent(
-	'OjRadioOption', [OjOption],
-	{
-		'_constructor' : function(){
-			this._super(OjOption, '_constructor', arguments);
-
-			this.input.setAttr('type', 'radio');
-		}
-	},
+    'OjCheckedOption', [OjOption],
+    {},
     {
-		'_TAGS' : ['oj-radio', 'radio']
-	}
+        '_TAGS' : ['oj-checkbox', 'checkbox']
+    }
+);
+
+
+
+OJ.extendComponent(
+    'OjRadioOption', [OjOption],
+    {
+        '_constructor' : function(){
+            this._super(OjOption, '_constructor', arguments);
+
+            this.input.attr('type', 'radio');
+        }
+    },
+    {
+        '_TAGS' : ['oj-radio', 'radio']
+    }
 );

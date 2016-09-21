@@ -1,9 +1,9 @@
-OJ.importJs('oj.views.OjView');
+importJs('oj.views.OjView');
 
 
 OJ.extendComponent(
-	'OjForm', [OjView], 
-	{
+    'OjForm', [OjView], 
+    {
         '_props_' : {
             'cancelLabel' : 'Cancel',
             'data' : null,
@@ -27,12 +27,12 @@ OJ.extendComponent(
             });
 
             WindowManager.alert(
-				'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
-				'Form Error'
-			);
+                'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
+                'Form Error'
+            );
         },
 
-		'_onSubmitClick' : function(evt){
+        '_onSubmitClick' : function(evt){
             var self = this,
                 controller = self.controller;
 
@@ -47,51 +47,51 @@ OJ.extendComponent(
                 inputs = self.inputs,
                 key;
 
-			for(key in inputs){
+            for(key in inputs){
                 inputs[key].blur();
             }
 
             return rtrn;
         },
 
-		'focus' : function(){
-			var self = this,
+        'focus' : function(){
+            var self = this,
                 rtrn = self._super(OjView, 'focus', arguments),
                 inputs = self.inputs,
                 key = Object.keys(inputs).first;
 
-			if(key){
-				inputs[key].focus();
-			}
+            if(key){
+                inputs[key].focus();
+            }
 
             return rtrn;
-		},
+        },
 
-		'reset' : function(){
-			var inputs = this.inputs,
+        'reset' : function(){
+            var inputs = this.inputs,
                 nm;
 
-			for(nm in inputs){
-				inputs[nm].value = null;
-			}
-		},
+            for(nm in inputs){
+                inputs[nm].value = null;
+            }
+        },
 
-		'submit' : function(){
+        'submit' : function(){
             var self = this,
                 evt = OjEvent;
 
             if(self.validate()){
-				// todo: OjForm - add submit code logic/functionality
-				self.dispatchEvent(new evt(evt.SUBMIT, false, false));
+                // todo: OjForm - add submit code logic/functionality
+                self.dispatchEvent(new evt(evt.SUBMIT, false, false));
 
-				return true;
-			}
+                return true;
+            }
 
-			return false;
-		},
+            return false;
+        },
 
-		'validate' : function(){
-			var self = this,
+        'validate' : function(){
+            var self = this,
                 is_valid = self.is_valid,
                 msg = '';
 
@@ -101,8 +101,8 @@ OJ.extendComponent(
 
             this._showFormError();
 
-			return false;
-		},
+            return false;
+        },
 
 
         '.action_view' : function(){
@@ -146,9 +146,9 @@ OJ.extendComponent(
         },
 
         '.inputs' : function(){
-			var inputs = this.dom.getElementsByClassName('OjInput'),
+            var inputs = this.dom.getElementsByClassName('OjInput'),
                 ln = inputs.length,
-				rtrn = {},
+                rtrn = {},
                 item;
 
             for(; ln--;){
@@ -158,8 +158,8 @@ OJ.extendComponent(
                 rtrn[item.name] = item;
             }
 
-			return rtrn;
-		},
+            return rtrn;
+        },
 
         '.is_valid' : function(){
             var self = this,
@@ -171,14 +171,14 @@ OJ.extendComponent(
                 input = inputs[nm];
 
                 if(!input.validate()){
-					errors.append({
-						'input' : input,
-						'error' : input.error
-					});
-				}
+                    errors.append({
+                        'input' : input,
+                        'error' : input.error
+                    });
+                }
             }
 
-			return !errors.length;
+            return !errors.length;
         },
 
         '=submit_label' : function(val){
@@ -192,8 +192,8 @@ OJ.extendComponent(
                 this._action_view.label = val;
             }
         }
-	},
-	{
-		'_TAGS' : ['form']
-	}
+    },
+    {
+        '_TAGS' : ['form']
+    }
 );

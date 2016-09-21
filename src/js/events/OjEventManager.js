@@ -1,5 +1,5 @@
-OJ.importJs('oj.data.OjObject');
-OJ.importJs('oj.events.OjEvent');
+importJs('oj.data.OjObject');
+importJs('oj.events.OjEvent');
 
 
 OJ.extendManager(
@@ -70,7 +70,7 @@ OJ.extendManager(
 
 
         '_dispatchEvents' : function(evt, type, target){
-            if(evt.isCanceled){
+            if(evt.canceled){
                 return;
             }
 
@@ -82,7 +82,7 @@ OJ.extendManager(
                 target_id = target.oj_id,
                 listener, listeners, key;
 
-            evt._currentTarget = target;
+            evt._current_target = target;
 
             if(events[type] && events[type][target_id]){
                 listeners = events[type][target_id];
@@ -146,7 +146,7 @@ OJ.extendManager(
                 parent;
 
             evt._target = evt._target ? evt._target : target;
-            evt._currentTarget = target;
+            evt._current_target = target;
 
             this._dispatchEvents(evt, type, target);
 

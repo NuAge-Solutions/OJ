@@ -1,11 +1,9 @@
-OJ.importJs('oj.data.OjArray');
-OJ.importJs('oj.form.OjOption');
-OJ.importJs('oj.form.OjInput');
-OJ.importJs('oj.renderers.OjTextRenderer');
-OJ.importJs('oj.components.OjList');
-OJ.importJs('oj.events.OjCollectionEvent');
-
-OJ.importCss('oj.form.OjSelector');
+importJs('oj.data.OjArray');
+importJs('oj.form.OjOption');
+importJs('oj.form.OjInput');
+importJs('oj.renderers.OjTextRenderer');
+importJs('oj.components.OjList');
+importJs('oj.events.OjCollectionEvent');
 
 
 OJ.extendComponent(
@@ -122,7 +120,7 @@ OJ.extendComponent(
 
             // make sure we have the at least the min amount selected
             var i = 0,
-                ln2 = this.input.numElms;
+                ln2 = this.input.num_elms;
 
             for(; (ln = this._value.length) < this._selectionMin && i < ln2; i++){
                 this._selectOption(this.input.renderItemAt(i), this.input.getElmAt(i));

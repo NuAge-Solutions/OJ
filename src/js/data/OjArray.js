@@ -1,4 +1,4 @@
-OJ.importJs('oj.events.OjActionable');
+importJs('oj.events.OjActionable');
 
 
 OJ.extendClass(
@@ -100,9 +100,9 @@ OJ.extendClass(
 
             self._checkDuplicate(item)
 
-			items[index] = item;
+            items[index] = item;
 
-			self.dispatchEvent(new col_evt(col_evt.ITEM_REPLACE, [item], index, [old_item]));
+            self.dispatchEvent(new col_evt(col_evt.ITEM_REPLACE, [item], index, [old_item]));
 
             return item;
         },
@@ -365,8 +365,8 @@ OJ.extendClass(
                 obj = [obj];
             }
 
-			return new OjArray(obj);
-		}
+            return new OjArray(obj);
+        }
     }
 );
 
@@ -584,16 +584,17 @@ if(!proto.prepend){
 
 if(!proto.remove){
     proto.remove = function(val/*, ...*/){
-        var needle, i,
+        var self = this,
+            needle, i,
             a = arguments,
             ln = a.length,
             removed = [];
 
-        for(; ln-- && this.length;){
+        for(; ln-- && self.length;){
             needle = a[ln];
 
-            for(; (i = this.indexOf(needle)) > -1;){
-                removed.append(this.splice(i, 1));
+            for(; (i = self.indexOf(needle)) > -1;){
+                removed.append(self.splice(i, 1));
             }
         }
 

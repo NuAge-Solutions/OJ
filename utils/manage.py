@@ -45,7 +45,7 @@ def add(src, classes=[], types=ALL):
         content = ''
 
         if CSS in types:
-            content += "OJ.importCss('" + cls + "');\n\n\n"
+            content += "importCss('" + cls + "');\n\n\n"
 
         content += 'OJ.extendClass('
         content += "\n    '" + name + "', [" + ', '.join(parents) + '],'

@@ -1,8 +1,8 @@
 .OjView {
-	display: block;
+    display: block;
 
-	overflow: auto;
+    overflow: auto;
 }
 .OjView.loading {
-	overflow: hidden;
+    overflow: hidden;
 }

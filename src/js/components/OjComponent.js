@@ -1,6 +1,4 @@
-OJ.importJs('oj.fx.OjFade');
-
-OJ.importCss('oj.components.OjComponent');
+importJs('oj.fx.OjFade');
 
 
 OJ.extendClass(
@@ -11,15 +9,15 @@ OJ.extendClass(
             'enabled' : null,
             'disabled' : false,
             'elms' : null,
-            'isActive' : null,
+            'is_active' : null,
             'isEnabled' : null,
             'isDisabled' : null,
-            'numElms' : 0
+            'num_elms' : 0
         },
 
         '_get_props_' : {
             'controller' : null,
-            'isAnimating' : false
+            'is_animating' : false
         },
 
 
@@ -34,8 +32,8 @@ OJ.extendClass(
                     args[0] = template;
                 }
                 else{
-                    // TODO: this will throw an error until OJ.importTemplate is replaced
-                    //args[0] = OJ.importTemplate(this._template);
+                    // TODO: this will throw an error until importTemplate is replaced
+                    //args[0] = importTemplate(this._template);
                 }
             }
 
@@ -49,6 +47,89 @@ OJ.extendClass(
             self._setContainer(self.container || self);
         },
 
+        "_destructor" : function(){
+            this._disableUiEvents();
+
+            return this._super(OjStyleElement, "_destructor", arguments);
+        },
+
+
+        "_disableUiEvents" : function(){
+            var self = this;
+
+            self.removeEventListener(OjUiEvent.DOWN, self, "_onUiDown");
+            self.removeEventListener(OjUiEvent.PRESS, self, "_onUiPress");
+            self.removeEventListener(OjUiEvent.OVER, self, "_onUiOver");
+            self.removeEventListener(OjUiEvent.OUT, self, "_onUiOut");
+
+            OJ.removeEventListener(OjUiEvent.MOVE, self, "_onUiMove");
+            OJ.removeEventListener(OjUiEvent.UP, self, "_onUiUp");
+        },
+
+        "_enableUiEvents" : function(){
+            var self = this;
+
+            self.addEventListener(OjUiEvent.DOWN, self, "_onUiDown");
+            self.addEventListener(OjUiEvent.PRESS, self, "_onUiPress");
+            self.addEventListener(OjUiEvent.OVER, self, "_onUiOver");
+        },
+
+
+        "_onUiDown" : function(evt){
+            var self = this;
+
+            OJ.addEventListener(OjUiEvent.UP, self, "_onUiUp");
+            self.addEventListener(OjUiEvent.UP, self, "_onUiUp");
+
+            self.addCss("ui-down");
+        },
+
+        "_onUiMove" : function(evt){
+            var self = this;
+
+            if(!self.hitTestPoint(evt.pageX, evt.pageY)){
+                OJ.removeEventListener(OjUiEvent.MOVE, self, "_onUiMove");
+
+                self._onUiOut(evt);
+            }
+        },
+
+        "_onUiOut" : function(evt){
+            var self = this;
+
+            self.removeCss("ui-over");
+
+            self._updateIcon(self._icon);
+        },
+
+        "_onUiOver" : function(evt){
+            var self = this;
+
+            OJ.addEventListener(OjUiEvent.MOVE, self, "_onUiMove");
+
+            self.addCss("ui-over");
+        },
+
+        "_onUiPress" : function(evt){
+            var url = this.url;
+
+            if(url){
+                WindowManager.open(url, this.target, {
+                    'width' : this.target_width,
+                    'height' : this.target_height
+                });
+            }
+        },
+
+        "_onUiUp" : function(evt){
+            var self = this;
+
+            OJ.removeEventListener(OjUiEvent.UP, self, "_onUiUp");
+            self.removeEventListener(OjUiEvent.UP, self, "_onUiUp");
+
+            self.removeCss("ui-down");
+        },
+
         // override this so that the component gets properly set
         '_processChild' : function(dom, context){
             return this._super(OjStyleElement, '_processChild', [dom, context ? context : this]);
@@ -59,8 +140,8 @@ OJ.extendClass(
         },
 
         '_processDomSourceChild' : function(dom_elm, context){
-            if(OjElement.isCommentNode(dom_elm)){
-                return null;
+            if(!dom_elm || OjElement.isCommentNode(dom_elm)){
+                return ;
             }
 
             return this._processChild(dom_elm, context);
@@ -70,22 +151,12 @@ OJ.extendClass(
             var self = this,
                 child,
                 children = dom.childNodes,
-                i = 0,
                 ln = children.length;
 
-            for(; i < ln; i++){
-                if(child = self._processDomSourceChild(children[i], context)){
-                    self.appendElm(child);
-
-                    // if we add then we need to decrement the counter and length since
-                    // a child will have been removed from the child nodes array
-                    i--;
-                    ln--;
+            for(; ln--;){
+                if(child = self._processDomSourceChild(children[ln], context)){
+                    self.prependElm(child);
                 }
-                //else{
-                //    dom.removeChild(children[i]);
-                //}
-
             }
         },
 
@@ -131,7 +202,7 @@ OJ.extendClass(
                 target = is_body ? dom : this._dom;
 
             // prevent events from dispatching while we are setting everything up
-//			this._prevent_dispatch = true;
+//            this._prevent_dispatch = true;
 
             // process dom attributes
             this._processDomSourceAttributes(dom, context);
@@ -176,7 +247,7 @@ OJ.extendClass(
             }
 
             // reengage event dispatching now that everything is setup
-//			this._prevent_dispatch = false;
+//            this._prevent_dispatch = false;
 
             // update our dom var to the target
             this._dom = target;
@@ -186,15 +257,15 @@ OJ.extendClass(
         },
 
         '_setIsAnimating' : function(val){
-            if(this._isAnimating == val){
+            if(this._is_animating == val){
                 return;
             }
 
-            if(this._isAnimating = val){
-                this.addCss(['animating']);
+            if(this._is_animating = val){
+                this.addCss('animating');
             }
             else{
-                this.removeCss(['animating']);
+                this.removeCss('animating');
             }
         },
 
@@ -278,8 +349,8 @@ OJ.extendClass(
             return this._callElmFunc('moveElm', arguments);
         },
 
-        '.numElms' : function(){
-            return this._callElmProp('numElms');
+        '.num_elms' : function(){
+            return this._callElmProp('num_elms');
         },
 
         'prependElm' : function(){
@@ -386,11 +457,11 @@ OJ.extendClass(
         },
 
         // active
-        '.isActive' : function(){
+        '.is_active' : function(){
             return this.active;
         },
 
-        '=isActive' : function(val){
+        '=is_active' : function(val){
             this.active = val;
         },
 
@@ -459,7 +530,7 @@ OJ.extendClass(
             'indexOfElm' : 'indexOfChild',
             'insertElmAt' : 'insertChildAt',
             'moveElm' : 'moveChild',
-            'numElms' : 'num_children',
+            'num_elms' : 'num_children',
             'prependElm' : 'prependChild',
             'removeAllElms' : 'removeAllChildren',
             'removeElm' : 'removeChild',
@@ -469,68 +540,7 @@ OJ.extendClass(
         },
 
         'load' : function(source){
-// todo: refactor load media function
-//			// determine what action to take based on the extension of the src
-//			// default action is to request the uri and then load the contents into the widgets
-//			// however we can also display flash, videos, audio and images
-//			var widget,
-//				type = OJ.getFileType(source);
-//
-//			this.empty();
-//
-//			if(type == OJ.HTML){
-//				// load the file and put the html into the container
-//			}
-//			else{
-//				var w, h;
-//
-//				if(type == OJ.IMAGE){
-//					OJ.importJs('oj.media.OjImage');
-//
-//					widget = new OjImage();
-//				}
-//				else if(type == OJ.FLASH){
-//					OJ.importJs('oj.media.OjFlash');
-//
-//					widget = new OjFlash();
-//
-//					w = '100%';
-//					h = 300;
-//				}
-//				else if(type == OJ.VIDEO || type == OJ.AUDIO || type == OJ.STREAMING){
-//					widget = new OjMediaPlayer();
-//
-//					w = '100%';
-//					h = '100%';
-//				}
-//				else{
-//					importJs('oj.widgets.Container');
-//
-//					widget = new OjView();
-//				}
-//
-//				widget.source(_source);
-//
-//				if(isNull(w)){
-//					w = widget.width();
-//				}
-//
-//				if(isNull(h)){
-//					h = widget.height();
-//				}
-//
-//				if((isEmpty(this.css('width')) || this.css('width') == 'auto') && w){
-//					this.width(w);
-//				}
-//
-//				if((isEmpty(this.css('height')) || this.css('height') == 'auto') && h){
-//					this.height(h);
-//				}
-//
-//				this.add(widget);
-//			}
-//
-//			return source;
+
         }
     }
 );

@@ -1,21 +1,21 @@
 .OjFieldset {
-	width: 100%;
+    width: 100%;
 }
 .OjFieldset.animating,
 .OjFieldset.collapsed {
-	overflow: hidden;
+    overflow: hidden;
 }
 
-	.OjFieldset.collapsed > .container {
-		display: none;
-	}
-	.OjFieldset.collapsed.animating > .container {
-		display: block;
-	}
+    .OjFieldset.collapsed > .container {
+        display: none;
+    }
+    .OjFieldset.collapsed.animating > .container {
+        display: block;
+    }
 
-	.OjFieldset > .actuator {
-		position: absolute;
+    .OjFieldset > .actuator {
+        position: absolute;
 
-		top: 0px;
-		right: 0px;
-	}
+        top: 0px;
+        right: 0px;
+    }

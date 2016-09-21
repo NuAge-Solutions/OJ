@@ -1,13 +1,13 @@
-OJ.importJs('oj.events.OjErrorEvent');
+importJs('oj.events.OjErrorEvent');
 
 
 
 
 OJ.extendClass(
-	'OjIoErrorEvent', [OjErrorEvent],
-	{},
-	{
-		'IO_ERROR'   : 'onIoError',
-		'IO_TIMEOUT' : 'onIoTimeout'
-	}
+    'OjIoErrorEvent', [OjErrorEvent],
+    {},
+    {
+        'IO_ERROR'   : 'onIoError',
+        'IO_TIMEOUT' : 'onIoTimeout'
+    }
 );

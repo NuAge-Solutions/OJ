@@ -1,53 +1,54 @@
-OJ.importJs('oj.components.OjLabel');
-OJ.importJs('oj.media.OjIcon');
-OJ.importJs('oj.media.OjImage');
-
-OJ.importCss('oj.components.OjLink');
-
+importJs('oj.components.OjLabel');
+importJs('oj.media.OjIcon');
+importJs('oj.media.OjImage');
 
 OJ.extendComponent(
-	'OjLink', [OjLabel],
-	{
-		'_props_' : {
-			'downIcon'     : null,
-			'icon'         : null,
-			'overIcon'     : null,
-			'target'       : '_self', // WindowManager.SELF,
-			'targetHeight' : null,
-			'targetWidth'  : null,
-			'url'          : null
-		},
+    'OjLink', [OjLabel],
+    {
+        '_props_' : {
+            'down_icon'     : null,
+            'icon'         : null,
+            'over_icon'     : null,
+            'target'       : null,
+            'target_height' : null,
+            'target_width'  : null,
+            'url'          : null
+        },
 
-		'_template' : 'oj.components.OjLink',
-
-
-		'_constructor' : function(/*label, url, target*/){
-			this._super(OjLabel, '_constructor', []);
-
-			this._processArguments(arguments, {
-				'text' : undefined,
-				'url' : undefined,
-				'target' : undefined
-			});
-		},
-
-		'_destructor' : function(){
-			// just to make sure that the document mouse move event listener gets removed
-			OJ.removeEventListener(OjUiEvent.MOVE, this, '_onMouseMove');
-
-			this._super(OjLabel, '_destructor', arguments);
-		},
+        '_template' : 'oj.components.OjLink',
 
 
-		'_processAttribute' : function(dom, attr, context){
-			if(attr.nodeName == 'href'){
-				this.url = attr.value;
+        '_constructor' : function(/*label, url, target*/){
+            var self = this;
 
-				return true;
-			}
+            self._super(OjLabel, '_constructor', []);
 
-			return this._super(OjLabel, '_processAttribute', arguments);
-		},
+            self._processArguments(arguments, {
+                'text' : undefined,
+                'url' : undefined,
+                'target' : WindowManager.SELF
+            });
+
+            self._enableUiEvents();
+        },
+
+        '_destructor' : function(){
+            // just to make sure that the document mouse move event listener gets removed
+            OJ.removeEventListener(OjUiEvent.MOVE, this, '_onMouseMove');
+
+            this._super(OjLabel, '_destructor', arguments);
+        },
+
+
+        '_processAttribute' : function(dom, attr, context){
+            if(attr.nodeName == 'href'){
+                this.url = attr.value;
+
+                return true;
+            }
+
+            return this._super(OjLabel, '_processAttribute', arguments);
+        },
 
         '_processDomSourceChild' : function(){
             var self = this,
@@ -63,79 +64,102 @@ OJ.extendComponent(
         },
 
 
-		'_redrawText' : function(){
+        '_redrawText' : function(){
+            var self = this,
+                txt = (self.prefix || '') + (self.text || '') + (self.suffix || '').trim();
+
+            self.lbl.text = txt;
+
+            if(isEmpty(txt)){
+                self.addCss("no-label");
+            }
+            else{
+                self.removeCss("no-label");
+            }
+        },
+
+        '_updateIcon' : function(val){
+            var self = this,
+                icn = self.icn;
+
+            icn.removeAllChildren();
+
+            if(val){
+                icn.appendChild(val);
+
+                self.removeCss("no-icon");
+            }
+            else{
+                self.addCss("no-icon");
+            }
+        },
+
+
+        "_onUiDown" : function(evt){
             var self = this;
 
-			self.lbl.text = (self.prefix || '') + (self.text || '') + (self.suffix || '');
-		},
+            self._super(OjLabel, "_onUiDown", arguments);
 
-		'_updateIcon' : function(val){
-            this.icn.removeAllChildren();
+            if(self._down_icon){
+                self._updateIcon(self._down_icon);
+            }
+        },
 
-			if(val){
-				this.icn.appendChild(val);
-			}
-		},
+        "_onUiOut" : function(evt){
+            var self = this;
 
+            self._super(OjLabel, "_onUiOut", arguments);
 
-		'_onClick' : function(evt){
-            var url = this.url;
+            self._updateIcon(self._icon);
+        },
 
-			if(url){
-                WindowManager.open(url, this.target, {
-                    'width' : this.targetWidth,
-                    'height' : this.targetHeight
-                });
-			}
-		},
+        "_onUiOver" : function(evt){
+            var self = this;
 
-		'_onMouseOver' : function(evt){
-			if(this._overIcon){
-				OJ.addEventListener(OjUiEvent.MOVE, this, '_onMouseMove');
+            self._super(OjLabel, "_onUiOver", arguments);
 
-				this._updateIcon(this._overIcon);
-			}
-		},
+            if(self._over_icon){
+                self._updateIcon(self._over_icon);
+            }
+        },
 
-		'_onMouseMove' : function(evt){
-			if(!this.hitTestPoint(evt.pageX, evt.pageY)){
-				OJ.removeEventListener(OjUiEvent.MOVE, this, '_onMouseMove');
+        "_onUiPress" : function(evt){
+            var self = this,
+                url = self.url;
 
-				this._updateIcon(this._icon);
-			}
-		},
+            self._super(OjLabel, "_onUiPress", arguments);
 
-		'_onMouseDown' : function(evt){
-			if(this._downIcon){
-				this._updateIcon(this._downIcon);
+            if(url){
+                WindowManager.open(
+                    url,
+                    self.target,
+                    {
+                        "width" : self.target_width,
+                        "height" : self.target_height
+                    }
+                );
+            }
+        },
 
-				this.addEventListener(OjUiEvent.UP, this, '_onMouseUp');
-			}
-		},
+        "_onUiUp" : function(evt){
+            var self = this;
 
-		'_onMouseUp' : function(evt){
-			this.removeEventListener(OjUiEvent.UP, this, '_onMouseUp');
+            self._super(OjLabel, "_onUiUp", arguments);
 
-			this._updateIcon(this._icon);
-		},
+            self._updateIcon(self._icon);
+        },
 
 
-		// GETTER & SETTER FUNCTIONS
-		'=downIcon' : function(icon){
-			if(this._downIcon == (icon = OjImage.image(icon))){
-				return;
-			}
+        // GETTER & SETTER FUNCTIONS
+        '=down_icon' : function(icon){
+            if(this._down_icon == (icon = OjImage.image(icon))){
+                return;
+            }
 
-			if(this._downIcon = icon){
-				this.addEventListener(OjUiEvent.DOWN, this, '_onMouseDown');
-			}
-			else{
-				this.removeEventListener(OjUiEvent.DOWN, this, '_onMouseDown');
-				this.removeEventListener(OjUiEvent.UP, this, '_onMouseUp');
-			}
-		},
+            this._down_icon = icon;
+        },
 
-		'=icon' : function(icon){
+        '=icon' : function(icon){
             var self = this;
 
             if(!isObjective(icon, OjIcon)){
@@ -143,45 +167,33 @@ OJ.extendComponent(
             }
 
             if(self._icon == icon){
-				return;
-			}
+                return;
+            }
 
-			self._updateIcon(self._icon = icon);
-		},
+            self._updateIcon(self._icon = icon);
+        },
 
-		'=overIcon' : function(icon){
-			if(this._overIcon == (icon = OjImage.image(icon))){
-				return;
-			}
+        '=over_icon' : function(icon){
+            if(this._over_icon == (icon = OjImage.image(icon))){
+                return;
+            }
 
-			if(this._overIcon = icon){
-				this.addEventListener(OjUiEvent.OVER, this, '_onMouseOver');
-			}
-			else{
-				this.removeEventListener(OjUiEvent.OVER, this, '_onMouseOver');
+            this._over_icon = icon;
+        },
 
-				OJ.removeEventListener(OjUiEvent.MOVE, this, '_onMouseMove');
-			}
-		},
+        '=url' : function(url){
+            this._url = OjUrl.url(url)
+        },
 
-		'=url' : function(url){
-			if(this._url = OjUrl.url(url)){
-				this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
-			}
-			else{
-				this.removeEventListener(OjUiEvent.PRESS, this, '_onClick');
-			}
-		},
+        '=target' : function(target){
+            if(isComponent(target)){
+                target = target.id;
+            }
 
-		'=target' : function(target){
-			if(isComponent(target)){
-				target = target.id;
-			}
-
-			this._target = target;
+            this._target = target;
         }
-	},
-	{
-		'_TAGS' : ['a', 'link']
-	}
+    },
+    {
+        '_TAGS' : ['a', 'link']
+    }
 );

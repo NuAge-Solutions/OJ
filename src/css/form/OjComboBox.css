@@ -88,7 +88,7 @@
         width: 0px;
         height: 0px;
 
-		margin-top: -2px;
+        margin-top: -2px;
 
         border-top: 5px solid #999999;
         border-left: 5px solid transparent;
@@ -100,7 +100,7 @@
 
 /* Grey Color Scheme */
 .OjComboBox.grey .disclosure {
-	right: 5px;
+    right: 5px;
 }
 /*.OjComboBox.grey > .wrapper > .input-holder > .OjList {*/
     /*background: #F0F0F0;*/

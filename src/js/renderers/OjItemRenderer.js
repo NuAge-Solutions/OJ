@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.OjComponent');
+importJs('oj.components.OjComponent');
 
 
 OJ.extendComponent(

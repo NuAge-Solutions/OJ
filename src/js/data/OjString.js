@@ -3,7 +3,7 @@ String.string = function(val){
         return isObject(val) && val.toString ? val.toString() : String(val);
     }
 
-    return '';
+    return "";
 };
 
 
@@ -25,6 +25,12 @@ if(!proto.chunk){
         }
 
         return chunks;
+    };
+}
+
+if(!proto.contains){
+    proto.contains = function(obj){
+        return this.indexOf(obj) != -1;
     };
 }
 
@@ -109,15 +115,81 @@ if(!proto.encodeUri){
     };
 }
 
+if(!proto.format){
+    proto.format = function(value_or_tokens){
+        var self = this,
+            args = Array.array(arguments),
+            tokens = {},
+            token;
+
+
+        if(args.length == 1 && isObject(value_or_tokens)){
+            tokens = value_or_tokens;
+        }
+        else{
+            args.forEachReverse(function(item, i){
+                tokens[i] = item;
+            });
+        }
+
+        for(token in tokens){
+            self = self.replace(new RegExp('\\{' + token + '\\}', 'g'), tokens[token]);
+        }
+
+        return self;
+    };
+}
+
 if(!proto.html){
     proto.html = function(){
-        return this.replaceAll(['\n', '\t'], ['<br />', '&nbsp;&nbsp;&nbsp;&nbsp;']);
+        return this.replace(
+            /[\u00A0-\u9999<>\&]/gim,
+            function(i) {
+                return '&#'+i.charCodeAt(0)+';';
+            }
+        ).replaceAll(['\n', '\t'], ['<br />', '&nbsp;&nbsp;&nbsp;&nbsp;']);
     };
 }
 
 if(!proto.isEmpty){
     proto.isEmpty = function(){
         return this.trim() != '';
+    };
+}
+
+if(!proto.pluralize){
+    proto.pluralize = function(){
+        var self = this,
+            c = self.slice(-1),
+            c2 = self.slice(-2),
+            c3 = self.slice(-3);
+
+        if(c == "s"){
+            return self + "es";
+        }
+
+        if(c2 == "ey"){
+            return self.slice(0, -2) + "ies";
+        }
+
+        if(c3 == "elf"){
+            return self.slice(0, -3) + "elvs";
+        }
+
+        return self + "s";
+    };
+}
+
+if(!proto.possessive){
+    proto.possessive = function(){
+        var self = this,
+            c = self.slice(-1);
+
+        if(c == "s"){
+            return self + "'";
+        }
+
+        return self + "'s";
     };
 }
 
@@ -178,4 +250,8 @@ if(!proto.replaceAll){
             return this.replace(new RegExp(needle.regexEscape(), 'g'), replace);
         }
     };
+}
+
+if(SVGAnimatedString){
+    SVGAnimatedString.prototype.trim = function(){ return ""; }
 }

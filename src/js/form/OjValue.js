@@ -1,13 +1,10 @@
-OJ.importJs('oj.components.OjList');
-OJ.importJs('oj.renderers.OjTextRenderer');
-
-OJ.importCss('oj.form.OjValue');
-
+importJs('oj.components.OjList');
+importJs('oj.renderers.OjTextRenderer');
 
 
 OJ.extendComponent(
-	'OjValue', [OjComponent],
-	{
+    'OjValue', [OjComponent],
+    {
         '_props_' : {
             'item_renderer' : OjTextRenderer,
             'label' : null,
@@ -15,25 +12,25 @@ OJ.extendComponent(
             'value' : null
         },
 
-		'_template' : 'oj.form.OjValue',
+        '_template' : 'oj.form.OjValue',
 
 
-		'_constructor' : function(/*name, label, value*/){
-			this._super(OjComponent, '_constructor', []);
+        '_constructor' : function(/*name, label, value*/){
+            this._super(OjComponent, '_constructor', []);
 
-			this._processArguments(arguments, {
+            this._processArguments(arguments, {
                 'name' : null,
                 'label' : null,
                 'value' : null
             });
-		},
+        },
 
 
-		'_redrawLabel' : function(){
-			this.lbl.text = this.label;
-		},
+        '_redrawLabel' : function(){
+            this.lbl.text = this.label;
+        },
 
-		'_redrawValue' : function(){
+        '_redrawValue' : function(){
             var self = this,
                 renderer = self.item_renderer,
                 val = self.val,
@@ -47,19 +44,19 @@ OJ.extendComponent(
             else{
                 val.appendChild(new renderer(null, value));
             }
-		},
+        },
 
-		'=label' : function(label){
+        '=label' : function(label){
             var self = this;
 
             if(self._label == label){
                 return;
             }
 
-			self._label = label;
+            self._label = label;
 
-			self._redrawLabel();
-		},
+            self._redrawLabel();
+        },
 
         '=name' : function(nm){
             var self = this;
@@ -75,23 +72,26 @@ OJ.extendComponent(
             self.addCss((self._name = nm) + '-value');
         },
 
-		'=value' : function(value){
+        '=value' : function(value){
             var self = this;
 
             if(self._value == value){
                 return;
             }
 
-			self._value = value;
+            self._value = value;
 
-			self._redrawValue();
-		}
-	}
+            self._redrawValue();
+        }
+    },
+    {
+        "_TAGS" : ["value"]
+    }
 );
 
 
 OJ.extendComponent(
-	'OjOptionsValue', [OjValue], {
+    'OjOptionsValue', [OjValue], {
         '_props_' : {
             'options' : null
         },
@@ -100,7 +100,7 @@ OJ.extendComponent(
             this.options = options;
 
             this._super(OjValue, '_constructor', [name, label, value]);
-		},
+        },
 
         '_redrawValue' : function(){
             var self = this,
@@ -125,6 +125,6 @@ OJ.extendComponent(
                     val.appendChild(new renderer(null, options[value]));
                 }
             }
-		}
+        }
     }
 );

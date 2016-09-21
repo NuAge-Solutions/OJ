@@ -1,8 +1,8 @@
 .OjLink {
-	cursor: pointer;
+    cursor: pointer;
 
-	overflow: hidden;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     -webkit-justify-content: center;
     justify-content: center;
@@ -10,12 +10,24 @@
     -webkit-align-items: center;
     align-items: center;
 }
-	.OjLink > .label {
-		display: inline-block;
-	}
+.OjLink.ui-down {
+    opacity: 0.75;
+}
+.OjLink.active.ui-down {
+    opacity: 1.0;
+}
+    .OjLink > .icn {
+        padding-right: 5px;
 
-	.OjLink > .icon {
-		display: inline-block;
-
-		vertical-align: middle;
-	}
+        flex-shrink: 0;
+        -webkit-flex-shrink: 0;
+    }
+    .OjLink.no-icon > .icn {
+        display: none;
+    }
+    .OjLink.no-label > .icn {
+        padding-right: 0px;
+    }
+    .OjLink.no-label > .lbl {
+        display: none;
+    }

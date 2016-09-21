@@ -1,12 +1,11 @@
-OJ.importJs('oj.dom.OjStyleElement');
-OJ.importJs('oj.events.OjActionable');
-OJ.importJs('oj.fx.OjFade');
-OJ.importJs('oj.nav.OjIframe');
-OJ.importJs('oj.media.OjImageViewer');
-OJ.importJs('oj.window.OjModal');
-OJ.importJs('oj.window.OjAlert');
-
-OJ.importCss('oj.window.OjModal');
+importJs('oj.dom.OjStyleElement');
+importJs('oj.events.OjActionable');
+importJs('oj.events.OjKeyboardEvent');
+importJs('oj.fx.OjFade');
+importJs('oj.nav.OjIframe');
+importJs('oj.media.OjImageViewer');
+importJs('oj.window.OjModal');
+importJs('oj.window.OjAlert');
 
 
 OJ.extendManager(
@@ -60,6 +59,9 @@ OJ.extendManager(
                     OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
                 }
             }
+
+            OJ.addEventListener(OjKeyboardEvent.SHOW, self, '_onKeyboardUpdate');
+            OJ.addEventListener(OjKeyboardEvent.HIDE, self, '_onKeyboardUpdate');
         },
 
 
@@ -143,8 +145,33 @@ OJ.extendManager(
             }
         },
 
+
+        '_onKeyboardUpdate' : function(evt){
+            var self = this;
+
+            if(evt.type == OjKeyboardEvent.SHOW){
+                if(self._keyboard_int){
+                    return;
+                }
+
+                self._keyboard_int = setInterval(function(){
+                    if(self._keyboard_height == window.innerHeight){
+                        clearInterval(self._keyboard_int);
+
+                        self._keyboard_int = null;
+                    }
+                    else{
+                        self._modal_holder.height = window.innerHeight;
+                    }
+                }, 50);
+            }
+            else{
+                this._modal_holder.height = OjStyleElement.AUTO;
+            }
+        },
+
         '_onShow' : function(evt){
-            var modal = evt.currentTarget.target;
+            var modal = evt.current_target.target;
 
             // destroy tween
             evt = OJ.destroy(evt);
@@ -156,7 +183,7 @@ OJ.extendManager(
 
         '_onHide' : function(evt){
             var holder = this._modal_holder,
-                modal = evt.currentTarget.target;
+                modal = evt.current_target.target;
 
             // remove the modal from the holder
             holder.removeChild(modal);
@@ -192,7 +219,10 @@ OJ.extendManager(
 
             holder._setIsDisplayed(true);
 
-            holder.hide();
+            if(isEmpty(self._modals)){
+                holder.hide();
+            }
+
 
             // not sure why we had a timeout here... seems to be working fine without it
             //setTimeout(
@@ -255,7 +285,7 @@ OJ.extendManager(
             }
 
             modal.self_destruct = OjAlert.DEEP;
-            modal.isFullscreen = fullscreen;
+            modal.is_fullscreen = fullscreen;
             modal.pane_width = this._calcWindowWidth(width, fullscreen);
             modal.pane_height = this._calcWindowHeight(height, fullscreen);
 

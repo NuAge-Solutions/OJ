@@ -1,40 +1,43 @@
-OJ.importJs('oj.events.OjDomEvent');
+importJs('oj.events.OjDomEvent');
 
 
 
 
 OJ.extendClass(
-	'OjKeyboardEvent', [OjDomEvent],
-	{},
-	{
-		'convertDomEvent' : function(evt){
-			var type;
+    'OjKeyboardEvent', [OjDomEvent],
+    {},
+    {
+        'convertDomEvent' : function(evt){
+            var type;
 
-			evt = OjDomEvent.normalizeDomEvent(evt);
+            evt = OjDomEvent.normalizeDomEvent(evt);
 
-			if(evt.type == OjDomEvent.KEY_DOWN){
-				type = OjKeyboardEvent.DOWN;
-			}
-			else if(evt.type == OjDomEvent.KEY_PRESS){
-				type = OjKeyboardEvent.PRESS;
-			}
-			else if(evt.type == OjDomEvent.KEY_UP){
-				type = OjKeyboardEvent.UP;
-			}
+            if(evt.type == OjDomEvent.KEY_DOWN){
+                type = OjKeyboardEvent.DOWN;
+            }
+            else if(evt.type == OjDomEvent.KEY_PRESS){
+                type = OjKeyboardEvent.PRESS;
+            }
+            else if(evt.type == OjDomEvent.KEY_UP){
+                type = OjKeyboardEvent.UP;
+            }
 
-			return new OjKeyboardEvent(type, true, true);
-		},
+            return new OjKeyboardEvent(type, true, true);
+        },
 
-		'isKeyboardEvent' : function(type){
-			return type == OjKeyboardEvent.DOWN || type == OjKeyboardEvent.PRESS || type == OjKeyboardEvent.UP;
-		},
+        'isKeyboardEvent' : function(type){
+            return type == OjKeyboardEvent.DOWN || type == OjKeyboardEvent.PRESS || type == OjKeyboardEvent.UP;
+        },
 
-		'isKeyboardDomEvent' : function(type){
-			return type == OjDomEvent.KEY_DOWN || type == OjDomEvent.KEY_PRESS || type == OjDomEvent.KEY_UP;
-		},
+        'isKeyboardDomEvent' : function(type){
+            return type == OjDomEvent.KEY_DOWN || type == OjDomEvent.KEY_PRESS || type == OjDomEvent.KEY_UP;
+        },
 
-		'DOWN'  : 'onKeyDown',
-		'PRESS' : 'onKeyPress',
-		'UP'    : 'onKeyUp'
-	}
+        'DOWN'  : 'onKeyDown',
+        'PRESS' : 'onKeyPress',
+        'UP'    : 'onKeyUp',
+
+        'SHOW'  : 'onKeyboardShow',
+        'HIDE'  : 'onKeyboardHide'
+    }
 );

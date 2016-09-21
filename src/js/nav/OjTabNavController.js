@@ -1,6 +1,4 @@
-OJ.importJs('oj.nav.OjNavController');
-
-OJ.importCss('oj.nav.OjTabNavController');
+importJs('oj.nav.OjNavController');
 
 
 OJ.extendComponent(
@@ -33,11 +31,11 @@ OJ.extendComponent(
 
         '_updateActiveBtn' : function(){
             if(this._prev_active){
-                this._prev_active.isActive = false;
+                this._prev_active.is_active = false;
             }
 
-            if(this._prev_active = this.getChildAt(this._stack.activeIndex)){
-                this._prev_active.isActive = true;
+            if(this._prev_active = this.getChildAt(this._stack.active_index)){
+                this._prev_active.is_active = true;
             }
         },
 
@@ -63,19 +61,19 @@ OJ.extendComponent(
         },
 
         '_onTabClick' : function(evt){
-            this._stack.activeIndex = this.indexOfChild(evt.currentTarget);
+            this._stack.active_index = this.indexOfChild(evt.current_target);
 
             this._updateActiveBtn();
         },
 
         '_onViewIconChange' : function(evt){
-            var view = evt.currentTarget;
+            var view = evt.current_target;
 
             this.getChildAt(this._stack.indexOfElm(view)).icon = view.icon;
         },
 
         '_onViewTitleChange' : function(evt){
-            var view = evt.currentTarget;
+            var view = evt.current_target;
 
             this.getChildAt(this._stack.indexOfElm(view)).label = view.short_title;
         },
@@ -96,7 +94,7 @@ OJ.extendComponent(
                 this._stack.removeEventListener(OjStackEvent.REPLACE, this, '_onStackViewReplace');
 
                 // remove all the tabs
-                ln = this.numElms;
+                ln = this.num_elms;
 
                 for(; ln--;){
                     this._removeViewButton(this._stack.getElmAt(ln), ln);
@@ -112,7 +110,7 @@ OJ.extendComponent(
                 stack.addEventListener(OjStackEvent.REPLACE, this, '_onStackViewReplace');
 
                 // process the stack
-                ln = stack.numElms;
+                ln = stack.num_elms;
 
                 for(; ln--;){
                     this._addViewButton(stack.getElmAt(ln), 0);

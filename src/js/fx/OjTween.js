@@ -1,7 +1,7 @@
-OJ.importJs('oj.events.OjActionable');
-OJ.importJs('oj.fx.OjEasing');
-OJ.importJs('oj.fx.OjTweenEvent');
-OJ.importJs('oj.timer.OjTimer');
+importJs('oj.events.OjActionable');
+importJs('oj.fx.OjEasing');
+importJs('oj.fx.OjTweenEvent');
+importJs('oj.utils.OjTimer');
 
 
 // normalize browser diff on requestAnimationFrame function
@@ -30,7 +30,7 @@ OJ.extendClass(
             'to' : null
         },
 
-//	  '_animationFrame': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
+//      '_animationFrame': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
 
         '_delta' : 0, '_progress' : 0,
 
@@ -74,7 +74,7 @@ OJ.extendClass(
 
 
         '_onTick' : function(evt){
-            var time = Math.min(Date.time() - this._start, this._duration);
+            var time = Math.min(Date.now() - this._start, this._duration);
 
             this._tick(time);
 
@@ -101,7 +101,7 @@ OJ.extendClass(
 
             this._calculateDelta();
 
-            this._start = Date.time() - this._progress;
+            this._start = Date.now() - this._progress;
 
             // only create the time once
             if(OjTween.USE_RAF){
@@ -120,7 +120,7 @@ OJ.extendClass(
             }
 
             this._interval = clearInterval(this._interval);
-            this._progress = Date.time() - this._start;
+            this._progress = Date.now() - this._start;
         },
 
         'stop' : function(){

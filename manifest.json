@@ -1,25 +1,35 @@
 {
 
-  "oj" : {
+  "dependencies_path" : "dependencies",
 
-    "source" : "src",
+  "source_path" : "src",
 
-    "packages" : {
+  "packages" : {
 
-      "oj" : {
+    "oj" : {
 
-        "assets" : ["*"],
-        "assets_exclude" : [".*"],
+      "assets" : ["*"],
+      "assets_exclude" : [".*"],
 
-        "classes" : ["*"],
-        "classes_exclude" : ["layout/*", "tests/*"],
+      "classes" : ["*"],
+      "classes_exclude" : ["layout/*", "tests/*"],
 
-        "pre_compiled" : ["libs/*"],
+      "pre_compiled" : ["libs/Hammer.js", "libs/Moment.js"],
 
-        "themes" : ["*"],
-        "themes_exclude" : []
+      "themes" : ["*"],
+      "themes_exclude" : []
 
-      }
+    }
+
+  },
+
+  "builds" : {
+
+    "oj.example" : {
+
+      "packages" : ["oj"],
+
+      "html" : "src/html/example.html"
 
     }
 

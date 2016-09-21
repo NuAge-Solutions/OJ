@@ -1,7 +1,5 @@
-OJ.importJs('oj.components.OjSpinner');
-OJ.importJs('oj.events.OjEvent');
-
-OJ.importCss('oj.media.OjMedia');
+importJs('oj.components.OjSpinner');
+importJs('oj.events.OjEvent');
 
 
 OJ.extendClass(
@@ -225,7 +223,7 @@ OJ.extendClass(
 
             this._height = val
 
-//			this._resize();
+//            this._resize();
         },
 
         '_setWidth': function (val) {
@@ -233,7 +231,7 @@ OJ.extendClass(
 
             this._width = val;
 
-//			this._resize();
+//            this._resize();
         }
     },
     {

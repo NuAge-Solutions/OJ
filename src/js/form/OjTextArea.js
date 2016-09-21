@@ -1,34 +1,33 @@
-OJ.importJs('oj.form.OjInput');
-
-OJ.importCss('oj.form.OjTextArea');
-
-
+importJs("oj.form.OjInput");
 
 
 OJ.extendComponent(
-	'OjTextArea', [OjInput],
-	{
-        '_props_' : {
-			'min_length' : 0,
-			'max_length' : 0
-		},
+    "OjTextArea", [OjInput],
+    {
+        "_props_" : {
+            "min_length" : 0,
+            "max_length" : 0
+        },
 
-		'_setDom' : function(dom_elm){
-			this._super(OjInput, '_setDom', arguments);
+        "_setDom" : function(dom_elm){
+            var self = this;
+            
+            self._super(OjInput, "_setDom", arguments);
 
-			var prnt = this.input.parent,
-				new_input = new OjStyleElement(OjElement.elm('textarea'));
+            var prnt = self.input.parent,
+                new_input = new OjStyleElement(OjElement.elm("textarea"));
 
-			new_input.addCss('input');
+            new_input.addCss("input");
 
-			prnt.replaceChild(this.input, new_input);
+            prnt.replaceChild(self.input, new_input);
 
-			this.input = new_input;
+            self.input = new_input;
 
-            this.wrapper.vAlign = OjStyleElement.TOP;
-		}
-	},
-	{
-		'_TAGS' : ['textarea', 'text-area']
-	}
+            self.psuedoInput.attr("flex-v", "");
+            self.wrapper.attr("flex-v", "");
+        }
+    },
+    {
+        "_TAGS" : ["textarea", "text-area"]
+    }
 );

@@ -1,18 +1,18 @@
-OJ.importJs('oj.form.OjInput');
+importJs('oj.form.OjInput');
 
 
 OJ.extendComponent(
-	'OjFileInput', [OjInput],
-	{
-		'_props_' : {
+    'OjFileInput', [OjInput],
+    {
+        '_props_' : {
             'minSize' : 0,
-			'maxSize' : 0,
+            'maxSize' : 0,
             'selectionMax': 1
-		},
+        },
 
 
-		'_constructor' : function(name, label, maxSize, minSize){
-			this._super(OjInput, '_constructor', [name, label]);
+        '_constructor' : function(name, label, maxSize, minSize){
+            this._super(OjInput, '_constructor', [name, label]);
 
             if(maxSize){
                 this.maxSize = maxSize;
@@ -21,14 +21,14 @@ OJ.extendComponent(
             if(minSize){
                 this.minSize = minSize;
             }
-		},
+        },
 
 
-		'_setDom' : function(dom_elm){
-			this._super(OjInput, '_setDom', arguments);
+        '_setDom' : function(dom_elm){
+            this._super(OjInput, '_setDom', arguments);
 
-			this.input.setAttr('type', 'file');
-		},
+            this.input.attr('type', 'file');
+        },
 
         '_formatErrorTokens' : function(){
             var tokens = this._super(OjInput, '_formatErrorTokens', arguments);
@@ -62,24 +62,24 @@ OJ.extendComponent(
         },
 
 
-		'isValid' : function(){
-			var valid = this._super(OjInput, 'isValid', arguments);
+        'isValid' : function(){
+            var valid = this._super(OjInput, 'isValid', arguments);
 
-			var size = this._value ? this._value.size / 1000000 : 0;
+            var size = this._value ? this._value.size / 1000000 : 0;
 
-			if(this._minSize && size < this._minSize){
+            if(this._minSize && size < this._minSize){
                 this._errors.append(this._formatError(OjFileInput.MIN_SIZE_ERROR));
 
-				valid = false;
-			}
+                valid = false;
+            }
             else if(this._maxSize && size > this._maxSize){
-				this._errors.append(this._formatError(OjFileInput.MAX_SIZE_ERROR));
+                this._errors.append(this._formatError(OjFileInput.MAX_SIZE_ERROR));
 
-				valid = false;
-			}
+                valid = false;
+            }
 
-			return valid;
-		},
+            return valid;
+        },
 
 
         '=selectionMax' : function(val){
@@ -87,14 +87,14 @@ OJ.extendComponent(
                 return;
             }
 
-            this.input.setAttr('multiple', (this._selectionMax = val) == 1 ? null : '');
+            this.input.attr('multiple', (this._selectionMax = val) == 1 ? null : '');
         }
-	},
-	{
-		'MIN_SIZE_ERROR' : '[%INPUT] must be at least [%MIN] MB.',
-		'MAX_SIZE_ERROR' : '[%INPUT] must be no more than [%MAX] MB.',
+    },
+    {
+        'MIN_SIZE_ERROR' : '{INPUT} must be at least {MIN} MB.',
+        'MAX_SIZE_ERROR' : '{INPUT} must be no more than {MAX} MB.',
 
 
-		'_TAGS' : ['file-input']
-	}
+        '_TAGS' : ['file-input']
+    }
 );

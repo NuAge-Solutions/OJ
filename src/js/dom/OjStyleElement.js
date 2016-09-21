@@ -1,71 +1,71 @@
-OJ.importJs('oj.data.OjRect');
-OJ.importJs('oj.dom.OjCssTranslate');
-OJ.importJs('oj.events.OjDragEvent');
-OJ.importJs('oj.events.OjEvent');
-OJ.importJs('oj.events.OjFocusEvent');
-OJ.importJs('oj.events.OjGestureRecognizer');
-OJ.importJs('oj.events.OjKeyboardEvent');
-OJ.importJs('oj.events.OjUiEvent');
-OJ.importJs('oj.events.OjScrollEvent');
-OJ.importJs('oj.events.OjTouchEvent');
-OJ.importJs('oj.events.OjTransformEvent');
-OJ.importJs('oj.libs.Hammer');
-OJ.importJs('oj.libs.Propagating');
+importJs("oj.data.OjRect");
+importJs("oj.dom.OjCssTranslate");
+importJs("oj.events.OjDragEvent");
+importJs("oj.events.OjEvent");
+importJs("oj.events.OjFocusEvent");
+importJs("oj.events.OjGestureRecognizer");
+importJs("oj.events.OjKeyboardEvent");
+importJs("oj.events.OjUiEvent");
+importJs("oj.events.OjScrollEvent");
+importJs("oj.events.OjTouchEvent");
+importJs("oj.events.OjTransformEvent");
+importJs("oj.libs.Hammer");
+importJs("oj.libs.HammerPropagating");
 
 
 OJ.extendClass(
-    'OjStyleElement', [OjElement],
+    "OjStyleElement", [OjElement],
     {
-        '_props_' : {
-            'alpha' : null,
-            'backgroundColor' : null,
-            'children' : null,
-            'css' : null,
-            'cssList' : null,
-            'depth' : null,
-            'hAlign' : 'l', // OjStyleElement.LEFT
-            'height' : null,
-            'id' : null,
-            'innerHeight' : null,
-            'innerWidth' : null,
-            'origin' : null,
-            'outerHeight' : null,
-            'outerWidth' : null,
-            'overflow' : null,
-            'owner' : null,
-            'pageRect' : null,
-            'pageX' : null,
-            'pageY' : null,
-            'rect' : null,
-            'rotation' : null,
-            'scrollHeight' : null,
-            'scrollWidth' : null,
-            'scrollX' : null,
-            'scrollY' : null,
-            'text' : null,
-            'translate' : null,
-            'vAlign' : 't', // OjStyleElement.TOP
-            'width' : null,
-            'x' : null,
-            'y' : null
+        "_props_" : {
+            "alpha" : null,
+            "background_color" : null,
+            "children" : null,
+            "css" : null,
+            "css_list" : null,
+            "depth" : null,
+            "hAlign" : "l", // OjStyleElement.LEFT
+            "height" : null,
+            "id" : null,
+            "innerHeight" : null,
+            "innerWidth" : null,
+            "origin" : null,
+            "outerHeight" : null,
+            "outerWidth" : null,
+            "overflow" : null,
+            "owner" : null,
+            "page_rect" : null,
+            "pageX" : null,
+            "pageY" : null,
+            "rect" : null,
+            "rotation" : null,
+            "scrollHeight" : null,
+            "scrollWidth" : null,
+            "scrollX" : null,
+            "scrollY" : null,
+            "text" : null,
+            "translate" : null,
+            "vAlign" : "t", // OjStyleElement.TOP
+            "width" : null,
+            "x" : null,
+            "y" : null
         },
 
-        '_get_props_' : {
-            'dom' : null,
-            'isVisible' : null,
-            'num_children' : null
+        "_get_props_" : {
+            "dom" : null,
+            "isVisible" : null,
+            "num_children" : null
         },
 
-        '_alpha' : 1,
-        '_depth' : 0,
-        '_scrollable' : false,
+        "_alpha" : 1,
+        "_depth" : 0,
+        "_scrollable" : false,
 
-        '_origin' : '0px, 0px',
-        '_rotation' : 0,
-        '_translate' : '0px, 0px',
+        "_origin" : "0px, 0px",
+        "_rotation" : 0,
+        "_translate" : "0px, 0px",
 
 
-        '_compile_' : function(def){
+        "_compile_" : function(def){
             var cls = OjStyleElement;
 
             if(cls.STYLE_MODE == cls.STYLE_IE){
@@ -76,17 +76,17 @@ OJ.extendClass(
             }
 
             // build functions for style getter and setters
-            def._style_funcs_.call(this, 'margin', 'Margin');
-            def._style_funcs_.call(this, 'padding', 'Padding');
+            def._style_funcs_.call(this, "margin", "Margin");
+            def._style_funcs_.call(this, "padding", "Padding");
         },
 
-        '_style_funcs_' : function(style, u_style){
-            var g = 'get',
-                s = 'set',
-                bottom = 'Bottom',
-                left = 'Left',
-                right = 'Right',
-                top = 'Top';
+        "_style_funcs_" : function(style, u_style){
+            var g = "get",
+                s = "set",
+                bottom = "Bottom",
+                left = "Left",
+                right = "Right",
+                top = "Top";
 
             this[g + u_style] = function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
                 return this._getStyler(style, arguments);
@@ -130,36 +130,36 @@ OJ.extendClass(
         },
 
 
-        '_constructor' : function(source, context){
+        "_constructor" : function(source, context){
             var self = this;
 
             // set the source
             // if dom element then we are done
             if(source && !source.nodeType){
                 // if its the document or body do something special
-                if(source === 'body' || source == document || source == document.body){
+                if(source === "body" || source == document || source == document.body){
                     source = document.body;
                 }
                 // if its a string then we need to make sure its html and handle it accordingly
                 else if(isString(source)){
                     source = source.trim();
 
-                    if(source.charAt(0) == '<' && source.slice(-1) == '>' && source.length >= 5){
+                    if(source.charAt(0) == "<" && source.slice(-1) == ">" && source.length >= 5){
                         var tag = source.substr(0, 6).toLowerCase(),
                             tag2 = tag.substr(0, 3),
                             tmp;
 
-                        if(tag == '<thead' || tag == '<tbody' || tag == '<tfoot'){
-                            tmp = OjElement.elm('table');
+                        if(tag == "<thead" || tag == "<tbody" || tag == "<tfoot"){
+                            tmp = OjElement.elm("table");
                         }
-                        else if(tag2 == '<tr'){
-                            tmp = OjElement.elm('tbody');
+                        else if(tag2 == "<tr"){
+                            tmp = OjElement.elm("tbody");
                         }
-                        else if(tag2 == '<td' || tag2 == '<th'){
-                            tmp = OjElement.elm('tr')
+                        else if(tag2 == "<td" || tag2 == "<th"){
+                            tmp = OjElement.elm("tr")
                         }
                         else{
-                            tmp = OjElement.elm('div');
+                            tmp = OjElement.elm("div");
                         }
 
                         tmp.innerHTML = source;
@@ -178,13 +178,13 @@ OJ.extendClass(
                 }
             }
 
-            self._super(OjElement, '_constructor', [source, context]);
+            self._super(OjElement, "_constructor", [source, context]);
 
             self.hAlign = this._hAlign;
             self.vAlign = this._vAlign;
         },
 
-        '_destructor' : function(/*depth = 0*/){
+        "_destructor" : function(/*depth = 0*/){
             // remove the children
             var self = this,
                 args = arguments,
@@ -203,77 +203,83 @@ OJ.extendClass(
             self._cleanupHammer();
 
             // remove the timers
-            self._unset('_move_timer', '_scroll_timer');
+            self._unset("_move_timer", "_scroll_timer");
 
             // continue on with the destruction
-            return self._super(OjElement, '_destructor', args);
+            return self._super(OjElement, "_destructor", args);
         },
 
 
-        '_processAttribute' : function(dom, attr, context){
-            var setter, solo, target, lower,
+        "_processAttribute" : function(dom, attr, context){
+            var self = this,
+                setter, solo, target, lower,
                 nm = attr.nodeName,
                 val = attr.value;
 
-            if(nm.substr(0, 3) == 'on-'){
+            if(nm == "id"){
+                if(!isEmpty(val) && val != "null"){
+                    self.id = val;
+                }
+
+                return false;
+            }
+
+            if(nm.substr(0, 3) == "on-"){
                 // todo: add support for multiple event listeners
                 // todo? add support for nested event listener functions in templates
-                setter = val.split('.');
+                setter = val.split(".");
                 solo = setter.length == 1;
                 target = context;
 
                 if(!solo){
                     switch(setter[0]){
-                        case 'this':
-                            target = this;
-                            break;
+                        case "this":
+                            target = self;
+                        break;
 
-                        case 'window':
+                        case "window":
                             target = window;
-                            break;
+                        break;
                     }
                 }
 
-                this.addEventListener(OJ.attributeToProp(nm), target, solo ? setter[0] : setter[1]);
+                self.addEventListener(OJ.attributeToProp(nm), target, solo ? setter[0] : setter[1]);
 
                 return true;
             }
-            else if(nm == 'id'){
-                if(!isEmpty(val) && val != 'null'){
-                    this.id = val;
-                }
-            }
-            else if(nm == 'var'){
+
+            if(nm == "var"){
                 if(!isEmpty(val) && context){
-                    (context[val] = this).addCss(val);
+                    (context[val] = self).addCss(val);
 
-                    this.owner = context;
+                    self.owner = context;
                 }
 
                 return true;
             }
-            else if(nm != 'class'){
+
+            if(nm != "class"){
                 setter = OJ.attributeToProp(nm);
 
-                if(setter in this){
+                if(setter in self){
                     try{
-                        if(val == ''){
+                        if(val == ""){
                             val = null;
                         }
                         else if(isNumeric(val)){
                             val = parseFloat(val);
                         }
-                        else if((lower = val.toLowerCase()) == 'true'){
+                        else if((lower = val.toLowerCase()) == "true"){
                             val = true;
                         }
-                        else if(lower == 'false'){
+                        else if(lower == "false"){
                             val = false;
                         }
                         else{
-                            val = this._processReferenceValue(val, context);
+                            val = self._processReferenceValue(val, context, self);
                         }
 
-                        this[setter] = val;
+                        self[setter] = val;
                     }
                     catch(e){
                         // setup holder for template reference values for deferred processing
@@ -281,24 +287,26 @@ OJ.extendClass(
                             context._template_vars_ = [];
                         }
 
-                        context._template_vars_.unshift({
-                                                            'context' : this,
-                                                            'property' : setter,
-                                                            'value' : val
-                                                        });
+                        context._template_vars_.unshift(
+                            {
+                                "context" : self,
+                                "property" : setter,
+                                "value" : val
+                            }
+                        );
                     }
 
-                    // if the nm is v-align or h-align we want to return false so that the attribute isn't destroyed
-                    return nm.indexOf('-align') == -1;
+                    // if the nm is v-align or h-align we want to return false so that the attribute isn"t destroyed
+                    return nm.indexOf("-align") == -1;
                 }
             }
 
             return false;
         },
 
-        '_processAttributes' : function(dom, context){
+        "_processAttributes" : function(dom, context){
             var attrs = dom.attributes,
-                priority = ['var', 'id'],
+                priority = ["var", "id"],
                 ln = priority.length,
                 attr;
 
@@ -310,10 +318,10 @@ OJ.extendClass(
             }
 
             // class name
-            dom.removeAttribute('class-name');
+            dom.removeAttribute("class-name");
 
             // class path
-            dom.removeAttribute('class-path');
+            dom.removeAttribute("class-path");
 
             // process the other attributes
             for(ln = attrs.length; ln--;){
@@ -325,7 +333,7 @@ OJ.extendClass(
             }
         },
 
-        '_processChildren' : function(dom, context){
+        "_processChildren" : function(dom, context){
             // make sure we have something to process
             if(!dom){
                 return;
@@ -341,7 +349,7 @@ OJ.extendClass(
             }
         },
 
-        '_processChild' : function(dom, context){
+        "_processChild" : function(dom, context){
             // make sure we have something to process
             if(!dom){
                 return;
@@ -354,18 +362,18 @@ OJ.extendClass(
             }
 
             var child, cls_path,
-                cls = dom.getAttribute('class-name');
+                cls = dom.getAttribute("class-name");
 
             tag = tag.toLowerCase();
 
             // if this is a script or link tag ignore it
-            if(tag == 'script' || tag == 'link'){
+            if(tag == "script" || tag == "link"){
                 return false;
             }
 
             // load the class if we need to
-            if(!window[cls] && (cls_path = dom.getAttribute('class-path'))){
-                OJ.importJs(cls_path);
+            if(!window[cls] && (cls_path = dom.getAttribute("class-path"))){
+                importJs(cls_path);
             }
 
             // get the component tag class
@@ -391,70 +399,39 @@ OJ.extendClass(
             return child;
         },
 
-        '_processReferenceValue' : function(val, context){
-            var ary = val.split('.'),
-                target = null,
-                ln = ary.length,
-                i = 1, item;
+        "_processReferenceValue" : function(val, context, src){
+            var $ = this;
 
-            if(ln > 1){
-                switch(ary[0]){
-                    case 'this':
-                        target = this;
-                        break;
-
-                    case 'window':
-                        target = window;
-                        break;
-
-                    case '$':
-                        target = context;
-
-                        // if we are not at the top level defer processing template reference values
-                        if(this != context){
-                            throw "Template Reference Value Processing Deferred"
-                        }
-                        break;
-                }
-
-                if(target){
-                    val = target;
-
-                    for(; i < ln; i++){
-                        item = ary[i];
-
-                        if(item.length > 2 && item.slice(-2) == '()'){
-                            val = val[item.slice(0, -2)]();
-                        }
-                        else{
-                            val = val[item];
-                        }
-                    }
-                }
+            if(val.contains("$") && $ != context){
+                throw "Template Reference Value Processing Deferred"
             }
+
+            try{
+                val = (function(str){ return eval(str); }).call(src || $, val);
+            }
+            catch(e){ }
 
             return val;
         },
 
-        '_processTemplateVars' : function(){
-            if(this._template_vars_){
-                var ln = this._template_vars_.length,
-                    item, context;
+        "_processTemplateVars" : function(){
+            var self = this,
+                context;
 
-                for(; ln--;){
-                    item = this._template_vars_[ln];
+            if(self._template_vars_){
+                self._template_vars_.forEachReverse(function(item){
                     context = item.context;
 
-                    context[item.property] = this._processReferenceValue(item.value, this);
-                }
+                    context[item.property] = self._processReferenceValue(item.value, self, context);
+                });
 
-                this._unset('_template_vars_');
+                self._unset("_template_vars_");
             }
         },
 
-        '_setDom' : function(dom, context){
+        "_setDom" : function(dom, context){
             // todo: re-evaluate the pre-render functionality of dom
-            this._super(OjElement, '_setDom', [dom]);
+            this._super(OjElement, "_setDom", [dom]);
 
             // process the attributes
             this._processAttributes(dom, context);
@@ -465,13 +442,13 @@ OJ.extendClass(
             // process any template vars
             this._processTemplateVars();
 
-            // setup the dom id if there isn't one already
+            // setup the dom id if there isn"t one already
             if(!this._id){
                 this.id = this._id_;
             }
         },
 
-        '_setIsDisplayed' : function(displayed){
+        "_setIsDisplayed" : function(displayed){
             var ln, child,
                 self = this;
 
@@ -479,7 +456,7 @@ OJ.extendClass(
                 return;
             }
 
-            self._super(OjElement, '_setIsDisplayed', arguments);
+            self._super(OjElement, "_setIsDisplayed", arguments);
 
             for(ln = self.num_children; ln--;){
                 if(child = self.getChildAt(ln)){
@@ -489,7 +466,7 @@ OJ.extendClass(
         },
 
         // Event Listeners
-        '_processEvent' : function(evt){
+        "_processEvent" : function(evt){
             // because js natively calls the event functions on the context of the dom element
             // we just get the attached oj element from it to get into the proper context to dispatch
             // the event
@@ -502,7 +479,7 @@ OJ.extendClass(
             return true;
         },
 
-        '_onOjDomEvent' : function(evt){
+        "_onOjDomEvent" : function(evt){
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
@@ -510,22 +487,21 @@ OJ.extendClass(
             }
         },
 
-        '_onDomOjUiEvent' : function(evt){
+        "_onDomOjUiEvent" : function(evt){
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
-
                 evt = OjUiEvent.convertDomEvent(evt);
 
                 proxy._onEvent(evt);
 
                 //if(evt.type == OjUiEvent.DOWN && proxy.hasEventListener(OjUiEvent.UP_OUTSIDE)){
-                //    OJ.addEventListener(OjUiEvent.UP, proxy, '_onOjMouseUp');
+                //    OJ.addEventListener(OjUiEvent.UP, proxy, "_onOjMouseUp");
                 //}
             }
         },
 
-        '_onDomOjKeyboardEvent' : function(evt){
+        "_onDomOjKeyboardEvent" : function(evt){
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
@@ -533,7 +509,7 @@ OJ.extendClass(
             }
         },
 
-        '_onDomOjFocusEvent' : function(evt){
+        "_onDomOjFocusEvent" : function(evt){
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
@@ -541,7 +517,7 @@ OJ.extendClass(
             }
         },
 
-        '_onDomScrollEvent' : function(evt){
+        "_onDomScrollEvent" : function(evt){
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
@@ -549,7 +525,7 @@ OJ.extendClass(
             }
         },
 
-        '_onDomTouchEvent' : function(evt){
+        "_onDomTouchEvent" : function(evt){
             var proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
@@ -559,7 +535,7 @@ OJ.extendClass(
             return true;
         },
 
-        '_onDrag' : function(evt){
+        "_onDrag" : function(evt){
             var new_x = evt.pageX,
                 new_y = evt.pageY;
 
@@ -576,9 +552,9 @@ OJ.extendClass(
             this._dragY = new_y;
         },
 
-        '_onDragEnd' : function(evt){
-            OJ.removeEventListener(OjUiEvent.MOVE, this, '_onDrag');
-            OJ.removeEventListener(OjUiEvent.UP, this, '_onDragEnd');
+        "_onDragEnd" : function(evt){
+            OJ.removeEventListener(OjUiEvent.MOVE, this, "_onDrag");
+            OJ.removeEventListener(OjUiEvent.UP, this, "_onDragEnd");
 
             this.dispatchEvent(
                 new OjDragEvent(
@@ -592,43 +568,43 @@ OJ.extendClass(
             this._dragX = this._dragY = null;
         },
 
-        '_onDragStart' : function(evt){
+        "_onDragStart" : function(evt){
             this._dragX = evt.pageX;
             this._dragY = evt.pageY;
 
             if(this.hasEventListener(OjDragEvent.DRAG)){
-                OJ.addEventListener(OjUiEvent.MOVE, this, '_onDrag');
+                OJ.addEventListener(OjUiEvent.MOVE, this, "_onDrag");
             }
 
-            OJ.addEventListener(OjUiEvent.UP, this, '_onDragEnd');
+            OJ.addEventListener(OjUiEvent.UP, this, "_onDragEnd");
 
             this.dispatchEvent(
                 new OjDragEvent(OjDragEvent.START, 0, 0, evt, false, false)
             );
         },
 
-        '_onEvent' : function(evt){
+        "_onEvent" : function(evt){
             this.dispatchEvent(evt);
 
             return false;
         },
 
-//		'_onMouse' : function(evt){
-//			var type = evt.getType(),
-//				x = evt.getPageX(),
-//				y = evt.getPageY(),
-//				response = this._onEvent(evt);
+//        "_onMouse" : function(evt){
+//            var type = evt.getType(),
+//                x = evt.getPageX(),
+//                y = evt.getPageY(),
+//                response = this._onEvent(evt);
 //
 //
-////			if(type == OjUiEvent.UP && (!this._draggable || (this._dragX == x && this._dragY == y))){
-////				print(this._draggable, this._dragX == x, this._dragY == y);
-////				this._onEvent(new OjUiEvent(OjUiEvent.PRESS, evt.getBubbles(), evt.getCancelable(), x, y));
-////			}
+////            if(type == OjUiEvent.UP && (!this._draggable || (this._dragX == x && this._dragY == y))){
+////                print(this._draggable, this._dragX == x, this._dragY == y);
+////                this._onEvent(new OjUiEvent(OjUiEvent.PRESS, evt.getBubbles(), evt.getCancelable(), x, y));
+////            }
 //
-//			return response;
-//		},
+//            return response;
+//        },
 
-        '_onMoveTick' : function(evt){
+        "_onMoveTick" : function(evt){
             var page_x = this.pageX,
                 page_y = this.pageY,
                 delta_x = this._page_x - page_x,
@@ -642,8 +618,8 @@ OJ.extendClass(
             this._page_y = page_y;
         },
 
-        '_onOjMouseUp' : function(evt){
-            OJ.removeEventListener(OjUiEvent.UP, this, '_onOjMouseUp');
+        "_onOjMouseUp" : function(evt){
+            OJ.removeEventListener(OjUiEvent.UP, this, "_onOjMouseUp");
 
             if(this.hitTestPoint(evt.pageX, evt.pageY)){
                 return;
@@ -652,11 +628,11 @@ OJ.extendClass(
             this.dispatchEvent(evt);
         },
 
-        '_onScroll' : function(evt){
+        "_onScroll" : function(evt){
             var x, y;
 
             // for native scroll events
-            if(evt.is('OjScrollEvent')){
+            if(evt.is("OjScrollEvent")){
                 if(this._prev_x == (x = evt.scrollX) && this._prev_y == (y = evt.scrollY)){
                     return;
                 }
@@ -677,7 +653,7 @@ OJ.extendClass(
             );
         },
 
-        '_onTouch' : function(evt){
+        "_onTouch" : function(evt){
             var type = evt.type,
                 x = evt.pageX,
                 y = evt.pageY;
@@ -698,10 +674,8 @@ OJ.extendClass(
             if(type){
                 this._onEvent(new OjUiEvent(type, x, y, true, true));
 
-                // if the touch hasn't moved then issue a click event
+                // if the touch hasn"t moved then issue a click event
                 if(type == OjUiEvent.UP && !this.hasEventListener(OjDragEvent.START) && this.hitTestPoint(x, y)){
-                    this._onEvent(new OjUiEvent(OjUiEvent.PRESS, x, y, true, true));
-
                     this._dragX = this._dragY = null;
                 }
             }
@@ -712,7 +686,7 @@ OJ.extendClass(
 
         // event listener overrides
         // customize this functionality for dom events so that they work
-        '_cleanupHammer' : function(){
+        "_cleanupHammer" : function(){
             var self = this,
                 hammer = self._hammer;
 
@@ -723,7 +697,7 @@ OJ.extendClass(
             }
         },
 
-        '_newHammer' : function(settings){
+        "_newHammer" : function(settings){
             settings = settings || {};
 
             settings.preset = [];
@@ -731,32 +705,53 @@ OJ.extendClass(
             return propagating(new Hammer(this._getEventProxy(), settings));
         },
 
-        '_setupHammer' : function(){
+        "_setupHammer" : function(){
             var self = this,
                 ui = OjUiEvent,
                 map = {
-                    'doubletap' : ui.DOUBLE_PRESS,
-                    'press' : ui.LONG_PRESS,
-                    'tap' : ui.PRESS
+                    "doubletap" : ui.DOUBLE_PRESS,
+                    "pressup" : ui.PRESS,
+                    "tap" : ui.PRESS
                 },
-                settings = {};
+                settings = {
+                    "recognizers": [
+                        [Hammer.Press],
+                        [Hammer.Tap],
+                        [Hammer.Tap, {
+                            "event": "doubletap", "taps": 2, "interval": 300, "pointers": 1, "posThreshold": 10,
+                            "threshold": 2, "time": 250
+                        }, "tap" ]
+                    ]
+                };
 
             if(!self._hammer){
-                if(['input', 'textarea'].indexOf(self.dom.tagName.toLowerCase()) > -1){
-                    settings['cssProps'] = {};
+                if(["input", "textarea"].indexOf(self.dom.tagName.toLowerCase()) > -1){
+                    settings["cssProps"] = {};
                 }
 
                 self._hammer = self._newHammer(settings);
 
                 self._hammer.on(
-                    'tap doubletap press',
+                    "tap doubletap pressup",
                     function(evt){
-                        var new_evt = ui.convertDomEvent(evt.srcEvent);
-                        new_evt._type = map[evt.type];
+                        var type = evt.type,
+                            prev_tap = self._hammer.prev_tap,
+                            new_evt = ui.convertDomEvent(evt.srcEvent);
+
+                        new_evt._type = map[type];
+                        
+                        evt.stopPropagation();
+
+                        if(type == "tap"){
+                            self._hammer.prev_tap = new Date();
+                        }
+                        else if(type == "pressup" && prev_tap){
+                            self._hammer.prev_tap = null;
+
+                            return;
+                        }
 
                         self._onEvent(new_evt);
-
-                        evt.stopPropagation();
                     }
                 );
             }
@@ -764,19 +759,19 @@ OJ.extendClass(
             return self._hammer;
         },
 
-        '_updateTouchStartListeners' : function(){
+        "_updateTouchStartListeners" : function(){
             if(!this.hasEventListeners(OjUiEvent.DOWN, OjUiEvent.PRESS, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){
                 this._getEventProxy().ontouchstart = null;
             }
         },
 
-        '_updateTouchMoveListeners' : function(){
+        "_updateTouchMoveListeners" : function(){
             if(!this.hasEventListeners(OjUiEvent.MOVE, OjDragEvent.START, OjDragEvent.DRAG, OjDragEvent.END)){//}, OjScrollEvent.SCROLL)){
                 this._getEventProxy().ontouchmove = null;
             }
         },
 
-        '_updateTouchEndListeners' : function(){
+        "_updateTouchEndListeners" : function(){
             if(!this.hasEventListeners(OjUiEvent.UP, OjUiEvent.UP_OUTSIDE, OjUiEvent.PRESS, OjDragEvent.END)){
                 var proxy = this._getEventProxy();
 
@@ -784,33 +779,33 @@ OJ.extendClass(
             }
         },
 
-        'addEventListener' : function(type){
+        "addEventListener" : function(type){
             var self = this,
                 is_touch = OJ.is_touch_capable,
                 proxy = self._getEventProxy(),
                 hammer = self._setupHammer();
 
-            self._super(OjElement, 'addEventListener', arguments);
+            self._super(OjElement, "addEventListener", arguments);
 
             if(type == OjScrollEvent.SCROLL){
                 self._scrollable = true;
 
                 proxy.onscroll = self._onDomScrollEvent;
 
-//				if(is_touch){
-//					proxy.ontouchmove = this._onDomTouchEvent;
-//				}
+//                if(is_touch){
+//                    proxy.ontouchmove = this._onDomTouchEvent;
+//                }
             }
 
             // mouse events
             else if(type == OjUiEvent.PRESS){
-                if(!hammer.get('tap')){
-                    hammer.add( new Hammer.Tap({ event: 'tap' }) );
+                if(!hammer.get("tap")){
+                    hammer.add( new Hammer.Tap({ event: "tap" }) );
                 }
             }
             else if(type == OjUiEvent.DOUBLE_PRESS){
-                if(!hammer.get('doubletap')){
-                    hammer.add( new Hammer.Tap({ event: 'doubletap' }) );
+                if(!hammer.get("doubletap")){
+                    hammer.add( new Hammer.Tap({ event: "doubletap" }) );
                 }
             }
             else if(type == OjUiEvent.DOWN){
@@ -822,8 +817,8 @@ OJ.extendClass(
                 }
             }
             else if(type == OjUiEvent.LONG_PRESS){
-                if(!hammer.get('press')){
-                    hammer.add( new Hammer.Tap({ event: 'press' }) );
+                if(!hammer.get("press")){
+                    hammer.add( new Hammer.Tap({ event: "press" }) );
                 }
             }
             else if(type == OjUiEvent.MOVE){
@@ -846,6 +841,7 @@ OJ.extendClass(
                 }
                 else{
                     proxy.onmouseup = self._onDomOjUiEvent;
+                    proxy.oncontextmenu = self._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.UP_OUTSIDE){
@@ -861,14 +857,14 @@ OJ.extendClass(
             else if(OjDragEvent.isDragEvent(type)){
                 self._draggable = true;
 //
-//				if(is_touch){
-//					proxy.ontouchstart = proxy.ontouchmove = proxy.ontouchend = this._onDomTouchEvent;
-//				}
-//				else{
-//					proxy.onmousedown = this._onDomOjUiEvent;
-//				}
+//                if(is_touch){
+//                    proxy.ontouchstart = proxy.ontouchmove = proxy.ontouchend = this._onDomTouchEvent;
+//                }
+//                else{
+//                    proxy.onmousedown = this._onDomOjUiEvent;
+//                }
 
-                self.addEventListener(OjUiEvent.DOWN, self, '_onDragStart');
+                self.addEventListener(OjUiEvent.DOWN, self, "_onDragStart");
             }
 
             // keyboard events
@@ -895,7 +891,7 @@ OJ.extendClass(
             else if(type == OjTransformEvent.MOVE){
                 if(!self._move_timer){
                     self._move_timer = new OjTimer(250, 0);
-                    self._move_timer.addEventListener(OjTimer.TICK, self, '_onMoveTick');
+                    self._move_timer.addEventListener(OjTimer.TICK, self, "_onMoveTick");
 
                     self._page_x = self.pageX;
                     self._page_y = self.pageY;
@@ -913,14 +909,14 @@ OJ.extendClass(
             }
         },
 
-        'addGestureRecognizer' : function(recognizer){
+        "addGestureRecognizer" : function(recognizer){
             recognizer._add(this._setupHammer());
         },
 
-        'removeEventListener' : function(type, context, callback){
+        "removeEventListener" : function(type, context, callback){
             var proxy = this._getEventProxy();
 
-            this._super(OjElement, 'removeEventListener', arguments);
+            this._super(OjElement, "removeEventListener", arguments);
 
             // scroll events
             if(type == OjScrollEvent.SCROLL){
@@ -929,7 +925,7 @@ OJ.extendClass(
 
                     proxy.onscroll = null;
 
-//					this._updateTouchMoveListeners();
+//                    this._updateTouchMoveListeners();
                 }
             }
 
@@ -977,6 +973,7 @@ OJ.extendClass(
             else if(type == OjUiEvent.UP){
                 if(!this.hasEventListener(OjUiEvent.UP)){
                     proxy.onmouseup = null;
+                    proxy.oncontextmenu = null;
 
                     this._updateTouchEndListeners();
                 }
@@ -985,7 +982,7 @@ OJ.extendClass(
                 if(!this.hasEventListener(OjUiEvent.DOWN)){
                     proxy.onmousedown = null;
 
-                    OJ.removeEventListener(OjUiEvent.UP, proxy, '_onOjMouseUp');
+                    OJ.removeEventListener(OjUiEvent.UP, proxy, "_onOjMouseUp");
 
                     this._updateTouchEndListeners();
                 }
@@ -996,10 +993,10 @@ OJ.extendClass(
                 if(!this.hasEventListeners(OjDragEvent.DRAG, OjDragEvent.END, OjDragEvent.START)){
                     this._draggable = false;
 
-                    this.removeEventListener(OjUiEvent.DOWN, this, '_onDragStart');
+                    this.removeEventListener(OjUiEvent.DOWN, this, "_onDragStart");
 
-                    OJ.removeEventListener(OjUiEvent.MOVE, this, '_onDrag');
-                    OJ.removeEventListener(OjUiEvent.UP, this, '_onDragEnd');
+                    OJ.removeEventListener(OjUiEvent.MOVE, this, "_onDrag");
+                    OJ.removeEventListener(OjUiEvent.UP, this, "_onDragEnd");
                 }
             }
 
@@ -1035,7 +1032,7 @@ OJ.extendClass(
             // transform event
             else if(type == OjTransformEvent.MOVE){
                 if(!this.hasEventListener(OjTransformEvent.MOVE)){
-                    this._unset('_move_timer');
+                    this._unset("_move_timer");
                 }
             }
             else if(type == OjTransformEvent.RESIZE){
@@ -1052,17 +1049,17 @@ OJ.extendClass(
             }
         },
 
-        'removeGestureRecognizer' : function(recognizer){
+        "removeGestureRecognizer" : function(recognizer){
             recognizer._remove(this._setupHammer())
         },
 
 
         // Child Management Functions
-        'appendChild' : function(child){
+        "appendChild" : function(child){
             return this.insertChildAt(child, this.num_children);
         },
 
-        'insertChildAt' : function(child, index){
+        "insertChildAt" : function(child, index){
             var dom = this.dom;
 
             if(!child){
@@ -1082,7 +1079,7 @@ OJ.extendClass(
             return child;
         },
 
-        'forChild' : function(callback, complete, context){
+        "forChild" : function(callback, complete, context){
             var self = this,
                 ln = self.num_children,
                 i = 0;
@@ -1100,7 +1097,7 @@ OJ.extendClass(
             }
         },
 
-        'forChildReverse' : function(callback, complete, context){
+        "forChildReverse" : function(callback, complete, context){
             var self = this,
                 ln = self.num_children;
 
@@ -1117,19 +1114,19 @@ OJ.extendClass(
             }
         },
 
-        'getChildAt' : function(index){
+        "getChildAt" : function(index){
             return OjElement.element(this.dom.childNodes[index]);
         },
 
-        'indexOfChild' : function(child){
+        "indexOfChild" : function(child){
             return Array.array(this.dom.childNodes).indexOf(child.dom);
         },
 
-        'hasChild' : function(child){
+        "hasChild" : function(child){
             return child.parent == this;
         },
 
-        'moveChild' : function(child, index){
+        "moveChild" : function(child, index){
             if(this.hasChild(child)){
                 this.dom.insertBefore(child.dom, this.getChildAt(index).dom);
 
@@ -1139,11 +1136,11 @@ OJ.extendClass(
             // throw an error here
         },
 
-        'prependChild' : function(child){
+        "prependChild" : function(child){
             return this.insertChildAt(child, 0);
         },
 
-        'removeAllChildren' : function(){
+        "removeAllChildren" : function(){
             var ln = this.num_children,
                 ary = [];
 
@@ -1154,7 +1151,7 @@ OJ.extendClass(
             return ary;
         },
 
-        'removeChild' : function(child){
+        "removeChild" : function(child){
             if(child){
                 // this will help exclude text elements
                 if(child.is(OjStyleElement)){
@@ -1162,7 +1159,7 @@ OJ.extendClass(
                         this.dom.removeChild(child.dom);
                     }
                     catch(e){
-                        // we don't really care if the child couldn't be removed. it's cheaper than checking every time
+                        // we don't really care if the child couldn't be removed. it"s cheaper than checking every time
                     }
                 }
 
@@ -1172,7 +1169,7 @@ OJ.extendClass(
             return child;
         },
 
-        'removeChildAt' : function(index){
+        "removeChildAt" : function(index){
             if(index < 0 || index >= this.num_children){
                 return null;
             }
@@ -1180,7 +1177,7 @@ OJ.extendClass(
             return this.removeChild(this.getChildAt(index));
         },
 
-        'removeChildren' : function(children){
+        "removeChildren" : function(children){
             var ln = children.length;
 
             for(; ln--;){
@@ -1188,11 +1185,11 @@ OJ.extendClass(
             }
         },
 
-        'replaceChild' : function(target, replacement){
+        "replaceChild" : function(target, replacement){
             return this.replaceChildAt(replacement, this.indexOfChild(target));
         },
 
-        'replaceChildAt' : function(child, index){
+        "replaceChildAt" : function(child, index){
             var rtrn;
 
             if(index >= this.num_children){
@@ -1208,7 +1205,7 @@ OJ.extendClass(
         },
 
 
-        '.children' : function(){
+        ".children" : function(){
             var ary = [],
                 ln = this.num_children;
 
@@ -1218,7 +1215,7 @@ OJ.extendClass(
 
             return ary;
         },
-        '=children' : function(children){
+        "=children" : function(children){
             this.removeAllChildren();
 
             var i = 0,
@@ -1229,57 +1226,57 @@ OJ.extendClass(
             }
         },
 
-        '.num_children' : function(){
+        ".num_children" : function(){
             return this.dom.childNodes.length;
         },
 
 
         // misc functions
-        'blur' : function(){
+        "blur" : function(){
             if(isFunction(this._dom.blur)){
                 this._dom.blur();
             }
         },
 
-        'find' : function(query){
+        "find" : function(query){
             if(isElement(query)){
-                query = '#' + query.id;
+                query = "#" + query.id;
             }
 
             return OJ.query(query, this._dom);
         },
 
-        'focus' : function(){
+        "focus" : function(){
             if(isFunction(this._dom.focus)){
                 this._dom.focus();
             }
         },
 
-        'hide' : function(should){
+        "hide" : function(should){
             if(should === false){
                 this.show();
             }
             else{
-                this.addCss(['hidden']);
+                this.addCss(["hidden"]);
 
                 this.dispatchEvent(new OjEvent(OjEvent.HIDE));
             }
         },
 
-        '.isVisible' : function(){
+        ".isVisible" : function(){
             var self = this;
 
-            return self._getStyle('display') != OjStyleElement.NONE &&
-                   self._getStyle('visibility') != 'hidden' &&
+            return self._getStyle("display") != OjStyleElement.NONE &&
+                   self._getStyle("visibility") != "hidden" &&
                    self.alpha > 0 && self.width > 0 && self.height > 0;
         },
 
-        'show' : function(should){
+        "show" : function(should){
             if(should === false){
                 this.hide();
             }
             else{
-                this.removeCss('hidden');
+                this.removeCss("hidden");
 
                 this.dispatchEvent(new OjEvent(OjEvent.SHOW));
             }
@@ -1287,33 +1284,33 @@ OJ.extendClass(
 
 
         // single style getter & setter functions
-        '_getStyleBackup' : function(style){
+        "_getStyleBackup" : function(style){
             return this._proxy.style[style];
         },
 
-        '_getStyleIe' : function(style){
+        "_getStyleIe" : function(style){
             return this._proxy.currentStyle[style];
         },
 
-        '_getStyle' : function(style){
+        "_getStyle" : function(style){
             return document.defaultView.getComputedStyle(this._proxy, null)[style];
         },
-        '_setStyle' : function(style, value){
+        "_setStyle" : function(style, value){
             return this._proxy.style[style] = value;
         },
 
 
-        '_getStyleNumber' : function(prop){
+        "_getStyleNumber" : function(prop){
             var val = this._getStyle(prop);
 
             if(!val || val == OjStyleElement.NONE){
                 return 0;
             }
 
-            return parseFloat(val.replaceAll(['px', '%', 'pt', 'em'], ''));
+            return parseFloat(val.replaceAll(["px", "%", "pt", "em"], ""));
         },
 
-        '_setStyleNumber' : function(prop, val/*, unit*/){
+        "_setStyleNumber" : function(prop, val/*, unit*/){
             var args = arguments;
 
             this._setStyle(
@@ -1323,23 +1320,23 @@ OJ.extendClass(
         },
 
         // Bulk Style Getter & Setter Functions
-        '_getStyler' : function(prop, args){
-            var unit = prop == 'font' || prop == 'line' ? OJ.font_unit : OJ.dim_unit;
+        "_getStyler" : function(prop, args){
+            var unit = prop == "font" || prop == "line" ? OJ.font_unit : OJ.dim_unit;
 
-            if(!this['_' + prop]){
-                this['_' + prop] = [
-                    this._getStyle(prop + 'Top').replaceAll(unit, ''),
-                    this._getStyle(prop + 'Right').replaceAll(unit, ''),
-                    this._getStyle(prop + 'Bottom').replaceAll(unit, ''),
-                    this._getStyle(prop + 'Left').replaceAll(unit, '')
+            if(!this["_" + prop]){
+                this["_" + prop] = [
+                    this._getStyle(prop + "Top").replaceAll(unit, ""),
+                    this._getStyle(prop + "Right").replaceAll(unit, ""),
+                    this._getStyle(prop + "Bottom").replaceAll(unit, ""),
+                    this._getStyle(prop + "Left").replaceAll(unit, "")
                 ];
             }
 
-            return args && args.length ? this['_' + prop][args[0]] : this['_' + prop];
+            return args && args.length ? this["_" + prop][args[0]] : this["_" + prop];
         },
 
-        '_setStyler' : function(prop, vals){
-            var str = '',
+        "_setStyler" : function(prop, vals){
+            var str = "",
                 ln = vals.length,
                 val = vals[0],
                 unit = this._getStyleUnit(prop);
@@ -1362,19 +1359,19 @@ OJ.extendClass(
                 val = vals[ln];
 
                 if(isNull(val)){
-                    val = this['_' + prop][ln];
+                    val = this["_" + prop][ln];
                 }
 
-                str = (ln ? ' ' : '') + val + unit + str;
+                str = (ln ? " " : "") + val + unit + str;
             }
 
             this._setStyle(prop, str);
         },
 
-        '_getStyleUnit' : function(prop){
+        "_getStyleUnit" : function(prop){
             prop = prop.substr(0, 4);
 
-            if(prop == 'font' || prop == 'line'){
+            if(prop == "font" || prop == "line"){
                 return OJ.font_unit;
             }
 
@@ -1383,41 +1380,36 @@ OJ.extendClass(
 
 
         // Attribute Getter & Setter Functions
-        'getAttr' : function(key){
+        "attr" : function(key, val){
+            var proxy = this._proxy;
+
             // process the key incase its an attribute object
             if(isObject(key)){
                 key = key.nodeName;
+            }
+
+            if(!isUndefined(val)){
+                if(isSet(val)){
+                    // if the value is set (not null) then update attribute value
+                    if(isSet(val)){
+                        proxy.setAttribute(key, val);
+                    }
+                    // otherwise remove
+                    else{
+                        proxy.removeAttribute(key);
+                    }
+                }
             }
 
             // read the attribute value
-            return this._proxy.getAttribute(key);
+            return proxy.getAttribute(key);
         },
-        'setAttr' : function(key, value){
-            // process the key incase its an attribute object
-            if(isObject(key)){
-                key = key.nodeName;
-            }
-
-            // if no value was set then default to empty string
-            if(isUndefined(value)){
-                value = '';
-            }
-
-            // if the value is set (not null) then update attribute value
-            if(isSet(value)){
-                this._proxy.setAttribute(key, value);
-            }
-            // otherwise remove
-            else{
-                this._proxy.removeAttribute(key);
-            }
-        },
-
-        '.id' : function(){
+        
+        ".id" : function(){
             return this._id || this.oj_id;
         },
 
-        '=id' : function(val){
+        "=id" : function(val){
             if(this._id == val){
                 return
             }
@@ -1425,17 +1417,17 @@ OJ.extendClass(
             // unregister the old id
             OjElement.unregister(this);
 
-            this._proxy.ojProxy = this.dom.id = this._id = val;
+            (this._proxy || {}).ojProxy = (this.dom || {}).id = this._id = val;
 
             // register the new id
             OjElement.register(this);
         },
 
         // Content Getter & Setter Functions
-        '.text' : function(){
+        ".text" : function(){
             return this.dom.innerHTML;
         },
-        '=text' : function(str){
+        "=text" : function(str){
             this.removeAllChildren();
 
             this.dom.innerHTML = String.string(str).html();
@@ -1444,7 +1436,7 @@ OJ.extendClass(
         },
 
         // Css Functions
-        '_makeCssList' : function(args){
+        "_makeCssList" : function(args){
             if(isArray(args[0])){
                 return args[0];
             }
@@ -1453,14 +1445,14 @@ OJ.extendClass(
                 list = [];
 
             for(; ln--;){
-                list = list.concat(args[ln].trim().split(' '));
+                list = list.concat(args[ln].trim().split(" "));
             }
 
             return list;
         },
 
-        '_processCssList' : function(args, action){
-            var css = this.cssList,
+        "_processCssList" : function(args, action){
+            var css = this.css_list,
                 list = this._makeCssList(args),
                 ln = list.length,
                 cls, index;
@@ -1470,89 +1462,89 @@ OJ.extendClass(
 
                 if(index == -1){
                     switch(action){
-                        case 'has':
+                        case "has":
                             return false;
 
-                        case 'add':
-                        case 'toggle':
+                        case "add":
+                        case "toggle":
                             css.append(cls);
                     }
                 }
                 else{
                     switch(action){
-                        case 'remove':
-                        case 'toggle':
+                        case "remove":
+                        case "toggle":
                             css.removeAt(index);
                     }
                 }
             }
 
-            if(action == 'has'){
+            if(action == "has"){
                 return true;
             }
 
             return this.css = css;
         },
 
-        'addCss' : function(css/*...css | array*/){
-            return this._processCssList(arguments, 'add');
+        "addCss" : function(css/*...css | array*/){
+            return this._processCssList(arguments, "add");
         },
 
-        '.css' : function(){
+        ".css" : function(){
             return this._proxy.className.trim();
         },
 
-        '.cssList' : function(){
-            return this.css.split(' ');
+        ".css_list" : function(){
+            return this.css.split(" ");
         },
 
-        'hasCss' : function(css/*...css | array*/){
-            return this._processCssList(arguments, 'has');
+        "hasCss" : function(css/*...css | array*/){
+            return this._processCssList(arguments, "has");
         },
 
-        'removeCss' : function(css/*... css | array*/){
-            return this._processCssList(arguments, 'remove');
+        "removeCss" : function(css/*... css | array*/){
+            return this._processCssList(arguments, "remove");
         },
 
-        '=css' : function(css){
-            return this._proxy.className = (isArray(css) ? css.join(' ') : css).trim();
+        "=css" : function(css){
+            return this._proxy.className = (isArray(css) ? css.join(" ") : css).trim();
         },
 
-        'swapCss' : function(target, replacement){
+        "swapCss" : function(target, replacement){
             this.removeCss(target);
             this.addCss(replacement);
         },
 
-        'toggleCss' : function(css/*...css | array*/){
-            return this._processCssList(arguments, 'toggle');
+        "toggleCss" : function(css/*...css | array*/){
+            return this._processCssList(arguments, "toggle");
         },
 
         // Focus Functions
-        'hasFocus' : function(){
+        "hasFocus" : function(){
             return this._dom.hasFocus;
         },
 
-        'hitTest' : function(elm, local){
+        "hitTest" : function(elm, local){
             return this.hitTestRect(elm.rect);
         },
 
-        'hitTestRect' : function(rect, local){
-            return (local ? this.rect : this.pageRect).hitTestRect(rect);
+        "hitTestRect" : function(rect, local){
+            return (local ? this.rect : this.page_rect).hitTestRect(rect);
         },
 
-        'hitTestPoint' : function(x, y, local){
-            return (local ? this.rect : this.pageRect).hitTestPoint(x, y);
+        "hitTestPoint" : function(x, y, local){
+            return (local ? this.rect : this.page_rect).hitTestPoint(x, y);
         },
 
-        'localPoint' : function(global_point){
+        "localPoint" : function(global_point){
             // todo: add localPoint functionality
         },
 
-        'localX' : function(global_x){
+        "localX" : function(global_x){
             return global_x - this.pageX;
         },
 
-        'localY' : function(global_y){
+        "localY" : function(global_y){
             return global_y - this.pageY;
         },
 
@@ -1561,21 +1553,21 @@ OJ.extendClass(
         // TODO:
         // 1) factor in border into sizing
         // 2) handle non-metric values such as auto and %
-        '.innerWidth' : function(){
+        ".innerWidth" : function(){
             return this.width - this.getPaddingLeft() - this.getPaddingRight();
         },
-        '=innerWidth' : function(w){
+        "=innerWidth" : function(w){
             this._setWidth(Math.round(w) + OJ.dim_unit);
         },
 
-        '.outerWidth' : function(){
+        ".outerWidth" : function(){
             return this.width + this.getMarginLeft() + Math.abs(this.getMarginRight());
         },
-        '=outerWidth' : function(w){
+        "=outerWidth" : function(w){
             this.innerWidth = w - this.getPaddingLeft() - this.getPaddingRight() - this.getMarginLeft() - Math.abs(this.getMarginRight());
         },
 
-        '.width' : function(/*unit=px*/){
+        ".width" : function(/*unit=px*/){
             var unit = arguments.length ? arguments[0] : null;
 
             if(unit == OjStyleElement.PERCENT){
@@ -1584,12 +1576,12 @@ OJ.extendClass(
                 return (this._proxy.offsetWidth / parent.offsetWidth) * 100;
             }
 
-            return this._proxy.offsetWidth || this._getStyleNumber('width');
+            return this._proxy.offsetWidth || this._getStyleNumber("width");
         },
-        '_setWidth' : function(val){
-            this._setStyle('width', val);
+        "_setWidth" : function(val){
+            this._setStyle("width", val);
         },
-        '=width' : function(val){
+        "=width" : function(val){
             var args = isArray(val) ? val : [val],
                 w = args[0];
 
@@ -1597,42 +1589,42 @@ OJ.extendClass(
                 this._setWidth(null);
             }
             else if(args.length > 1){
-                this._setWidth(args.join(''));
+                this._setWidth(args.join(""));
             }
             else{
                 this.innerWidth = w - this.getPaddingLeft() - this.getPaddingRight();
             }
         },
 
-        //'.minWidth' : function(){
-        //    return isNull(this._min_width) ? this._min_width = this._getStyleNumber('minWidth') : this._min_width;
+        //".minWidth" : function(){
+        //    return isNull(this._min_width) ? this._min_width = this._getStyleNumber("minWidth") : this._min_width;
         //},
-        //'=minWidth' : function(min){
-        //    this._setStyleNumber('minWidth', this._min_width = min);
+        //"=minWidth" : function(min){
+        //    this._setStyleNumber("minWidth", this._min_width = min);
         //},
         //
-        //'.maxWidth' : function(){
-        //    return isNull(this._max_width) ? this._max_width = this._getStyleNumber('maxWidth') : this._max_width;
+        //".maxWidth" : function(){
+        //    return isNull(this._max_width) ? this._max_width = this._getStyleNumber("maxWidth") : this._max_width;
         //},
-        //'=maxWidth' : function(max){
-        //    this._setStyleNumber('maxWidth', this._max_width = max);
+        //"=maxWidth" : function(max){
+        //    this._setStyleNumber("maxWidth", this._max_width = max);
         //},
 
-        '.innerHeight' : function(){
+        ".innerHeight" : function(){
             return this.height - this.getPaddingTop() - this.getPaddingBottom();
         },
-        '=innerHeight' : function(h){
+        "=innerHeight" : function(h){
             this._setHeight(Math.round(h) + OJ.dim_unit);
         },
 
-        '.outerHeight' : function(){
+        ".outerHeight" : function(){
             return this.height + this.getMarginTop() + Math.abs(this.getMarginBottom());
         },
-        '=outerHeight' : function(h){
+        "=outerHeight" : function(h){
             this.innerHeight = h - this.getPaddingTop() - this.getPaddingBottom() - this.getMarginTop() - Math.abs(this.getMarginBottom());
         },
 
-        '.height' : function(/*unit=px*/){
+        ".height" : function(/*unit=px*/){
             var unit = arguments.length ? arguments[0] : null;
 
             if(unit == OjStyleElement.PERCENT){
@@ -1641,12 +1633,12 @@ OJ.extendClass(
                 return (this._proxy.offsetHeight / parent.offsetHeight) * 100;
             }
 
-            return this._proxy.offsetHeight || this._getStyleNumber('height');
+            return this._proxy.offsetHeight || this._getStyleNumber("height");
         },
-        '_setHeight' : function(val){
-            this._setStyle('height', val);
+        "_setHeight" : function(val){
+            this._setStyle("height", val);
         },
-        '=height' : function(val){
+        "=height" : function(val){
             var args = isArray(val) ? val : [val],
                 h = args[0];
 
@@ -1654,33 +1646,33 @@ OJ.extendClass(
                 this._setHeight(null);
             }
             else if(args.length > 1){
-                this._setHeight(args.join(''));
+                this._setHeight(args.join(""));
             }
             else{
                 this.innerHeight = h - this.getPaddingTop() - this.getPaddingBottom();
             }
         },
 
-        //'.minHeight' : function(){
-        //    return isNull(this._min_height) ? this._min_height = this._getStyleNumber('minHeight') : this._min_height;
+        //".minHeight" : function(){
+        //    return isNull(this._min_height) ? this._min_height = this._getStyleNumber("minHeight") : this._min_height;
         //},
-        //'=minHeight' : function(min){
+        //"=minHeight" : function(min){
         //    this._min_height = min;
         //
-        //    this._setStyleNumber('minHeight', min);
+        //    this._setStyleNumber("minHeight", min);
         //},
         //
-        //'.maxHeight' : function(){
-        //    return isNull(this._max_height) ? this._max_height = this._getStyleNumber('maxHeight') : this._max_height;
+        //".maxHeight" : function(){
+        //    return isNull(this._max_height) ? this._max_height = this._getStyleNumber("maxHeight") : this._max_height;
         //},
-        //'=maxHeight' : function(max){
+        //"=maxHeight" : function(max){
         //    this._max_height = max;
         //
-        //    this._setStyleNumber('maxHeight', max);
+        //    this._setStyleNumber("maxHeight", max);
         //},
 
         // Style Getter & Setter Functions
-        '.x' : function(/*unit=px*/){
+        ".x" : function(/*unit=px*/){
             var unit = arguments.length ? arguments[0] : null;
 
             if(unit == OjStyleElement.PERCENT){
@@ -1691,23 +1683,23 @@ OJ.extendClass(
 
             return this._proxy.offsetLeft;
         },
-        '.pageX' : function(){
+        ".pageX" : function(){
             if(this._proxy.getBoundingClientRect){
                 return this._proxy.getBoundingClientRect().left;
             }
 
             // add backup solution
         },
-        '=x' : function(val/*[val, unit=px]*/){
+        "=x" : function(val/*[val, unit=px]*/){
             var args = isArray(val) ? val : [val];
 
-            this._setStyleNumber('left', args[0], args.length > 1 ? args[1] : OJ.dim_unit);
+            this._setStyleNumber("left", args[0], args.length > 1 ? args[1] : OJ.dim_unit);
         },
-        '=pageX' : function(val){
+        "=pageX" : function(val){
             this.x = this.parent.localX(val);
         },
 
-        '.y' : function(/*unit=px*/){
+        ".y" : function(/*unit=px*/){
             var unit = arguments.length ? arguments[0] : null;
 
             if(unit == OjStyleElement.PERCENT){
@@ -1718,166 +1710,168 @@ OJ.extendClass(
 
             return this._proxy.offsetTop;
         },
-        '.pageY' : function(){
+        ".pageY" : function(){
             if(this._proxy.getBoundingClientRect){
                 return this._proxy.getBoundingClientRect().top;
             }
 
             // add backup solution
         },
-        '=y' : function(val/*[val, unit=px]*/){
+        "=y" : function(val/*[val, unit=px]*/){
             var args = isArray(val) ? val : [val];
 
-            this._setStyleNumber('top', args[0], args.length > 1 ? args[1] : OJ.dim_unit);
+            this._setStyleNumber("top", args[0], args.length > 1 ? args[1] : OJ.dim_unit);
         },
-        '=pageY' : function(val){
+        "=pageY" : function(val){
             this.y = this.parent.localY(val);
         },
 
-        '.alpha' : function(){
+        ".alpha" : function(){
             return this._alpha;
         },
-        '=alpha' : function(alpha){
+        "=alpha" : function(alpha){
             var old_alpha = this._alpha;
 
             if(old_alpha == alpha){
                 return;
             }
 
-            if((alpha = this._alpha = this._setStyle('opacity', alpha)) && old_alpha === 0){
-//				this.dispatchEvent(new OjEvent(OjEvent.SHOW));
+            if((alpha = this._alpha = this._setStyle("opacity", alpha)) && old_alpha === 0){
+//                this.dispatchEvent(new OjEvent(OjEvent.SHOW));
             }
             else if(!alpha){
-//				this.dispatchEvent(new OjEvent(OjEvent.HIDE));
+//                this.dispatchEvent(new OjEvent(OjEvent.HIDE));
             }
         },
 
-        '.backgroundColor' : function(){
-            return this._getStyle('background-color');
+        ".background_color" : function(){
+            return this._getStyle("background-color");
         },
-        '=backgroundColor' : function(color){
-            this._setStyle('background-color', color);
+        "=background_color" : function(color){
+            this._setStyle("background-color", color);
         },
 
-        '.depth' : function(){
+        ".depth" : function(){
             return this._depth;
         },
-        '=depth' : function(depth){
-            this._depth = this._setStyle('zIndex', depth);
+        "=depth" : function(depth){
+            this._depth = this._setStyle("zIndex", depth);
         },
 
-        '.overflow' : function(){
+        ".overflow" : function(){
             return this._overflow;
         },
-        '=overflow' : function(overflow){
-            this._overflow = this._setStyle('overflow', overflow);
+        "=overflow" : function(overflow){
+            this._overflow = this._setStyle("overflow", overflow);
         },
 
-        '.rect' : function(){
+        ".rect" : function(){
             return new OjRect(this.x, this.y, this.width, this.height);
         },
-        '=rect' : function(rect){
+        "=rect" : function(rect){
             // add this later
         },
 
-        '.pageRect' : function(){
-            return new OjRect(this.pageX, this.pageY, this.width, this.height);
+        ".page_rect" : function(){
+            var self = this;
+
+            return new OjRect(self.pageX, self.pageY, self.width, self.height);
         },
-        '=pageRect' : function(rect){
-            // add this later
+        "=page_rect" : function(rect){
+            // todo: =page_rect
         },
 
-        '.scrollHeight' : function(){
+        ".scrollHeight" : function(){
             return this._proxy.scrollHeight;
         },
-        '=scrollHeight' : function(val){
+        "=scrollHeight" : function(val){
             this._proxy.scrollHeight = val;
         },
 
-        '.scrollWidth' : function(){
+        ".scrollWidth" : function(){
             return this._proxy.scrollWidth;
         },
-        '=scrollWidth' : function(val){
+        "=scrollWidth" : function(val){
             this._proxy.scrollWidth = val;
         },
 
-        '.scrollX' : function(){
+        ".scrollX" : function(){
             return this._proxy.scrollLeft;
         },
 
-        '=scrollX' : function(val){
+        "=scrollX" : function(val){
             this._proxy.scrollLeft = val;
         },
 
-        '.scrollY' : function(){
+        ".scrollY" : function(){
             return this._proxy.scrollTop;
         },
 
-        '=scrollY' : function(val){
+        "=scrollY" : function(val){
             this._proxy.scrollTop = val;
         },
 
 
         // alignment getter & setters
-        '_getAlign' : function(type, dflt){
-            var align = this.getAttr(type + '-align');
+        "_getAlign" : function(type, dflt){
+            var align = this.attr(type + "-align");
 
             return align ? align : dflt;
         },
 
-        '_setAlign' : function(type, val, dflt){
+        "_setAlign" : function(type, val, dflt){
             if(val == dflt){
                 val = null;
             }
 
-            this.setAttr(type + '-align', this['_' + type + '_align'] = val);
+            this.attr(type + "-align", this["_" + type + "_align"] = val);
         },
 
-        '.hAlign' : function(){
-            return this._getAlign('h', OjStyleElement.LEFT);
+        ".hAlign" : function(){
+            return this._getAlign("h", OjStyleElement.LEFT);
         },
-        '=hAlign' : function(val){
-            return this._setAlign('h', val, OjStyleElement.LEFT);
+        "=hAlign" : function(val){
+            return this._setAlign("h", val, OjStyleElement.LEFT);
         },
 
-        '.vAlign' : function(){
-            return this._getAlign('v', OjStyleElement.TOP);
+        ".vAlign" : function(){
+            return this._getAlign("v", OjStyleElement.TOP);
         },
-        '=vAlign' : function(val){
-            return this._setAlign('v', val, OjStyleElement.TOP);
+        "=vAlign" : function(val){
+            return this._setAlign("v", val, OjStyleElement.TOP);
         },
 
 
         // Transform Setter & Getters
-        '_updateTransform' : function(){
-            var rotate = this._rotation ? 'rotate(' + this._rotation + 'deg) ' : '',
-                translate = this._translate ? this._translate.toString() : '',
-                transform = rotate + (isEmpty(translate) ? '' : 'translate(' + translate + ')'),
+        "_updateTransform" : function(){
+            var rotate = this._rotation ? "rotate(" + this._rotation + "deg) " : "",
+                translate = this._translate ? this._translate.toString() : "",
+                transform = rotate + (isEmpty(translate) ? "" : "translate(" + translate + ")"),
                 prefix = OJ.css_prefix;
 
-            if(prefix == '-moz-'){
-                this._setStyle('MozTransform', transform);
+            if(prefix == "-moz-"){
+                this._setStyle("MozTransform", transform);
             }
             else{
-                this._setStyle(prefix + 'transform', transform);
+                this._setStyle(prefix + "transform", transform);
             }
 
-            this._setStyle('transform', transform);
+            this._setStyle("transform", transform);
         },
 
-        '.origin' : function(){
+        ".origin" : function(){
             return this._origin;
         },
-        '=origin' : function(val){
-            this._setStyle(OJ.css_prefix + 'transform-origin', val);
+        "=origin" : function(val){
+            this._setStyle(OJ.css_prefix + "transform-origin", val);
 
-            this._setStyle('transform-origin', this._origin = val);
+            this._setStyle("transform-origin", this._origin = val);
         },
 
-        '.rotation' : function(){
+        ".rotation" : function(){
             return this._rotation;
         },
-        '=rotation' : function(val){
+        "=rotation" : function(val){
             if(this._rotation == val){
                 return;
             }
@@ -1887,10 +1881,10 @@ OJ.extendClass(
             this._updateTransform();
         },
 
-        '.translate' : function(){
+        ".translate" : function(){
             return this._translate;
         },
-        '=translate' : function(val){
+        "=translate" : function(val){
             if(val.isEqualTo(this._translate)){
                 return;
             }
@@ -1901,63 +1895,63 @@ OJ.extendClass(
         }
     },
     {
-        'COMPONENT_TAGS' : {},
+        "COMPONENT_TAGS" : {},
 
-        'STYLE_BACKUP' : 'styleBackup',
-        'STYLE_DEFAULT' : 'styleDefault',
-        'STYLE_IE' : 'styleIE',
+        "STYLE_BACKUP" : "styleBackup",
+        "STYLE_DEFAULT" : "styleDefault",
+        "STYLE_IE" : "styleIE",
 
-        'STYLE_MODE' : (function(){
-            var elm = OjElement.elm('div');
+        "STYLE_MODE" : (function(){
+            var elm = OjElement.elm("div");
 
             if(elm.currentStyle){
-                return 'styleIE';
+                return "styleIE";
             }
 
             if(!document.defaultView || !document.defaultView.getComputedStyle){
-                return 'styleBackup';
+                return "styleBackup";
             }
 
-            return 'styleDefault';
+            return "styleDefault";
         })(),
 
-        'AUTO' : 'auto',
-        'BLOCK' : 'block',
-        'HIDDEN' : 'hidden',
-        'NONE' : 'none',
-        'SCROLL' : 'scroll',
-        'VISIBLE' : 'visible',
+        "AUTO" : "auto",
+        "BLOCK" : "block",
+        "HIDDEN" : "hidden",
+        "NONE" : "none",
+        "SCROLL" : "scroll",
+        "VISIBLE" : "visible",
 
-        'LEFT' : 'l',
-        'CENTER' : 'c',
-        'RIGHT' : 'r',
+        "LEFT" : "l",
+        "CENTER" : "c",
+        "RIGHT" : "r",
 
-        'TOP' : 't',
-        'MIDDLE' : 'm',
-        'BOTTOM' : 'b',
+        "TOP" : "t",
+        "MIDDLE" : "m",
+        "BOTTOM" : "b",
 
-        'PERCENT' : '%',
-        'PX' : 'px',
-        'EM' : 'em',
+        "PERCENT" : "%",
+        "PX" : "px",
+        "EM" : "em",
 
 
-        'getTagComponent' : function(tag){
+        "getTagComponent" : function(tag){
             return this.COMPONENT_TAGS[tag];
         },
 
-        'isComponentTag' : function(tag){
+        "isComponentTag" : function(tag){
             return isSet(this.COMPONENT_TAGS[tag]);
         },
 
-        'registerComponentTag' : function(tag, component){
+        "registerComponentTag" : function(tag, component){
             this.COMPONENT_TAGS[tag] = component;
 
-            if(OJ.browser == OJ.IE && OJ.browser_version.compareVersion('9.0.0') < 0){
+            if(OJ.browser == OJ.IE && OJ.browser_version.compareVersion("9.0.0") < 0){
                 document.createElement(tag);
             }
         },
 
-        'getStyle' : function(dom, style){
+        "getStyle" : function(dom, style){
             if(this.STYLE_MODE == this.STYLE_IE){
                 return dom.currentStyle[style];
             }

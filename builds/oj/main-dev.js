@@ -6842,7 +6842,7 @@ OJ.extendClass(
                 transition_properties += OjPropTween.PROPERTY_CSS_MAP[key];
             }
         },
-        '_isAnimating' : function(val){
+        '_is_animating' : function(val){
             if(this._target && this._target.is('OjComponent')){
                 this._target._setIsAnimating(val);
             }
@@ -6869,7 +6869,7 @@ OJ.extendClass(
         },
 
         '_onComplete' : function(evt){
-            this._isAnimating(false);
+            this._is_animating(false);
             this._super(OjTween, '_onComplete', arguments);
         },
         '_onTargetDestroy' : function(evt){
@@ -6892,7 +6892,7 @@ OJ.extendClass(
         },
 
         'pause' : function(){
-            this._isAnimating(false);
+            this._is_animating(false);
             this._super(OjTween, 'pause', arguments);
         },
         'start' : function(){
@@ -6902,7 +6902,7 @@ OJ.extendClass(
             if(!isSet(this._from)){
                 this._from = {};
             }
-            this._isAnimating(true);
+            this._is_animating(true);
             if(this._mode == OjPropTween.WEBKIT){
                 var key;
                 this._calculateDelta();
@@ -6920,7 +6920,7 @@ OJ.extendClass(
             }
         },
         'stop' : function(){
-            this._isAnimating(false);
+            this._is_animating(false);
             this._super(OjTween, 'stop', arguments);
         },
 
@@ -7038,7 +7038,7 @@ OJ.extendClass(
         },
         '_get_props_' : {
             'controller' : null,
-            'isAnimating' : false
+            'is_animating' : false
         },
 
         '_constructor' : function(){
@@ -7163,10 +7163,10 @@ OJ.extendClass(
             this._processTemplateVars();
         },
         '_setIsAnimating' : function(val){
-            if(this._isAnimating == val){
+            if(this._is_animating == val){
                 return;
             }
-            if(this._isAnimating = val){
+            if(this._is_animating = val){
                 this.addCss(['animating']);
             }
             else{
@@ -8334,14 +8334,14 @@ OJ.defineClass(
             if(!view || (index = this.indexOfView(view)) > -1){
                 return this.gotoViewAt(index, animated);
             }
-            if(index = this.activeIndex){
+            if(index = this.active_index){
                 this.replaceViewAt(0, view);
                 return this.gotoViewAt(0);
             }
             this.replaceActive(view, animated);
         },
         'gotoViewAt' : function(index/*, animated = true*/){
-            return this._stack.activeIndex = arguments;
+            return this._stack.active_index = arguments;
         },
         'hasView' : function(view){
             return this._stack.hasElm(view);
@@ -8350,7 +8350,7 @@ OJ.defineClass(
             return this._stack.indexOfElm(view);
         },
         'removeActive' : function(/*animated = true*/){
-            return this.removeViewAt(this._stack.activeIndex, arguments.length ? arguments[0] : true);
+            return this.removeViewAt(this._stack.active_index, arguments.length ? arguments[0] : true);
         },
         'removeView' : function(view/*, animated = true*/){
             var s = this._stack;
@@ -8363,7 +8363,7 @@ OJ.defineClass(
         'replaceActive' : function(view/*, animated = true*/){
             var s = this._stack,
                 args = arguments;
-            return s.replaceElmAt(this.activeIndex, view, args.length > 1 ? args[0] : true);
+            return s.replaceElmAt(this.active_index, view, args.length > 1 ? args[0] : true);
         },
         'replaceView' : function(oldView, newView/*, animated = true*/){
             var s = this._stack;
@@ -8381,11 +8381,11 @@ OJ.defineClass(
         '=activeView' : function(val){
             this._stack.active = val;
         },
-        '.activeIndex' : function(){
-            return this._stack.activeIndex;
+        '.active_index' : function(){
+            return this._stack.active_index;
         },
-        '=activeIndex' : function(val){
-            this._stack.activeIndex = val;
+        '=active_index' : function(val){
+            this._stack.active_index = val;
         },
         '=stack' : function(stack){
             if(this._stack){
@@ -9398,11 +9398,11 @@ OJ.extendComponent(
         // Properties & Vars
         '_props_' : {
             'active' : null,
-            'activeIndex' : -1,
-            'allowLooping' : false, // todo: OjStack - add support for looping
-            'alwaysTrans' : false,
-            'autoSizeHeight' : false, // todo: OjStack - add support for auto size height
-            'autoSizeWidth' : false, // todo: OjStack - add support for auto size width
+            'active_index' : -1,
+            'allow_looping' : false, // todo: OjStack - add support for looping
+            'always_trans' : false,
+            'auto_size_height' : false, // todo: OjStack - add support for auto size height
+            'auto_size_width' : false, // todo: OjStack - add support for auto size width
             'transition' : null
         },
 //			'_active_elm' : null,  '_deferred_active' : null,  '_prev_active' : null,
@@ -9571,7 +9571,7 @@ OJ.extendComponent(
         // Helper Functions
         '_addActive' : function(item, index){
             this._active = item;
-            this._activeIndex = index;
+            this._active_index = index;
             this._addActiveElm(this.renderItem(item));
         },
         '_addActiveElm' : function(elm){
@@ -9582,7 +9582,7 @@ OJ.extendComponent(
             return start < finish ? -1 : 1;
         },
         '_dispatchChangeComplete' : function(){
-            this.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, this._active, this._transition, this._activeIndex, this._prev_index));
+            this.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, this._active, this._transition, this._active_index, this._prev_index));
         },
         '_makeTransIn' : function(direction){
             var amount = 0, elm,
@@ -9648,7 +9648,8 @@ OJ.extendComponent(
         },
         '_processIndex' : function(index){
             var ln = this.numElms;
-            if(this._allowLooping){
+
+            if(this._allow_looping){
                 index = index % ln;
                 // set the active
                 if(index < 0){
@@ -9656,6 +9657,7 @@ OJ.extendComponent(
                 }
                 return index;
             }
+
             return Math.bounds(index, 0, ln - 1);
         },
         '_processTransParam' : function(param){
@@ -9670,7 +9672,7 @@ OJ.extendComponent(
         '_removeActive' : function(/*item*/){
             var args = arguments,
                 ln, elm,
-                item = args.length ? args[0] : this.getElmAt(this._activeIndex);
+                item = args.length ? args[0] : this.getElmAt(this._active_index);
             if(item){
                 elm = item;
                 // find the matching elm
@@ -9706,17 +9708,17 @@ OJ.extendComponent(
                 item = evt.item;
             this.dispatchEvent(new OjStackEvent(OjStackEvent.ADD, item, this._transition, index));
             if(!this._active){
-                this.activeIndex = index;
+                this.active_index = index;
             }
             else{
-                this._activeIndex = this._current_index = this.indexOfElm(this._active);
+                this._active_index = this._current_index = this.indexOfElm(this._active);
             }
         },
         '_onItemMove' : function(evt){
             this._super(OjCollectionComponent, '_onItemMove', arguments);
             this.dispatchEvent(new OjStackEvent(OjStackEvent.MOVE, evt.item, this._transition, evt.index));
             if(this._active == evt.item){
-                this._activeIndex = this._current_index = evt.index;
+                this._active_index = this._current_index = evt.index;
                 // todo: add logic for stack item move current_index
             }
         },
@@ -9728,21 +9730,21 @@ OJ.extendComponent(
             this.dispatchEvent(new OjStackEvent(OjStackEvent.REMOVE, item, this._transition, index));
             if(this._active == item){
                 if(this._current_index){
-                    this.activeIndex = this._current_index - 1;
+                    this.active_index = this._current_index - 1;
                 }
                 else if(ln = this.numElms){
-                    this.activeIndex = ln - 1;
+                    this.active_index = ln - 1;
                 }
                 else{
                     this._active = null;
-                    this._activeIndex = this._current_index = -1;
+                    this._active_index = this._current_index = -1;
                 }
             }
             else{
                 if(this._prev_active == item){
                     this._prev_active = null;
                 }
-                this._activeIndex = this._current_index = this.indexOfElm(this._active);
+                this._active_index = this._current_index = this.indexOfElm(this._active);
             }
         },
         '_onItemReplace' : function(evt){
@@ -9750,11 +9752,11 @@ OJ.extendComponent(
             var item = evt.item,
                 index = evt.index;
             this.dispatchEvent(new OjStackEvent(OjStackEvent.REPLACE, item, this._transition, index));
-            if(this._activeIndex == index){
+            if(this._active_index == index){
                 // remove the old active
                 this._removeActive(this._active);
                 // add the new active
-                this._addActive(item, this._activeIndex);
+                this._addActive(item, this._active_index);
             }
         },
         '_onTransIn' : function(evt){
@@ -9768,7 +9770,7 @@ OJ.extendComponent(
             }
             // process any deferred
             if(!isNull(this._deferred_active)){
-                this.activeIndex = this._deferred_active;
+                this.active_index = this._deferred_active;
             }
         },
         '_onTransOut' : function(evt){
@@ -9789,10 +9791,10 @@ OJ.extendComponent(
 
         // Utility Functions
         'next' : function(){
-            this.activeIndex = this._current_index + 1;
+            this.active_index = this._current_index + 1;
         },
         'prev' : function(){
-            this.activeIndex = this._current_index - 1;
+            this.active_index = this._current_index - 1;
         },
         'renderItemAt' : function(index){
             return this._super(OjCollectionComponent, 'renderItemAt', [this._processIndex(index)]);
@@ -9801,12 +9803,12 @@ OJ.extendComponent(
         // Getter & Setter Functions
         '=active' : function(val/*, transition = true*/){
             if((arguments[0] = this.indexOfElm(val)) > -1){
-                this.activeIndex = arguments;
+                this.active_index = arguments;
             }
         },
 
         // Getter & Setter Functions
-        '=activeIndex' : function(val/*, [val, transition = true]*/){
+        '=active_index' : function(val/*, [val, transition = true]*/){
             var trans, trans_diff, item, direction, evt;
             // handle tuple
             if(isArray(val)){
@@ -9828,7 +9830,7 @@ OJ.extendComponent(
                 this.transition = this._processTransParam(arguments[1]);
             }
             this._deferred_active = null;
-            direction = this._alwaysTrans ? 1 : 0;
+            direction = this._always_trans ? 1 : 0;
             this._current_index = val;
             this._prev_index = -1;
             // transition out the old active container
@@ -9837,11 +9839,11 @@ OJ.extendComponent(
                 this._prev_active = this._active;
                 // update the direction
                 // create the transition out animation
-                this._makeTransOut(direction = this._animationDirection(this._prev_index = this._activeIndex, val));
+                this._makeTransOut(direction = this._animationDirection(this._prev_index = this._active_index, val));
             }
             // make sure we have something to set active
             if(!this.numElms){
-                this._activeIndex = -1;
+                this._active_index = -1;
                 this._current_index = -1;
                 this._active = null;
                 this.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE, null, this._transition, -1, this._prev_index));
@@ -9851,13 +9853,13 @@ OJ.extendComponent(
             // create the change event
             evt = new OjStackEvent(
                 OjStackEvent.CHANGE, item = this.getElmAt(val),
-                this._trans_out || this._alwaysTrans ? this._transition : OjTransition.DEFAULT,
+                this._trans_out || this._always_trans ? this._transition : OjTransition.DEFAULT,
                 val, this._prev_index
             );
             this._addActive(item, val);
             // transition in the new active container
             // but only if we are transitioning out an old active
-            if(this._trans_out || this._alwaysTrans){
+            if(this._trans_out || this._always_trans){
                 this._makeTransIn(direction);
             }
             if(trans_diff){
@@ -9867,22 +9869,22 @@ OJ.extendComponent(
             this.dispatchEvent(evt);
             // dispatch the change is complete
             // if no animation
-            if(!this._trans_out && !this._alwaysTrans){
+            if(!this._trans_out && !this._always_trans){
                 this._dispatchChangeComplete();
             }
         },
-        '=allowLooping' : function(allow_looping){
-            if(this._allowLooping == allow_looping){
+        '=allow_looping' : function(allow_looping){
+            if(this._allow_looping == allow_looping){
                 return;
             }
             // check to see if current index is out of bounds
-            if(!(this._allowLooping = allow_looping)){
+            if(!(this._allow_looping = allow_looping)){
                 var ln = this.numElms;
                 if(this._current_index < 0){
-                    this.activeIndex = (ln - this._current_index) % ln;
+                    this.active_index = (ln - this._current_index) % ln;
                 }
                 else if(this._current_index >= ln){
-                    this.activeIndex = this._current_index % ln;
+                    this.active_index = this._current_index % ln;
                 }
             }
         },
@@ -9937,13 +9939,13 @@ OJ.extendComponent(
             if(this._active == item){
                 var ln;
                 if(this._current_index){
-                    this.activeIndex = this._current_index - 1;
+                    this.active_index = this._current_index - 1;
                 }
                 else if(ln = this.numElms){
-                    this.activeIndex = ln - 1;
+                    this.active_index = ln - 1;
                 }
                 else{
-                    this.activeIndex = [-1, false];
+                    this.active_index = [-1, false];
                 }
             }
             else{
@@ -9959,7 +9961,7 @@ OJ.extendComponent(
 //				this._updateItemParent(item);
 //				this._updateItemParent(evt.getOldItem(), null);
             this.dispatchEvent(new OjStackEvent(OjStackEvent.REPLACE, item, this._transition, index));
-            if(this._activeIndex == index){
+            if(this._active_index == index){
                 // remove the old active
                 this._removeActive();
                 // add the new active
@@ -10330,11 +10332,11 @@ OJ.extendClass(
     'OjModal', [OjAlert, OjINavController],
     {
         '_props_' : {
-            'barVisible' : true,
-            'buttonsVisible' : null,
-            'closeVisible' : null,
-            'isFullscreen' : false,
-            'underlayVisible' : true
+            'bar_visible' : true,
+            'buttons_visible' : null,
+            'close_visible' : null,
+            'is_fullscreen' : false,
+            'underlay_visible' : true
         },
         '_template' : '<div><div var=underlay></div><div var=pane><flownav var=bar v-align=m cancel-label=Close></flownav><navstack var=container class=content></navstack><div var=btns v-align=m></div></div></div>',
 
@@ -10342,8 +10344,8 @@ OJ.extendClass(
             this._super(OjAlert, '_constructor', []);
             // setup controller stack relationship
             this.bar.stack = this.stack = this.container;
-            this.closeVisible = true;
-            this.buttonsVisible = false;
+            this.close_visible = true;
+            this.buttons_visible = false;
             // process arguments
             var args = arguments,
                 ln = args.length;
@@ -10383,8 +10385,8 @@ OJ.extendClass(
 //            }
         },
 
-        '=barVisible' : function(val){
-            if(this._barVisible = val){
+        '=bar_visible' : function(val){
+            if(this._bar_visible = val){
                 this.bar.show();
                 //this.bar.addEventListener(OjDragEvent.DRAG, this, '_onDrag');
             }
@@ -10393,18 +10395,18 @@ OJ.extendClass(
                 //this.bar.removeEventListener(OjDragEvent.DRAG, this, '_onDrag');
             }
         },
-        '=buttonsVisible' : function(val){
-            if(this._buttonsVisible = val){
+        '=buttons_visible' : function(val){
+            if(this._buttons_visible = val){
                 this.removeCss('no-buttons');
             }
             else{
                 this.addCss('no-buttons');
             }
         },
-        '.closeVisible' : function(){
+        '.close_visible' : function(){
             return this.bar.cancelVisible;
         },
-        '=closeVisible' : function(val){
+        '=close_visible' : function(val){
             this.bar.cancelVisible = val;
             if(val){
                 this.bar.addEventListener(OjEvent.CANCEL, this, '_onCancelPress');
@@ -10413,16 +10415,16 @@ OJ.extendClass(
                 this.bar.removeEventListener(OjEvent.CANCEL, this, '_onCancelPress');
             }
         },
-        '=isFullscreen' : function(val){
-            if(this._isFullscreen = val){
+        '=is_fullscreen' : function(val){
+            if(this._is_fullscreen = val){
                 this.addCss('fullscreen');
             }
             else{
                 this.removeCss('fullscreen');
             }
         },
-        '=underlayVisible' : function(val){
-            if(this._underlayVisible = val){
+        '=underlay_visible' : function(val){
+            if(this._underlay_visible = val){
                 this.underlay.show();
             }
             else{
@@ -10620,7 +10622,7 @@ OJ.extendManager(
                 fullscreen = this._isMobileModal(modal);
             }
             modal.selfDestruct = OjAlert.DEEP;
-            modal.isFullscreen = fullscreen;
+            modal.is_fullscreen = fullscreen;
             modal.paneWidth = this._calcWindowWidth(width, fullscreen);
             modal.paneHeight = this._calcWindowHeight(height, fullscreen);
             this.show(modal);
@@ -13642,7 +13644,7 @@ OJ.extendComponent(
             if(this._prev_active){
                 this._prev_active.isActive = false;
             }
-            if(this._prev_active = this.getChildAt(this._stack.activeIndex)){
+            if(this._prev_active = this.getChildAt(this._stack.active_index)){
                 this._prev_active.isActive = true;
             }
         },
@@ -13661,7 +13663,7 @@ OJ.extendComponent(
         '_onStackViewReplace' : function(evt){
         },
         '_onTabClick' : function(evt){
-            this._stack.activeIndex = this.indexOfChild(evt.currentTarget);
+            this._stack.active_index = this.indexOfChild(evt.currentTarget);
             this._updateActiveBtn();
         },
         '_onViewIconChange' : function(evt){

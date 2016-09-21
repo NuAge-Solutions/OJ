@@ -1,74 +1,72 @@
-OJ.importJs('oj.nav.OjNavController');
-OJ.importJs('oj.components.OjLabel');
-OJ.importJs('oj.dom.OjStyleElement');
-OJ.importJs('oj.events.OjEvent');
-OJ.importJs('oj.events.OjStackEvent');
-OJ.importJs('oj.fx.OjFade');
-OJ.importJs('oj.fx.OjMove');
-OJ.importJs('oj.fx.OjTweenSet');
-
-OJ.importCss('oj.nav.OjFlowNavController');
+importJs("oj.nav.OjNavController");
+importJs("oj.components.OjLabel");
+importJs("oj.dom.OjStyleElement");
+importJs("oj.events.OjEvent");
+importJs("oj.events.OjStackEvent");
+importJs("oj.fx.OjFade");
+importJs("oj.fx.OjMove");
+importJs("oj.fx.OjTweenSet");
 
 
 OJ.extendComponent(
-    'OjFlowNavController', [OjNavController],
+    "OjFlowNavController", [OjNavController],
     {
-        '_props_' : {
-            'cancel_icon' : null,
-            'cancel_label' : 'Cancel',
-            'cancel_visible' : false,
-            'default_title' : null,
-            'title' : null
+        "_props_" : {
+            "cancel_icon" : null,
+            "cancel_label" : "Cancel",
+            "cancel_visible" : false,
+            "default_title" : null,
+            "title" : null
         },
 
-        '_template' : 'oj.nav.OjFlowNavController',
+        "_template" : "oj.nav.OjFlowNavController",
 
 
         // internal stack methods
-        '_setupStack' : function(stack){
+        "_setupStack" : function(stack){
             var self = this,
                 trans = OjTransition;
 
-            if(self._super(OjNavController, '_setupStack', arguments)){
+            if(self._super(OjNavController, "_setupStack", arguments)){
                 stack.transition = new trans(trans.SLIDE_HORZ, 250, [OjEasing.IN, OjEasing.OUT]);
             }
 
             return stack;
         },
 
-        //'_onStackAdd' : function(evt){
+        //"_onStackAdd" : function(evt){
         //    this._stack.active = evt.view;
         //},
 
 
         // helper functions
-        '_makeBackButton' : function(view){
+        "_makeBackButton" : function(view){
             var btn = new OjButton(view.short_title);
-            btn.addCss('back-button');
+            btn.addCss("back-button");
 
             return btn;
         },
 
-        '_makeCancelButton' : function(title, icon){
+        "_makeCancelButton" : function(title, icon){
             var btn = new OjButton(title, icon);
-            btn.addCss('cancel-button');
+            btn.addCss("cancel-button");
 
             return btn;
         },
 
-        '_makeTitle' : function(title){
+        "_makeTitle" : function(title){
             if(isObjective(title)){
                 return title;
             }
 
-            return new OjStyleElement('<div>' + title + '</div>');
+            return new OjStyleElement("<div>" + title + "</div>");
         },
 
-        '_update' : function(view, transition, index, old_index){
+        "_update" : function(view, transition, index, old_index){
             var self = this;
 
             // remove any old animations
-            self._unset('_tween');
+            self._unset("_tween");
 
             if(!view){
                 return; // todo: re-evalute this to properly handle transition to on view
@@ -95,10 +93,10 @@ OJ.extendComponent(
 
             // figure out default values
             if(self._back_btn){
-                self._back_btn.removeEventListener(evt.PRESS, self, '_onBackClick');
+                self._back_btn.removeEventListener(evt.PRESS, self, "_onBackClick");
             }
             else if(self._cancel_btn){
-                self._cancel_btn.removeEventListener(evt.PRESS, self, '_onCancelClick');
+                self._cancel_btn.removeEventListener(evt.PRESS, self, "_onCancelClick");
             }
 
             if(!cancel_view){
@@ -113,12 +111,12 @@ OJ.extendComponent(
             if(index > 0){
                 self._back_btn = cancel_view;
 
-                cancel_view.addEventListener(evt.PRESS, self, '_onBackClick');
+                cancel_view.addEventListener(evt.PRESS, self, "_onBackClick");
             }
-            else if(self.cancel_visible){
+            else if(cancel_view){
                 self._cancel_btn = cancel_view;
 
-                cancel_view.addEventListener(evt.PRESS, self, '_onCancelClick');
+                cancel_view.addEventListener(evt.PRESS, self, "_onCancelClick");
             }
 
             // figure out the transition
@@ -163,8 +161,8 @@ OJ.extendComponent(
             var e = transition && transition.effect ? transition.effect : OjTransition.DEFAULT;
 
             if(e == OjTransition.NONE){
-                // remove the animating css class since we aren't anymore
-                self.removeCss('animating');
+                // remove the animating css class since we aren"t anymore
+                self.removeCss("animating");
 
                 // make the necessary changes to the left, title & right bottom components components
                 t.show();
@@ -179,7 +177,7 @@ OJ.extendComponent(
             }
 
             // setup the transition
-            self.addCss('animating');
+            self.addCss("animating");
 
             self._tween = new OjTweenSet();
 
@@ -219,59 +217,53 @@ OJ.extendComponent(
 
 
             // start the transition
-            self._tween.addEventListener(OjTweenEvent.COMPLETE, self, '_onTweenComplete');
+            self._tween.addEventListener(OjTweenEvent.COMPLETE, self, "_onTweenComplete");
 
             self._tween.start();
         },
 
 
         // event handler functions
-        '_onBackClick' : function(evt){
+        "_onBackClick" : function(evt){
             this.back();
         },
 
-        '_onCancelClick' : function(evt){
+        "_onCancelClick" : function(evt){
             this.cancel();
         },
 
-        '_onBackComplete' : function(evt){
-            this._stack.removeItemAt(this._stack.length - 1);
-
-            this._stack.removeEventListener(OjStackEvent.CHANGE_COMPLETE, this, '_onBackComplete');
-        },
-
-        '_onStackChange' : function(evt){
+        "_onStackChange" : function(evt){
             this._update(evt.view, evt.transition, evt.index, evt.oldIndex);
         },
 
-        '_onTweenComplete' : function(evt){
-            this._unset('_tween');
+        "_onTweenComplete" : function(evt){
+            this._unset("_tween");
 
             this.btm_left.removeAllChildren();
             this.btm_title.removeAllChildren();
             this.btm_right.removeAllChildren();
 
-            this.removeCss('animating');
+            this.removeCss("animating");
         },
 
 
         // public methods
-        'back' : function(){
+        "back" : function(){
             var self = this,
                 stack = self.stack;
 
-            stack.activeIndex = stack.activeIndex - 1;
+            stack.active_index = stack.active_index - 1;
 
             self.dispatchEvent(new OjEvent(OjFlowNavController.BACK));
         },
 
-        'cancel' : function(){
+        "cancel" : function(){
             this.dispatchEvent(new OjEvent(OjEvent.CANCEL, false));
         },
 
 
         // stack view functions
-        'pushView' : function(view, transition){
+        "pushView" : function(view, transition){
             var stack = this.stack;
 
             stack.appendElm(view);
@@ -279,25 +271,21 @@ OJ.extendComponent(
             stack.active = isSet(transition) ? [view, transition] : view;
         },
 
-        'popToView' : function(view, transition){
+        "popToView" : function(view, transition){
             this.popToViewAt(this.stack.indexOfElm(view), transition);
         },
 
-        'popToViewAt' : function(index, transition){
-            this.stack.activeIndex = [index, transition];
-            //
-            //for(; ln-- > index;){
-            //    stack.removeElmAt(ln);
-            //}
+        "popToViewAt" : function(index, transition){
+            this.stack.active_index = [index, transition];
         },
 
-        'popView' : function(transition){
-            this.popToViewAt(this.stack.numElms - 2, transition);
+        "popView" : function(transition){
+            this.popToViewAt(this.stack.num_elms - 2, transition);
         },
 
 
         // public properties
-        '=title' : function(title){
+        "=title" : function(title){
             var self = this,
                 hldr = self.top_title;
 
@@ -314,7 +302,7 @@ OJ.extendComponent(
             );
         },
 
-        '=cancel_label' : function(val){
+        "=cancel_label" : function(val){
             var self = this,
                 btn = self._cancel_btn;
 
@@ -325,7 +313,7 @@ OJ.extendComponent(
             }
         },
 
-        '=cancel_icon' : function(val){
+        "=cancel_icon" : function(val){
             var self = this,
                 btn = self._cancel_btn;
 
@@ -336,17 +324,17 @@ OJ.extendComponent(
             }
         },
 
-        '=cancel_visible' : function(val){
+        "=cancel_visible" : function(val){
             var self = this;
 
             if(!(self._cancel_visible = val) && self._cancel_btn){
-                self._unset('_cancel_btn');
+                self._unset("_cancel_btn");
             }
         }
     },
     {
-        '_TAGS' : ['flow-nav', 'flow-nav-controller'],
+        "_TAGS" : ["flow-nav", "flow-nav-controller"],
 
-        'BACK' : 'onFlowNavBack'
+        "BACK" : "onFlowNavBack"
     }
 );

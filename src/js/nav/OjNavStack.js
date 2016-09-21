@@ -1,4 +1,4 @@
-OJ.importJs('oj.components.OjStack');
+ importJs('oj.components.OjStack');
 
 
 OJ.extendComponent(
@@ -22,6 +22,22 @@ OJ.extendComponent(
             // continue on
             this._super(OjStack, '_destructor', arguments);
         },
+
+
+        '_addActive' : function(item, index){
+            this._super(OjStack, '_addActive', arguments);
+
+            item.load();
+        },
+
+        '_removeActive' : function(item){
+            var self = this;
+
+            (item || self.getElmAt(self._active_index)).unload();
+
+            self._super(OjStack, '_removeActive', [item]);
+        },
+
 
         'renderItem' : function(){
             var self = this,
@@ -61,26 +77,27 @@ OJ.extendComponent(
             for(id in rendered){
                 rendered[id].controller = val;
             }
-        },
-
-
-        '=activeIndex' : function(val){
-            var self = this,
-                prev_active = self._active,
-                active;
-
-            self._super(OjStack, '=activeIndex', arguments);
-
-            if((active = self._active) != prev_active){
-                if(prev_active){
-                    prev_active.unload();
-                }
-
-                if(active){
-                    active.load();
-                }
-            }
         }
+        //,
+        //
+        //
+        //'=active_index' : function(val){
+        //    var self = this,
+        //        prev_active = self._active,
+        //        active;
+        //
+        //    self._super(OjStack, '=active_index', arguments);
+        //
+        //    if((active = self._active) != prev_active){
+        //        //if(prev_active){
+        //        //    prev_active.unload();
+        //        //}
+        //
+        //        //if(active){
+        //        //    active.load();
+        //        //}
+        //    }
+        //}
     },
     {
         '_TAGS' : ['nav-stack']

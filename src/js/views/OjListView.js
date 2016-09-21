@@ -1,6 +1,6 @@
-OJ.importJs('oj.views.OjView');
-OJ.importJs('oj.components.OjList');
-OJ.importJs('oj.renderers.OjListViewItemRenderer');
+importJs('oj.views.OjView');
+importJs('oj.components.OjList');
+importJs('oj.renderers.OjListViewItemRenderer');
 
 
 OJ.extendComponent(

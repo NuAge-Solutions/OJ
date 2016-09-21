@@ -1,6 +1,4 @@
-OJ.importJs('oj.components.OjComponent');
-
-OJ.importCss('oj.form.OjInput');
+importJs('oj.components.OjComponent');
 
 
 OJ.extendClass(
@@ -83,7 +81,7 @@ OJ.extendClass(
 
 
         '_formatError' : function(error){
-            return  OJ.tokensReplace(error, this._formatErrorTokens());
+            return  error.format(this._formatErrorTokens());
         },
 
         '_formatErrorTokens' : function(){
@@ -207,7 +205,7 @@ OJ.extendClass(
                 this._redrawDefault();
             }
             else if(this.input){
-                this.input.setAttr('placeholder', val);
+                this.input.attr('placeholder', val);
             }
         },
 
@@ -345,7 +343,7 @@ OJ.extendClass(
         }
     },
     {
-        'REQUIRED_ERROR' : '[%INPUT] is required.',
+        'REQUIRED_ERROR' : '{INPUT} is required.',
 
 
         'supportsInputType' : function(type){
@@ -353,6 +351,29 @@ OJ.extendClass(
             i.setAttribute('type', type);
 
             return i.type == type;
+        },
+
+        'triggerKeyboardShow' : function(target){
+            clearTimeout(this._keyboard_timeout);
+
+            target.dispatchEvent(new OjKeyboardEvent(OjKeyboardEvent.SHOW, true));
+        },
+
+        'triggerKeyboardHide' : function(target){
+            var self = this;
+
+            self._keyboard_target = target;
+
+            if(self._keyboard_timeout){
+                return;
+            }
+
+            self._keyboard_timeout = setTimeout(function(){
+                self._keyboard_target.dispatchEvent(new OjKeyboardEvent(OjKeyboardEvent.HIDE, true));
+
+                self._keyboard_timeout = null;
+                self._keyboard_target = null;
+            }, 10);
         }
     }
 );

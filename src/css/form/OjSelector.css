@@ -1,62 +1,62 @@
 .OjSelector {
-	height: auto;
-	min-height: 28px;
+    height: auto;
+    min-height: 28px;
 
-	border: none;
+    border: none;
 
-	-moz-box-shadow:    none;
-	-webkit-box-shadow: none;
-	box-shadow:         none;
+    -moz-box-shadow:    none;
+    -webkit-box-shadow: none;
+    box-shadow:         none;
 
-	-webkit-border-radius: 0px;
-	-moz-border-radius: 0px;
-	border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
 }
 
-	.OjSelector > .wrapper {
-		width: 100%;
-		height: 100%;
+    .OjSelector > .wrapper {
+        width: 100%;
+        height: 100%;
 
-		background: none;
+        background: none;
 
-		border: none;
+        border: none;
 
-		-webkit-border-radius: 0px;
-		-moz-border-radius: 0px;
-		border-radius: 0px;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
 
-		-moz-box-shadow:    none;
-		-webkit-box-shadow: none;
-		box-shadow:         none;
-	}
-		.OjSelector > .wrapper > .psuedoInput {
-			padding: 0px;
-			margin: 0px;
-		}
-			.OjSelector > .wrapper > .psuedoInput > .stem {
-				margin: 0px;
-			}
-				.OjSelector > .wrapper > .psuedoInput > .stem > .input {
-					position: relative;
+        -moz-box-shadow:    none;
+        -webkit-box-shadow: none;
+        box-shadow:         none;
+    }
+        .OjSelector > .wrapper > .psuedoInput {
+            padding: 0px;
+            margin: 0px;
+        }
+            .OjSelector > .wrapper > .psuedoInput > .stem {
+                margin: 0px;
+            }
+                .OjSelector > .wrapper > .psuedoInput > .stem > .input {
+                    position: relative;
 
-					top: auto;
-					left: auto;
+                    top: auto;
+                    left: auto;
 
-					width: auto;
-					height: auto;
-				}
-					.OjSelector > .wrapper > .psuedoInput > .stem > .input > .items {
-						background: none;
-						border: none;
+                    width: auto;
+                    height: auto;
+                }
+                    .OjSelector > .wrapper > .psuedoInput > .stem > .input > .items {
+                        background: none;
+                        border: none;
 
-						-webkit-border-radius: 0px;
-						-moz-border-radius: 0px;
-						border-radius: 0px;
-					}
-						.OjSelector > .wrapper > .psuedoInput > .stem > .input > .items > .OjItemRenderer {
-							padding: 5px 0px;
-						}
+                        -webkit-border-radius: 0px;
+                        -moz-border-radius: 0px;
+                        border-radius: 0px;
+                    }
+                        .OjSelector > .wrapper > .psuedoInput > .stem > .input > .items > .OjItemRenderer {
+                            padding: 5px 0px;
+                        }
 
 .OjSelector .options {
-	white-space: normal;
+    white-space: normal;
 }

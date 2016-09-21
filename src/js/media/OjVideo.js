@@ -1,16 +1,16 @@
-OJ.importJs('oj.media.OjMedia');
+importJs('oj.media.OjMedia');
 
 
 
 
 OJ.extendComponent(
-	'OjVideo', [OjMedia],
-	{
-		'_tag' : '<video></video>'
-	},
-	{
-		'supportedVideo' : function(){
-			return ['video'];
-		}
-	}
+    'OjVideo', [OjMedia],
+    {
+        '_tag' : '<video></video>'
+    },
+    {
+        'supportedVideo' : function(){
+            return ['video'];
+        }
+    }
 );

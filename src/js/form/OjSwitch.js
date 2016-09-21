@@ -1,18 +1,15 @@
-OJ.importJs('oj.components.OjButton');
-OJ.importJs('oj.form.OjInput');
-
-
-OJ.importCss('oj.form.OjSwitch');
+importJs('oj.components.OjButton');
+importJs('oj.form.OjInput');
 
 
 OJ.extendComponent(
-	'OjSwitch', [OjInput],
-	{
-		'_props_' : {
+    'OjSwitch', [OjInput],
+    {
+        '_props_' : {
 
-		},
+        },
 
-		'_template' : 'oj.form.OjSwitch',
+        '_template' : 'oj.form.OjSwitch',
 
         '_onClick' : function(evt){
             this._super(OjInput, '_onClick', arguments);
@@ -32,8 +29,8 @@ OJ.extendComponent(
                 this.removeCss('on');
             }
         }
-	},
-	{
-		'_TAGS' : ['switch']
-	}
+    },
+    {
+        '_TAGS' : ['switch']
+    }
 );

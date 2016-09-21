@@ -1,71 +1,74 @@
 
 
 OJ.extendClass(
-	'OjCacheObject', [OjObject],
-	{
-		'_props_' : {
-			'created'    : null,
-			'data'       : null,
-			'expiration' : null
-		},
+    "OjCacheObject", [OjObject],
+    {
+        "_props_" : {
+            "created"    : null,
+            "data"       : null,
+            "expiration" : null
+        },
 
 
-		'_constructor' : function(/*data, expiration*/){
-			this._super(OjObject, '_constructor', []);
+        "_constructor" : function(/*data, expiration*/){
+            this._super(OjObject, "_constructor", []);
 
-			this.created = new Date();
+            this.created = new Date();
 
-			var args = arguments,
-				ln = args.length;
+            var args = arguments,
+                ln = args.length;
 
-			if(ln){
-				this.data = args[0];
+            if(ln){
+                this.data = args[0];
 
-				if(ln > 1){
-					this.expiration = args[1];
-				}
-			}
-		},
+                if(ln > 1){
+                    this.expiration = args[1];
+                }
+            }
+        },
 
-		'exportData' : function(){
-			var obj = this._super(OjObject, 'exportData', arguments);
+        "exportData" : function(mode){
+            var self = this,
+                obj = self._super(OjObject, "exportData", arguments);
 
-			obj.created    = this.created;
-			obj.data       = this.data ? OjObject.exportData(this.data) : null;
-			obj.expiration = this.expiration;
+            obj.created    = self.created;
+            obj.data       = self.data ? OjObject.exportData(self.data, mode) : null;
+            obj.expiration = self.expiration;
 
-			return obj;
-		},
+            return obj;
+        },
 
-		'importData' : function(obj){
-			if(!obj){
-				obj = {
-					'created'    : null,
-					'data'       : null,
-					'expiration' : null
-				}
-			}
+        "importData" : function(obj, mode){
+            var self = this;
 
-			this.created = obj.created;
+            if(!obj){
+                obj = {
+                    "created"    : null,
+                    "data"       : null,
+                    "expiration" : null
+                }
+            }
 
-			this.data = OjObject.importData(obj.data);
+            self.created = obj.created;
 
-			this.expiration = obj.expiration;
-		},
+            self.data = OjObject.importData(obj.data, mode);
+
+            self.expiration = obj.expiration;
+        },
 
 
-		'=expiration' : function(exp/*date|milliseconds from now*/){
-			if(this._expiration == exp){
-				return;
-			}
+        "=expiration" : function(exp/*date|milliseconds from now*/){
+            if(this._expiration == exp){
+                return;
+            }
 
-			if(!isDate(exp)){
-				this._expiration = new Date();
-				this._expiration.setSeconds(this._expiration.getSeconds() + exp);
-			}
-			else{
-				this._expiration = exp;
-			}
-		}
-	}
+            if(!isDate(exp)){
+                this._expiration = new Date();
+                this._expiration.setSeconds(this._expiration.getSeconds() + exp);
+            }
+            else{
+                this._expiration = exp;
+            }
+        }
+    }
 );

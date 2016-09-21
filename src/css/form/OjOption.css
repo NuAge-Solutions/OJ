@@ -1,32 +1,32 @@
 .OjOption {
-	padding: 3px 10px;
+    padding: 3px 10px;
 
-	cursor: pointer;
+    cursor: pointer;
 }
-	.OjOption .indicator {
-		display: block;
-		position: absolute;
+    .OjOption .indicator {
+        display: block;
+        position: absolute;
 
-		height: 0px;
+        height: 0px;
 
-		left: -50px;
+        left: -50px;
 
-		overflow: hidden;
-	}
-	.OjCheckedOption .indicator,
-	.OjRadioOption .indicator {
-		display: inline-block;
+        overflow: hidden;
+    }
+    .OjCheckedOption .indicator,
+    .OjRadioOption .indicator {
+        display: inline-block;
 
-		position: relative;
+        position: relative;
 
-		height: auto;
+        height: auto;
 
-		left: auto;
+        left: auto;
 
-		margin-right: 5px;
+        margin-right: 5px;
 
-		overflow:visible;
-	}
+        overflow:visible;
+    }
 
     .OjCheckedOption .indicator input,
     .OjRadioOption .indicator input {
@@ -39,15 +39,15 @@
         height: auto;
     }
 
-	.OjOption .OjItemRenderer {
-		display: block;
-	}
-	.OjCheckedOption .OjItemRenderer,
-	.OjRadioOption .OjItemRenderer {
-		display: inline-block;
-	}
-		.OjOption .OjItemRenderer .OjItemRenderer {
-			padding: 0px;
+    .OjOption .OjItemRenderer {
+        display: block;
+    }
+    .OjCheckedOption .OjItemRenderer,
+    .OjRadioOption .OjItemRenderer {
+        display: inline-block;
+    }
+        .OjOption .OjItemRenderer .OjItemRenderer {
+            padding: 0px;
 
-			border: none;
-		}
+            border: none;
+        }

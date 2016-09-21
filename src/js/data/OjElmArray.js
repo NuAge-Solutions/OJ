@@ -1,4 +1,4 @@
-OJ.importJs('oj.data.OjArray');
+importJs('oj.data.OjArray');
 
 
 OJ.extendClass(

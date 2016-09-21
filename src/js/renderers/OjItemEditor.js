@@ -1,18 +1,16 @@
-OJ.importJs('oj.renderers.OjItemRenderer');
-OJ.importJs('oj.renderers.OjTextRenderer');
-OJ.importJs('oj.components.OjButton');
-
-OJ.importCss('oj.renderers.OjItemEditor')
+importJs('oj.renderers.OjItemRenderer');
+importJs('oj.renderers.OjTextRenderer');
+importJs('oj.components.OjButton');
 
 
 OJ.extendComponent(
-	'OjItemEditor', [OjItemRenderer],
-	{
+    'OjItemEditor', [OjItemRenderer],
+    {
         '_props_' : {
             'item_renderer' : OjTextRenderer
         },
 
-		'_template' : 'oj.renderers.OjItemEditor',
+        '_template' : 'oj.renderers.OjItemEditor',
 
 
         '_resetItem' : function(){
@@ -23,8 +21,8 @@ OJ.extendComponent(
             }
         },
 
-		'_redrawData' : function(){
-			if(this._super(OjItemRenderer, '_redrawData', arguments)){
+        '_redrawData' : function(){
+            if(this._super(OjItemRenderer, '_redrawData', arguments)){
                 this._resetItem();
 
                 var data = this.data,
@@ -34,11 +32,11 @@ OJ.extendComponent(
                     this.holder.appendChild(this.item = new cls(this.group, data));
                 }
 
-				return true;
-			}
+                return true;
+            }
 
-			return false;
-		},
+            return false;
+        },
 
 
         '_onDeletePress' : function(evt){
@@ -53,7 +51,7 @@ OJ.extendComponent(
                 this.item_renderer = group.item_renderer;
             }
         }
-	},
+    },
     {
         '_TAGS' : ['item-editor', 'oj-e-item', 'e-item']
     }

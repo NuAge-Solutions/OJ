@@ -1,4 +1,4 @@
-OJ.importJs('oj.fx.OjTween');
+importJs('oj.fx.OjTween');
 
 
 
@@ -26,11 +26,11 @@ OJ.extendClass(
                 'units' : undefined
             });
 
-//			var engine = OJ.getEngine();
+//            var engine = OJ.getEngine();
 //
-//			if(engine == OJ.WEBKIT && !OJ.isMobile()){
-//						this._mode = OjPropTween.WEBKIT;
-//			}
+//            if(engine == OJ.WEBKIT && !OJ.isMobile()){
+//                        this._mode = OjPropTween.WEBKIT;
+//            }
         },
 
         '_destructor' : function(){
@@ -66,7 +66,7 @@ OJ.extendClass(
             }
         },
 
-        '_isAnimating' : function(val){
+        '_is_animating' : function(val){
             if(this._target && this._target.is('OjComponent')){
                 this._target._setIsAnimating(val);
             }
@@ -98,7 +98,7 @@ OJ.extendClass(
 
 
         '_onComplete' : function(evt){
-            this._isAnimating(false);
+            this._is_animating(false);
 
             this._super(OjTween, '_onComplete', arguments);
         },
@@ -132,7 +132,7 @@ OJ.extendClass(
 
 
         'pause' : function(){
-            this._isAnimating(false);
+            this._is_animating(false);
 
             this._super(OjTween, 'pause', arguments);
         },
@@ -146,7 +146,7 @@ OJ.extendClass(
                 this._from = {};
             }
 
-            this._isAnimating(true);
+            this._is_animating(true);
 
             if(this._mode == OjPropTween.WEBKIT){
                 var key;
@@ -171,7 +171,7 @@ OJ.extendClass(
         },
 
         'stop' : function(){
-            this._isAnimating(false);
+            this._is_animating(false);
 
             this._super(OjTween, 'stop', arguments);
         },

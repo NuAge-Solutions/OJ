@@ -1,9 +1,7 @@
-OJ.importJs('oj.window.OjAlertEvent');
-OJ.importJs('oj.window.OjModal');
-OJ.importJs('oj.components.OjButton');
-OJ.importJs('oj.components.OjLabel');
-
-OJ.importCss('oj.window.OjAlert');
+importJs('oj.window.OjAlertEvent');
+importJs('oj.window.OjModal');
+importJs('oj.components.OjButton');
+importJs('oj.components.OjLabel');
 
 
 OJ.extendClass(
@@ -20,20 +18,24 @@ OJ.extendClass(
             'title' : null
         },
 
+        "_add_cancel_btn" : false,
+
         '_template' : 'oj.window.OjAlert',
 
 
         '_constructor' : function(/*content, title, buttons, cancel_label, callback*/){
-            this._super(OjComponent, '_constructor', []);
+            var self = this;
+
+            self._super(OjComponent, '_constructor', []);
 
             // setup the display
-            if(this.oj_class_name.indexOf('Alert') > -1){
-                this.btns.appendChild(this.cancel_btn = new OjButton(OjAlert.OK));
+            if(self.oj_class_name.contains('Alert') || self._add_cancel_btn){
+                self.btns.appendChild(self.cancel_btn = new OjButton(OjAlert.OK));
 
-                this.cancel_btn.addEventListener(OjUiEvent.PRESS, this, '_onCancelPress');
+                self.cancel_btn.addEventListener(OjUiEvent.PRESS, self, '_onCancelPress');
             }
 
-            this._processArguments(arguments, {
+            self._processArguments(arguments, {
                 'content' : undefined,
                 'title' : undefined,
                 'buttons' : undefined,
@@ -58,15 +60,17 @@ OJ.extendClass(
         '_onButtonClick' : function(evt){
             var self = this,
                 callback = self.callback,
-                index = self.btns.indexOfChild(evt.currentTarget);
+                index = self.btns.indexOfChild(evt.current_target) - 1; // offset for cancel
 
             self.dispatchEvent( new OjAlertEvent(OjAlertEvent.BUTTON_PRESS, index) );
 
-            WindowManager.hide(self);
-
             if(callback){
-                callback(index);
+                if(callback(index) === false){
+                    return;
+                }
             }
+
+            WindowManager.hide(self);
         },
 
         '_onCancelPress' : function(evt){
@@ -137,7 +141,7 @@ OJ.extendClass(
             return this.cancel_btn.label;
         },
         '=cancel_label' : function(label){
-            return this.cancel_btn.label = label;
+            return (this.cancel_btn || {}).label = label;
         },
 
         '=content' : function(content){

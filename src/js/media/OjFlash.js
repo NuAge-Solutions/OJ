@@ -1,14 +1,14 @@
-OJ.importJs('oj.media.OjMedia');
+importJs('oj.media.OjMedia');
 
 
 
 
 OJ.extendComponent(
-	'OjFlash', [OjMedia],
-	{
-		'_tag' : '<object></object>'
-	},
-	{
-		'_TAGS' : ['flash']
-	}
+    'OjFlash', [OjMedia],
+    {
+        '_tag' : '<object></object>'
+    },
+    {
+        '_TAGS' : ['flash']
+    }
 );

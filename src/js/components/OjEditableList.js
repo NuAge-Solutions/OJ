@@ -1,7 +1,5 @@
-OJ.importJs('oj.components.OjList');
-OJ.importJs('oj.renderers.OjItemEditor');
-
-//OJ.importCss('oj.components.OjList');
+importJs('oj.components.OjList');
+importJs('oj.renderers.OjItemEditor');
 
 
 OJ.extendComponent(

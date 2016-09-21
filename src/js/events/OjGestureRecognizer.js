@@ -1,4 +1,5 @@
-OJ.importJs('oj.data.OjObject');
+importJs('oj.data.OjObject');
+importJs('oj.libs.Hammer');
 
 
 OJ.extendClass(
@@ -79,15 +80,15 @@ OJ.extendClass(
         }
     },
     {
-        'DIRECTION_DOWN' : Hammer.DIRECTION_DOWN,
-        'DIRECTION_LEFT' : Hammer.DIRECTION_LEFT,
-        'DIRECTION_NONE' : Hammer.DIRECTION_NONE,
-        'DIRECTION_RIGHT' : Hammer.DIRECTION_RIGHT,
-        'DIRECTION_UP' : Hammer.DIRECTION_UP,
+        'DOWN' : Hammer.DIRECTION_DOWN,
+        'LEFT' : Hammer.DIRECTION_LEFT,
+        'NONE' : Hammer.DIRECTION_NONE,
+        'RIGHT' : Hammer.DIRECTION_RIGHT,
+        'UP' : Hammer.DIRECTION_UP,
 
-        'DIRECTION_All' : Hammer.DIRECTION_ALL,
-        'DIRECTION_HORIZONTAL' : Hammer.DIRECTION_HORIZONTAL,
-        'DIRECTION_VERTICAL' : Hammer.DIRECTION_VERTICAL
+        'ALL' : Hammer.DIRECTION_ALL,
+        'HORIZONTAL' : Hammer.HORIZONTAL,
+        'VERTICAL' : Hammer.VERTICAL
     }
 );
 
@@ -109,7 +110,7 @@ OJ.extendClass(
                 self._static.PAN, Math.max(pointers || 1, 1), Math.max(threshold || 10, 1), callback
             ]);
 
-            self.direction = direction || self._static.DIRECTION_All;
+            self.direction = direction || self._static.ALL;
         },
 
 
@@ -241,7 +242,7 @@ OJ.extendClass(
                 self._static.SWIPE, Math.max(pointers || 1, 1), Math.max(threshold || 10, 1), callback
             ]);
 
-            self.direction = direction || self._static.DIRECTION_ALL;
+            self.direction = direction || self._static.ALL;
             self.velocity = Math.max(velocity || 0.65, 0.01);
         },
 

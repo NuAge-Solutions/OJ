@@ -1,17 +1,15 @@
 /*
  * Note: Stack requires defined dimensions for transitions to work properly
  */
-OJ.importJs('oj.components.OjCollectionComponent');
-OJ.importJs('oj.events.OjCollectionEvent');
-OJ.importJs('oj.events.OjStackEvent');
-OJ.importJs('oj.fx.OjEasing');
-OJ.importJs('oj.fx.OjFade');
-OJ.importJs('oj.fx.OjMove');
-OJ.importJs('oj.fx.OjResize');
-OJ.importJs('oj.fx.OjTransition');
-OJ.importJs('oj.fx.OjTweenSet');
-
-OJ.importCss('oj.components.OjStack');
+importJs('oj.components.OjCollectionComponent');
+importJs('oj.events.OjCollectionEvent');
+importJs('oj.events.OjStackEvent');
+importJs('oj.fx.OjEasing');
+importJs('oj.fx.OjFade');
+importJs('oj.fx.OjMove');
+importJs('oj.fx.OjResize');
+importJs('oj.fx.OjTransition');
+importJs('oj.fx.OjTweenSet');
 
 
 OJ.extendComponent(
@@ -20,19 +18,24 @@ OJ.extendComponent(
         // Properties & Vars
         '_props_' : {
             'active' : null,
-            'activeIndex' : -1,
-            'allowLooping' : false, // todo: OjStack - add support for looping
-            'alwaysTrans' : false,
-            'autoSizeHeight' : false, // todo: OjStack - add support for auto size height
-            'autoSizeWidth' : false, // todo: OjStack - add support for auto size width
+            'active_index' : 0,
+            'allow_looping' : true, // todo: OjStack - add support for looping
+            'always_trans' : false,
+            'auto_size_height' : false, // todo: OjStack - add support for auto size height
+            'auto_size_width' : false, // todo: OjStack - add support for auto size width
+
             'transition' : null
         },
 
-//			'_active_elm' : null,  '_deferred_active' : null,  '_prev_active' : null,
-//
-//			'_trans_in' : null,  '_trans_out' : null,
+        '_get_props_' : {
+            'has_deferred' : null
+        },
 
-        '_current_index' : 0, '_prev_index' : -1,
+//            '_active_elm' : null,  '_deferred_active' : null,  '_prev_active' : null,
+//
+//            '_trans_in' : null,  '_trans_out' : null,
+
+        '_current_index' : 0,  '_prev_index' : 0,  '_transitioning' : false,
 
 
         // Construction & Destruction Functions
@@ -76,7 +79,7 @@ OJ.extendComponent(
 
             // unset views
             if(depth > 1){
-                ln = this.numElms;
+                ln = this.num_elms;
 
                 for(; ln--;){
                     OJ.destroy(this.renderItemAt(ln), depth);
@@ -170,13 +173,13 @@ OJ.extendComponent(
         // Helper Functions
         '_addActive' : function(item, index){
             this._active = item;
-            this._activeIndex = index;
+            this._active_index = index;
 
             this._addActiveElm(this.renderItem(item));
         },
 
         '_addActiveElm' : function(elm){
-            elm.isActive = true;
+            elm.is_active = true;
 
             this.container.appendChild(elm);
         },
@@ -186,14 +189,27 @@ OJ.extendComponent(
         },
 
         '_dispatchChangeComplete' : function(){
-            var self = this;
+            var self = this,
+                container = self.container;
 
-            self.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, self._active, self._transition, self._activeIndex, self._prev_index));
+            container.width = OjStyleElement.AUTO;
+            container.height = OjStyleElement.AUTO;
+
+            self._transitioning = false;
+
+            self.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, self._active, self._transition, self._active_index, self._prev_index));
+
+            // process any deferred
+            if(!isNull(self._deferred_active)){
+                self.active_index = self._deferred_active;
+            }
         },
 
         '_makeTransIn' : function(direction){
             var amount = 0, elm,
-                container = this.container;
+                container = this.container,
+                w = container.width,
+                h = container.height;
 
             this._unset('_trans_in');
 
@@ -205,6 +221,12 @@ OJ.extendComponent(
                 Math.bounds(container.num_children - 1, 0, 1)
             );
 
+            // force container dims
+            container.width = w;
+            container.height = h;
+
+            // TODO: add in height transition
+
             switch(this._transition.effect){
                 case OjTransition.FADE:
                     if(this._trans_out){
@@ -215,11 +237,11 @@ OJ.extendComponent(
                     break;
 
                 case OjTransition.SLIDE_HORZ:
-                    elm.x = -1 * direction * container.width;
+                    elm.x = -1 * direction * w;
                     break;
 
                 case OjTransition.SLIDE_VERT:
-                    elm.y = -1 * direction * container.height;
+                    elm.y = -1 * direction * h;
                     break;
             }
 
@@ -240,18 +262,24 @@ OJ.extendComponent(
         '_makeTransOut' : function(direction){
             var amount = 0,
                 container = this.container,
+                w = container.width,
+                h = container.height,
                 elm = container.getChildAt(0);
 
             this._unset('_trans_out');
 
+            // force container dims
+            container.width = w;
+            container.height = h;
+
             if(elm){
                 switch(this._transition.effect){
                     case OjTransition.SLIDE_HORZ:
-                        amount = elm.x + (direction * container.width);
+                        amount = elm.x + (direction * w);
                         break;
 
                     case OjTransition.SLIDE_VERT:
-                        amount = elm.y + (direction * container.height);
+                        amount = elm.y + (direction * h);
                         break;
                 }
 
@@ -272,9 +300,9 @@ OJ.extendComponent(
         },
 
         '_processIndex' : function(index){
-            var ln = this.numElms;
+            var ln = this.num_elms;
 
-            if(this.allowLooping){
+            if(this.allow_looping){
                 index = index % ln;
 
                 // set the active
@@ -302,7 +330,7 @@ OJ.extendComponent(
 
         '_removeActive' : function(item){
             var self = this,
-                elm = item || self.getElmAt(self._activeIndex);
+                elm = item || self.getElmAt(self._active_index);
 
             if(elm){
                 if(self._item_renderer){
@@ -328,7 +356,7 @@ OJ.extendComponent(
             elm.height = OjStyleElement.AUTO;
             elm.alpha = 1;
 
-            elm.isActive = false;
+            elm.is_active = false;
         },
 
 
@@ -344,10 +372,10 @@ OJ.extendComponent(
             this.dispatchEvent(new OjStackEvent(OjStackEvent.ADD, item, this._transition, index));
 
             if(!this._active){
-                this.activeIndex = index;
+                this.active_index = index;
             }
             else{
-                this._activeIndex = this._current_index = this.indexOfElm(this._active);
+                this._active_index = this._current_index = this.indexOfElm(this._active);
             }
         },
 
@@ -357,7 +385,7 @@ OJ.extendComponent(
             this.dispatchEvent(new OjStackEvent(OjStackEvent.MOVE, evt.item, this._transition, evt.index));
 
             if(this._active == evt.item){
-                this._activeIndex = this._current_index = evt.index;
+                this._active_index = this._current_index = evt.index;
                 // todo: add logic for stack item move current_index
             }
         },
@@ -373,14 +401,14 @@ OJ.extendComponent(
 
             if(this._active == item){
                 if(this._current_index){
-                    this.activeIndex = this._current_index - 1;
+                    this.active_index = this._current_index - 1;
                 }
-                else if(ln = this.numElms){
-                    this.activeIndex = ln - 1;
+                else if(ln = this.num_elms){
+                    this.active_index = ln - 1;
                 }
                 else{
                     this._active = null;
-                    this._activeIndex = this._current_index = -1;
+                    this._active_index = this._current_index = 0;
                 }
             }
             else{
@@ -388,7 +416,7 @@ OJ.extendComponent(
                     this._prev_active = null;
                 }
 
-                this._activeIndex = this._current_index = this.indexOfElm(this._active);
+                this._active_index = this._current_index = this.indexOfElm(this._active);
             }
         },
 
@@ -396,7 +424,7 @@ OJ.extendComponent(
             var self = this,
                 item = evt.items.first,
                 index = evt.index,
-                active_index = self._activeIndex;
+                active_index = self._active_index;
 
             self._super(OjCollectionComponent, '_onItemReplace', arguments);
 
@@ -405,7 +433,7 @@ OJ.extendComponent(
             if(active_index == index){
                 self._current_index = -1;
 
-                self.activeIndex = index;
+                self.active_index = index;
             }
         },
 
@@ -419,11 +447,6 @@ OJ.extendComponent(
 
                 // dispatch the change is complete
                 this._dispatchChangeComplete();
-            }
-
-            // process any deferred
-            if(!isNull(this._deferred_active)){
-                this.activeIndex = this._deferred_active;
             }
         },
 
@@ -450,11 +473,11 @@ OJ.extendComponent(
 
         // Utility Functions
         'next' : function(){
-            this.activeIndex = this._current_index + 1;
+            this.active_index = this._current_index + 1;
         },
 
         'prev' : function(){
-            this.activeIndex = this._current_index - 1;
+            this.active_index = this._current_index - 1;
         },
 
         'renderItemAt' : function(index){
@@ -469,14 +492,18 @@ OJ.extendComponent(
             }
 
             if((val[0] = this.indexOfElm(val[0])) > -1){
-                this.activeIndex = val;
+                this.active_index = val;
             }
         },
 
 
         // Getter & Setter Functions
-        '=activeIndex' : function(val/*, transition*/){
-            var trans, trans_diff, item, direction, evt;
+        '=active_index' : function(val/*, transition*/){
+            var self = this,
+                active = self.active,
+                always_trans = self.always_trans,
+                trans = self.transition, tmp_trans = trans,
+                trans_diff, item, direction, evt;
 
             // handle tuple
             if(isArray(val)){
@@ -485,97 +512,103 @@ OJ.extendComponent(
             }
 
             // check for change
-            if(this._current_index == val && this._active){
+            if(self._current_index == val && active){
                 return;
             }
 
             // if we are in the middle of an animation then deffer the change until afterward
-            if(this._trans_in){
-                this._deferred_active = [val, trans_diff];
+            if(self._transitioning){
+                self._deferred_active = [val, trans_diff];
 
                 return;
             }
 
-            // handle custom transition if it exists
-            trans = this._transition;
+            self._transitioning = true;
 
+            // handle custom transition if it exists
             if(trans_diff){
-                this.transition = this._processTransParam(trans_diff);
+                self.transition = self._processTransParam(trans_diff);
+
+                tmp_trans = self.transition;
             }
 
-            this._deferred_active = null;
-
-            direction = this._alwaysTrans ? 1 : 0;
-
-            this._current_index = val;
-            this._prev_index = -1;
+            self._deferred_active = null;
 
             // transition out the old active container
-            if(this._active){
+            if(active){
                 // get the old element
-                this._prev_active = this._active;
+                self._prev_active = active;
 
                 // update the direction
                 // create the transition out animation
-                this._makeTransOut(direction = this._animationDirection(this._prev_index = this._activeIndex, val));
+                self._makeTransOut(direction = self._animationDirection(self._prev_index = self._active_index, val));
+            }
+            else{
+                direction = always_trans ? 1 : 0;
+
+                self._prev_index = 0;
             }
 
-            // make sure we have something to set active
-            if(!this.numElms){
-                this._activeIndex = -1;
-                this._current_index = -1;
-                this._active = null;
+            self._current_index = val = self._processIndex(val);
 
-                this.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE, null, this._transition, -1, this._prev_index));
+            // make sure we have something to set active
+            if(!self.num_elms){
+                self._active_index = 0;
+                self._current_index = 0;
+                self._active = null;
+
+                self.dispatchEvent(
+                    new OjStackEvent(OjStackEvent.CHANGE, null, tmp_trans, 0, self._prev_index)
+                );
+
+                self._transitioning = false;
 
                 return;
             }
 
-            val = this._processIndex(val);
-
             // create the change event
             evt = new OjStackEvent(
-                OjStackEvent.CHANGE, item = this.getElmAt(val),
-                this._trans_out || this._alwaysTrans ? this._transition : OjTransition.DEFAULT,
-                val, this._prev_index
+                OjStackEvent.CHANGE, item = self.getElmAt(val),
+                self._trans_out || always_trans ? tmp_trans : OjTransition.DEFAULT,
+                val, self._prev_index
             );
 
-            this._addActive(item, val);
+            self._addActive(item, val);
 
             // transition in the new active container
             // but only if we are transitioning out an old active
-            if(this._trans_out || this._alwaysTrans){
-                this._makeTransIn(direction);
+            if(self._trans_out || always_trans){
+                self._makeTransIn(direction);
             }
 
             if(trans_diff){
-                this.transition = trans;
+                self.transition = trans;
             }
 
             // dispatch the change event
-            this.dispatchEvent(evt);
+            self.dispatchEvent(evt);
 
             // dispatch the change is complete
             // if no animation
-            if(!this._trans_out && !this._alwaysTrans){
-                this._dispatchChangeComplete();
+            if(!self._trans_out && !always_trans){
+                self._dispatchChangeComplete();
             }
         },
 
-        '=allowLooping' : function(allow_looping){
-            if(this._allowLooping == allow_looping){
+        '=allow_looping' : function(allow_looping){
+            if(this._allow_looping == allow_looping){
                 return;
             }
 
             // check to see if current index is out of bounds
-            if(!(this._allowLooping = allow_looping)){
-                var ln = this.numElms;
+            if(!(this._allow_looping = allow_looping)){
+                var ln = this.num_elms;
 
                 if(this._current_index < 0){
-                    this.activeIndex = (ln - this._current_index) % ln;
+                    this.active_index = (ln - this._current_index) % ln;
                 }
                 else if(this._current_index >= ln){
-                    this.activeIndex = this._current_index % ln;
+                    this.active_index = this._current_index % ln;
                 }
             }
         },
@@ -583,17 +616,23 @@ OJ.extendComponent(
         '=elms' : function(){
             this._super(OjCollectionComponent, '=elms', arguments);
 
-            this._current_index = -1;
+            this._current_index = 0;
 
-            this.activeIndex = this.activeIndex;
+            this.active_index = this.active_index;
+        },
+
+        '.has_deferred' : function(){
+            return !isEmpty(this._deferred_active);
         },
 
         '=transition' : function(val){
-            if(this._transition == val){
+            var self = this;
+
+            if(self._transition == val){
                 return;
             }
 
-            this._transition = OjTransition.transition(val, this._transition);
+            self._transition = OjTransition.transition(val, self._transition);
         }
     },
     {

@@ -1,6 +1,3 @@
-OJ.importCss('oj.components.OjLabel');
-
-
 OJ.extendComponent(
     'OjLabel', [OjComponent],
     {
@@ -22,7 +19,7 @@ OJ.extendComponent(
             var self = this,
                 child = self._super(OjComponent, '_processDomSourceChild', arguments);
 
-            if(child && (child.is(OjTextElement) || child.is(OjLabel))){
+            if(child && (child.is(OjTextElement) || child.is(OjLabel) || !child.is(OjComponent))){
                 self.text = child.text;
 
                 return;

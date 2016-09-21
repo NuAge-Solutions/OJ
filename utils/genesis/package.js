@@ -1,4 +1,4 @@
-OJ.importCss('{lc_package}.{uc_package}');
+importCss('{lc_package}.{uc_package}');
 
 
 OJ.definePackage(

@@ -1,5 +1,5 @@
-OJ.importJs('oj.data.OjElmArray');
-OJ.importJs('oj.events.OjActionable');
+importJs('oj.data.OjElmArray');
+importJs('oj.events.OjActionable');
 
 
 OJ.extendClass(
@@ -12,6 +12,7 @@ OJ.extendClass(
 
         '_get_props_' : {
             'dom' : null,
+            'id' : null,
             'inDom' : false
         },
 
@@ -104,6 +105,10 @@ OJ.extendClass(
             return this._dom;
         },
 
+        '.id' : function(){
+            return this.oj_id;
+        },
+
         '.inDom' : function(){
             var dom = this._dom;
 
@@ -155,12 +160,14 @@ OJ.extendClass(
         },
 
         'element' : function(obj){
+            var self = this;
+
             if(!obj){
                 return null;
             }
 
             if(isDomElement(obj)){
-                return this.isTextNode(obj) ? new OjTextElement(obj) : this.byId(obj.id);
+                return self.isTextNode(obj) ? new OjTextElement(obj) : self.byId(obj.id);
             }
 
             if(isObjective(obj)){
@@ -219,11 +226,11 @@ OJ.extendClass(
 
         'unregister' : function(elm){
             delete this._elms[elm.id];
-//			print(Object.keys(this._elms).length);
+//            print(Object.keys(this._elms).length);
         }
     }
 );
 
 
-OJ.importJs('oj.dom.OjStyleElement');
-OJ.importJs('oj.dom.OjTextElement');
+importJs('oj.dom.OjStyleElement');
+importJs('oj.dom.OjTextElement');
