@@ -277,19 +277,20 @@ OJ.extendManager(
         },
 
         'modal' : function(content, title, width, height, fullscreen){
-            var args = arguments,
-                modal = this.makeModal.apply(this, args);
+            var self = this,
+                args = arguments,
+                modal = self.makeModal.apply(self, args);
 
             if(isUnset(fullscreen)){
-                fullscreen = this._isMobileModal(modal);
+                fullscreen = self._isMobileModal(modal);
             }
 
             modal.self_destruct = OjAlert.DEEP;
             modal.is_fullscreen = fullscreen;
-            modal.pane_width = this._calcWindowWidth(width, fullscreen);
-            modal.pane_height = this._calcWindowHeight(height, fullscreen);
+            modal.pane_width = self._calcWindowWidth(width, fullscreen);
+            modal.pane_height = self._calcWindowHeight(height, fullscreen);
 
-            this.show(modal);
+            self.show(modal);
 
             return modal;
         },

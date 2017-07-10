@@ -388,11 +388,12 @@ Array.array = function(obj){
     return [obj];
 };
 
-if(!Array.isArray){
-    Array.isArray = function(obj){
-        return Object.prototype.toString.call(obj) === "[object Array]" || (window['OjArray'] && isObjective(obj, OjArray));
-    };
-}
+Array._isArray = Array.isArray;
+
+Array.isArray = function(obj){
+    return (Array._isArray ? Array._isArray(obj) : Object.prototype.toString.call(obj) === "[object Array]") ||
+           (window["OjArray"] && isObjective(obj, OjArray));
+};
 
 if(!Array.slice){
     Array.slice = function(ary, start/*, end*/){

@@ -178,35 +178,33 @@ OjObject.prototype = {
             key, val, ctx, ary, ln2, i;
 
         for(key in def){
-            if(isEmpty(key)){
-                continue;
-            }
+            if(!isEmpty(key)){
+                val = def[key];
 
-            val = def[key];
+                if(ln > count){
+                    val = args[count];
+                }
 
-            if(ln > count){
-                val = args[count];
-            }
+                if(!isUndefined(val)){
+                    ctx = this;
+                    ary = key.split('.');
 
-            if(!isUndefined(val)){
-                ctx = this;
-                ary = key.split('.');
+                    if((ln2 = ary.length) > 1){
+                        for(i = 0; i < ln2; i++){
+                            if(i){
+                                ctx = ctx[key];
+                            }
 
-                if((ln2 = ary.length) > 1){
-                    for(i = 0; i < ln2; i++){
-                        if(i){
-                            ctx = ctx[key];
+                            key = ary[i];
                         }
-
-                        key = ary[i];
                     }
-                }
 
-                if(isFunction(ctx[key])){
-                    ctx[key](val);
-                }
-                else{
-                    ctx[key] = val;
+                    if(isFunction(ctx[key])){
+                        ctx[key](val);
+                    }
+                    else{
+                        ctx[key] = val;
+                    }
                 }
             }
 

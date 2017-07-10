@@ -20,14 +20,13 @@ OJ.extendClass(
         '_template' : 'oj.window.OjModal',
 
 
-        '_constructor' : function(view, title){
-            var self = this,
-                bar;
+        "_constructor" : function(view, title){
+            var self = this;
 
-            self._super(OjAlert, '_constructor', []);
+            self._super(OjAlert, "_constructor", []);
 
             // setup controller stack relationship
-            (bar = self.bar).stack = self.container;
+            self.bar.stack = self.container;
 
             self.close_visible = true;
             self.buttons_visible = false;
@@ -39,11 +38,6 @@ OJ.extendClass(
 
             if(title){
                 self.title = title;
-            }
-
-            if(OJ.is_mobile){
-                // TODO: Update this to use FontAwesome
-                bar.cancel_label = '&times;';
             }
         },
 

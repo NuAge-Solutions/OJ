@@ -1299,6 +1299,20 @@ OJ.extendClass(
             return this._proxy.style[style] = value;
         },
 
+        "_setStyleColor" : function(style, value){
+            if(value){
+                if(isString(value) && value.charAt(0) == "#"){
+                    value = hexToRgb(value);
+                }
+
+                if(isArray(value)){
+                    value = "rgb" + (value.length > 3 ? "a(" : "(") + value.join(",") + ")";
+                }
+            }
+
+            return this._setStyle(style, value);
+        },
+
 
         "_getStyleNumber" : function(prop){
             var val = this._getStyle(prop);
@@ -1748,7 +1762,7 @@ OJ.extendClass(
             return this._getStyle("background-color");
         },
         "=background_color" : function(color){
-            this._setStyle("background-color", color);
+            this._setStyleColor("background-color", color);
         },
 
         ".depth" : function(){

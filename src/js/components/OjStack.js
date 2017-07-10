@@ -42,16 +42,9 @@ OJ.extendComponent(
         '_constructor' : function(items, transition, item_renderer){
             var self = this;
 
-            self._super(OjCollectionComponent, '_constructor', []);
-
-            // set the default transition mode
-            if(item_renderer){
-                self.item_renderer = item_renderer;
-            }
-
             self.transition = transition || OjTransition.NONE;
 
-            self._items = OjArray.array(items || []);
+            self._super(OjCollectionComponent, '_constructor', [items, item_renderer]);
         },
 
         '_destructor' : function(){

@@ -22,7 +22,7 @@ OJ.extendComponent(
                 this.item_renderer = item_renderer;
             }
 
-            this.elms = elms ? elms : new OjArray();
+            this.elms = OjArray.array(elms|| []);
         },
 
         '_destructor' : function(){

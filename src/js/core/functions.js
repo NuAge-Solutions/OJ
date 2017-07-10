@@ -1,3 +1,13 @@
+function hexToRgb(hex){
+    var bigint = parseInt(hex, 16);
+
+    return [
+        (bigint >> 16) & 255,
+        (bigint >> 8) & 255,
+        bigint & 255
+    ];
+}
+
 /**
  * Type & Value Detection Functions
  */
@@ -83,7 +93,7 @@ function isUndefined(obj){
 
 // true if the obj is a oj class
 function isObjective(obj, cls){
-    return isObject(obj) && isSet(obj.oj_id) && isFunction(obj._constructor) && (!cls || obj.is(cls));
+    return obj && isSet(obj.oj_id) && isFunction(obj._constructor) && (!cls || obj.is(cls));
 }
 function isObjectiveClass(cls){
     return isFunction(cls) && isSet(cls.TYPE_KEY);
@@ -150,7 +160,7 @@ function isEmptyObject(obj){
 }
 
 function isFalse(obj){
-    return isNull(obj) || obj === false || obj === 0 || (isString(obj) && (obj.toLowerCase() == 'false' || obj == '0'));
+    return isUnset(obj) || obj === false || obj === 0 || (isString(obj) && (obj.toLowerCase() == "false" || obj == "0"));
 }
 
 function isNumeric(obj){

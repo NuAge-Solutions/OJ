@@ -74,7 +74,7 @@ OJ.extendClass(
                 }
             }
 
-            self.addEventListener(OjUiEvent.PRESS, self, '_onClick');
+            self.addEventListener(OjUiEvent.PRESS, self, '_onPress');
 
             self._ready = true;
         },
@@ -103,9 +103,12 @@ OJ.extendClass(
         },
 
         '_redrawValue' : function(){
-            if(this.input){
-                var dom = this.input.dom,
-                    val = this._value;
+            var self = this,
+                input = self.input;
+
+            if(input){
+                var dom = input.dom,
+                    val = self._value;
 
                 if(dom.value != val){
                     dom.value = String.string(val);
@@ -131,7 +134,7 @@ OJ.extendClass(
             this.value = this.input.dom.value;
         },
 
-        '_onClick' : function(evt){
+        '_onPress' : function(evt){
             if(this.input && !this.input.hasFocus()){
                 this.focus();
             }

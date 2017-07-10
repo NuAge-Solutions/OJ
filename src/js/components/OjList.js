@@ -14,15 +14,15 @@ OJ.extendComponent(
         '_constructor' : function(elms, item_renderer, direction){
             this._super(OjCollectionComponent, '_constructor', []);
 
-            if(item_renderer){
-                this.item_renderer = item_renderer;
-            }
-
             this._processArguments(arguments, {
-                'elms' : undefined,
+                '' : undefined,
                 'item_renderer' : this._default_renderer,
                 'direction' : this._default_direction
             });
+
+            if(elms){
+                this.elms = elms;
+            }
         },
 
         '_updateListCss' : function(){

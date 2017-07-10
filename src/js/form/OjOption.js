@@ -38,7 +38,7 @@ OJ.extendClass(
             if(!this._selector){
                 this.dataRenderer = renderer;
 
-                this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+                this.addEventListener(OjUiEvent.PRESS, this, '_onPress');
             }
         },
 
@@ -70,7 +70,7 @@ OJ.extendClass(
         },
 
 
-        '_onClick' : function(evt){
+        '_onPress' : function(evt){
             this.isSelected = !this.isSelected;
         },
 
@@ -108,14 +108,14 @@ OJ.extendClass(
 
                 this.dataRenderer = owner.item_renderer;
 
-                this.removeEventListener(OjUiEvent.PRESS, this, '_onClick');
+                this.removeEventListener(OjUiEvent.PRESS, this, '_onPress');
             }
             else{
                 this._selector = null;
 
                 this.dataRenderer = OjTextRenderer;
 
-                this.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+                this.addEventListener(OjUiEvent.PRESS, this, '_onPress');
             }
         },
 

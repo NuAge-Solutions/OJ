@@ -11,8 +11,8 @@ OJ.extendComponent(
 
         '_template' : 'oj.form.OjSwitch',
 
-        '_onClick' : function(evt){
-            this._super(OjInput, '_onClick', arguments);
+        '_onPress' : function(evt){
+            this._super(OjInput, '_onPress', arguments);
 
             this.value = !this._value;
         },

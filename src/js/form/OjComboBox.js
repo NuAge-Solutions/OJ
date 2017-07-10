@@ -42,7 +42,7 @@ OJ.extendClass(
             // setup event listeners
 //            this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
 //
-//            this.psuedoInput.addEventListener(OjUiEvent.PRESS, this, '_onClick');
+//            this.psuedoInput.addEventListener(OjUiEvent.PRESS, this, '_onPress');
         },
 
         '_setDom' : function(dom_elm){
@@ -148,7 +148,7 @@ OJ.extendClass(
         },
 
 
-        '_onClick' : function(evt){
+        '_onPress' : function(evt){
             if(!this._trigger_evt){
                 this._showList();
             }

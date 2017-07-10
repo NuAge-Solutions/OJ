@@ -390,6 +390,7 @@ window.OJ = function Oj(){
                     obj._destructor(args.length > 1 ? args[1] : 0);
                 }
                 else{
+                    // debugger;
                     print("Called destroy multiple times on: " + obj.oj_id);
                 }
             }

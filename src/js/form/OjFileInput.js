@@ -27,7 +27,7 @@ OJ.extendComponent(
         '_setDom' : function(dom_elm){
             this._super(OjInput, '_setDom', arguments);
 
-            this.input.attr('type', 'file');
+            this.stem.replaceChild(this.input, this.input = new OjStyleElement('<input type="file" class="input" />'));
         },
 
         '_formatErrorTokens' : function(){
@@ -56,10 +56,10 @@ OJ.extendComponent(
             this.value = val;
         },
 
-        '_redrawValue' : function(){
-            // file input cannot be redrawn
-            // TODO: figure out how to redraw file input (make sure to support multiple files)
-        },
+        // '_redrawValue' : function(){
+        //     // file input cannot be redrawn
+        //     // TODO: figure out how to redraw file input (make sure to support multiple files)
+        // },
 
 
         'isValid' : function(){
