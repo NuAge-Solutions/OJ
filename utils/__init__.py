@@ -81,6 +81,9 @@ def dir_files_of_type(src, file_type):
         file_types = [file_type]
 
     for root, subFolders, files in os.walk(src):
+        subFolders.sort()
+        files.sort()
+
         # remove hidden folders
         for folder in subFolders:
             if folder[0] == '.':

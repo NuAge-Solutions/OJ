@@ -97,7 +97,7 @@ OJ.extendManager(
             }
         },
 
-        '_getIndex' : function(target_id, params){
+        '_setIndex' : function(target_id, params){
             var index = this._index;
 
             if(!index[target_id]){
@@ -136,8 +136,8 @@ OJ.extendManager(
                 };
 
                 // track the listener by the target for cleanup purposes
-                this._getIndex(target_id, [target_id, type, context_id, guid]);
-                this._getIndex(context_id, [target_id, type, context_id, guid]);
+                this._setIndex(target_id, [target_id, type, context_id, guid]);
+                this._setIndex(context_id, [target_id, type, context_id, guid]);
             }
         },
 

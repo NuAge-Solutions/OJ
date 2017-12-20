@@ -23,7 +23,7 @@ OJ.extendClass(
             "css" : null,
             "css_list" : null,
             "depth" : null,
-            "hAlign" : "l", // OjStyleElement.LEFT
+            "hAlign" : "left", // OjStyleElement.LEFT
             "height" : null,
             "id" : null,
             "innerHeight" : null,
@@ -44,7 +44,7 @@ OJ.extendClass(
             "scrollY" : null,
             "text" : null,
             "translate" : null,
-            "vAlign" : "t", // OjStyleElement.TOP
+            "vAlign" : "top", // OjStyleElement.TOP
             "width" : null,
             "x" : null,
             "y" : null
@@ -1403,15 +1403,13 @@ OJ.extendClass(
             }
 
             if(!isUndefined(val)){
+                // if the value is set (not null) then update attribute value
                 if(isSet(val)){
-                    // if the value is set (not null) then update attribute value
-                    if(isSet(val)){
-                        proxy.setAttribute(key, val);
-                    }
-                    // otherwise remove
-                    else{
-                        proxy.removeAttribute(key);
-                    }
+                    proxy.setAttribute(key, val);
+                }
+                // otherwise remove
+                else{
+                    proxy.removeAttribute(key);
                 }
             }
 
@@ -1936,13 +1934,13 @@ OJ.extendClass(
         "SCROLL" : "scroll",
         "VISIBLE" : "visible",
 
-        "LEFT" : "l",
-        "CENTER" : "c",
-        "RIGHT" : "r",
+        "LEFT" : "left",
+        "CENTER" : "center",
+        "RIGHT" : "right",
 
-        "TOP" : "t",
-        "MIDDLE" : "m",
-        "BOTTOM" : "b",
+        "TOP" : "top",
+        "MIDDLE" : "middle",
+        "BOTTOM" : "bottom",
 
         "PERCENT" : "%",
         "PX" : "px",

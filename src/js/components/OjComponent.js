@@ -539,6 +539,9 @@ OJ.extendClass(
             'replaceElmAt' : 'replaceChildAt'
         },
 
+        "HORIZONTAL" : "horizontal",
+        "VERTICAL" : "vertical",
+
         'load' : function(source){
 
         }

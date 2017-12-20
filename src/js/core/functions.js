@@ -453,7 +453,8 @@ function onDomReady(){
 
             OJ._is_ready = true;
 
-            OJ.fadeIn();
+            // show it
+            OJ.alpha = 1.0;
 
             OJ.dispatchEvent(new OjEvent(OjEvent.READY));
 

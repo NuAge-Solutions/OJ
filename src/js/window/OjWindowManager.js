@@ -29,10 +29,10 @@ OJ.extendManager(
             'holder' : null
         },
 
-        '_constructor' : function(manager){
+        "_constructor" : function(manager){
             var self = this;
 
-            self._super(OjActionable, '_constructor', []);
+            self._super(OjActionable, "_constructor", []);
 
             if(manager){
                 self._modals = manager._modals;
@@ -40,8 +40,7 @@ OJ.extendManager(
                 self._overlay = manager._overlay;
 
                 if(!OJ.is_ready){
-                    OJ.removeEventListener(OjEvent.READY, manager, '_onOjReady');
-                    OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
+                    OJ.addEventListener(OjEvent.READY, self, "_onOjReady");
                 }
 
                 OJ.destroy(manager);
@@ -50,18 +49,28 @@ OJ.extendManager(
                 self._modals = [];
 
                 self._modal_holder = new OjStyleElement();
-                self._modal_holder.addCss('WindowManager');
+                self._modal_holder.addCss("WindowManager");
 
                 if(OJ.is_ready){
                     self._onOjReady(null);
                 }
                 else{
-                    OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
+                    OJ.addEventListener(OjEvent.READY, self, "_onOjReady");
                 }
             }
 
-            OJ.addEventListener(OjKeyboardEvent.SHOW, self, '_onKeyboardUpdate');
-            OJ.addEventListener(OjKeyboardEvent.HIDE, self, '_onKeyboardUpdate');
+            OJ.addEventListener(OjKeyboardEvent.SHOW, self, "_onKeyboardUpdate");
+            OJ.addEventListener(OjKeyboardEvent.HIDE, self, "_onKeyboardUpdate");
+        },
+
+        "_destructor" : function(){
+            var self = this;
+
+            OJ.removeEventListener(OjEvent.READY, self, "_onOjReady");
+            OJ.removeEventListener(OjKeyboardEvent.SHOW, self, "_onKeyboardUpdate");
+            OJ.removeEventListener(OjKeyboardEvent.HIDE, self, "_onKeyboardUpdate");
+
+            self._super(OjActionable, "_destructor", arguments);
         },
 
 

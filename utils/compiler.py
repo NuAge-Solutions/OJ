@@ -538,11 +538,21 @@ class Compiler (object):
 
             prod_path = os.path.join(directory, name + '.' + ext)
 
-            call(
-                'java -jar "' + os.path.join(utils_dir, 'yuicompressor.jar') +
-                '" -o "' + prod_path + '" "' + dev_path + '"',
-                shell=True
-            )
+            if ext == JS:
+                # call(
+                #     'java -jar "' + os.path.join(utils_dir, 'yuicompressor.jar') +
+                #     '" -o "' + prod_path + '" "' + dev_path + '"',
+                #     shell=True
+                # )
+                call(
+                    'uglifyjs -c -o "' + prod_path + '" "' + dev_path + '"',
+                    shell=True
+                )
+            elif ext == CSS:
+                call(
+                    'cleancss -o "' + prod_path + '" "' + dev_path + '"',
+                    shell=True
+                )
 
             prod_contents = file_get_contents(prod_path)
 

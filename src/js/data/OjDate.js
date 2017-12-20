@@ -34,7 +34,7 @@ if(!Date.prototype.exportData){
 
 if(!Date.prototype.getUTCTimezoneOffset){
     Date.prototype.getUTCTimezoneOffset = function(){
-        return this.getTimezoneOffset() * -1;
+        return this.getTimezoneOffset() * -60;
     }
 }
 

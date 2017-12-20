@@ -6,6 +6,7 @@ OJ.extendComponent(
     'OjLink', [OjLabel],
     {
         '_props_' : {
+            "direction": OjComponent.HORIZONTAL,
             'down_icon'     : null,
             'icon'         : null,
             'over_icon'     : null,
@@ -151,6 +152,21 @@ OJ.extendComponent(
 
 
         // GETTER & SETTER FUNCTIONS
+        "=direction": function(val){
+            var self = this,
+                is_horz = val == self._static.HORIZONTAL;
+
+            // check for change
+            if(self.direction == val){
+                return;
+            }
+
+            self._direction = val;
+
+            self.attr(is_horz ? "flex-v" : "flex-h", null);
+            self.attr(is_horz ? "flex-h": "flex-v", "");
+        },
+
         '=down_icon' : function(icon){
             if(this._down_icon == (icon = OjImage.image(icon))){
                 return;

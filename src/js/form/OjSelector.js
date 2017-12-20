@@ -11,6 +11,7 @@ OJ.extendComponent(
     {
         '_props_' : {
             'item_renderer' : OjTextRenderer,
+            "options": null,
             'selectionMin' : 0,
             'selectionMax' : 1
         },
@@ -191,7 +192,7 @@ OJ.extendComponent(
 
 
         '.options' : function(){
-            return this.input.dataProvider;
+            return this.input.elms;
         },
         '=options' : function(val){
             // check to make sure we don't do extra work
@@ -211,7 +212,7 @@ OJ.extendComponent(
             this._value = [];
 
             // set the new options
-            this.input.dataProvider = val;
+            this.input.elms = val;
 
             // get the new options
             ln = (options = this.options).length;

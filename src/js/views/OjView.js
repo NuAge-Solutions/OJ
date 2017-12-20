@@ -306,13 +306,6 @@ OJ.extendComponent(
         "SHORT_TITLE" : null,
         "TITLE" : null,
 
-        "HORIZONTAL" : "horizontal",
-        "VERTICAL" : "vertical",
-        "TOP" : "top",
-        "BOTTOM" : "bottom",
-        "LEFT" : "left",
-        "RIGHT" : "right",
-
         "ICON_CHANGE" : "onTitleChange",
         "LOAD" : "onViewLoad",
         "TITLE_CHANGE" : "onTitleChange",
