@@ -199,7 +199,7 @@
                 {
                  's' : navigator.platform,
                  'sub' : 'Mac',
-                 'id' : 'Mac'
+                 'id' : 'macOS'
                 },
                 {
                  's' : navigator.platform,

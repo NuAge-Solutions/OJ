@@ -32,7 +32,7 @@
             -moz-border-radius: 15px;
             border-radius: 15px;
 
-            border: 2px solid;
+            border: 1px solid;
         }
         .OjSwitch.OjInput.off > .wrapper > .psuedoInput {
             border-color: #DDD
@@ -90,9 +90,9 @@
 
                     top: 0px;
 
-                    width: 26px;
-                    height: 26px;
-                    min-height: 26px;
+                    width: 28px;
+                    height: 28px;
+                    min-height: 28px;
 
                     margin: 0px;
 

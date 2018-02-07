@@ -26,7 +26,7 @@ importJs("oj.utils.OjQueryString");
 importJs("oj.events.OjActionable");
 importJs("oj.events.OjEventManager");
 importJs("oj.events.OjTextEvent");
-importJs("oj.events.OjErrorEvent");
+importJs("oj.events.OjError");
 
 importJs("oj.net.OjUrl");
 importJs("oj.net.OjUrlRequest");

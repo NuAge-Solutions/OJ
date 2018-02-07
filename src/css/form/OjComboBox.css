@@ -17,7 +17,12 @@
         margin: 0px;
         padding: 0px;
     }
-        .OjComboBox > .wrapper > .psuedoInput .value {
+        .OjComboBox > .wrapper > .psuedoInput > .stem > .input {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .OjComboBox > .wrapper > .psuedoInput > .stem > .value {
             color: #333333;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 16px;

@@ -7,9 +7,23 @@ OJ.extendComponent(
         '_prev_active' : null,
 
 
+        "_constructor" : function(){
+            var self = this;
+
+            self._super(OjNavController, "_constructor", arguments);
+
+            self.attr("flex-h", "");
+        },
+
+        "_activeButton" : function(){
+            return this.getChildAt(this.active_index);
+        },
+
         '_addViewButton' : function(view, index){
             var btn = new OjButton(view.short_title, view.icon);
-            btn.vAlign = OjStyleElement.TOP;
+            btn.attr("flex-h", null);
+            btn.attr("flex-v", "");
+
             btn.addEventListener(OjUiEvent.PRESS, this, '_onTabClick');
 
             view.addEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
@@ -23,20 +37,31 @@ OJ.extendComponent(
         },
 
         '_removeViewButton' : function(view, index){
-            OJ.destroy(this.removeElmAt(index));
+            var self = this,
+                views = isArray(view) ? view : [view];
 
-            view.removeEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
-            view.removeEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
+            OJ.destroy(self.removeElmAt(index));
+
+            views.forEachReverse(function(view){
+                view.removeEventListener(OjView.ICON_CHANGE, self, "_onViewIconChange");
+                view.removeEventListener(OjView.TITLE_CHANGE, self, "_onViewTitleChange");
+            });
         },
 
         '_updateActiveBtn' : function(){
-            if(this._prev_active){
-                this._prev_active.is_active = false;
+            var self = this,
+                stack = self._stack,
+                prev_active = self._prev_active;
+
+            if(prev_active){
+                prev_active.is_active = false;
             }
 
-            if(this._prev_active = this.getChildAt(this._stack.active_index)){
-                this._prev_active.is_active = true;
+            if(stack && (prev_active = self._activeButton())){
+                prev_active.is_active = true;
             }
+
+            self._prev_active = prev_active;
         },
 
         // event listener callbacks
@@ -49,15 +74,20 @@ OJ.extendComponent(
         },
 
         '_onStackViewMove' : function(evt){
-
+            // TODO: add tab button move
         },
 
         '_onStackViewRemove' : function(evt){
+
             this._removeViewButton(evt.view, evt.index);
         },
 
         '_onStackViewReplace' : function(evt){
+            var btn = this._activeButton(),
+                view = evt.view;
 
+            btn.label = view.short_title;
+            btn.icon = view.icon;
         },
 
         '_onTabClick' : function(evt){
@@ -67,13 +97,13 @@ OJ.extendComponent(
         },
 
         '_onViewIconChange' : function(evt){
-            var view = evt.current_target;
+            var view = evt.view;
 
             this.getChildAt(this._stack.indexOfElm(view)).icon = view.icon;
         },
 
         '_onViewTitleChange' : function(evt){
-            var view = evt.current_target;
+            var view = evt.view;
 
             this.getChildAt(this._stack.indexOfElm(view)).label = view.short_title;
         },

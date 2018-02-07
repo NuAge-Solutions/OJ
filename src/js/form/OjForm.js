@@ -17,6 +17,14 @@ OJ.extendComponent(
             'is_valid' : null
         },
 
+        "_constructor" : function(){
+            var self = this;
+
+            self._super(OjView, "_constructor", arguments);
+
+            (self._action_view = new OjButton(self._submit_label)).addEventListener(OjUiEvent.PRESS, self, "_onSubmitClick");
+        },
+
 
         '_showFormError' : function(){
             var self = this,
@@ -102,19 +110,6 @@ OJ.extendComponent(
             this._showFormError();
 
             return false;
-        },
-
-
-        '.action_view' : function(){
-            var self = this;
-
-            if(!self._action_view){
-                (self._action_view = new OjButton(self._submit_label)).addEventListener(
-                    OjUiEvent.PRESS, self, '_onSubmitClick'
-                );
-            }
-
-            return self._action_view;
         },
 
         '.data' : function(){

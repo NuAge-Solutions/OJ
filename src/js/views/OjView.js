@@ -275,7 +275,13 @@ OJ.extendComponent(
         },
 
         ".icon" : function(){
-            return OjImage.image(this._icon, true); // this will clone the icon so that we don"t run into the icon accidentally getting messed up
+            var icon = this._icon;
+
+            if(isObjective(icon)){
+                return icon;
+            }
+
+            return OjImage.image(icon, true); // this will clone the icon so that we don"t run into the icon accidentally getting messed up
         },
         "=icon" : function(icon){
             if(this._icon == icon){

@@ -12,11 +12,14 @@ OJ.extendComponent(
     "OjFlowNavController", [OjNavController],
     {
         "_props_" : {
-            "cancel_icon" : null,
-            "cancel_label" : "Cancel",
-            "cancel_visible" : false,
-            "default_title" : null,
-            "title" : null
+            "action_view": null,
+            "cancel_icon": null,
+            "cancel_label": "Cancel",
+            "cancel_view": null,
+            "cancel_visible": false,
+            "default_title": null,
+            "title": null,
+            "title_view": null
         },
 
         "_template" : "oj.nav.OjFlowNavController",
@@ -38,6 +41,23 @@ OJ.extendComponent(
         //    this._stack.active = evt.view;
         //},
 
+        "_onStackChangeComplete" : function(evt){
+            // remove all views after the active view
+            var self = this,
+                stack = self.stack,
+                ln = stack.num_elms,
+                i = stack.active_index;
+
+            self._super(OjNavController, "_onStackChangeComplete", arguments);
+
+            if(stack.has_deferred){
+                return;
+            }
+
+            for(; --ln > i;){
+                stack.removeElmAt(ln);
+            }
+        },
 
         // helper functions
         "_makeBackButton" : function(view){
@@ -285,6 +305,36 @@ OJ.extendComponent(
 
 
         // public properties
+        ".action_view" : function(){
+            return this.top_right.getChildAt(0);
+            // self.top_left, tt = self.top_title, tr = self.top_right
+        },
+        "=action_view": function(val){
+            var top_right = this.top_right;
+
+            top_right.removeAllChildren();
+
+            if(val){
+                top_right.appendChild(val);
+            }
+        },
+
+        "=default_title" : function(title){
+            var self = this;
+
+            if(self._default_title == title){
+                return;
+            }
+
+            self._default_title = title;
+
+            if(!self.top_title.num_children){
+                self.top_title.appendChild(
+                    self._makeTitle(title)
+                );
+            }
+        },
+
         "=title" : function(title){
             var self = this,
                 hldr = self.top_title;
@@ -321,6 +371,20 @@ OJ.extendComponent(
 
             if(btn){
                 btn.icon = val;
+            }
+        },
+
+        ".cancel_view": function(){
+            return this.top_left.getChildAt(0);
+        },
+
+        "=cancel_view": function(val){
+            var top_left = this.top_left;
+
+            top_left.removeAllChildren();
+
+            if(val){
+                top_left.appendChild(val);
             }
         },
 

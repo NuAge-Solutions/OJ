@@ -7,8 +7,8 @@ OJ.extendClass(
         '_get_props_' : {
             'bubbles' : null,
             'cancelable' : null,
-            'current_target' : null,
             'canceled' : false,
+            'current_target' : null,
             'phase' : 0,
             'target' : null,
             'type' : null
@@ -50,6 +50,55 @@ OJ.extendClass(
             }
 
             return clone;
+        },
+
+        "exportData" : function(mode){
+            var self = this,
+                data = self._super(OjObject, "exportData", arguments);
+
+            data.bubbles = self.bubbles;
+            data.cancelable = self.cancelable;
+            data.current_target = OjObject.exportData(self.current_target, mode);
+            data.canceled = self.canceled;
+            data.phase = self.phase;
+            data.target = OjObject.exportData(self.target, mode);
+            data.type = self.type;
+
+            return data;
+        },
+
+        "importData": function(data, mode){
+            var self = this;
+
+            if(isSet(data.bubbles)){
+                self._bubbles = data.bubbles;
+            }
+
+            if(isSet(data.cancelable)){
+                self._cancelable = data.cancelable;
+            }
+
+            if(isSet(data.canceled)){
+                self._canceled = data.canceled;
+            }
+
+            if(isSet(data.current_target)){
+                self._current_target = OjObject.importData(data.current_target);
+            }
+
+            if(isSet(data.phase)){
+                self._phase = data.phase;
+            }
+
+            if(isSet(data.target)){
+                self._target = OjObject.importData(data.target);
+            }
+
+            if(isSet(data.type)){
+                self._type = data.type;
+            }
+
+            return self;
         }
     },
     {

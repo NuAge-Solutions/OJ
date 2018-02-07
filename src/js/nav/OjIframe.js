@@ -41,7 +41,7 @@ OJ.extendComponent(
         '_onTimeout' : function(){
             clearInterval(this._interval);
 
-            this.dispatchEvent(new OjIoErrorEvent(OjIoErrorEvent.IO_ERROR));
+            this.dispatchEvent(new OjIoError(OjIoError.IO_ERROR));
         },
 
 

@@ -52,7 +52,7 @@ window.OJ = function Oj(){
         // OSs
         "CHROME_OS" : "Chromium OS",
         "LINUX" : "Linux",
-        "MAC" : "Mac",
+        "MAC" : "macOS",
         "WINDOWS" : "Windows",
 
         // mobile OSs

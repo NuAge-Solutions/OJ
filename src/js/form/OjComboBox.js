@@ -5,7 +5,7 @@ importJs('oj.data.OjData');
 importJs('oj.components.OjList');
 
 
-OJ.extendClass(
+OJ.extendComponent(
     'OjComboBox', [OjInput],
     {
         '_props_' : {
@@ -19,24 +19,26 @@ OJ.extendClass(
         '_list_visible' : false, '_ignore_click' : false, '_none_lbl' : '-- Select -- ',
 
 
-        '_constructor' : function(/*name, label, value, options*/){
-            var ln = arguments.length;
+        "_constructor" : function(name, label, value, options){
+            var self = this,
+                list = new OjList();
 
-            this._options_index = [];
+            self._options_index = [];
+            self._options = [];
 
-            this._super(OjInput, '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
+            self._super(OjInput, "_constructor", [name, label || null]);
 
-            this._list = new OjList();
-            this._list.addEventListener(OjCollectionEvent.ITEM_PRESS, this, '_onItemClick');
+            self._list = list;
+            list.addEventListener(OjCollectionEvent.ITEM_PRESS, self, "_onItemClick");
 
-            this._options_dp = this._list.dataProvider;
+            self._options_dp = list.dataProvider;
 
-            if(ln > 2){
-                if(ln > 3){
-                    this.options = arguments[3];
-                }
+            if(isSet(options)){
+                self.options = options;
+            }
 
-                this.value = arguments[2];
+            if(isSet(value)){
+                self.value = value;
             }
 
             // setup event listeners
@@ -274,7 +276,10 @@ OJ.extendClass(
                 }
             });
 
-            self.input.selectedIndex = self._selected_index;
+            self.input.dom.selectedIndex = self._selected_index;
         }
+    },
+    {
+        "_TAGS" : ["select-input"]
     }
 );

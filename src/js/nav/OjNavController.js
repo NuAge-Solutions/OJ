@@ -64,23 +64,12 @@ OJ.extendComponent(
 
 
         // event listener callbacks
-        '_onStackChange' : function(evt){
+        "_onStackChange" : function(evt){
 
         },
 
-        '_onStackChangeComplete' : function(evt){
-            // remove all views after the active view
-            var stack = this.stack,
-                ln = stack.num_elms,
-                i = stack.active_index;
+        "_onStackChangeComplete" : function(evt){
 
-            if(stack.has_deferred){
-                return;
-            }
-
-            for(; --ln > i;){
-                stack.removeElmAt(ln);
-            }
         },
 
 

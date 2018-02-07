@@ -274,7 +274,7 @@ OJ.extendClass(
         },
 
         'importData' : function(data, mode){
-            return data;
+            return this;
         },
 
         'is' : function(val){

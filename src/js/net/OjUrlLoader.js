@@ -2,7 +2,7 @@ importJs('oj.data.OjXml');
 importJs('oj.events.OjActionable');
 importJs('oj.events.OjEvent');
 importJs('oj.events.OjHttpStatusEvent');
-importJs('oj.events.OjIoErrorEvent');
+importJs('oj.events.OjIoError');
 importJs('oj.events.OjProgressEvent');
 importJs('oj.net.OjUrlRequest');
 importJs('oj.utils.OjCacheManager');
@@ -185,7 +185,7 @@ OJ.extendClass(
             };
 
             //xhr.ontimeout = function(){
-            //    self.dispatchEvent(new OjIoErrorEvent(OjIoErrorEvent.IO_TIMEOUT));
+            //    self.dispatchEvent(new OjIoError(OjIoError.IO_TIMEOUT));
             //    self.dispatchEvent(new OjEvent(OjEvent.FAIL));
             //};
         },
@@ -274,7 +274,7 @@ OJ.extendClass(
             // clear the timeout timer
             OJ.destroy(self._timer);
 
-            var error = new OjIoErrorEvent(OjIoErrorEvent.IO_ERROR, xhr.statusText, xhr.status);
+            var error = new OjIoError(OjIoError.IO_ERROR, xhr.statusText, xhr.status);
 
             self.dispatchEvent(error);
             self.dispatchEvent(new OjEvent(OjEvent.FAIL));
