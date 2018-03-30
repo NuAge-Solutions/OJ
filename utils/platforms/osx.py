@@ -15,7 +15,8 @@ def destination(action, dst):
 
 
 def mode(action, mode):
-    return DEV if os.environ.get("CONFIGURATION", "").lower() == "debug" else PROD
+    return PROD
+    # return DEV if os.environ.get("CONFIGURATION", "").lower() == "debug" else PROD
 
 
 def package(action, package):

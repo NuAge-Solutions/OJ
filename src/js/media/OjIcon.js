@@ -34,9 +34,9 @@ OJ.extendComponent(
             return child;
         },
 
-        '_setCss' : function(){
-            // don't do anything here
-        },
+        // '_setCss' : function(){
+        //     // don't do anything here
+        // },
 
         '=source' : function(val){
             var self = this,

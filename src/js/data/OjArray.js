@@ -198,6 +198,10 @@ OJ.extendClass(
             return this._callArrayFunc('join', arguments);
         },
 
+        "map" : function(){
+            return this._callArrayFunc("map", arguments);
+        },
+
         'move' : function(item, index){
             var self = this,
                 check = self._checkDuplicate(item),

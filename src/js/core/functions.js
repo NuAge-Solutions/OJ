@@ -1,12 +1,35 @@
-function hexToRgb(hex){
-    var bigint = parseInt(hex, 16);
+function hexToRgb(hex, alpha) {
+    hex = hex.trim();
+    hex = hex[0] === '#' ? hex.substr(1) : hex;
 
-    return [
-        (bigint >> 16) & 255,
-        (bigint >> 8) & 255,
-        bigint & 255
-    ];
+    var bigint = parseInt(hex, 16),
+        h = [];
+
+    if(hex.length === 3){
+        h.push((bigint >> 4) & 255);
+        h.push((bigint >> 2) & 255);
+    }
+    else {
+        h.push((bigint >> 16) & 255);
+        h.push((bigint >> 8) & 255);
+    }
+
+    h.push(bigint & 255);
+
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var a = isUndefined(alpha) ? 1.0 : alpha,
+        rgb = h.join(", ");
+
+    return {
+        "r": h[0],
+        "g": h[1],
+        "b": h[2],
+        "a": a,
+        "rgb": "rgb(" + rgb + ")",
+        "rgba": "rgba(" + rgb + ", " + a + ")"
+    };
 }
+
 
 /**
  * Type & Value Detection Functions
@@ -187,9 +210,9 @@ function isUnset(obj){
  * Framework Logging Functions
  */
 function print(obj/*, ...objs*/){
-    if(OJ.mode == OJ.PROD){
-        return;
-    }
+    // if(OJ.mode == OJ.PROD){
+    //     return;
+    // }
 
     var ln = arguments.length, i;
 

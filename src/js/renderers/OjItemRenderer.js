@@ -1,32 +1,41 @@
-importJs('oj.components.OjComponent');
+importJs("oj.components.OjComponent");
 
 
 OJ.extendComponent(
-    'OjItemRenderer', [OjComponent],
+    "OjItemRenderer", [OjComponent],
     {
-        '_props_' : {
-            'data' : null,
-            'group' : null
+        "_props_" : {
+            "data" : null,
+            "group" : null
         },
 
 
-        '_constructor' : function(/*group, data*/){
-            this._super(OjComponent, '_constructor', []);
+        "_constructor" : function(group, data){
+            var self = this;
 
-            this._processArguments(arguments, {
-                'group' : null,
-                'data' : null
-            });
+            self._super(OjComponent, '_constructor', []);
+
+            self.group = group;
+            self.data = data;
+        },
+
+        "_destructor" : function(){
+            var self = this;
+
+            self.group = null;
+            self.data = null;
+
+            return self._super(OjComponent, "_destructor", arguments);
         },
 
 
-        '_redrawData' : function(){
+        "_redrawData" : function(){
             return this._is_displayed;
         },
 
 
-        'redraw' : function(){
-            if(this._super(OjComponent, 'redraw', arguments)){
+        "redraw" : function(){
+            if(this._super(OjComponent, "redraw", arguments)){
                 this._redrawData();
 
                 return true;
@@ -36,7 +45,7 @@ OJ.extendComponent(
         },
 
 
-        '=data' : function(data){
+        "=data" : function(data){
             var self = this;
 
             if(self._data == data){
@@ -49,6 +58,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['item', 'item-renderer']
+        "_TAGS" : ["item", "item-renderer"]
     }
 );

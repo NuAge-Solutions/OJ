@@ -167,7 +167,26 @@ OJ.extendClass(
             }
 
             if(isDomElement(obj)){
-                return self.isTextNode(obj) ? new OjTextElement(obj) : self.byId(obj.id);
+                if(self.isCommentNode(obj)){
+                    return new OjCommentElement(obj);
+                }
+
+                if(self.isTextNode(obj)){
+                    return new OjTextElement(obj);
+                }
+
+                if(obj.id){
+                    var elm = self.byId(obj.id);
+
+                    // check to make sure dom is a match
+                    if(elm.dom != obj){
+                        elm.dom = obj;
+                    }
+
+                    return elm;
+                }
+
+                return null;
             }
 
             if(isObjective(obj)){

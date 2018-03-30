@@ -1,1 +1,1 @@
-../../node_modules/propagating-hammerjs/propagating.js
+../../bower_components/propagating-hammerjs/propagating.js

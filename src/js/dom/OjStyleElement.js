@@ -1,5 +1,7 @@
 importJs("oj.data.OjRect");
+importJs("oj.dom.OJCommentElement");
 importJs("oj.dom.OjCssTranslate");
+importJs("oj.dom.OjTextElement");
 importJs("oj.events.OjDragEvent");
 importJs("oj.events.OjEvent");
 importJs("oj.events.OjFocusEvent");
@@ -11,6 +13,7 @@ importJs("oj.events.OjTouchEvent");
 importJs("oj.events.OjTransformEvent");
 importJs("oj.libs.Hammer");
 importJs("oj.libs.HammerPropagating");
+importJs("oj.libs.ResizeSensor");
 
 
 OJ.extendClass(
@@ -23,6 +26,8 @@ OJ.extendClass(
             "css" : null,
             "css_list" : null,
             "depth" : null,
+            "font_color": null,
+            "font_size": null,
             "hAlign" : "left", // OjStyleElement.LEFT
             "height" : null,
             "id" : null,
@@ -605,17 +610,16 @@ OJ.extendClass(
 //        },
 
         "_onMoveTick" : function(evt){
-            var page_x = this.pageX,
-                page_y = this.pageY,
-                delta_x = this._page_x - page_x,
-                delta_y = this._page_y - page_y;
+            var self = this,
+                cls = OjTransformEvent,
+                prev = self._prev_rect,
+                rect = self.rect;
 
-            if(delta_x || delta_y){
-                this.dispatchEvent(new OjTransformEvent(OjTransformEvent.MOVE, page_x, page_y, delta_x, delta_y));
+            if(prev.top != rect.top || prev.left != rect.left){
+                self._prev_rect = rect;
+
+                self.dispatchEvent(new cls(cls.MOVE, rect, prev));
             }
-
-            this._page_x = page_x;
-            this._page_y = page_y;
         },
 
         "_onOjMouseUp" : function(evt){
@@ -893,14 +897,20 @@ OJ.extendClass(
                     self._move_timer = new OjTimer(250, 0);
                     self._move_timer.addEventListener(OjTimer.TICK, self, "_onMoveTick");
 
-                    self._page_x = self.pageX;
-                    self._page_y = self.pageY;
+                    self._prev_rect = self.rect;
 
                     self._move_timer.start();
                 }
             }
             else if(type == OjTransformEvent.RESIZE && self._proxy != document.body){
-                proxy.onresize = self._onOjDomEvent;
+                self._prev_rect = self.rect;
+
+                new ResizeSensor(proxy, function(){
+                    var cls = OjTransformEvent,
+                        prev = self._prev_rect;
+
+                    self.dispatchEvent(new cls(cls.RESIZE, self._prev_rect = self.rect, prev));
+                });
             }
 
             // misc dom events
@@ -1037,7 +1047,7 @@ OJ.extendClass(
             }
             else if(type == OjTransformEvent.RESIZE){
                 if(!this.hasEventListener(OjTransformEvent.RESIZE)){
-                    proxy.onresize = null;
+                    ResizeSensor.detach(proxy);
                 }
             }
 
@@ -1227,7 +1237,13 @@ OJ.extendClass(
         },
 
         ".num_children" : function(){
-            return this.dom.childNodes.length;
+            var dom = this.dom;
+
+            if(!dom || !dom.childNodes){
+                return 0;
+            }
+
+            return dom.childNodes.length;
         },
 
 
@@ -1302,7 +1318,7 @@ OJ.extendClass(
         "_setStyleColor" : function(style, value){
             if(value){
                 if(isString(value) && value.charAt(0) == "#"){
-                    value = hexToRgb(value);
+                    value = hexToRgb(value).rgb;
                 }
 
                 if(isArray(value)){
@@ -1768,6 +1784,20 @@ OJ.extendClass(
         },
         "=depth" : function(depth){
             this._depth = this._setStyle("zIndex", depth);
+        },
+
+        ".font_color" : function(){
+            return this._getStyle("color");
+        },
+        "=font_color" : function(color){
+            this._setStyleColor("color", color);
+        },
+
+        ".font_size" : function(){
+            this._getStyleNumber("font-size");
+        },
+        "=font_size" : function(size){
+            this._setStyleNumber("font-size", size, OJ.font_unit);
         },
 
         ".overflow" : function(){

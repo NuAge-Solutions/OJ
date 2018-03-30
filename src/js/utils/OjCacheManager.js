@@ -226,8 +226,6 @@ OJ.extendManager(
             throw new Error('No setData() defined.');
 
             return;
-
-            this._setCachedData(key, this._setData.apply(this, [].slice.call(arguments, 1)));
         },
 
         'unsetData' : function(key){

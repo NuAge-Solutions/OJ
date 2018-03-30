@@ -89,7 +89,7 @@ OJ.extendClass(
 
             if(isObject(obj)){
                 if(isSet(obj.top) && isSet(obj.left) && isSet(obj.width) && isSet(obj.height)){
-                    return new OjRect(obj.top, obj.left, obj.width, obj.height);
+                    return new OjRect(obj.left, obj.top, obj.width, obj.height);
                 }
             }
             else if(isArray(obj) && obj.length == 4){

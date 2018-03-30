@@ -1,0 +1,8 @@
+
+
+OJ.extendClass(
+    "OjCommentElement", [OjElement],
+    {
+
+    }
+);

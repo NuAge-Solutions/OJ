@@ -44,7 +44,7 @@ Object.numKeys = function(obj){
 };
 
 Object.toJson = function(obj){
-
+    return JSON.stringify(obj);
 };
 
 Object.clone = function(obj){
