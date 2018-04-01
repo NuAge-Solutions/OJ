@@ -7,6 +7,7 @@ OJ.extendClass(
     {
         '_props_' : {
             'callback' : null,
+            "enable": true,
             'event' : null,
             'pointers' : null,
             'threshold' : null
@@ -32,22 +33,33 @@ OJ.extendClass(
 
             if(!recognizer){
                 self._recognizer = recognizer = self._make();
+
+                hammer.on(
+                    self.oj_id,
+                    function(evt){
+                        var callback = self.callback;
+
+                        if(callback){
+                            callback(evt);
+                        }
+                    }
+                );
             }
 
             hammer.add(recognizer);
 
-            hammer.on(
-                self.oj_id,
-                function(evt){
-                    var callback = self.callback;
-
-                    if(callback){
-                        callback(evt);
-                    }
-                }
-            );
-
             return hammer;
+        },
+
+        "_has" : function(hammer){
+            var self = this,
+                recognizer = self._recognizer;
+
+            if(recognizer){
+                return hammer.get(self.oj_id) != null;
+            }
+
+            return false;
         },
 
         '_make' : function(){
@@ -62,6 +74,7 @@ OJ.extendClass(
             var self = this;
 
             return {
+                "enable"    : self.enable,
                 'event'     : self.oj_id,
                 'pointers'  : self.pointers,
                 'threshold' : self.threshold
@@ -77,6 +90,17 @@ OJ.extendClass(
             }
 
             return hammer;
+        },
+
+        ".enable" : function(val){
+            var self = this,
+                recognizer = self._recognizer;
+
+            if(recognizer){
+                recognizer.set({"enable": val});
+            }
+
+            return self._enable = val;
         }
     },
     {

@@ -920,7 +920,17 @@ OJ.extendClass(
         },
 
         "addGestureRecognizer" : function(recognizer){
-            recognizer._add(this._setupHammer());
+            var self = this;
+
+            if(!recognizer || self.hasGestureRecognizer(recognizer)){
+                return;
+            }
+
+            recognizer._add(self._setupHammer());
+        },
+
+        "hasGestureRecognizer" : function(recognizer){
+            return recognizer._has(this._setupHammer());
         },
 
         "removeEventListener" : function(type, context, callback){
