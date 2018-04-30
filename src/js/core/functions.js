@@ -124,8 +124,8 @@ function isObjectiveClass(cls){
 function isElement(obj){
     return isObjective(obj) && isSet(obj._dom);
 }
-function isComponent(obj){
-    return isElement(obj) && isSet(obj._template);
+function isComponent(obj, cls){
+    return isElement(obj) && isSet(obj._template) && (!cls || obj.is(cls));
 }
 
 function isXml(obj){
@@ -410,6 +410,11 @@ function onDomReady(){
     }
     else{
         css.append('1x'); // 1x resolution
+    }
+
+    // css env support
+    if(CSS.supports("padding","env(test, 10)")){
+        css.append("env-support");
     }
 
     // add the css

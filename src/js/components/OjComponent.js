@@ -111,14 +111,7 @@ OJ.extendClass(
         },
 
         "_onUiPress" : function(evt){
-            var url = this.url;
-
-            if(url){
-                WindowManager.open(url, this.target, {
-                    'width' : this.target_width,
-                    'height' : this.target_height
-                });
-            }
+            // do nothing
         },
 
         "_onUiUp" : function(evt){
@@ -539,8 +532,10 @@ OJ.extendClass(
             'replaceElmAt' : 'replaceChildAt'
         },
 
-        "HORIZONTAL" : "horizontal",
-        "VERTICAL" : "vertical",
+        "HORIZONTAL" : "horz",
+        "HORIZONTAL_REVERSE" : "horz-rev",
+        "VERTICAL" : "vert",
+        "VERTICAL_REVERSE" : "vert-rev",
 
         'load' : function(source){
 

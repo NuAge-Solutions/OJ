@@ -340,13 +340,15 @@ OJ.extendComponent(
             }
         },
 
-        '_removeActiveElm' : function(elm){
+        "_removeActiveElm" : function(elm){
             // remove the elm from the display
             this.container.removeChild(elm);
 
-            elm.removeCss('prev-active');
+            elm.removeCss("prev-active");
             elm.width = OjStyleElement.AUTO;
             elm.height = OjStyleElement.AUTO;
+            elm.x = null;
+            elm.y = null;
             elm.alpha = 1;
 
             elm.is_active = false;
@@ -444,23 +446,25 @@ OJ.extendComponent(
         },
 
         '_onTransOut' : function(evt){
+            var self = this;
+
             // cleanup the transition
-            this._unset('_trans_out');
+            self._unset('_trans_out');
 
             // remove the previously active item/elm
-            this._removeActive(this._prev_active);
+            self._removeActive(self._prev_active);
 
             // if there are no more transitions get us out of animating mode
-            if(!this._trans_in){
-                this._setIsAnimating(false);
+            if(!self._trans_in){
+                self._setIsAnimating(false);
 
                 // dispatch the change is complete
-                this._dispatchChangeComplete();
+                self._dispatchChangeComplete();
             }
 
             // unset prev vars since they are no longer needed
-            this._prev_active = null;
-            this._prev_index = null;
+            self._prev_active = null;
+            self._prev_index = null;
         },
 
 

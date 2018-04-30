@@ -154,7 +154,7 @@ window.OJ = function Oj(){
                 }
                 else{
                     OJ.addCss("is-portrait");
-                    OJ.removeCss("is-portrait");
+                    OJ.removeCss("is-landscape");
                 }
 
                 OJ.dispatchEvent(new OjTransformEvent(OjTransformEvent.RESIZE, vp, prev));

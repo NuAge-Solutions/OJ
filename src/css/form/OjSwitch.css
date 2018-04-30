@@ -26,6 +26,8 @@
         box-shadow:         none;
     }
         .OjSwitch.OjInput > .wrapper > .psuedoInput {
+            height: 30px;
+
             background: transparent;
 
             -webkit-border-radius: 15px;

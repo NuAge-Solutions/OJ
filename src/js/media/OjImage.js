@@ -37,11 +37,11 @@ OJ.extendComponent(
         '_resize': function () {
             this.removeCss(this._resize_vals);
 
-            if (this._resizeBy == this._static.NONE) {
+            if (this._resize_by == this._static.NONE) {
                 return;
             }
 
-            this.addCss(this._resizeBy);
+            this.addCss(this._resize_by);
         },
 
 

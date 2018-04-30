@@ -18,8 +18,6 @@ OJ.extendClass(
             'title' : null
         },
 
-        "_add_cancel_btn" : false,
-
         '_template' : 'oj.window.OjAlert',
 
 
@@ -28,13 +26,6 @@ OJ.extendClass(
 
             self._super(OjComponent, '_constructor', []);
 
-            // setup the display
-            if(self.oj_class_name.contains('Alert') || self._add_cancel_btn){
-                self.btns.appendChild(self.cancel_btn = new OjButton(OjAlert.OK));
-
-                self.cancel_btn.addEventListener(OjUiEvent.PRESS, self, '_onCancelPress');
-            }
-
             self._processArguments(arguments, {
                 'content' : undefined,
                 'title' : undefined,
@@ -42,6 +33,17 @@ OJ.extendClass(
                 'cancel_label' : OjAlert.CANCEL,
                 'callback' : undefined
             });
+        },
+
+        "_redrawButtons" : function(){
+            var self = this;
+
+            if(self.btns.num_children == 1 && isEmpty(self.cancel_label)){
+                self.hideButtons();
+            }
+            else{
+                self.showButtons();
+            }
         },
 
         '_destructor' : function(/*depth = 1*/){
@@ -135,13 +137,21 @@ OJ.extendClass(
 
                 btn.label = buttons[ln];
             }
+
+            this._redrawButtons();
         },
 
         '.cancel_label' : function(){
             return this.cancel_btn.label;
         },
         '=cancel_label' : function(label){
-            return (this.cancel_btn || {}).label = label;
+            var btn = this.cancel_btn;
+
+            btn.label = label;
+
+            btn.hide(isEmpty(label));
+
+            this._redrawButtons();
         },
 
         '=content' : function(content){

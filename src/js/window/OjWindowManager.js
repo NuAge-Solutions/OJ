@@ -114,6 +114,30 @@ OJ.extendManager(
             return modal.is(OjModal) && OJ.is_mobile
         },
 
+        "_processSpecialProtocols" : function(url){
+            var self = this;
+
+            if(url) {
+                // check for email
+                if (url.protocol == "mailto") {
+                    return self.email(url);
+                }
+
+                // check for phone call
+                if (url.protocol == "tel") {
+                    return self.call(url);
+                }
+
+                if(url.protocol == "sms" || url.protocol == "mms") {
+                    return self.txt(url, params);
+                }
+
+                // TODO: handle map protocols
+            }
+
+            return false;
+        },
+
         '_transIn' : function(modal){
             var anim = new OjFade(modal, OjFade.IN, 250),
                 pane = modal.pane,
@@ -158,24 +182,8 @@ OJ.extendManager(
         '_onKeyboardUpdate' : function(evt){
             var self = this;
 
-            if(evt.type == OjKeyboardEvent.SHOW){
-                if(self._keyboard_int){
-                    return;
-                }
-
-                self._keyboard_int = setInterval(function(){
-                    if(self._keyboard_height == window.innerHeight){
-                        clearInterval(self._keyboard_int);
-
-                        self._keyboard_int = null;
-                    }
-                    else{
-                        self._modal_holder.height = window.innerHeight;
-                    }
-                }, 50);
-            }
-            else{
-                this._modal_holder.height = OjStyleElement.AUTO;
+            if(self.keyboard_frame){
+                self._modal_holder.height = self.keyboard_frame.height ? self.keyboard_frame.top : OjStyleElement.AUTO;
             }
         },
 
@@ -265,24 +273,31 @@ OJ.extendManager(
         },
 
         'browser' : function(url, title, width, height, fullscreen){
+            var self = this,
+                result;
+
+            if(result = self._processSpecialProtocols(url)){
+                return result;
+            }
+
             var iframe = new OjIframe(url),
-                modal = this.makeModal(iframe, title);
+                modal = self.makeModal(iframe, title);
 
             if(isUnset(fullscreen)){
-                fullscreen = this._isMobileModal(modal)
+                fullscreen = self._isMobileModal(modal)
             }
 
             // update iframe dims
-            iframe.width = [100, '%'];
-            iframe.height = [100, '%'];
+            iframe.width = [100, "%"];
+            iframe.height = [100, "%"];
 
             // update the modal
-            modal.addCss('browser');
+            modal.addCss("browser");
             modal.self_destruct = OjAlert.DEEP;
-            modal.pane_width = this._calcWindowWidth(width, fullscreen);
-            modal.pane_height = this._calcWindowHeight(height, fullscreen);
+            modal.pane_width = self._calcWindowWidth(width, fullscreen);
+            modal.pane_height = self._calcWindowHeight(height, fullscreen);
 
-            return this.show(modal);
+            return self.show(modal);
         },
 
         'modal' : function(content, title, width, height, fullscreen){
@@ -358,26 +373,17 @@ OJ.extendManager(
         },
 
         'open' : function(url/*, target, params*/){
-            // check for email
-            if(url.protocol == 'mailto'){
-                return this.email(url);
-            }
-
-            // check for phone call
-            if(url.protocol == 'tel'){
-                return this.call(url);
-            }
-
-            var args = arguments,
+            var self = this,
+                args = arguments,
                 ln = args.length,
-                target = ln > 1 ? args[1] : this.BLANK,
+                target = ln > 1 ? args[1] : self.BLANK,
                 params = ln > 2 ? args[2] : {},
                 specs = [], key,
-                vp = OJ.viewport, scrn = OJ.screen;
+                vp = OJ.viewport, scrn = OJ.screen,
+                result;
 
-            // check for text message
-            if(url.protocol == 'sms' || url.protocol == 'mms'){
-                return this.txt(url, params);
+            if(result = self._processSpecialProtocols(url)){
+                return result;
             }
 
             if(target != this.SELF && target != this.TOP && target != this.PARENT){

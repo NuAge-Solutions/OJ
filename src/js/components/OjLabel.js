@@ -41,9 +41,24 @@ OJ.extendComponent(
         //},
 
         '_redrawText' : function(){
-            var self = this;
+            var self = this,
+                prefix = String.string(self.prefix).html(),
+                suffix = String.string(self.suffix).html(),
+                txt = String.string(self.text).html();
 
-            self.dom.innerHTML = String.string(self.prefix).html() + String.string(self.text).html() + String.string(self.suffix).html();
+            if(prefix){
+                prefix = "<span class='prefix'>" + prefix + "</span>";
+            }
+
+            if(suffix){
+                suffix = "<span class='suffix'>" + suffix + "</span>";
+            }
+
+            if(prefix || suffix){
+                txt = "<span class='stem'>" + txt+ "</span>";
+            }
+
+            self.dom.innerHTML = prefix + txt + suffix;
         },
 
 

@@ -154,7 +154,8 @@ OJ.extendComponent(
         // GETTER & SETTER FUNCTIONS
         "=direction": function(val){
             var self = this,
-                is_horz = val == self._static.HORIZONTAL;
+                cls = self._static,
+                is_horz = val == cls.HORIZONTAL || val == cls.HORIZONTAL_REVERSE;
 
             // check for change
             if(self.direction == val){
@@ -165,6 +166,13 @@ OJ.extendComponent(
 
             self.attr(is_horz ? "flex-v" : "flex-h", null);
             self.attr(is_horz ? "flex-h": "flex-v", "");
+
+            if(val == cls.HORIZONTAL_REVERSE || val == cls.VERTICAL_REVERSE){
+                self.addCss("reverse");
+            }
+            else{
+                self.removeCss("reverse");
+            }
         },
 
         '=down_icon' : function(icon){

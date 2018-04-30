@@ -18,6 +18,7 @@ OJ.extendComponent(
             "cancel_view": null,
             "cancel_visible": false,
             "default_title": null,
+            "icon_only_back": false,
             "title": null,
             "title_view": null
         },
@@ -61,7 +62,7 @@ OJ.extendComponent(
 
         // helper functions
         "_makeBackButton" : function(view){
-            var btn = new OjButton(view.short_title);
+            var btn = new OjButton(this.icon_only_back ? null : view.short_title);
             btn.addCss("back-button");
 
             return btn;

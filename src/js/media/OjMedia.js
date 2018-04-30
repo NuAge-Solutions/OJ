@@ -7,10 +7,10 @@ OJ.extendClass(
     {
         '_props_': {
             'preload': false,
-            'resizeBy': 'none', // OjMedia.NONE
+            'resize_by': 'none', // OjMedia.NONE
             'source': null,
-            'showSpinner': false,
-            'spinnerTint': '#333'
+            'show_spinner': false,
+            'spinner_tint': '#333'
         },
 
         '_height': 0, '_loaded': false, '_resize_vals': ['none', 'fill', 'fit', 'hFill', 'wFill'], '_width': 0,
@@ -76,7 +76,7 @@ OJ.extendClass(
 
                 this._media.width = OjStyleElement.AUTO;
             }
-            else if(this._resizeBy == this._static.WIDTH){
+            else if(this._resize_by == this._static.WIDTH){
                 this._media.width = ['100', '%'];
                 this._media.height = OjStyleElement.AUTO;
             }
@@ -197,8 +197,8 @@ OJ.extendClass(
 
             this.unload();
 
-            if (!this.loading && this._showSpinner) {
-                this.appendElm(this.loading = new OjSpinner(this._spinnerTint));
+            if (!this.loading && this._show_spinner) {
+                this.appendElm(this.loading = new OjSpinner(this._spinner_tint));
             }
 
             this._setSource(url);
@@ -208,12 +208,12 @@ OJ.extendClass(
             }
         },
 
-        '=resizeBy': function (val) {
-            if (this._resizeBy == val) {
+        '=resize_by': function (val) {
+            if (this._resize_by == val) {
                 return;
             }
 
-            this._resizeBy = this._resize_vals.indexOf(val) > -1 ? val : this._static.NONE;
+            this._resize_by = this._resize_vals.indexOf(val) > -1 ? val : this._static.NONE;
 
             this._resize();
         },

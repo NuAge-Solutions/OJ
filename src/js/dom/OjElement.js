@@ -218,7 +218,7 @@ OJ.extendClass(
             return dom_elm.nodeName.toLowerCase() == '#text';
         },
 
-        'parentComponent' : function(elm){
+        'parentComponent' : function(elm, cls){
             if(isElement(elm)){
                 elm = elm._dom;
             }
@@ -228,7 +228,7 @@ OJ.extendClass(
             while(elm){
                 parent = elm.parentNode;
 
-                if(parent && (elm = this.element(parent)) && isComponent(elm)){
+                if(parent && (elm = this.element(parent)) && isComponent(elm, cls)){
                     return elm;
                 }
 

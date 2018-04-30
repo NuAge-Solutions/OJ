@@ -1,7 +1,7 @@
 .OjLink {
     cursor: pointer;
 
-    overflow: hidden;
+    /*overflow: hidden;*/
     text-overflow: ellipsis;
 
     -webkit-justify-content: center;
@@ -31,3 +31,10 @@
     .OjLink.no-label > .lbl {
         display: none;
     }
+    .OjLink.reverse > .icn {
+        padding-left: 5px;
+        padding-right: 0px;
+    }
+        .OjLink > .icn > * {
+            display: block;
+        }
