@@ -179,7 +179,7 @@ OJ.extendClass(
                     var elm = self.byId(obj.id);
 
                     // check to make sure dom is a match
-                    if(elm.dom != obj){
+                    if(elm && elm.dom != obj){
                         elm.dom = obj;
                     }
 

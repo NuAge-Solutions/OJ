@@ -1,16 +1,16 @@
-importJs('oj.events.OjDomEvent');
+importJs("oj.events.OjDomEvent");
 
 
 OJ.extendClass(
-    'OjUiEvent', [OjDomEvent],
+    "OjUiEvent", [OjDomEvent],
     {
-        '_get_props_' : {
-            'pageX' : NaN,
-            'pageY' : NaN
+        "_get_props_" : {
+            "pageX" : NaN,
+            "pageY" : NaN
         },
 
 
-        '_constructor' : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
+        "_constructor" : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
             var args = Array.array(arguments),
                 ln = args.length;
 
@@ -22,12 +22,12 @@ OJ.extendClass(
                 }
             }
 
-            this._super(OjDomEvent, '_constructor', args);
+            this._super(OjDomEvent, "_constructor", args);
         },
 
 
-        'clone' : function(){
-            var clone = this._super(OjDomEvent, 'clone', arguments);
+        "clone" : function(){
+            var clone = this._super(OjDomEvent, "clone", arguments);
 
             clone._pageX = this._pageX;
             clone._pageY = this._pageY;
@@ -36,35 +36,35 @@ OJ.extendClass(
         }
     },
     {
-        '_evt_map' : {
-            'click'        : 'onPress',
+        "_evt_map" : {
+            "click"        : "onPress",
             "contextmenu"  : "onUp",
-            'dblclick'     : 'onDoublePress',
-            'mousedown'    : 'onDown',
-            'mousemove'    : 'onMove',
-            'mouseover'    : 'onOver',
-            'mouseout'     : 'onOut',
-            'mouseup'      : 'onUp',
-            'mousewheel'   : 'onWheel'
+            "dblclick"     : "onDoublePress",
+            "mousedown"    : "onDown",
+            "mousemove"    : "onMove",
+            "mouseover"    : "onOver",
+            "mouseout"     : "onOut",
+            "mouseup"      : "onUp",
+            "mousewheel"   : "onWheel"
         },
 
-        'convertDomEvent' : function(evt){
-            evt = OjDomEvent.normalizeDomEvent(evt);
-
-            var type = this._evt_map[evt.type];
+        "convertDomEvent" : function(evt){
+            var norm = evt = OjDomEvent.normalizeDomEvent(evt),
+                type = this._evt_map[norm.type];
 
             if(type == OjUiEvent.PRESS){
                 // todo: OjUiEvent - add middle and right click event detection
             }
 
-            var new_evt = new OjUiEvent(type, evt.pageX, evt.pageY, evt.bubbles, evt.cancelable);
-            new_evt._target = OjElement.element(evt.target);
-            new_evt._current_target = OjElement.element(evt.current_target);
+            var new_evt = new OjUiEvent(type, norm.pageX, norm.pageY, norm.bubbles, norm.cancelable);
+            new_evt._target = OjElement.element(norm.target);
+            new_evt._current_target = OjElement.element(norm.current_target);
+            new_evt._source = evt;
 
             return new_evt;
         },
 
-        'isMouseEvent' : function(type){
+        "isMouseEvent" : function(type){
             var k;
 
             for(k in this._evt_map){
@@ -76,7 +76,7 @@ OJ.extendClass(
             return false;
         },
 
-        'isMouseDomEvent' : function(type){
+        "isMouseDomEvent" : function(type){
             var k;
 
             for(k in this._evt_map){
@@ -88,22 +88,22 @@ OJ.extendClass(
             return false;
         },
 
-        'PRESS'           : 'onPress',
-        'DOUBLE_PRESS'    : 'onDoublePress',
-        'MIDDLE_PRESS'    : 'onMiddlePress',
-        'RIGHT_PRESS'  : 'onRightPress',
+        "PRESS"           : "onPress",
+        "DOUBLE_PRESS"    : "onDoublePress",
+        "MIDDLE_PRESS"    : "onMiddlePress",
+        "RIGHT_PRESS"  : "onRightPress",
 
-        'DOWN'            : 'onDown',
-        'RIGHT_DOWN'   : 'onRightDown',
+        "DOWN"            : "onDown",
+        "RIGHT_DOWN"   : "onRightDown",
 
-        'UP'           : 'onUp',
-        'UP_OUTSIDE'   : 'onUpOutside',
-        'RIGHT_UP'     : 'onRightUp',
+        "UP"           : "onUp",
+        "UP_OUTSIDE"   : "onUpOutside",
+        "RIGHT_UP"     : "onRightUp",
 
-        'MOVE'         : 'onMove',
-        'OVER'         : 'onOver',
-        'OUT'          : 'onOut',
+        "MOVE"         : "onMove",
+        "OVER"         : "onOver",
+        "OUT"          : "onOut",
 
-        'WHEEL'        : 'onWheel'
+        "WHEEL"        : "onWheel"
     }
 );

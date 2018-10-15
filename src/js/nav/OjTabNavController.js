@@ -20,9 +20,15 @@ OJ.extendComponent(
         },
 
         '_addViewButton' : function(view, index){
-            var btn = new OjButton(view.short_title, view.icon);
+            var btn = new OjButton(view.short_title, view.icon),
+                nav_css = view.nav_css;
+
             btn.attr("flex-h", null);
             btn.attr("flex-v", "");
+
+            if(nav_css){
+                btn.addCss(nav_css);
+            }
 
             btn.addEventListener(OjUiEvent.PRESS, this, '_onTabClick');
 
@@ -37,10 +43,12 @@ OJ.extendComponent(
         },
 
         '_removeViewButton' : function(view, index){
+            print("remove button @", index, view);
+
             var self = this,
                 views = isArray(view) ? view : [view];
 
-            OJ.destroy(self.removeElmAt(index));
+            OJ.destroy(self.removeChildAt(index));
 
             views.forEachReverse(function(view){
                 view.removeEventListener(OjView.ICON_CHANGE, self, "_onViewIconChange");
@@ -78,16 +86,26 @@ OJ.extendComponent(
         },
 
         '_onStackViewRemove' : function(evt){
-
             this._removeViewButton(evt.view, evt.index);
         },
 
         '_onStackViewReplace' : function(evt){
-            var btn = this._activeButton(),
-                view = evt.view;
+            var self = this,
+                btn = self._activeButton(),
+                view = evt.view,
+                old_css = self._stack.active_view.nav_css,
+                new_css = view.nav_css;
 
             btn.label = view.short_title;
             btn.icon = view.icon;
+
+            if(old_css){
+                btn.removeCss(old_css);
+            }
+
+            if(new_css){
+                btn.addCss(new_css);
+            }
         },
 
         '_onTabClick' : function(evt){

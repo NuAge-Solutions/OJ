@@ -74,6 +74,11 @@ OJ.extendClass(
 
 
         '_onTick' : function(evt){
+            // check if we should tick
+            if(!this._interval && !this._animationFrame){
+                return;
+            }
+
             var time = Math.min(Date.now() - this._start, this._duration);
 
             this._tick(time);
@@ -113,14 +118,14 @@ OJ.extendClass(
         },
 
         'pause' : function(){
+            this._interval = clearInterval(this._interval);
+            this._progress = Date.now() - this._start;
+
             if(this._animationFrame){
                 window.cancelAnimationFrame(this._animationFrame);
 
                 return this._animationFrame = null;
             }
-
-            this._interval = clearInterval(this._interval);
-            this._progress = Date.now() - this._start;
         },
 
         'stop' : function(){
@@ -140,6 +145,6 @@ OJ.extendClass(
         }
     },
     {
-        'USE_RAF' : (OJ.os != OJ.IOS || OJ.os_version.compareVersion('6.9') == 1 || !OJ.is_webview()) && window.requestAnimationFrame
+        'USE_RAF' : isSet(window.requestAnimationFrame)
     }
 );

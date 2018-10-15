@@ -22,6 +22,7 @@ OJ.extendClass(
         "_props_" : {
             "alpha" : null,
             "background_color" : null,
+            "bottom" : null,
             "children" : null,
             "css" : null,
             "css_list" : null,
@@ -33,6 +34,7 @@ OJ.extendClass(
             "id" : null,
             "innerHeight" : null,
             "innerWidth" : null,
+            "left" : null,
             "origin" : null,
             "outerHeight" : null,
             "outerWidth" : null,
@@ -42,11 +44,13 @@ OJ.extendClass(
             "pageX" : null,
             "pageY" : null,
             "rect" : null,
+            "right" : null,
             "rotation" : null,
             "scrollHeight" : null,
             "scrollWidth" : null,
             "scrollX" : null,
             "scrollY" : null,
+            "top" : null,
             "text" : null,
             "translate" : null,
             "vAlign" : "top", // OjStyleElement.TOP
@@ -229,6 +233,36 @@ OJ.extendClass(
                 return false;
             }
 
+            if(context && !context._template_vars_){
+                context._template_vars_ = [];
+            }
+
+            if(nm == "var"){
+                if(!isEmpty(val) && context){
+                    const parts = val.split(".");
+
+                    if(parts.length > 1){
+                        // we want these last
+                        context._template_vars_.append(
+                            {
+                                "context" : context,
+                                "property" : parts,
+                                "value" : self
+                            }
+                        );
+
+                        self.addCss(parts.last);
+                    }
+                    else{
+                        (context[val] = self).addCss(val);
+                    }
+
+                    self.owner = context;
+                }
+
+                return true;
+            }
+
             if(nm.substr(0, 3) == "on-"){
                 // todo: add support for multiple event listeners
                 // todo? add support for nested event listener functions in templates
@@ -249,16 +283,6 @@ OJ.extendClass(
                 }
 
                 self.addEventListener(OJ.attributeToProp(nm), target, solo ? setter[0] : setter[1]);
-
-                return true;
-            }
-
-            if(nm == "var"){
-                if(!isEmpty(val) && context){
-                    (context[val] = self).addCss(val);
-
-                    self.owner = context;
-                }
 
                 return true;
             }
@@ -287,18 +311,16 @@ OJ.extendClass(
                         self[setter] = val;
                     }
                     catch(e){
-                        // setup holder for template reference values for deferred processing
-                        if(!context._template_vars_){
-                            context._template_vars_ = [];
+                        if(context){
+                            // setup holder for template reference values for deferred processing
+                            context._template_vars_.prepend(
+                                {
+                                    "context" : self,
+                                    "property" : setter,
+                                    "value" : val
+                                }
+                            );
                         }
-
-                        context._template_vars_.unshift(
-                            {
-                                "context" : self,
-                                "property" : setter,
-                                "value" : val
-                            }
-                        );
                     }
 
                     // if the nm is v-align or h-align we want to return false so that the attribute isn"t destroyed
@@ -407,7 +429,7 @@ OJ.extendClass(
         "_processReferenceValue" : function(val, context, src){
             var $ = this;
 
-            if(val.contains("$") && $ != context){
+            if(val && String.string(val).contains("$") && $ != context){
                 throw "Template Reference Value Processing Deferred"
             }
 
@@ -420,14 +442,31 @@ OJ.extendClass(
         },
 
         "_processTemplateVars" : function(){
-            var self = this,
-                context;
+            const self = this;
+            let context, prop;
 
             if(self._template_vars_){
-                self._template_vars_.forEachReverse(function(item){
-                    context = item.context;
+                self._template_vars_.forEachReverse(function(tvar){
+                    context = tvar.context;
+                    prop = tvar.property;
 
-                    context[item.property] = self._processReferenceValue(item.value, self, context);
+                    if(isArray(prop)){
+                        const key = prop.pop();
+
+                        try {
+                            prop.forEach(function(p){
+                                context = context[p];
+                            });
+
+                            context[key] = tvar.value;
+                        }
+                        catch(e) {
+                            // do nothing
+                        }
+                    }
+                    else{
+                        context[prop] = self._processReferenceValue(tvar.value, self, context);
+                    }
                 });
 
                 self._unset("_template_vars_");
@@ -740,10 +779,13 @@ OJ.extendClass(
                     function(evt){
                         var type = evt.type,
                             prev_tap = self._hammer.prev_tap,
-                            new_evt = ui.convertDomEvent(evt.srcEvent);
+                            og_evt = evt.srcEvent,
+                            new_evt = ui.convertDomEvent(og_evt);
 
                         new_evt._type = map[type];
-                        
+
+                        // og_evt.preventDefault();
+                        // og_evt.stopPropagation();
                         evt.stopPropagation();
 
                         if(type == "tap"){
@@ -1279,7 +1321,7 @@ OJ.extendClass(
         },
 
         "hide" : function(should){
-            if(should === false){
+            if(should == false){
                 this.show();
             }
             else{
@@ -1298,7 +1340,7 @@ OJ.extendClass(
         },
 
         "show" : function(should){
-            if(should === false){
+            if(should == false){
                 this.hide();
             }
             else{
@@ -1311,18 +1353,26 @@ OJ.extendClass(
 
         // single style getter & setter functions
         "_getStyleBackup" : function(style){
-            return this._proxy.style[style];
+            return this._proxy.style.getPropertyValue(style);
         },
 
         "_getStyleIe" : function(style){
-            return this._proxy.currentStyle[style];
+            return this._proxy.currentStyle.getPropertyValue(style);
         },
 
         "_getStyle" : function(style){
-            return document.defaultView.getComputedStyle(this._proxy, null)[style];
+            return document.defaultView.getComputedStyle(this._proxy, null).getPropertyValue(style);
         },
         "_setStyle" : function(style, value){
-            return this._proxy.style[style] = value;
+            if(isSet(value)){
+                this._proxy.style.setProperty(style, value);
+
+                return value;
+            }
+
+            this._proxy.style.removeProperty(style);
+
+            return null;
         },
 
         "_setStyleColor" : function(style, value){
@@ -1340,7 +1390,7 @@ OJ.extendClass(
         },
 
 
-        "_getStyleNumber" : function(prop){
+        "_getStyleNum" : function(prop){
             var val = this._getStyle(prop);
 
             if(!val || val == OjStyleElement.NONE){
@@ -1350,13 +1400,23 @@ OJ.extendClass(
             return parseFloat(val.replaceAll(["px", "%", "pt", "em"], ""));
         },
 
-        "_setStyleNumber" : function(prop, val/*, unit*/){
+        "_setStyleNum" : function(prop, val, unit){
             var args = arguments;
 
             this._setStyle(
                 prop,
-                isSet(val) ? val + (args.length > 2 ? args[2] : this._getStyleUnit(prop)) : null
+                isSet(val) ? val + (isUndefined(unit) ? this._getStyleUnit(prop) : unit) : null
             );
+
+            return val;
+        },
+
+        "styleNum" : function (prop, val, unit) {
+            if(isUndefined(val)){
+                return this._getStyleNum(prop);
+            }
+
+            return this._setStyleNum(prop, val, unit);
         },
 
         // Bulk Style Getter & Setter Functions
@@ -1441,6 +1501,16 @@ OJ.extendClass(
 
             // read the attribute value
             return proxy.getAttribute(key);
+        },
+
+        "style" : function(key, val){
+            var self = this;
+
+            if(isUndefined(val)){
+                return self._getStyle(key);
+            }
+
+            return self._setStyle(key, val);
         },
         
         ".id" : function(){
@@ -1614,7 +1684,7 @@ OJ.extendClass(
                 return (this._proxy.offsetWidth / parent.offsetWidth) * 100;
             }
 
-            return this._proxy.offsetWidth || this._getStyleNumber("width");
+            return this._proxy.offsetWidth || this._getStyleNum("width");
         },
         "_setWidth" : function(val){
             this._setStyle("width", val);
@@ -1633,20 +1703,6 @@ OJ.extendClass(
                 this.innerWidth = w - this.getPaddingLeft() - this.getPaddingRight();
             }
         },
-
-        //".minWidth" : function(){
-        //    return isNull(this._min_width) ? this._min_width = this._getStyleNumber("minWidth") : this._min_width;
-        //},
-        //"=minWidth" : function(min){
-        //    this._setStyleNumber("minWidth", this._min_width = min);
-        //},
-        //
-        //".maxWidth" : function(){
-        //    return isNull(this._max_width) ? this._max_width = this._getStyleNumber("maxWidth") : this._max_width;
-        //},
-        //"=maxWidth" : function(max){
-        //    this._setStyleNumber("maxWidth", this._max_width = max);
-        //},
 
         ".innerHeight" : function(){
             return this.height - this.getPaddingTop() - this.getPaddingBottom();
@@ -1671,7 +1727,7 @@ OJ.extendClass(
                 return (this._proxy.offsetHeight / parent.offsetHeight) * 100;
             }
 
-            return this._proxy.offsetHeight || this._getStyleNumber("height");
+            return this._proxy.offsetHeight || this._getStyleNum("height");
         },
         "_setHeight" : function(val){
             this._setStyle("height", val);
@@ -1690,24 +1746,6 @@ OJ.extendClass(
                 this.innerHeight = h - this.getPaddingTop() - this.getPaddingBottom();
             }
         },
-
-        //".minHeight" : function(){
-        //    return isNull(this._min_height) ? this._min_height = this._getStyleNumber("minHeight") : this._min_height;
-        //},
-        //"=minHeight" : function(min){
-        //    this._min_height = min;
-        //
-        //    this._setStyleNumber("minHeight", min);
-        //},
-        //
-        //".maxHeight" : function(){
-        //    return isNull(this._max_height) ? this._max_height = this._getStyleNumber("maxHeight") : this._max_height;
-        //},
-        //"=maxHeight" : function(max){
-        //    this._max_height = max;
-        //
-        //    this._setStyleNumber("maxHeight", max);
-        //},
 
         // Style Getter & Setter Functions
         ".x" : function(/*unit=px*/){
@@ -1728,13 +1766,11 @@ OJ.extendClass(
 
             // add backup solution
         },
-        "=x" : function(val/*[val, unit=px]*/){
-            var args = isArray(val) ? val : [val];
-
-            this._setStyleNumber("left", args[0], args.length > 1 ? args[1] : OJ.dim_unit);
+        "=x" : function(val_or_tuple){
+            this.left = val_or_tuple;
         },
         "=pageX" : function(val){
-            this.x = this.parent.localX(val);
+            this.left = this.parent.localX(val);
         },
 
         ".y" : function(/*unit=px*/){
@@ -1755,14 +1791,13 @@ OJ.extendClass(
 
             // add backup solution
         },
-        "=y" : function(val/*[val, unit=px]*/){
-            var args = isArray(val) ? val : [val];
-
-            this._setStyleNumber("top", args[0], args.length > 1 ? args[1] : OJ.dim_unit);
+        "=y" : function(val_or_tuple){
+            this.top = val_or_tuple;
         },
         "=pageY" : function(val){
-            this.y = this.parent.localY(val);
+            this.top = this.parent.localY(val);
         },
+
 
         ".alpha" : function(){
             return this._alpha;
@@ -1789,6 +1824,17 @@ OJ.extendClass(
             this._setStyleColor("background-color", color);
         },
 
+        ".bottom" : function(){
+            return this._getStyleNum("bottom");
+        },
+        "=bottom" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+
+            this._setStyleNum("bottom", val, units);
+        },
+
         ".depth" : function(){
             return this._depth;
         },
@@ -1804,10 +1850,21 @@ OJ.extendClass(
         },
 
         ".font_size" : function(){
-            this._getStyleNumber("font-size");
+            this._getStyleNum("font-size");
         },
         "=font_size" : function(size){
-            this._setStyleNumber("font-size", size, OJ.font_unit);
+            this._setStyleNum("font-size", size, OJ.font_unit);
+        },
+
+        ".left" : function(){
+            return this._getStyleNum("left");
+        },
+        "=left" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+
+            this._setStyleNum("left", val, units);
         },
 
         ".overflow" : function(){
@@ -1817,13 +1874,6 @@ OJ.extendClass(
             this._overflow = this._setStyle("overflow", overflow);
         },
 
-        ".rect" : function(){
-            return new OjRect(this.x, this.y, this.width, this.height);
-        },
-        "=rect" : function(rect){
-            // add this later
-        },
-
         ".page_rect" : function(){
             var self = this;
 
@@ -1831,6 +1881,24 @@ OJ.extendClass(
         },
         "=page_rect" : function(rect){
             // todo: =page_rect
+        },
+
+        ".rect" : function(){
+            return new OjRect(this.x, this.y, this.width, this.height);
+        },
+        "=rect" : function(rect){
+            // add this later
+        },
+
+        ".right" : function(){
+            return this._getStyleNum("right");
+        },
+        "=right" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+
+            this._setStyleNum("right", val, units);
         },
 
         ".scrollHeight" : function(){
@@ -1861,6 +1929,17 @@ OJ.extendClass(
 
         "=scrollY" : function(val){
             this._proxy.scrollTop = val;
+        },
+
+        ".top" : function(){
+            return this._getStyleNum("top");
+        },
+        "=top" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+
+            this._setStyleNum("top", val, units);
         },
 
 

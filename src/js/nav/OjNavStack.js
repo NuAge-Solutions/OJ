@@ -9,56 +9,62 @@ OJ.extendComponent(
         },
 
 
-        '_destructor' : function(){
-            // make sure to remove stack and controller references
-            if(this._active){
+        // '_destructor' : function(){
+        //     // make sure to remove stack and controller references
+        //     if(this._active){
+        //
+        //     }
+        //
+        //     if(this._prev_active){
+        //         //this._unload(this._prev_active);
+        //     }
+        //
+        //     // continue on
+        //     this._super(OjStack, '_destructor', arguments);
+        // },
 
+
+        // '_addActive' : function(item, index){
+        //     this._super(OjStack, '_addActive', arguments);
+        //
+        //     item.load();
+        // },
+
+        // '_removeActive' : function(item){
+        //     var self = this;
+        //
+        //     (item || self.getElmAt(self._active_index)).unload();
+        //
+        //     self._super(OjStack, '_removeActive', [item]);
+        // },
+
+
+        "renderItem" : function(item){
+            const loaded = item.oj_id in this._rendered,
+                elm = this._super(OjStack, "renderItem", arguments);
+
+            elm.controller = this.controller;
+            elm.stack = this;
+
+            if(!loaded){
+                item.load();
             }
-
-            if(this._prev_active){
-                //this._unload(this._prev_active);
-            }
-
-            // continue on
-            this._super(OjStack, '_destructor', arguments);
-        },
-
-
-        '_addActive' : function(item, index){
-            this._super(OjStack, '_addActive', arguments);
-
-            item.load();
-        },
-
-        '_removeActive' : function(item){
-            var self = this;
-
-            (item || self.getElmAt(self._active_index)).unload();
-
-            self._super(OjStack, '_removeActive', [item]);
-        },
-
-
-        'renderItem' : function(){
-            var self = this,
-                elm = self._super(OjStack, 'renderItem', arguments);
-
-            elm.controller = self.controller;
-            elm.stack = self;
 
             return elm;
         },
 
-        'unrenderItem' : function(item){
-            var self = this,
-                elm = self._rendered[item.id];
+        "unrenderItem" : function(item){
+            const self = this,
+                elm = self._rendered[item.oj_id];
 
             if(elm){
+                item.unload();
+
                 elm.controller = null;
                 elm.stack = null;
             }
 
-            return self._super(OjStack, 'unrenderItem', arguments);
+            return self._super(OjStack, "unrenderItem", arguments);
         },
 
 

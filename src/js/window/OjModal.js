@@ -77,6 +77,13 @@ OJ.extendClass(
             }
         },
 
+        '.cancel_label' : function(){
+            return this.bar.cancel_label;
+        },
+        '=cancel_label' : function(label){
+            this.bar.cancel_label = label;
+        },
+
         '.close_visible' : function(){
             return this.bar.cancel_visible;
         },

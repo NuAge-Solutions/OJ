@@ -1,34 +1,35 @@
-importJs('oj.fx.OjFade');
+importJs("oj.fx.OjFade");
+importJs("oj.events.OjComponentEvent");
 
 
 OJ.extendClass(
-    'OjComponent', [OjStyleElement],
+    "OjComponent", [OjStyleElement],
     {
-        '_props_' : {
-            'active' : false,
-            'enabled' : null,
-            'disabled' : false,
-            'elms' : null,
-            'is_active' : null,
-            'isEnabled' : null,
-            'isDisabled' : null,
-            'num_elms' : 0
+        "_props_" : {
+            "enabled" : null,
+            "disabled" : false,
+            "elms" : null,
+            "is_active" : null,
+            "is_inactive" : null,
+            "is_enabled" : null,
+            "is_disabled" : null,
+            "num_elms" : 0
         },
 
-        '_get_props_' : {
-            'controller' : null,
-            'is_animating' : false
+        "_get_props_" : {
+            "controller" : null,
+            "is_animating" : false
         },
 
 
-        '_constructor' : function(){
+        "_constructor" : function(){
             var self = this,
                 args = [null, self],
                 template = self._template;
 
             // process the template if any
             if(template){
-                if(template.charAt(0) == '<'){
+                if(template.charAt(0) == "<"){
                     args[0] = template;
                 }
                 else{
@@ -38,7 +39,7 @@ OJ.extendClass(
             }
 
             // call super constructor
-            self._super(OjStyleElement, '_constructor', args);
+            self._super(OjStyleElement, "_constructor", args);
 
             // add the class name inheritance as css classes
             self._setCss();
@@ -124,15 +125,15 @@ OJ.extendClass(
         },
 
         // override this so that the component gets properly set
-        '_processChild' : function(dom, context){
-            return this._super(OjStyleElement, '_processChild', [dom, context ? context : this]);
+        "_processChild" : function(dom, context){
+            return this._super(OjStyleElement, "_processChild", [dom, context ? context : this]);
         },
 
-        '_processDomSourceAttributes' : function(dom, context){
+        "_processDomSourceAttributes" : function(dom, context){
             this._processAttributes(dom, context);
         },
 
-        '_processDomSourceChild' : function(dom_elm, context){
+        "_processDomSourceChild" : function(dom_elm, context){
             if(!dom_elm || OjElement.isCommentNode(dom_elm)){
                 return ;
             }
@@ -140,7 +141,7 @@ OJ.extendClass(
             return this._processChild(dom_elm, context);
         },
 
-        '_processDomSourceChildren' : function(dom, context){
+        "_processDomSourceChildren" : function(dom, context){
             var self = this,
                 child,
                 children = dom.childNodes,
@@ -154,7 +155,7 @@ OJ.extendClass(
         },
 
 
-        '_setCss' : function(){
+        "_setCss" : function(){
             var self = this,
                 css = [self.oj_class_name],
                 ln = self._supers.length,
@@ -173,21 +174,21 @@ OJ.extendClass(
             self.addCss(css);
         },
 
-        '_setContainer' : function(container){
+        "_setContainer" : function(container){
             if(this.container == container){
                 return;
             }
 
             if(this.container){
-                this.container.removeCss('container');
+                this.container.removeCss("container");
             }
 
             if((this.container = container) != this){
-                this.container.addCss('container');
+                this.container.addCss("container");
             }
         },
 
-        '_setDomSource' : function(dom, context){
+        "_setDomSource" : function(dom, context){
             // setup our vars
             var ary, prev, nm, val, ln, i,
                 is_body = (dom == document.body),
@@ -208,12 +209,12 @@ OJ.extendClass(
                 nm = i.nodeName;
                 val = i.value;
 
-                if(nm == 'class'){
+                if(nm == "class"){
                     prev = target.getAttribute(nm);
 
-                    target.className = (String.string(prev) + ' ' + val).trim();
+                    target.className = (String.string(prev) + " " + val).trim();
                 }
-                else if(nm == 'id'){
+                else if(nm == "id"){
                     target.id = val;
                 }
                 else{
@@ -249,41 +250,41 @@ OJ.extendClass(
             this._processTemplateVars();
         },
 
-        '_setIsAnimating' : function(val){
+        "_setIsAnimating" : function(val){
             if(this._is_animating == val){
                 return;
             }
 
             if(this._is_animating = val){
-                this.addCss('animating');
+                this.addCss("animating");
             }
             else{
-                this.removeCss('animating');
+                this.removeCss("animating");
             }
         },
 
-        '_setIsDisplayed' : function(displayed){
-            this._super(OjStyleElement, '_setIsDisplayed', arguments);
+        "_setIsDisplayed" : function(displayed){
+            this._super(OjStyleElement, "_setIsDisplayed", arguments);
 
             this.redraw();
         },
 
 
-        '_processEvent' : function(evt){
-            if(this._isDisabled){
+        "_processEvent" : function(evt){
+            if(this._is_disabled){
                 return false;
             }
 
-            return this._super(OjStyleElement, '_processEvent', arguments);
+            return this._super(OjStyleElement, "_processEvent", arguments);
         },
 
 
         // Component Management Functions
-        '_callElmFunc' : function(func, args){
+        "_callElmFunc" : function(func, args){
             return this._callElmProp(func).apply(this.container, args);
         },
 
-        '_callElmProp' : function(prop, val){
+        "_callElmProp" : function(prop, val){
             var cls = this._static,
                 container = this.container,
                 translated;
@@ -302,77 +303,77 @@ OJ.extendClass(
             return container[translated]
         },
 
-        'appendElm' : function(){
-            return this._callElmFunc('appendElm', arguments);
+        "appendElm" : function(){
+            return this._callElmFunc("appendElm", arguments);
         },
 
-        '.elms' : function(){
-            return this._callElmProp('elms');
+        ".elms" : function(){
+            return this._callElmProp("elms");
         },
 
-        '=elms' : function(elms){
-            return this._callElmProp('elms', elms);
+        "=elms" : function(elms){
+            return this._callElmProp("elms", elms);
         },
 
-        'forElm' : function(){
-            return this._callElmFunc('forElm', arguments);
+        "forElm" : function(){
+            return this._callElmFunc("forElm", arguments);
         },
 
-        'forElmReverse' : function(){
-            return this._callElmFunc('forElmReverse', arguments);
+        "forElmReverse" : function(){
+            return this._callElmFunc("forElmReverse", arguments);
         },
 
-        'getElmAt' : function(){
-            return this._callElmFunc('getElmAt', arguments);
+        "getElmAt" : function(){
+            return this._callElmFunc("getElmAt", arguments);
         },
 
-        'hasElm' : function(){
-            return this._callElmFunc('hasElm', arguments);
+        "hasElm" : function(){
+            return this._callElmFunc("hasElm", arguments);
         },
 
-        'indexOfElm' : function(){
-            return this._callElmFunc('indexOfElm', arguments);
+        "indexOfElm" : function(){
+            return this._callElmFunc("indexOfElm", arguments);
         },
 
-        'insertElmAt' : function(){
-            return this._callElmFunc('insertElmAt', arguments);
+        "insertElmAt" : function(){
+            return this._callElmFunc("insertElmAt", arguments);
         },
 
-        'moveElm' : function(){
-            return this._callElmFunc('moveElm', arguments);
+        "moveElm" : function(){
+            return this._callElmFunc("moveElm", arguments);
         },
 
-        '.num_elms' : function(){
-            return this._callElmProp('num_elms');
+        ".num_elms" : function(){
+            return this._callElmProp("num_elms");
         },
 
-        'prependElm' : function(){
-            return this._callElmFunc('prependElm', arguments);
+        "prependElm" : function(){
+            return this._callElmFunc("prependElm", arguments);
         },
 
-        'removeAllElms' : function(){
-            return this._callElmFunc('removeAllElms', arguments);
+        "removeAllElms" : function(){
+            return this._callElmFunc("removeAllElms", arguments);
         },
 
-        'removeElm' : function(){
-            return this._callElmFunc('removeElm', arguments);
+        "removeElm" : function(){
+            return this._callElmFunc("removeElm", arguments);
         },
 
-        'removeElmAt' : function(){
-            return this._callElmFunc('removeElmAt', arguments);
+        "removeElmAt" : function(){
+            return this._callElmFunc("removeElmAt", arguments);
         },
 
-        'replaceElm' : function(){
-            return this._callElmFunc('replaceElm', arguments);
+        "replaceElm" : function(){
+            return this._callElmFunc("replaceElm", arguments);
         },
 
-        'replaceElmAt' : function(){
-            return this._callElmFunc('replaceElmAt', arguments);
+        "replaceElmAt" : function(){
+            return this._callElmFunc("replaceElmAt", arguments);
         },
 
 
         // event handling functions
-        '_onFadeComplete' : function(evt){
+        "_onFadeComplete" : function(evt){
             this.alpha = 1;
 
             if(this._fader.direction == OjFade.OUT){
@@ -384,17 +385,17 @@ OJ.extendClass(
 
             this._setIsAnimating(false);
 
-            this._unset('_fader');
+            this._unset("_fader");
         },
 
 
-        'fadeIn' : function(duration, easing){
+        "fadeIn" : function(duration, easing){
             if(this._fader){
                 if(this._fader.direction == OjFade.IN){
                     return;
                 }
 
-                this._unset('_fader');
+                this._unset("_fader");
             }
             else if(this.isVisible){
                 return;
@@ -405,19 +406,19 @@ OJ.extendClass(
             var ln = arguments.length;
 
             this._fader = new OjFade(this, OjFade.IN, ln ? duration : 250, ln > 1 ? easing : OjEasing.NONE);
-            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
+            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, "_onFadeComplete");
             this._fader.start();
 
             this._setIsAnimating(true);
         },
 
-        'fadeOut' : function(duration, easing){
+        "fadeOut" : function(duration, easing){
             if(this._fader){
                 if(this._fader.direction == OjFade.OUT){
                     return;
                 }
 
-                this._unset('_fader');
+                this._unset("_fader");
             }
             else if(!this.isVisible){
                 return;
@@ -426,18 +427,18 @@ OJ.extendClass(
             var ln = arguments.length;
 
             this._fader = new OjFade(this, OjFade.OUT, ln ? duration : 250, ln > 1 ? easing : OjEasing.NONE);
-            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
+            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, "_onFadeComplete");
             this._fader.start();
 
             this._setIsAnimating(true);
         },
 
-        'redraw' : function(force){
+        "redraw" : function(force){
             return this._is_displayed || force;
         },
 
         // Getter/Setter Methods
-        '.controller' : function(){
+        ".controller" : function(){
             if(!this._controller){
                 var p = this.parentComponent;
 
@@ -449,87 +450,74 @@ OJ.extendClass(
             return this._controller;
         },
 
-        // active
-        '.is_active' : function(){
-            return this.active;
-        },
+        // is_active
+        "=is_active" : function(val){
+            var self = this,
+                evt = OjComponentEvent;
 
-        '=is_active' : function(val){
-            this.active = val;
-        },
+            if(self._is_active != val){
+                if(self._is_active = val){
+                    self.addCss("active");
 
-        '=active' : function(val){
-            var self = this;
-
-            if(self._active != val){
-                if(self._active = val){
-                    self.addCss('active');
+                    self.dispatchEvent(new evt(evt.ACTIVE));
                 }
                 else{
-                    self.removeCss('active');
+                    self.removeCss("active");
+
+                    self.dispatchEvent(new evt(evt.INACTIVE));
                 }
+
+                self.dispatchEvent(new evt(evt.ACTIVE_CHANGE));
             }
         },
 
-        // disabled
-        '.isDisabled' : function(){
-            return this.disabled;
-        },
+        ".is_inactive" : function(){ return !this.is_active; },
+        "=is_inactive" : function(val){ return this.is_active = !val; },
 
-        '=isDisabled' : function(val){
-            return this.disabled = val;
-        },
+        // is_disabled
+        "=is_disabled" : function(val){
+            var self = this,
+                evt = OjComponentEvent;
 
-        '=disabled' : function(val){
-            var self = this;
+            if(self._is_disabled != val){
+                if(self._is_disabled = val){
+                    self.addCss("disabled");
 
-            if(self._disabled != val){
-                if(self._disabled = val){
-                    self.addCss('disabled');
+                    self.dispatchEvent(new evt(evt.DISABLED));
                 }
                 else{
-                    self.removeCss('disabled');
+                    self.removeCss("disabled");
+
+                    self.dispatchEvent(new evt(evt.ENABLED));
                 }
+
+                self.dispatchEvent(new evt(evt.ENABLED_CHANGE));
             }
         },
 
-        // enabled
-        '.isEnabled' : function(){
-            return this.enabled;
-        },
-
-        '=isEnabled' : function(val){
-            return this.enabled = val;
-        },
-
-        '.enabled' : function(){
-            return !this.disabled;
-        },
-
-        '=enabled' : function(val){
-            this.disabled = !val;
-        }
+        ".is_enabled" : function(){ return !this.is_disabled; },
+        "=is_enabled" : function(val){ return this.is_disabled = !val; }
     },
     {
-        '_TAGS' : [],
+        "_TAGS" : [],
 
-        'ELM_FUNCS' : {
-            'appendElm' : 'appendChild',
-            'elms' : 'children',
-            'forElm' : 'forChild',
-            'forElmReverse' : 'forChildReverse',
-            'getElmAt' : 'getChildAt',
-            'hasElm' : 'hasChild',
-            'indexOfElm' : 'indexOfChild',
-            'insertElmAt' : 'insertChildAt',
-            'moveElm' : 'moveChild',
-            'num_elms' : 'num_children',
-            'prependElm' : 'prependChild',
-            'removeAllElms' : 'removeAllChildren',
-            'removeElm' : 'removeChild',
-            'removeElmAt' : 'removeChildAt',
-            'replaceElm' : 'replaceChild',
-            'replaceElmAt' : 'replaceChildAt'
+        "ELM_FUNCS" : {
+            "appendElm" : "appendChild",
+            "elms" : "children",
+            "forElm" : "forChild",
+            "forElmReverse" : "forChildReverse",
+            "getElmAt" : "getChildAt",
+            "hasElm" : "hasChild",
+            "indexOfElm" : "indexOfChild",
+            "insertElmAt" : "insertChildAt",
+            "moveElm" : "moveChild",
+            "num_elms" : "num_children",
+            "prependElm" : "prependChild",
+            "removeAllElms" : "removeAllChildren",
+            "removeElm" : "removeChild",
+            "removeElmAt" : "removeChildAt",
+            "replaceElm" : "replaceChild",
+            "replaceElmAt" : "replaceChildAt"
         },
 
         "HORIZONTAL" : "horz",
@@ -537,7 +525,7 @@ OJ.extendClass(
         "VERTICAL" : "vert",
         "VERTICAL_REVERSE" : "vert-rev",
 
-        'load' : function(source){
+        "load" : function(source){
 
         }
     }

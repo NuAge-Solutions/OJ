@@ -148,7 +148,7 @@ window.OJ = function Oj(){
                 vp.width = w;
                 vp.height = h;
 
-                if(OJ._is_landscape = vp.width > vp.height){
+                if(OJ._is_landscape = (vp.width > vp.height)){
                     OJ.addCss("is-landscape");
                     OJ.removeCss("is-portrait");
                 }
@@ -318,7 +318,7 @@ window.OJ = function Oj(){
         "attributeToProp" : function(attr){
             var str = "";
 
-            parts = attr.split("-").forEach(function(item, i){
+            attr.split("-").forEach(function(item, i){
                 str += i ? item.ucFirst() : item;
             });
 

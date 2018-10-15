@@ -5,6 +5,7 @@ OJ.extendComponent(
     'OjIframe', [OjView],
     {
         '_props_' : {
+            "on_load" : null,
             'source' : null,
             'timeout' : 60
         },
@@ -15,7 +16,7 @@ OJ.extendComponent(
         '_template' : '<iframe></iframe>',
 
 
-        '_constructor' : function(source, target){
+        '_constructor' : function(source, target, on_load){
             var self = this;
 
             self._super(OjView, '_constructor', []);
@@ -28,6 +29,8 @@ OJ.extendComponent(
                 self.target = target;
             }
 
+            self.on_load = on_load;
+
             self.attr('name', self.id);
         },
 
@@ -35,11 +38,23 @@ OJ.extendComponent(
         '_onLoad' : function(){
             clearInterval(this._interval);
 
+            var on_load = this.on_load;
+
+            if(on_load){
+                on_load(true);
+            }
+
             this.dispatchEvent(new OjEvent(OjEvent.COMPLETE));
         },
 
         '_onTimeout' : function(){
             clearInterval(this._interval);
+
+            var on_load = this.on_load;
+
+            if(on_load){
+                on_load(false);
+            }
 
             this.dispatchEvent(new OjIoError(OjIoError.IO_ERROR));
         },
@@ -53,15 +68,7 @@ OJ.extendComponent(
 
             this._source = source.toString();
 
-            if(iframe.src){
-                iframe.src = this._source;
-            }
-            else if(iframe.contentWindow !== null && iframe.contentWindow.location !== null){
-//                        iframe.contentWindow.location.href = this._source;
-            }
-            else{
-                this.attr('src', this._source);
-            }
+            this.attr('src', this._source);
 
             if(!isEmpty(this._source)){
                 clearInterval(this._interval);

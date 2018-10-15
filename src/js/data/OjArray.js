@@ -270,9 +270,9 @@ OJ.extendClass(
                 col_evt = OjCollectionEvent;
 
             // find the lowest index
-            args.forEachReverse(function(item, i){
-                if(isUnset(index) || i < index){
-                    index = i;
+            args.forEachReverse(function(item){
+                if(isUnset(index) || item < index){
+                    index = item;
                 }
             });
 
@@ -383,7 +383,7 @@ Array.array = function(obj){
         return [];
     }
     else if(isArray(obj)){
-        return obj;
+        return obj.clone();
     }
     else if((isObject(obj) || isFunction(obj)) && !isUndefined(obj.length)){
         return [].slice.call(obj, 0);

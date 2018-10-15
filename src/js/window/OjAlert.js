@@ -10,6 +10,7 @@ OJ.extendClass(
         '_props_' : {
             'buttons' : null,
             'callback' : null,
+            "cancel_callback" : null,
             'cancel_label' : null,
             'content' : null,
             'pane_height' : null,
@@ -80,16 +81,19 @@ OJ.extendClass(
         },
 
         'cancel' : function(){
-            var self = this,
-                callback = self.callback;
-
-            self.dispatchEvent( new OjEvent(OjEvent.CANCEL) );
-
-            WindowManager.hide(self);
+            let callback = this.cancel_callback;
 
             if(callback){
-                callback(-1);
+                callback();
             }
+
+            if(callback = this.callback){
+                callback(this._static.CANCEL_INDEX);
+            }
+
+            this.dispatchEvent( new OjEvent(OjEvent.CANCEL) );
+
+            WindowManager.hide(this);
         },
 
         'hideButtons' : function(){
@@ -121,7 +125,7 @@ OJ.extendClass(
 
             if(diff > 0){
                 for(; diff > 0; ){
-                    this.btns.insertChildAt(btn = new OjButton(buttons[num_btns - (diff--)]), ln + 1);
+                    this.btns.insertChildAt(btn = OjButton.button(buttons[num_btns - (diff--)]), ln + 1);
 
                     btn.addEventListener(OjUiEvent.PRESS, this, '_onButtonClick');
                 }
@@ -171,6 +175,10 @@ OJ.extendClass(
             }
 
             container.appendChild(content);
+
+            if(isObjective(content, OjView)){
+                content.load();
+            }
         },
 
         '=title' : function(title){
@@ -201,6 +209,7 @@ OJ.extendClass(
         'DEEP' : 2,
 
         'OK' : 'Ok',
-        'Cancel' : 'Cancel'
+        'CANCEL' : 'Cancel',
+        "CANCEL_INDEX" : -1
     }
 );

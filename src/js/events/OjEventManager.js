@@ -109,35 +109,40 @@ OJ.extendManager(
 
 
         'addEventListener' : function(target, type, context, callback){
-            // make sure the callback is a function
-            callback = isString(callback) ? context[callback] : callback;
+            try {
+                // make sure the callback is a function
+                callback = isString(callback) ? context[callback] : callback;
 
-            // get the unique ids needed to qualify listeners
-            var events = this._events,
-                target_id = target.oj_id,
-                context_id = context == window ? 'window' : context.oj_id,
-                guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
+                // get the unique ids needed to qualify listeners
+                var events = this._events,
+                    target_id = target.oj_id,
+                    context_id = context == window ? 'window' : context.oj_id,
+                    guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
 
-            // make sure we have a holder for this type of event
-            if(!events[type]){
-                events[type] = {};
+                // make sure we have a holder for this type of event
+                if(!events[type]){
+                    events[type] = {};
+                }
+
+                // make sure we have a holder for this target on this type of event
+                if(!events[type][target_id]){
+                    events[type][target.oj_id] = {};
+                }
+
+                // only make changes if we haven't already recorded this listener
+                if(!events[type][target_id][guid]){
+                    events[type][target_id][guid] = {
+                        'callback' : callback,
+                        'context' : context
+                    };
+
+                    // track the listener by the target for cleanup purposes
+                    this._setIndex(target_id, [target_id, type, context_id, guid]);
+                    this._setIndex(context_id, [target_id, type, context_id, guid]);
+                }
             }
-
-            // make sure we have a holder for this target on this type of event
-            if(!events[type][target_id]){
-                events[type][target.oj_id] = {};
-            }
-
-            // only make changes if we haven't already recorded this listener
-            if(!events[type][target_id][guid]){
-                events[type][target_id][guid] = {
-                    'callback' : callback,
-                    'context' : context
-                };
-
-                // track the listener by the target for cleanup purposes
-                this._setIndex(target_id, [target_id, type, context_id, guid]);
-                this._setIndex(context_id, [target_id, type, context_id, guid]);
+            catch (e) {
+                print("Could not add event listener", arguments);
             }
         },
 

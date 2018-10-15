@@ -7,7 +7,7 @@ OJ.extendComponent(
         '_props_' : {
             'minSize' : 0,
             'maxSize' : 0,
-            'selectionMax': 1
+            'selection_max': 1
         },
 
 
@@ -82,7 +82,7 @@ OJ.extendComponent(
         },
 
 
-        '=selectionMax' : function(val){
+        '=selection_max' : function(val){
             if(this._selectionMax == val){
                 return;
             }

@@ -165,7 +165,7 @@ OjObject.prototype = {
         var key;
 
         for(key in this){
-            delete this[key];
+            this[key] = undefined;
         }
 
         this._destroyed_ = true;
@@ -366,21 +366,23 @@ OJ.extendClass(
             return data;
         },
 
-        'exportData' : function(obj, mode){
+        'exportData' : function(obj, mode, processed){
             var key;
+
+            processed = processed || [];
 
             if(isArray(obj)){
                 for(key = obj.length; key--;){
-                    obj[key] = OjObject.exportData(obj[key], mode);
+                    obj[key] = OjObject.exportData(obj[key], mode, processed);
                 }
             }
             else if(isObject(obj)){
                 if(isFunction(obj.exportData)){
-                    return obj.exportData(mode);
+                    return obj.exportData(mode, processed);
                 }
 
                 for(key in obj){
-                    obj[key] = OjObject.exportData(obj[key], mode);
+                    obj[key] = OjObject.exportData(obj[key], mode, processed);
                 }
             }
             // this checks for NaN since NaN does not equal itself

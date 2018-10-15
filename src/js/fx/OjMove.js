@@ -1,11 +1,11 @@
-importJs('oj.fx.OjDimTween');
+importJs("oj.fx.OjDimTween");
 
 
 OJ.extendClass(
-    'OjMove', [OjDimTween],
+    "OjMove", [OjDimTween],
     {
-        '=amount' : function(amount){
-            var self = this,
+        "=amount" : function(amount){
+            const self = this,
                 dir = self.direction,
                 cls = OjMove,
                 to = self._to;
@@ -17,20 +17,22 @@ OJ.extendClass(
             self._amount = amount;
 
             if(dir == cls.BOTH){
-                to.x = amount[0];
-                to.y = amount[1];
-            }
-            else if(dir == cls.X){
-                to.x = amount;
+                to.top = amount[0];
+                to.left = amount[1];
             }
             else{
-                to.y = amount;
+                to[dir] = amount;
             }
         }
     },
     {
-        'X'    : OjDimTween.HORIZONTAL,
-        'Y'    : OjDimTween.VERTICAL,
-        'BOTH' : OjDimTween.BOTH
+        "X"    : "left",
+        "Y"    : "top",
+        "BOTH" : OjDimTween.BOTH,
+
+        "TOP"    : "top",
+        "LEFT"   : "left",
+        "BOTTOM" : "bottom",
+        "RIGHT"  : "right"
     }
 );

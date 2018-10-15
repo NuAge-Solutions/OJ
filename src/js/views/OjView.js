@@ -6,6 +6,7 @@ OJ.extendComponent(
     "OjView", [OjComponent],
     {
         "_props_" : {
+            "nav_css": null,
             "controller" : null,
             "footer" : null,
             "header" : null,
@@ -173,6 +174,9 @@ OJ.extendComponent(
         },
 
 
+        "didHide" : function(){ },
+        "didShow" : function(){ },
+
         "load" : function(reload){
             var self = this;
 
@@ -202,6 +206,9 @@ OJ.extendComponent(
 
             return false;
         },
+
+        "willHide" : function(){ },
+        "willShow" : function(){ },
 
 
         // getter & Setter functions

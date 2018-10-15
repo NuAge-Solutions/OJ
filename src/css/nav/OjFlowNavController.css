@@ -7,8 +7,8 @@
 
     overflow: hidden;
 }
-    .flow-nav-controller > .top,
-    .flow-nav-controller > .bottom {
+    .flow-nav-controller > .top_bar,
+    .flow-nav-controller > .bottom_bar {
         position: absolute;
 
         top: 0px;

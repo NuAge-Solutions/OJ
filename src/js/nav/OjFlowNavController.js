@@ -95,8 +95,8 @@ OJ.extendComponent(
 
             // process the left, title & right components
             // setup the vars
-            var t = self.top, tl = self.top_left, tt = self.top_title, tr = self.top_right,
-                b = self.bottom, bl = self.btm_left, bt = self.btm_title, br = self.btm_right,
+            var t = self.top_bar, tl = self.top_left, tt = self.top_title, tr = self.top_right,
+                b = self.bottom_bar, bl = self.btm_left, bt = self.btm_title, br = self.btm_right,
                 left = tl.num_children ? tl.getChildAt(0) : null,
                 center = tt.num_children ? tt.getChildAt(0) : null,
                 right = tr.num_children ? tr.getChildAt(0) : null,
@@ -308,7 +308,6 @@ OJ.extendComponent(
         // public properties
         ".action_view" : function(){
             return this.top_right.getChildAt(0);
-            // self.top_left, tt = self.top_title, tr = self.top_right
         },
         "=action_view": function(val){
             var top_right = this.top_right;

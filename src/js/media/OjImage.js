@@ -63,8 +63,8 @@ OJ.extendComponent(
                 if(!this.height){
                     this.height = this._original_h;
                 }
-
-                this._setStyle('backgroundImage', 'url(' + this.source + ')');
+                print("set background", this.source);
+                this._setStyle('background-image', 'url(' + this.source + ')');
             }
 
             return this._super(OjMedia, '_onMediaLoad', arguments);
@@ -97,7 +97,7 @@ OJ.extendComponent(
             // cleanup old source
             if (!this._source_is_css) {
                 // remove old source background image
-                this._setStyle('backgroundImage', null);
+                this._setStyle('background-image', null);
             }
 
             this._unset('_media');

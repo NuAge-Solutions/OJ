@@ -413,8 +413,12 @@ function onDomReady(){
     }
 
     // css env support
-    if(CSS.supports("padding","env(test, 10)")){
+    if(CSS.supports("padding", "env(test, 10)")){
         css.append("env-support");
+    }
+    // css constant support
+    else if(CSS.supports("padding", "constant(test, 10)")){
+        css.append("constant-support");
     }
 
     // add the css

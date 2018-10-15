@@ -8,7 +8,15 @@
 .OjList.horz {
     -webkit-flex-flow: row wrap;
     flex-flow: row wrap;
+
+    -ms-overflow-style: none;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 .OjList.vert {
     display: block;
+
+    -ms-overflow-style: none;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }

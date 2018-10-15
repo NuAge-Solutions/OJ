@@ -53,8 +53,11 @@
                         -moz-border-radius: 0px;
                         border-radius: 0px;
                     }
-                        .OjSelector > .wrapper > .psuedoInput > .stem > .input > .items > .OjItemRenderer {
+                        .OjSelector > .wrapper > .psuedoInput > .stem > .input > .OjItemRenderer {
                             padding: 5px 0px;
+                        }
+                        .OjSelector > .wrapper > .psuedoInput > .stem > .input.vert > .OjItemRenderer {
+                            display: block;
                         }
 
 .OjSelector .options {

@@ -52,16 +52,18 @@ OJ.extendClass(
             return clone;
         },
 
-        "exportData" : function(mode){
+        "exportData" : function(mode, processed){
+            processed = processed || [];
+
             var self = this,
-                data = self._super(OjObject, "exportData", arguments);
+                data = self._super(OjObject, "exportData", [mode, processed]);
 
             data.bubbles = self.bubbles;
             data.cancelable = self.cancelable;
-            data.current_target = OjObject.exportData(self.current_target, mode);
+            data.current_target = OjObject.exportData(self.current_target, mode, processed);
             data.canceled = self.canceled;
             data.phase = self.phase;
-            data.target = OjObject.exportData(self.target, mode);
+            data.target = OjObject.exportData(self.target, mode, processed);
             data.type = self.type;
 
             return data;

@@ -13,6 +13,8 @@ OJ.extendClass(
             'threshold' : null
         },
 
+        "_touch_action": "compute",
+
 
         '_constructor' : function(event, pointers, threshold, callback){
             var self = this;
@@ -75,9 +77,10 @@ OJ.extendClass(
 
             return {
                 "enable"    : self.enable,
-                'event'     : self.oj_id,
-                'pointers'  : self.pointers,
-                'threshold' : self.threshold
+                "event"     : self.oj_id,
+                "pointers"  : self.pointers,
+                "threshold" : self.threshold,
+                "touchAction": self._touch_action
             };
         },
 
@@ -111,8 +114,8 @@ OJ.extendClass(
         'UP' : Hammer.DIRECTION_UP,
 
         'ALL' : Hammer.DIRECTION_ALL,
-        'HORIZONTAL' : Hammer.HORIZONTAL,
-        'VERTICAL' : Hammer.VERTICAL
+        'HORIZONTAL' : Hammer.DIRECTION_HORIZONTAL,
+        'VERTICAL' : Hammer.DIRECTION_VERTICAL
     }
 );
 
@@ -279,7 +282,24 @@ OJ.extendClass(
             options.velocity = self.velocity;
 
             return options;
-        }
+        },
+
+        "=direction" : function(val){
+            const self = this,
+                cls = self._static;
+
+            self._direction = val;
+
+            if(val == cls.HORIZONTAL){
+                self._touch_action = "pan-x";
+            }
+            else if(val == cls.VERTICAL){
+                self._touch_action = "pan-y";
+            }
+            else{
+                self._touch_action = "pan-x pan-y";
+            }
+        },
     },
     {
         'SWIPE'       : 'swipe',

@@ -1,25 +1,34 @@
-importJs('oj.components.OjLink');
+importJs("oj.components.OjLink");
 
 
 OJ.extendComponent(
-    'OjButton', [OjLink],
+    "OjButton", [OjLink],
     {
-        '_props_' : {
-            'label' : null
+        "_props_" : {
+            "callback" : null,
+            "label" : null
         },
 
 
-        '_constructor' : function(/*label, icon*/){
-            var self = this;
+        "_constructor" : function(/*label, icon, callback*/){
+            this._super(OjLink, "_constructor", []);
 
-            self._super(OjLink, '_constructor', []);
+            this.addCss("no-select");
 
-            self.addCss('no-select');
-
-            self._processArguments(arguments, {
-                'text' : undefined,
-                'icon' : undefined
+            this._processArguments(arguments, {
+                "text" : undefined,
+                "icon" : undefined,
+                "callback" : undefined
             });
+        },
+
+
+        "_onUiPress" : function(evt){
+            this._super(OjLink, "_onUiPress", arguments);
+
+            if(this.callback){
+                this.callback(evt);
+            }
         },
 
 
@@ -55,6 +64,24 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['button']
+        '_TAGS' : ['button'],
+
+        "button" : function(params, cls){
+            cls = cls || OjButton;
+
+            if(isObjective(params, cls)){
+                return params;
+            }
+
+            if(isArray(params)){
+                return new cls(params[0], params[1], params[2]);
+			}
+
+			if(isObject(params)){
+			    return new cls(params.label, params.icon, params.callback);
+			}
+
+			return new cls(params);
+        }
     }
 );

@@ -18,6 +18,10 @@ OJ.extendClass(
                 'id' : undefined,
                 'label' : undefined
             });
+        },
+
+        "toString" : function(){
+            return this.label;
         }
     }
 );

@@ -4,19 +4,16 @@ importJs("oj.data.OjObject");
 OJ.extendClass(
     "OjUrl", [OjObject],
     {
-        "_get_props_" : {
-            "hashbang" : null
-        },
-
         "_props_" : {
-            "protocol"    : null,
-            "host"        : null,
-            "port"        : null,
-            "path"        : null,
-            "query"       : null,
+            "protocol"     : null,
+            "host"         : null,
+            "port"         : null,
+            "path"         : null,
+            "query"        : null,
             "query_params" : null,
-            "hash"        : null,
-            "source"      : null
+            "hash"         : null,
+            "hashbang"     : null,
+            "source"       : null
         },
 
 
@@ -37,7 +34,7 @@ OJ.extendClass(
             if(self._dirty.query){
                 self._query = Object.toQueryString(self._query_params)
 
-                delete self._dirty.query;
+                self._dirty.query = undefined;
             }
 
             return self._query;
@@ -132,6 +129,10 @@ OJ.extendClass(
             var hash = this.hash;
 
             return hash && hash[0] == "!" ? hash.substr(1) : null;
+        },
+
+        "=hashbang" : function(val){
+            this.hash = "!" + val;
         },
 
         ".source" : function(){

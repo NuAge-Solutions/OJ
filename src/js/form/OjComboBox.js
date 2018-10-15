@@ -126,23 +126,24 @@ OJ.extendComponent(
 
 
         '_redrawList' : function(){
-            this.input.removeAllChildren();
+            var self = this,
+                input = self.input,
+                slctd_i = self._selected_index;
 
-            var ln = this._options.length;
+            input.removeAllChildren();
 
-            for(; ln--;){
-                this.input.insertChildAt(
+            self._options.forEachReverse(function(item, i){
+                input.insertChildAt(
                     new OjStyleElement(
-                        "<option value='{0}'>{1}</option>".format(
-                            this._options[ln].id,
-                            this._options[ln].label
+                        "<option value='{0}'{1}>{2}</option>".format(
+                            item.id,
+                            i == slctd_i ? " selected='selected'" : "",
+                            item.label
                         )
                     ),
                     0
                 );
-            }
-
-            return;
+            });
         },
 
         '_redrawValue' : function(){
@@ -206,28 +207,43 @@ OJ.extendComponent(
 
             if(isArray(options)){
                 options.forEachReverse(function(option, i){
-                    option = options[i];
+                    option = isObjective(option, OjData) ? option : new OjData(String.string(option), option)
 
-                    opts.prepend(
-                        isObjective(option, OjData) ? option : new OjData(String.string(option), option)
-                    );
+                    if(option.id == self._value){
+                        self._selected = option;
+                        self._selected_index = i;
+                    }
+
+                    opts.prepend(option);
                 });
             }
             else if(isObject(options)){
+                var i = 0;
+
                 for(key in options){
                     option = options[key];
 
-                    opts.append(
-                        isObjective(option, OjData) ? option : new OjData(key, option)
-                    );
+                    option = isObjective(option, OjData) ? option : new OjData(key, option)
+
+                    if(option.id == self._value){
+                        self._selected = option;
+                        self._selected_index = i;
+                    }
+
+                    opts.append(option);
+
+                    i++;
                 }
+            }
+            else{
+                self._selected_index = null;
+                self._selected = null;
+                self._value = null;
             }
 
             self._redrawList();
 
             self._redrawValue();
-
-            self.value = self._value;
         },
 
         '=selected' : function(selected){

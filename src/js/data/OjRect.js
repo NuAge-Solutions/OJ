@@ -14,6 +14,7 @@ OJ.extendClass(
         },
 
         "_get_props_" : {
+            "array": null,
             "bottom" : 0,
             "right"  : 0
         },
@@ -56,6 +57,10 @@ OJ.extendClass(
                 (rect._bottom >= self._top && rect._bottom <= self._bottom && rect._right >= self._left && rect._right <= self._right);
         },
 
+
+        ".array" : function(){
+            return [this.left, this.top, this.width, this.height];
+        },
 
         "=top" : function(val){
             var self = this;

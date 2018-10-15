@@ -27,12 +27,14 @@ OJ.extendClass(
             }
         },
 
-        "exportData" : function(mode){
+        "exportData" : function(mode, processed){
+            processed = processed || [];
+
             var self = this,
                 obj = self._super(OjObject, "exportData", arguments);
 
             obj.created    = self.created;
-            obj.data       = self.data ? OjObject.exportData(self.data, mode) : null;
+            obj.data       = self.data ? OjObject.exportData(self.data, mode, processed) : null;
             obj.expiration = self.expiration;
 
             return obj;

@@ -203,7 +203,7 @@ OJ.extendComponent(
         //    return false;
         //},
 
-        'renderItem' : function(item, index){
+        'renderItem' : function(item, index, cached_only){
             if(!item){
                 return null;
             }
@@ -214,7 +214,7 @@ OJ.extendComponent(
                 id = isObjective(item) ? item.oj_id : (isUnset(index) ? item.toString() : index);
 
             // if we have already rendered the item then just return the cached value
-            if(self._rendered[id]){
+            if(self._rendered[id] || cached_only){
                 return self._rendered[id];
             }
 
@@ -272,9 +272,6 @@ OJ.extendComponent(
                 add_evt = col_evt.ITEM_ADD, add_func = '_onItemAdd',
                 change_evt = col_evt.ITEM_CHANGE, change_func = '_onItemChange',
                 move_evt = col_evt.ITEM_MOVE, move_func = '_onItemMove',
-                out_evt = col_evt.ITEM_OUT, out_func = '_onItemOut',
-                over_evt = col_evt.ITEM_OVER, over_func = '_onItemOver',
-                press_evt = col_evt.ITEM_PRESS, press_func = '_onItemPress',
                 remove_evt = col_evt.ITEM_REMOVE, remove_func = '_onItemRemove',
                 replace_evt = col_evt.ITEM_REPLACE, replace_func = '_onItemReplace';
 
@@ -283,9 +280,6 @@ OJ.extendComponent(
                 elms.removeEventListener(add_evt, self, add_func);
                 elms.removeEventListener(change_evt, self, change_func);
                 elms.removeEventListener(move_evt, self, move_func);
-                elms.removeEventListener(out_evt, self, out_func);
-                elms.removeEventListener(over_evt, self, over_func);
-                elms.removeEventListener(press_evt, self, press_func);
                 elms.removeEventListener(remove_evt, self, remove_func);
                 elms.removeEventListener(replace_evt, self, replace_func);
 

@@ -182,7 +182,7 @@ OJ.extendComponent(
         },
 
         '_dispatchChangeComplete' : function(){
-            var self = this,
+            const self = this,
                 container = self.container;
 
             container.width = OjStyleElement.AUTO;
@@ -191,6 +191,13 @@ OJ.extendComponent(
             self._transitioning = false;
 
             self.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, self._active, self._transition, self._active_index, self._prev_index));
+
+            // show/hide methods
+            self._active.didShow();
+
+            if(self._prev_active){
+                self._prev_active.didHide();
+            }
 
             // process any deferred
             if(!isNull(self._deferred_active)){
@@ -520,6 +527,7 @@ OJ.extendComponent(
                 return;
             }
 
+            // update transitioning flag
             self._transitioning = true;
 
             // handle custom transition if it exists
@@ -529,12 +537,16 @@ OJ.extendComponent(
                 tmp_trans = self.transition;
             }
 
+            // reset deferred active
             self._deferred_active = null;
 
             // transition out the old active container
             if(active){
                 // get the old element
                 self._prev_active = active;
+
+                // let active know we are going to hide it
+                active.willHide();
 
                 // update the direction
                 // create the transition out animation
@@ -546,6 +558,7 @@ OJ.extendComponent(
                 self._prev_index = 0;
             }
 
+            // update current index
             self._current_index = val = self._processIndex(val);
 
             // make sure we have something to set active
@@ -571,6 +584,8 @@ OJ.extendComponent(
             );
 
             self._addActive(item, val);
+
+            item.willShow();
 
             // transition in the new active container
             // but only if we are transitioning out an old active
