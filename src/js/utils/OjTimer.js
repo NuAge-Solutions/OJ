@@ -23,77 +23,71 @@ OJ.extendClass(
         "_elapsed" : 0,
 
 
-        "_constructor" : function(/*duration, repeat_count*/){
-            var self = this;
+        "_constructor" : function(duration, repeat_count){
+            this._super(OjActionable, "_constructor", []);
 
-            self._super(OjActionable, "_constructor", []);
+            this._state = OjTimer.STOPPED;
 
-            self._state = OjTimer.STOPPED;
-
-            self._processArguments(arguments, {
-                "duration" : 0,
-                "repeat_count" : 1
-            });
+            this._set("duration", duration, 0);
+            this._set("repeat_count", repeat_count, 1);
         },
 
 
         "_setupInterval" : function(){
-            var self = this,
+            const self = this,
                 intrvl = self._interval;
 
             if(intrvl){
                 clearInterval(intrvl);
             }
 
-            self._interval = setInterval(function(){ self._tick(); }, self.duration);
+            self._interval = setInterval(() => { self._tick(); }, self.duration);
 
             self._updateLastTick();
         },
 
         "_tick" : function(){
-            var self = this,
-                on_complete = self.on_complete,
-                on_tick = self.on_tick,
-                repeat = self.repeat_count;
+            const on_complete = this.on_complete,
+                on_tick = this.on_tick,
+                repeat = this.repeat_count;
 
-            self._updateLastTick();
+            this._updateLastTick();
 
             if(on_tick){
                 on_tick(this);
             }
 
-            self.dispatchEvent(new OjEvent(OjTimer.TICK));
+            this.dispatchEvent(new OjEvent(OjTimer.TICK));
 
-            if(repeat > 0 && self._count++ == repeat){
-                self.stop();
+            if(repeat > 0 && this._count++ == repeat){
+                this.stop();
 
                 if(on_complete){
                     on_complete(this);
                 }
 
-                self.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
+                this.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
             }
         },
 
         "_updateLastTick" : function(){
-            self._last_tick = new Date();
-            self._elapsed = 0;
+            this._last_tick = new Date();
+            this._elapsed = 0;
         },
 
 
         "pause" : function(){
-            var self = this,
-                last_tick = self._last_tick,
-                intrvl = self._interval;
+            const last_tick = this._last_tick,
+                intrvl = this._interval;
 
-            self._elapsed = last_tick ? (new Date()).getTime() - last_tick.getTime() : 0;
-            self._state = OjTimer.PAUSED;
+            this._elapsed = last_tick ? (new Date()).getTime() - last_tick.getTime() : 0;
+            this._state = OjTimer.PAUSED;
 
             if(intrvl){
                 // todo: there is an edge case where this could be a timeout from a partial resume. not sure what to do.
                 clearInterval(intrvl);
 
-                self._interval = null;
+                this._interval = null;
             }
         },
 
@@ -104,7 +98,7 @@ OJ.extendClass(
         },
 
         "start" : function(){
-            var self = this,
+            const self = this,
                 elapsed = self._elapsed;
 
             if(!self._interval){
@@ -117,7 +111,7 @@ OJ.extendClass(
 
                     // run the last little bit of the tick
                     self._interval = setTimeout(
-                        function(){
+                        () => {
                             self._tick();
 
                             self._setupInterval();
@@ -132,27 +126,22 @@ OJ.extendClass(
         },
 
         "stop" : function(){
-            var self = this;
+            this.pause();
 
-            self.pause();
+            this._count = 0;
+            this._elapsed = 0;
 
-            self._count = 0;
-            self._elapsed = 0;
-
-            self._state = OjTimer.STOPPED;
+            this._state = OjTimer.STOPPED;
         },
 
 
         "=duration" : function(duration){
-            var self = this,
-                intrvl;
+            if(this._duration != duration){
+                this._duration = Math.abs(duration);
+                this._elapsed = 0;
 
-            if(self._duration != duration){
-                self._duration = Math.abs(duration);
-                self._elapsed = 0;
-
-                if(intrvl){
-                    self._setupInterval();
+                if(this._interval){
+                    this._setupInterval();
                 }
             }
         },
@@ -162,14 +151,12 @@ OJ.extendClass(
         },
 
         "=repeat_count" : function(repeat_count){
-            var self = this;
+            this._repeat_count = repeat_count = Math.max(repeat_count, 0);
 
-            self._repeat_count = repeat_count = Math.max(repeat_count, 0);
+            if(repeat_count >= this.count && this.running){
+                this.stop();
 
-            if(repeat_count >= self.count && self.running){
-                self.stop();
-
-                self.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
+                this.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
             }
         },
 

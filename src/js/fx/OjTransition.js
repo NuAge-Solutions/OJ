@@ -11,15 +11,13 @@ OJ.extendClass(
         },
 
 
-        '_constructor' : function(/*effect, duration, easing*/){
+        '_constructor' : function(effect, duration, easing){
             this._super(OjObject, '_constructor', []);
 
             // default the easing property
-            this._processArguments(arguments, {
-                'effect' : OjTransition.FADE,
-                'duration' : 250,
-                'easing' : [OjEasing.NONE, OjEasing.NONE]
-            });
+            this._set("effect", effect, OjTransition.FADE);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, [OjEasing.NONE, OjEasing.NONE]);
         },
 
 

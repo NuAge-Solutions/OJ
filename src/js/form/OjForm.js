@@ -1,57 +1,80 @@
-importJs('oj.views.OjView');
+importJs("oj.views.OjView");
 
 
 OJ.extendComponent(
-    'OjForm', [OjView], 
+    "OjForm", [OjView], 
     {
-        '_props_' : {
-            'cancelLabel' : 'Cancel',
-            'data' : null,
-            'resetLabel' : 'Reset',
-            'submit_label' : 'Submit'
+        "_props_" : {
+            "cancel_icon" : null,
+            "cancel_label" : "Cancel",
+            "data" : null,
+            "dismiss_on_submit": true,
+            "on_submit" : null,
+            "reset_icon": null,
+            "reset_label" : "Reset",
+            "submit_icon" : null,
+            "submit_label" : "Submit"
         },
 
-        '_get_props_' : {
-            'errors' : null,
-            'inputs' : null,
-            'is_valid' : null
+        "_get_props_" : {
+            "errors" : null,
+            "inputs" : null,
+            "is_valid" : null
         },
 
         "_constructor" : function(){
-            var self = this;
+           this._super(OjView, "_constructor", arguments);
 
-            self._super(OjView, "_constructor", arguments);
+           (this._action_view = new OjButton(this._submit_label, this._submit_icon)).addEventListener(OjUiEvent.PRESS, this, "_onSubmitClick");
 
-            (self._action_view = new OjButton(self._submit_label)).addEventListener(OjUiEvent.PRESS, self, "_onSubmitClick");
+           this.addEventListener(OjKeyboardEvent.UP, this, "_onKeyPress");
+        },
+
+        "_destructor" : function(){
+            this.removeEventListener(OjKeyboardEvent.UP, this, "_onKeyPress");
+
+            return this._super(OjView, "_destructor", arguments);
         },
 
 
-        '_showFormError' : function(){
-            var self = this,
-                msg = '';
+        "_showFormError" : function(){
+            let msg = "";
 
-            self._errors.forEachReverse(function(item){
-                msg = '\n' + item.error + msg;
+            this._errors.forEachReverse(function(item){
+                msg = "\n" + item.error + msg;
             });
 
             WindowManager.alert(
-                'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
-                'Form Error'
+                "Please fix the following issues and re-submit:<span style='font-weight: bold;'>" + msg + "</span>\nThank you.",
+                "Form Error"
             );
         },
+        
+        "_submit" : function(){
+            const controller = this.controller;
 
-        '_onSubmitClick' : function(evt){
-            var self = this,
-                controller = self.controller;
+            if(controller && this.dismiss_on_submit){
+                controller.removeView(this);
+            }
 
-            if(self.submit() && controller){
-                controller.removeView(self);
+            this.dispatchEvent(new OjEvent(OjEvent.SUBMIT, false, false));
+        },
+
+        "_onKeyPress" : function(evt){
+            if(evt.key_code == 13){
+                this._onSubmitClick(evt);
             }
         },
 
-        'blur' : function(){
+        "_onSubmitClick" : function(evt){
+            const self = this;
+
+            OjTimer.delay(() => { self.submit(); }, 100);  // this gives the input enough time to blur
+        },
+
+        "blur" : function(){
             var self = this,
-                rtrn = self._super(OjView, 'blur', arguments),
+                rtrn = self._super(OjView, "blur", arguments),
                 inputs = self.inputs,
                 key;
 
@@ -62,9 +85,9 @@ OJ.extendComponent(
             return rtrn;
         },
 
-        'focus' : function(){
+        "focus" : function(){
             var self = this,
-                rtrn = self._super(OjView, 'focus', arguments),
+                rtrn = self._super(OjView, "focus", arguments),
                 inputs = self.inputs,
                 key = Object.keys(inputs).first;
 
@@ -75,7 +98,7 @@ OJ.extendComponent(
             return rtrn;
         },
 
-        'reset' : function(){
+        "reset" : function(){
             var inputs = this.inputs,
                 nm;
 
@@ -84,24 +107,20 @@ OJ.extendComponent(
             }
         },
 
-        'submit' : function(){
-            var self = this,
-                evt = OjEvent;
+        "submit" : function(){
+            const on_submit = this.on_submit;
 
-            if(self.validate()){
-                // todo: OjForm - add submit code logic/functionality
-                self.dispatchEvent(new evt(evt.SUBMIT, false, false));
-
-                return true;
+            if(on_submit && on_submit(this) === false){
+                return;
             }
 
-            return false;
+            if(this.validate()){
+                this._submit()
+            }
         },
 
-        'validate' : function(){
-            var self = this,
-                is_valid = self.is_valid,
-                msg = '';
+        "validate" : function(){
+            let is_valid = this.is_valid;
 
             if(is_valid){
                return true;
@@ -112,7 +131,7 @@ OJ.extendComponent(
             return false;
         },
 
-        '.data' : function(){
+        ".data" : function(){
             var data = this.inputs,
                 nm;
 
@@ -123,7 +142,7 @@ OJ.extendComponent(
             return data;
         },
 
-        '=data' : function(data){
+        "=data" : function(data){
             var inputs = this.inputs,
                 key, input;
 
@@ -134,14 +153,14 @@ OJ.extendComponent(
             }
         },
 
-        '.errors' : function(){
+        ".errors" : function(){
             var errors = this._errors;
 
             return errors ? errors.clone() : [];
         },
 
-        '.inputs' : function(){
-            var inputs = this.dom.getElementsByClassName('OjInput'),
+        ".inputs" : function(){
+            var inputs = this.dom.getElementsByClassName("OjInput"),
                 ln = inputs.length,
                 rtrn = {},
                 item;
@@ -156,7 +175,7 @@ OJ.extendComponent(
             return rtrn;
         },
 
-        '.is_valid' : function(){
+        ".is_valid" : function(){
             var self = this,
                 inputs = self.inputs,
                 errors = self._errors = [],
@@ -167,8 +186,8 @@ OJ.extendComponent(
 
                 if(!input.validate()){
                     errors.append({
-                        'input' : input,
-                        'error' : input.error
+                        "input" : input,
+                        "error" : input.error
                     });
                 }
             }
@@ -176,7 +195,7 @@ OJ.extendComponent(
             return !errors.length;
         },
 
-        '=submit_label' : function(val){
+        "=submit_label" : function(val){
             if(this._submit_label == val){
                 return;
             }
@@ -189,6 +208,6 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['form']
+        "_TAGS" : ["form"]
     }
 );

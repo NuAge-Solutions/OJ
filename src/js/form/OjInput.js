@@ -24,49 +24,45 @@ OJ.extendClass(
         '_ready' : false, '_template' : 'oj.form.OjInput',
 
 
-        '_constructor' : function(/*name, label, value, validators*/){
-            var self = this;
+        "_constructor" : function(name, label, value, validators){
+            this._super(OjComponent, "_constructor", []);
 
-            self._super(OjComponent, '_constructor', []);
-
-            self._errors = [];
-            self._validators = [];
+            this._errors = [];
+            this._validators = [];
 
             // detect default mode
-            var has_input = 'input' in self;
+            const input = this.input;
 
-            if(has_input && !isUndefined(this.input.dom.placeholder)){
-                self._unset('dflt');
+            if(input && !isUndefined(input.dom.placeholder)){
+                this._unset("dflt");
             }
 
-            self._processArguments(arguments, {
-                'name' : self.oj_id,
-                'label' : null,
-                'value' : null,
-                'validators' : []
-            });
+            this._set("name", name, this.oj_id);
+            this._set("label", label);
+            this._set("value", value);
+            this._set("validators", validators, []);
 
-            if(has_input){
-                if(!self._value){
-                    self.value = self.input.dom.value;
+            if(input){
+                if(!this._value){
+                    this.value = input.dom.value;
                 }
 
-                self.input.addEventListener(OjFocusEvent.IN, self, '_onInputFocusIn');
-                self.input.addEventListener(OjFocusEvent.OUT, self, '_onInputFocusOut');
-                self.input.addEventListener(OjDomEvent.CHANGE, self, '_onInputChange');
+                input.addEventListener(OjFocusEvent.IN, this, "_onInputFocusIn");
+                input.addEventListener(OjFocusEvent.OUT, this, "_onInputFocusOut");
+                input.addEventListener(OjDomEvent.CHANGE, this, "_onInputChange");
             }
 
-            if(self.oj_class_name == 'OjInput'){
-                self.hide();
+            if(this.oj_class_name == "OjInput"){
+                this.hide();
             }
             else{
-                var ln = self._supers.length,
+                let ln = this._supers.length,
                     cls;
 
                 for(; ln--;){
-                    cls = self._supers[ln];
+                    cls = this._supers[ln];
 
-                    self.addCss(OJ.classToString(cls));
+                    this.addCss(OJ.classToString(cls));
 
                     if(cls == OjInput){
                         break;
@@ -74,9 +70,21 @@ OJ.extendClass(
                 }
             }
 
-            self.addEventListener(OjUiEvent.PRESS, self, '_onPress');
+            this.addEventListener(OjUiEvent.PRESS, this, "_onPress");
 
-            self._ready = true;
+            this._ready = true;
+        },
+
+        "_destructor" : function(){
+            // unset placeholder for cleanup purposes
+            try {
+                this._placeholder.on_change = null;
+            }
+            catch(e){
+                // do nothing
+            }
+
+            return this._super(OjComponent, "_destructor", arguments);
         },
 
 
@@ -193,6 +201,14 @@ OJ.extendClass(
                 return;
             }
 
+            const input = this.input,
+                placeholder = this._placeholder;
+
+            // cleanup on change
+            if(isObjective(placeholder, OjTextElement)){
+                placeholder.on_change = null;
+            }
+
             this._placeholder = val;
 
             if(this.dflt){
@@ -207,8 +223,15 @@ OJ.extendClass(
 
                 this._redrawDefault();
             }
-            else if(this.input){
-                this.input.attr('placeholder', val);
+            else if(input){
+                input.attr("placeholder", String.string(val));
+
+                // set on change so we get updates if/when it changes
+                if(isObjective(val, OjTextElement)){
+                    val.on_change = function(txt){
+                        input.attr("placeholder", String.string(txt));
+                    };
+                }
             }
         },
 
@@ -240,10 +263,16 @@ OJ.extendClass(
             return this._form;
         },
 
+        "=is_disabled" : function(val){
+            this._super(OjComponent, "=is_disabled", arguments);
+
+            this.input.attr("disabled", this._is_disabled ? "1" : null);
+        },
+
         '=label' : function(lbl){
             this.lbl.text = this._label = lbl;
 
-            if(isEmpty(this._label)){
+            if(isEmpty(lbl)){
                 this.addCss('no-label');
             }
             else{

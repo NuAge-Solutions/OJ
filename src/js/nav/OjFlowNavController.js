@@ -62,7 +62,7 @@ OJ.extendComponent(
 
         // helper functions
         "_makeBackButton" : function(view){
-            var btn = new OjButton(this.icon_only_back ? null : view.short_title);
+            const btn = new OjButton(this.icon_only_back ? null : OJ.copy(view.short_title));
             btn.addCss("back-button");
 
             return btn;
@@ -77,10 +77,10 @@ OJ.extendComponent(
 
         "_makeTitle" : function(title){
             if(isObjective(title)){
-                return title;
+                return title.clone();
             }
 
-            return new OjStyleElement("<div>" + title + "</div>");
+            return new OjTextElement(title);
         },
 
         "_update" : function(view, transition, index, old_index){
@@ -280,6 +280,10 @@ OJ.extendComponent(
 
         "cancel" : function(){
             this.dispatchEvent(new OjEvent(OjEvent.CANCEL, false));
+        },
+
+        "complete" : function(){
+            this.dispatchEvent(new OjEvent(OjEvent.COMPLETE, false));
         },
 
 

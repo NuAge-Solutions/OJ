@@ -20,25 +20,23 @@ OJ.extendClass(
         },
 
 
-        "_constructor" : function(/*left, top, width, height*/){
+        "_constructor" : function(left, top, width, height){
             this._super(OjObject, "_constructor", []);
 
-            this._processArguments(arguments, {
-                "left" : 0,
-                "top" : 0,
-                "width" : 0,
-                "height" : 0
-            });
+            this._set("left", left, 0);
+            this._set("top", top, 0);
+            this._set("width", width, 0);
+            this._set("height", height, 0);
         },
 
         "delta" : function(rect){
-            var self = this;
+            rect = rect || {};
 
             return new OjRect(
-                self.top - (rect ? rect.top : 0),
-                self.left - (rect ? rect.left : 0),
-                self.width - (rect ? rect.width : 0),
-                self.height - (rect ? rect.height : 0)
+                this.top - (rect.top || 0),
+                this.left - (rect.left || 0),
+                this.width - (rect.width || 0),
+                this.height - (rect.height || 0)
             );
         },
 

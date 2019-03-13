@@ -166,22 +166,54 @@
         detector.version(navigator.user_agent);
 
     // detect OS
-    var user_agent = navigator.userAgent.toLowerCase();
+    const user_agent = navigator.userAgent.toLowerCase();
 
     if(/(android)/i.test(user_agent)){
+        const v = navigator.appVersion.match(/(.*)Android\ (.*);\ (.*)\ Build/);
+
         OJ._os = OJ.ANDROID;
+        OJ._os_version = v[2];
+
         OJ._is_tablet = !(OJ._is_mobile = /(mobile)/i.test(user_agent));
         OJ._is_touch_capable = true;
+        OJ._is_webview = /(.*);\ wv/g.test(navigator.appVersion);
+
+        // check for in app
+        if(!OJ._browser_version){
+            OJ._browser_version = OJ.IN_APP;
+        }
     }
     else if(/(iphone|ipod|ipad)/i.test(user_agent)){
-        var v = (navigator.appVersion).match(/OS\ (\d+)_(\d+)_?(\d+)?/);
+        const v = navigator.appVersion.match(/OS\ (\d+)_(\d+)_?(\d+)?/);
 
         OJ._os = OJ.IOS;
-        OJ._is_tablet = !(OJ._is_mobile = (user_agent.indexOf('ipad') == -1));
+        OJ._is_tablet = !(OJ._is_mobile = (user_agent.indexOf("ipad") == -1));
         OJ._is_touch_capable = true;
         OJ._is_webview = !(/safari/i.test(user_agent)) || (/crios/i.test(user_agent));
 
-        OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join('.');
+        OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join(".");
+
+        // check for in app
+        if(!OJ._browser_version){
+            OJ._browser_version = OJ.IN_APP;
+        }
+    }
+    else if(/(Macintosh;)/i.test(user_agent)){
+        let v = navigator.appVersion.match(/Mac\ OS\ X\ (\d+)_(\d+)_?(\d+)?/);
+
+        OJ._os = OJ.MAC;
+        OJ._is_tablet = false;
+        OJ._is_touch_capable = false;
+        OJ._is_webview = !(/safari/i.test(user_agent));
+
+        if(v){
+            OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join(".");
+        }
+        else{
+            v = navigator.userAgent.match(/Mac\ OS\ X\ (\d+).(\d+)?/);
+
+            OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10)].join(".");
+        }
 
         // check for in app
         if(!OJ._browser_version){

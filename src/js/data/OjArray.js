@@ -166,6 +166,10 @@ OJ.extendClass(
             return this._callArrayFunc('equalize', arguments);
         },
 
+        "exportData" : function(){
+            return this._items;
+        },
+
         'forEach' : function(){
             return this._callArrayFunc('forEach', arguments);
         },

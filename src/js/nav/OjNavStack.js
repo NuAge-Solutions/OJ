@@ -53,9 +53,11 @@ OJ.extendComponent(
             return elm;
         },
 
-        "unrenderItem" : function(item){
+        "unrenderItemAt" : function(index){
             const self = this,
-                elm = self._rendered[item.oj_id];
+                item = self._elms[index],
+                id = self._getItemId(item, index)
+                elm = self._rendered[id];
 
             if(elm){
                 item.unload();
@@ -64,7 +66,7 @@ OJ.extendComponent(
                 elm.stack = null;
             }
 
-            return self._super(OjStack, "unrenderItem", arguments);
+            return self._super(OjStack, "unrenderItemAt", arguments);
         },
 
 

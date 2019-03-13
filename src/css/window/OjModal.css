@@ -1,3 +1,16 @@
+
+
+
+.OjView > .OjNavStack {
+    position: absolute;
+
+    top: 60px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+
+
 .OjModal {
     -webkit-align-content: center;
     align-content: center;
@@ -18,10 +31,16 @@
 
         border: none;
     }
-    .is-mobile .OjModal > .pane,
-    .OjModal.fullscreen > .pane {
-        width: 100%;
-        height: 100%;
+    .OjModal.fullscreen:not(.animating) > .pane {
+        position: absolute !important;
+
+        top: 0px !important;
+        left: 0px !important;
+        right: 0px !important;
+        bottom: 0px !important;
+
+        width: 100% !important;
+        height: 100% !important;
     }
         .OjModal > .pane > .bar {
             position: absolute;
@@ -44,12 +63,12 @@
 
             overflow: hidden;
         }
-        .is-ios .OjModal.fullscreen > .pane > .bar {
-            height: 65px;
+        .OjModal.fullscreen > .pane > .bar {
+            height: var(--top-nav);
         }
-            .is-ios .OjModal.fullscreen > .pane > .bar .bottom,
-            .is-ios .OjModal.fullscreen > .pane > .bar .top {
-                top: 20px;
+            .OjModal.fullscreen > .pane > .bar .bottom_bar,
+            .OjModal.fullscreen > .pane > .bar .top_bar {
+                top: var(--top-inset);
             }
 
             .OjModal > .pane > .bar .title {
@@ -58,6 +77,14 @@
                 font-weight: bold;
                 text-shadow: 1px 1px 1px #DDDDDD;
                 text-align: center;
+            }
+            .OjModal.fullscreen > .pane > .bar .title {
+                font-size: 24px;
+
+                padding-bottom: 15px;
+            }
+            .is-mobile .OjModal.fullscreen > .pane > .bar .title {
+                padding-bottom: 0px;
             }
 
         .OjModal > .pane > .content {
@@ -79,8 +106,8 @@
 
             overflow: hidden;
         }
-        .is-ios .OjModal.fullscreen > .pane > .content {
-            top: 66px;
+        .OjModal.fullscreen > .pane > .content {
+            top: calc(var(--top-nav) + 1px);
         }
         .OjModal.no-buttons > .pane > .content {
             bottom: 0px;
@@ -91,15 +118,14 @@
 
             -webkit-overflow-scrolling: touch;
         }
+            .OjModal > .pane > .content > .OjView {
+                max-width: 100%;
+                max-height: 100%;
 
-        .OjModal > .pane > .content > .OjView {
-            max-width: 100%;
-            max-height: 100%;
-
-            -ms-overflow-style: none;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+                -ms-overflow-style: none;
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
+            }
 
         .OjModal > .pane > .buttons {
             position: absolute;

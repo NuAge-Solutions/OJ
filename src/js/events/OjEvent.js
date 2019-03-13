@@ -15,14 +15,12 @@ OJ.extendClass(
         },
 
 
-        '_constructor' : function(type/*, bubbles = false, cancelable = false*/){
-            this._super(OjObject, '_constructor', []);
+        "_constructor" : function(type, bubbles, cancelable){
+            this._super(OjObject, "_constructor", []);
 
-            this._processArguments(arguments, {
-                '_type' : type,
-                '_bubbles' : false,
-                '_cancelable' : false
-            });
+            this._set("_type", type);
+            this._set("_bubbles", bubbles, false);
+            this._set("_cancelable", cancelable, false);
         },
 
         'cancel' : function(){

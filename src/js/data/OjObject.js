@@ -78,20 +78,22 @@ Object.concat = function(obj, obj2/*, ...objs*/){
 window.OjObject = function(){ };
 
 OjObject.prototype = {
-    '_post_compile_' : [],
+    "_post_compile_" : [],
 
-    '_propCompile_' : function(context, props){
-        var key, prop, val,
-            props = context[props],
-            is_getter = props != '_set_props_',
-            is_setter = props != '_get_props_';
+    "_propCompile_" : function(context, props){
+        props = context[props];
 
-        if(isFunction(context['_processProp_'])){
-            this._processProp_ = context['_processProp_'];
+        const is_getter = props != "_set_props_",
+            is_setter = props != "_get_props_";
+
+        let key, prop, val;
+
+        if(isFunction(context["_processProp_"])){
+            this._processProp_ = context["_processProp_"];
         }
 
         for(key in props){
-            prop = '_' + key;
+            prop = "_" + key;
             val = props[key];
 
             // store the default value of the property
@@ -99,41 +101,32 @@ OjObject.prototype = {
                 this[prop] = val;
             }
 
-            this._processProp_(key, prop, is_getter ? '.' + key : null, is_setter ? '=' + key : null);
+            this._processProp_(key, prop, is_getter ? "." + key : null, is_setter ? "=" + key : null);
         }
     },
 
-    '_processProp_' : function(key, prop, getter, setter){
+    "_processProp_" : function(key, prop, getter, setter){
         // define property
         Object.defineProperty(this, key, {
-            'configurable': true,
-            'enumerable': false,
-            'get' : function(){
+            "configurable" : true,
+            "enumerable" : false,
+            "get" : function(){
                 if(!getter){
-                    throw 'Property "' + key + '" get not allowed.'
+                    throw "Property '" + key + "' get not allowed.";
                 }
 
-                var get_func = this[getter];
+                const get_func = this[getter];
 
-                if(get_func){
-                    return get_func.call(this);
-                }
-
-                return this[prop];
+                return get_func ? get_func.call(this) : this[prop];
             },
-            'set' : function(newValue){
+            "set" : function(newValue){
                 if(!setter){
-                    throw 'Property "' + key + '" set not allowed.'
+                    throw "Property '" + key + "' set not allowed.";
                 }
 
-                var set_func = this[setter];
+                const set_func = this[setter];
 
-                if(set_func){
-                    set_func.call(this, newValue);
-                }
-                else{
-                    this[prop] = newValue;
-                }
+                set_func ? set_func.call(this, newValue) : this[prop] = newValue;
 
                 return newValue;
             }
@@ -141,7 +134,7 @@ OjObject.prototype = {
     },
 
 
-    '_constructor' : function(obj){
+    "_constructor" : function(obj){
         this._id_ = OJ.guid(this);
 
         if(obj){
@@ -152,7 +145,7 @@ OjObject.prototype = {
     },
 
     // Internal Methods
-    '_super' : function(context, func, args){
+    "_super" : function(context, func, args){
         if(!context || !context.prototype || !context.prototype[func]){
             print(arguments);
             debugger;
@@ -161,10 +154,8 @@ OjObject.prototype = {
         return context.prototype[func].apply(this, args || []);
     },
 
-    '_destructor' : function(/*depth = 0*/){
-        var key;
-
-        for(key in this){
+    "_destructor" : function(depth){
+        for(const key in this){
             this[key] = undefined;
         }
 
@@ -172,47 +163,37 @@ OjObject.prototype = {
     },
 
 
-    '_processArguments' : function(args, def){
-        var ln = args.length,
-            count = 0,
-            key, val, ctx, ary, ln2, i;
+    "_set" : function(key, val, dflt){
+        // default the value
+        if(isUndefined(val)){
+            val = dflt;
+        }
 
-        for(key in def){
-            if(!isEmpty(key)){
-                val = def[key];
+        // if the value is undefined then we don't need to do anything
+        if(!isUndefined(val)){
+            let ctx = this,
+                ary = key.split("."),
+                ln = ary.length;
 
-                if(ln > count){
-                    val = args[count];
-                }
-
-                if(!isUndefined(val)){
-                    ctx = this;
-                    ary = key.split('.');
-
-                    if((ln2 = ary.length) > 1){
-                        for(i = 0; i < ln2; i++){
-                            if(i){
-                                ctx = ctx[key];
-                            }
-
-                            key = ary[i];
-                        }
+            if(ln > 1){
+                for(let i = 0; i < ln; i++){
+                    if(i){
+                        ctx = ctx[key];
                     }
 
-                    if(isFunction(ctx[key])){
-                        ctx[key](val);
-                    }
-                    else{
-                        ctx[key] = val;
-                    }
+                    key = ary[i];
                 }
             }
 
-            count++;
+            if(isFunction(ctx[key])){
+                return ctx[key](val);
+            }
+
+            return ctx[key] = val;
         }
     },
 
-    '_unset' : function(prop/*|props, depth*/){
+    "_unset" : function(prop_or_props, depth){
         OJ.unset(this, arguments);
     }
 };
@@ -259,13 +240,13 @@ OJ.extendClass(
         },
 
         'clone' : function(){
-            var cls = this._static;
+            const cls = this._static;
 
             return new cls();
         },
 
         'exportData' : function(mode){
-            var self = this,
+            const self = this,
                 data = {};
 
             data[self._static.TYPE_KEY] = self.oj_class_name;
@@ -297,10 +278,8 @@ OJ.extendClass(
             return Object.toQueryString(this);
         },
 
-        'toString' : function(){
-            var self = this;
-
-            return self.oj_class_name + ' : ' + self.oj_id;
+        "toString" : function(){
+            return this.oj_class_name + " : " + this.oj_id;
         },
 
 
@@ -367,7 +346,7 @@ OJ.extendClass(
         },
 
         'exportData' : function(obj, mode, processed){
-            var key;
+            let key;
 
             processed = processed || [];
 

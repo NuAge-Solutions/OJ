@@ -22,44 +22,24 @@ OJ.extendComponent(
             "title_view" : null
         },
 
-//        "_elm_funcs" : null,  "_load_checkpoints" : null,  "_loading_icon" : null,
-//
-//        "_overlay" : null,  "_unload_checkpoints" : null,  "_unloading_icon" : null,
-
-        "_loading_msg" : "Loading", "_template" : "oj.views.OjView", "_loaded" : false,
+        "_loading_msg" : "Loading", "_template" : "oj.views.OjView", "_is_loaded" : false,
 
         "_unloading_msg" : "UnLoading",
 
 
-        "_constructor" : function(/*content, title, short_title, icon*/){
-            var self = this,
-                cls = self._static;
-
-            self._super(OjComponent, "_constructor", []);
+        "_constructor" : function(content, title, short_title, icon){
+            this._super(OjComponent, "_constructor", []);
 
             // setup vars
-            self._load_checkpoints = {};
-            self._unload_checkpoints = {};
+            this._checkpoints = {};
 
             // process arguments
-            self._processArguments(arguments, {
-                "content": undefined,
-                "title" : undefined,
-                "short_title" : undefined,
-                "icon" : undefined
-            });
+            const cls = this._static;
 
-            if(!self.title){
-                self.title = cls.TITLE;
-            }
-
-            if(!self.short_title){
-                self.short_title = cls.SHORT_TITLE;
-            }
-
-            if(!self.icon){
-                self.icon = cls.ICON;
-            }
+            this._set("content", content);
+            this._set("title", title, OJ.copy(cls.TITLE));
+            this._set("title", short_title, OJ.copy(cls.SHORT_TITLE));
+            this._set("icon", icon, OJ.copy(cls.ICON));
         },
 
         "_destructor" : function(){
@@ -71,14 +51,22 @@ OJ.extendComponent(
         },
 
 
-        "_checkpointsCompleted" : function(checkpoints){
-            for(var key in checkpoints){
-                if(!checkpoints[key]){
+        "_checkpointsCompleted" : function(){
+            for(const key in this._checkpoints){
+                if(!this._checkpoints[key]){
                     return false;
                 }
             }
 
             return true;
+        },
+
+        "_checkpointComplete" : function(checkpoint){
+            this._checkpoints[checkpoint] = true;
+
+            if(this._checkpointsCompleted()){
+                this._load();
+            }
         },
 
         "_hideOverlay" : function(overlay){
@@ -89,7 +77,7 @@ OJ.extendComponent(
         },
 
         "_load" : function(){
-            this._loaded = true;
+            this._is_loaded = true;
 
             this.removeCss("loading");
 
@@ -100,36 +88,14 @@ OJ.extendComponent(
             this.dispatchEvent(new OjEvent(OjView.LOAD));
         },
 
-        "_loadCheckpoint" : function(checkpoint){
-            var self = this,
-                checkpoints = self._load_checkpoints;
-
-            if(checkpoint){
-                checkpoints[checkpoint] = true;
-            }
-
-            if(self._checkpointsCompleted(checkpoints)){
-                self._load();
-            }
-            else{
-                self._showOverlay(self._loading_msg, self._loading_icon);
+        "_resetCheckpoints" : function(){
+            for(const key in this._checkpoints){
+                this._checkpoints[key] = false;
             }
         },
 
-        "_resetCheckpoints" : function(checkpoints){
-            var key;
-
-            for(key in checkpoints){
-                checkpoints[key] = false;
-            }
-        },
-
-        "_showOverlay" : function(/*msg, icon*/){
-            var args = arguments,
-                ln = args.length,
-                msg = ln ? args[0] : null,
-                icon = ln > 1 ? args[1] : null,
-                overlay = this._overlay;
+        "_showOverlay" : function(msg, icon){
+            let overlay = this._overlay;
 
             if(overlay){
                 overlay.message = msg;
@@ -145,27 +111,10 @@ OJ.extendComponent(
         },
 
         "_unload" : function(){
-            this._loaded = false;
-
-            this._hideOverlay();
+            this._is_loaded = false;
 
             // dispatch the event
             this.dispatchEvent(new OjEvent(OjView.UNLOAD));
-        },
-
-        "_unloadCheckpoint" : function(/*checkpoint*/){
-            var args = arguments;
-
-            if(args.length){
-                this._unload_checkpoints[args[0]] = true;
-            }
-
-            if(this._checkpointsCompleted(this._unload_checkpoints)){
-                this._unload();
-            }
-            else{
-                this._showOverlay(this._unloading_msg, this._unloading_icon);
-            }
         },
 
 
@@ -178,37 +127,60 @@ OJ.extendComponent(
         "didShow" : function(){ },
 
         "load" : function(reload){
-            var self = this;
-
-            if(!reload && self._loaded){
+            // figure out if we need to actually load
+            if(!reload && this._is_loaded){
                 return false;
             }
 
-            self.addCss("loading");
+            // let the ui know we are loading
+            this.addCss("loading");
 
-            self._resetCheckpoints(self._load_checkpoints);
+            // reset the checkpoints
+            this._resetCheckpoints();
 
-            self._loadCheckpoint();
+            const self = this,
+                checkpoints = Object.keys(this._checkpoints);
+
+            // only show overlay if we have checkpoints
+            if(checkpoints.length){
+                this._showOverlay(this._loading_msg, this._loading_icon);
+
+                // call the checkpoints
+                checkpoints.forEachReverse( (checkpoint) => {
+                    self[checkpoint]();
+                });
+            }
+            // if not checkpoints then we are done
+            else{
+                this._load();
+            }
 
             return true;
         },
 
         "unload" : function(){
-            var self = this;
-
-            if(self._loaded){
-                self._resetCheckpoints(self._unload_checkpoints);
-
-                self._unloadCheckpoint();
-
-                return true;
+            // figure out if we need to unload
+            if(this._is_loaded){
+                this._unload();
             }
-
-            return false;
         },
 
-        "willHide" : function(){ },
-        "willShow" : function(){ },
+        "willHide" : function(){
+            const container = this.container;
+
+            if(container){
+                this._container_scroll_pos = [container.scroll_x, container.scroll_y];
+            }
+        },
+        "willShow" : function(){
+            const pos = this._container_scroll_pos,
+                container = this.container;
+
+            if(pos && container){
+                container.scroll_x = pos[0];
+                container.scroll_y = pos[1];
+            }
+        },
 
 
         // getter & Setter functions
@@ -221,9 +193,7 @@ OJ.extendComponent(
             if(content){
                 content = Array.array(content);
 
-                var ln = content.length;
-
-                for(; ln--;){
+                for(let ln = content.length; ln--;){
                     this.insertElmAt(content[ln], 0);
                 }
             }

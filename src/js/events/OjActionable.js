@@ -1,22 +1,22 @@
-importJs('oj.data.OjObject');
+importJs("oj.data.OjObject");
 
 
 OJ.extendClass(
-    'OjActionable', [OjObject],
+    "OjActionable", [OjObject],
     {
 
         // Internal Vars
-        '_prevent_dispatch' : false,
+        "_prevent_dispatch" : false,
 
 
         // Internal Methods
-        '_constructor' : function(){
+        "_constructor" : function(){
             this._actionable = this;
 
-            this._super(OjObject, '_constructor', arguments);
+            this._super(OjObject, "_constructor", arguments);
         },
 
-        '_destructor' : function(){
+        "_destructor" : function(){
             // dispatch a destroy event and then destroy all active listeners
             if(this._actionable){
 
@@ -27,47 +27,21 @@ OJ.extendClass(
                 this._actionable = null;
             }
 
-            return this._super(OjObject, '_destructor', arguments);
-        },
-
-
-        '_listeners' : function(type) {
-            return null;
-        },
-
-        '_updateListeners' : function(action, type){
-            var func = action == 'add' ? 'addEventListener' : 'removeEventListener',
-                settings = this._listeners(type),
-                ln = settings ? settings.length : 0,
-                obj;
-
-            if(ln){
-                if((obj = settings[0]) && obj[func]){
-                    type = type.ucFirst()
-
-                    if(ln > 1){
-                        obj[func](settings[1], this, '_on' + type + 'Success');
-                    }
-
-                    if(ln > 2){
-                        obj[func](settings[2], this, '_on' + type + 'Fail');
-                    }
-                }
-            }
+            return this._super(OjObject, "_destructor", arguments);
         },
 
 
         // Public Methods
-        'addEventListener' : function(type, context, callback){
+        "addEventListener" : function(type, context, callback){
             EventManager.addEventListener(this._actionable, type, context, callback);
         },
 
-        'hasEventListener' : function(type){
+        "hasEventListener" : function(type){
             return EventManager.hasEventListener(this._actionable, type);
         },
 
-        'hasEventListeners' : function(type/*|types, type*/){
-            var args = arguments,
+        "hasEventListeners" : function(type/*|types, type*/){
+            let args = arguments,
                   ln = args.length;
 
             if(ln == 1){
@@ -92,15 +66,15 @@ OJ.extendClass(
             return true;
         },
 
-        'removeAllListeners' : function(){
+        "removeAllListeners" : function(){
             return EventManager.removeAllListeners(this._actionable);
         },
 
-        'removeEventListener' : function(type, context, callback){
+        "removeEventListener" : function(type, context, callback){
             EventManager.removeEventListener(this._actionable, type, context, callback);
         },
 
-        'dispatchEvent' : function(evt){
+        "dispatchEvent" : function(evt){
             if(this._prevent_dispatch || evt.canceled){
                 return;
             }
@@ -111,7 +85,7 @@ OJ.extendClass(
         }
     },
   {
-    'ADD' : 'add',
-    'REMOVE' : 'remove'
+    "ADD" : "add",
+    "REMOVE" : "remove"
   }
 );

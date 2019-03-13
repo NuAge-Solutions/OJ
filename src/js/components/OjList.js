@@ -11,14 +11,11 @@ OJ.extendComponent(
             'direction' : null
         },
 
-        '_constructor' : function(elms, item_renderer, direction){
-            this._super(OjCollectionComponent, '_constructor', []);
+        "_constructor" : function(elms, item_renderer, direction){
+            this._super(OjCollectionComponent, "_constructor", []);
 
-            this._processArguments(arguments, {
-                '' : undefined,
-                'item_renderer' : this._default_renderer,
-                'direction' : this._default_direction
-            });
+            this._set("item_renderer", item_renderer, this._default_renderer);
+            this._set("direction", direction, this._default_direction);
 
             if(elms){
                 this.elms = elms;

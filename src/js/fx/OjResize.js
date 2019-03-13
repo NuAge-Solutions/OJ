@@ -1,13 +1,13 @@
-importJs('oj.fx.OjDimTween');
+importJs("oj.fx.OjDimTween");
 
 
 
 
 OJ.extendClass(
-    'OjResize', [OjDimTween],
+    "OjResize", [OjDimTween],
     {
-        '=amount' : function(amount){
-            this._super(OjDimTween, '=amount', arguments);
+        "=amount" : function(amount){
+            this._amount = amount;
 
             if(this._direction == OjResize.BOTH){
                 this._to.width = amount[0];
@@ -22,8 +22,8 @@ OJ.extendClass(
         }
     },
     {
-        'WIDTH'  : OjDimTween.HORIZONTAL,
-        'HEIGHT' : OjDimTween.VERTICAL,
-        'BOTH'   : OjDimTween.BOTH
+        "WIDTH"  : OjDimTween.HORIZONTAL,
+        "HEIGHT" : OjDimTween.VERTICAL,
+        "BOTH"   : OjDimTween.BOTH
     }
 );

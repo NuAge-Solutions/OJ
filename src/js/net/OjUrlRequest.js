@@ -14,20 +14,15 @@ OJ.extendClass(
         '_ignores_cache' : false,  '_is_multipart' : false,
 
 
-        '_constructor' : function(){
-            var self = this,
-                u = undefined;
+        '_constructor' : function(source, data, content_type, method){
+            this._super(OjUrl, '_constructor', []);
 
-            self._super(OjUrl, '_constructor', []);
+            this._headers = {};
 
-            self._headers = {};
-
-            self._processArguments(arguments, {
-                'source': u,
-                'data' : u,
-                'content_type' : u,
-                'method' : u
-            });
+            this._set("source", source);
+            this._set("data", data);
+            this._set("content_type", content_type);
+            this._set("method", method);
         },
 
 

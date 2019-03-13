@@ -1,5 +1,5 @@
 window.OJ = function Oj(){
-    var obj = {
+    const obj = {
         "_events" : [], "_guid" : 8, "_loaded" : {},
 
         "_is_landscape" : true, "_is_mobile" : false, "_is_ready" : false,
@@ -326,11 +326,11 @@ window.OJ = function Oj(){
         },
 
         "propToAttribute" : function(prop, sep){
-            var str = "";
+            let str = "";
 
             sep = sep || "-";
 
-            prop.split(/(?=[A-Z])/).forEach(function(item, i){
+            prop.split(/(?=[A-Z])/).forEach((item, i) => {
                 str += (i ? sep : "") + item.toLowerCase();
             });
 
@@ -355,7 +355,7 @@ window.OJ = function Oj(){
                 }
 
                 if(obj.prototype.constructor && obj.prototype.constructor.toString){
-                    var arr = obj.prototype.constructor.toString().match(/function\s*(\w+)/);
+                    const arr = obj.prototype.constructor.toString().match(/function\s*(\w+)/);
 
                     if(arr && arr.length == 2){
                         return arr[1];
@@ -385,9 +385,7 @@ window.OJ = function Oj(){
         "destroy" : function(obj/*, depth = 0*/){
             if(obj && isFunction(obj._destructor)){
                 if(!obj._destroyed_){
-                    var args = arguments;
-
-                    obj._destructor(args.length > 1 ? args[1] : 0);
+                    obj._destructor(arguments.length > 1 ? arguments[1] : 0);
                 }
                 else{
                     // debugger;
@@ -406,8 +404,7 @@ window.OJ = function Oj(){
         "defineClass" : function(ns, def, static_def){
             eval("window[ns] = function " + ns + "(){" + (def["_constructor"] ? "this._constructor.apply(this, arguments);" : "") + "};");
 
-            var cls = window[ns],
-                key;
+            const cls = window[ns];
 
             def._class_name_ = ns;
             def._supers = (def._supers || []).slice(0);
@@ -416,7 +413,7 @@ window.OJ = function Oj(){
             cls.prototype = def;
 
             if(static_def){
-                for(key in static_def){
+                for(const key in static_def){
                     cls[key] = static_def[key];
                 }
             }
@@ -921,8 +918,9 @@ window.OJ = function Oj(){
         "viewport" : function(val){
 
         }
-    },
-    key;
+    };
+
+    let key;
 
 
     function makeProperty(key, is_setting){

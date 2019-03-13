@@ -11,13 +11,20 @@ OJ.extendClass(
         },
 
 
-        '_constructor' : function(/*id, label*/){
+        '_constructor' : function(id, label){
             this._super(OjActionable, '_constructor', []);
 
-            this._processArguments(arguments, {
-                'id' : undefined,
-                'label' : undefined
-            });
+            this._set("id", id);
+            this._set("label", label);
+        },
+
+        "exportData" : function(){
+            const obj = this._super(OjActionable, 'exportData', arguments);
+
+            obj.id = this.id;
+            obj.label = this.label;
+
+            return obj;
         },
 
         "toString" : function(){

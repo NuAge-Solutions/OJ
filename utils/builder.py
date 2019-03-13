@@ -1,4 +1,4 @@
-import re
+import utils.sh as sh
 
 from utils import *
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -80,6 +80,11 @@ class Builder (object):
             if mode_suffix:
                 _add_file(os.path.join(path, "tests.js"))
 
+        # add the version file
+        version_file = build.get("version_file")
+
+        if version_file:
+            _add_file(version_file)
         
         zip.writestr("www/checksum.json", json.dumps(checksums))
         
@@ -97,6 +102,41 @@ class Builder (object):
 
         return manifest, None
 
+    def _proc_command(self, manifest, build, mode, command):
+        src_path = manifest["source_path"]
+
+        return command.format(src_path=os.path.join(os.getcwd(), src_path))
+
+    def _run_commands(self, manifest, build, mode, commands):
+        src_path = manifest["source_path"]
+
+        for command in commands:
+            if isinstance(command, str):
+                sh.Command(
+                    self._proc_command(manifest, build, mode, command)
+                )(_cwd=src_path, _out=sys.stdout, _err=sys.stderr)
+
+            elif isinstance(command, (list, tuple)):
+                _cmd = None
+                args = []
+                kwargs = {}
+
+                for cmd in command:
+                    if not _cmd:
+                        _cmd = sh.Command(self._proc_command(manifest, build, mode, cmd))
+
+                    elif isinstance(cmd, dict):
+                        kwargs = cmd
+
+                    else:
+                        args.append(cmd)
+
+                kwargs.setdefault("_cwd", src_path)
+                kwargs.setdefault("_out", sys.stdout)
+                kwargs.setdefault("_err", sys.stderr)
+
+                _cmd(*args, **kwargs)
+
     def run(self, destination, packages, mode="prod"):
         # setup compiler
         from utils.compiler import Compiler
@@ -111,8 +151,20 @@ class Builder (object):
             if not build:
                 raise Exception("No Build Found ({})".format(package))
 
+            # run pre-compile methods
+            pre_compile = build.get("pre_compile", []) + build.get("pre_compile_" + mode, [])
+
+            if pre_compile:
+                self._run_commands(manifest, build, mode, pre_compile)
+
             # run the compiler
             compiler.run(p_destination, mode=mode, packages=build["packages"])
+
+            # run post compile methods
+            post_compile = build.get("post_compile", []) + build.get("post_compile_" + mode, [])
+
+            if post_compile:
+                self._run_commands(manifest, build, mode, post_compile)
 
             # process the html
             css_imports = []
@@ -203,6 +255,14 @@ class Builder (object):
                 file_put_contents(html_path, dev_html)
 
             build["html_files"] = html_files
+
+            # add the version file
+            version = build.get("version")
+
+            if version:
+                build["version_file"] = version_file = os.path.join(p_destination, ".version")
+
+                file_put_contents(version_file, version)
 
             self._build_zip(destination, package, build, "dev")
 

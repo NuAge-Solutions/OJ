@@ -1,68 +1,67 @@
-importJs('oj.events.OjActionable');
-importJs('oj.fx.OjEasing');
-importJs('oj.fx.OjTweenEvent');
-importJs('oj.utils.OjTimer');
+importJs("oj.events.OjActionable");
+importJs("oj.fx.OjEasing");
+importJs("oj.fx.OjTweenEvent");
+importJs("oj.utils.OjTimer");
 
 
 // normalize browser diff on requestAnimationFrame function
 (function(){
-    var vendors = ['o', 'ms', 'webkit', 'moz'],
+    var vendors = ["o", "ms", "webkit", "moz"],
         ln = vendors.length,
         vendor;
 
     for(; ln-- && !window.requestAnimationFrame;){
         vendor = vendors[ln];
 
-        window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+        window.requestAnimationFrame = window[vendor + "RequestAnimationFrame"];
+        window.cancelAnimationFrame = window[vendor + "CancelAnimationFrame"] || window[vendor + "CancelRequestAnimationFrame"];
     }
 })();
 
 
 OJ.extendClass(
-    'OjTween', [OjActionable],
+    "OjTween", [OjActionable],
     {
-        '_props_' : {
-            'duration' : null,
-            'easing' : null,
-            'from' : null,
-            'quality' : 60,  // frame rate
-            'to' : null
+        "_props_" : {
+            "completion" : null,
+            "duration" : null,
+            "easing" : null,
+            "from" : null,
+            "quality" : 60,  // frame rate
+            "to" : null
         },
 
-//      '_animationFrame': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
+//      "_animationFrame": null,  "_onAnimationFrame": null,  "_start": null,  "_timer": null,
 
-        '_delta' : 0, '_progress' : 0,
+        "_delta" : 0, "_progress" : 0,
 
 
-        '_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
-            this._super(OjActionable, '_constructor', []);
+        "_constructor" : function(from, to, duration, easing){
+            this._super(OjActionable, "_constructor", []);
 
-            this._processArguments(arguments, {
-                'from' : undefined,
-                'to' : undefined,
-                'duration' : 250,
-                'easing' : OjEasing.NONE
-            });
+            this._set("from", from);
+            this._set("to", to);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
 
             this._onAnimationFrame = this._onTick.bind(this);
         },
 
 
-        '_destructor' : function(){
+        "_destructor" : function(){
             this.stop();
 
-            this._unset(['_timer', '_onAnimationFrame']);
+            this._unset(["_timer", "_onAnimationFrame"]);
 
-            return this._super(OjActionable, '_destructor', arguments);
+            return this._super(OjActionable, "_destructor", arguments);
         },
 
 
-        '_calculateDelta' : function(){
+        "_calculateDelta" : function(){
             this._delta = this._to - this._from;
         },
 
-        '_tick' : function(time){
+        "_tick" : function(time){
             this.dispatchEvent(
                 new OjTweenEvent(
                     OjTweenEvent.TICK, // type
@@ -73,7 +72,7 @@ OJ.extendClass(
         },
 
 
-        '_onTick' : function(evt){
+        "_onTick" : function(evt){
             // check if we should tick
             if(!this._interval && !this._animationFrame){
                 return;
@@ -93,12 +92,18 @@ OJ.extendClass(
             }
         },
 
-        '_onComplete' : function(evt){
+        "_onComplete" : function(evt){
+            const completion = this._completion;
+
+            if(completion){
+                completion(this);
+            }
+
             this.dispatchEvent(new OjTweenEvent(OjTweenEvent.COMPLETE, this._to, 1));
         },
 
 
-        'start' : function(){
+        "start" : function(){
             // make sure we have what we need to get started
             if(isUnset(this._from) || isUnset(this._to)){
                 return;
@@ -117,7 +122,7 @@ OJ.extendClass(
             }
         },
 
-        'pause' : function(){
+        "pause" : function(){
             this._interval = clearInterval(this._interval);
             this._progress = Date.now() - this._start;
 
@@ -128,23 +133,23 @@ OJ.extendClass(
             }
         },
 
-        'stop' : function(){
+        "stop" : function(){
             this.pause();
 
             this._progress = this._start = 0;
         },
 
-        'restart' : function(){
+        "restart" : function(){
             this.stop();
 
             this.start();
         },
 
-        'reverse' : function(){
+        "reverse" : function(){
             // todo: implement tween reverse
         }
     },
     {
-        'USE_RAF' : isSet(window.requestAnimationFrame)
+        "USE_RAF" : isSet(window.requestAnimationFrame)
     }
 );

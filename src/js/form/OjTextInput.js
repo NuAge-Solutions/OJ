@@ -132,19 +132,19 @@ OJ.extendComponent(
 
 
 OJ.extendComponent(
-    'OjEmailInput', [OjTextInput],
+    "OjEmailInput", [OjTextInput],
     {
-        '_props_' : {
-            'max_length' : 254,
-            'min_length' : 3
+        "_props_" : {
+            "max_length" : 254,
+            "min_length" : 3
         },
 
-        '_type' : OjTextInput.EMAIL,
+        "_type" : OjTextInput.EMAIL,
 
 
-        'isValid' : function(){
+        "isValid" : function(){
             var self = this,
-                valid = self._super(OjTextInput, 'isValid', arguments),
+                valid = self._super(OjTextInput, "isValid", arguments),
                 value = self.value;
 
             if(!isEmpty(value) && !self._static.isValidEmail(value)){
@@ -157,24 +157,24 @@ OJ.extendComponent(
         },
 
 
-        '=max_length' : function(val){
-            throw new Error('Cannot set the max length of an email. This is a fixed value.');
+        "=max_length" : function(val){
+            throw new Error("Cannot set the max length of an email. This is a fixed value.");
         },
 
-        '=min_length' : function(val){
-            throw new Error('Cannot set the min length of an email. This is a fixed value.');
+        "=min_length" : function(val){
+            throw new Error("Cannot set the min length of an email. This is a fixed value.");
         }
     },
     {
-        'INVALID_ERROR' : '{INPUT} requires a valid email address.',
+        "INVALID_ERROR" : "{INPUT} requires a valid email address.",
 
-        'SUPPORTS_EMAIL_TYPE' : OjInput.supportsInputType('email'),
+        "SUPPORTS_EMAIL_TYPE" : OjInput.supportsInputType("email"),
 
-        'isValidEmail' : function(val){
-            return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(val)
+        "isValidEmail" : function(val){
+            return /.+@.+(\..+)*/.test(val)
         },
 
-        '_TAGS' : ['email-input']
+        "_TAGS" : ["email-input"]
     }
 );
 

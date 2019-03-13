@@ -13,7 +13,7 @@ importJs("oj.events.OjTouchEvent");
 importJs("oj.events.OjTransformEvent");
 importJs("oj.libs.Hammer");
 importJs("oj.libs.HammerPropagating");
-importJs("oj.libs.ResizeSensor");
+importJs("oj.libs.ResizeObserver");
 
 
 OJ.extendClass(
@@ -46,10 +46,10 @@ OJ.extendClass(
             "rect" : null,
             "right" : null,
             "rotation" : null,
-            "scrollHeight" : null,
-            "scrollWidth" : null,
-            "scrollX" : null,
-            "scrollY" : null,
+            "scroll_height" : null,
+            "scroll_width" : null,
+            "scroll_x" : null,
+            "scroll_y" : null,
             "top" : null,
             "text" : null,
             "translate" : null,
@@ -61,8 +61,11 @@ OJ.extendClass(
 
         "_get_props_" : {
             "dom" : null,
-            "isVisible" : null,
-            "num_children" : null
+            "first_child" : null,
+            "is_visible" : null,
+            "last_child" : null,
+            "num_children" : null,
+            "tag" : null
         },
 
         "_alpha" : 1,
@@ -366,8 +369,8 @@ OJ.extendClass(
                 return;
             }
 
-            var children = dom.childNodes,
-                ln = children.length;
+            const children = dom.childNodes;
+            let ln = children.length;
 
             for(; ln--;){
                 if(!this._processChild(children[ln], context) && children[ln]){
@@ -382,14 +385,14 @@ OJ.extendClass(
                 return;
             }
 
-            var tag = dom.tagName;
+            let tag = dom.tagName;
 
             if(!tag || OjElement.isTextNode(dom)){
                 return isEmpty(dom.nodeValue) ? null : new OjTextElement(dom);
             }
 
-            var child, cls_path,
-                cls = dom.getAttribute("class-name");
+            let cls = dom.getAttribute("class-name"),
+                cls_path;
 
             tag = tag.toLowerCase();
 
@@ -403,31 +406,24 @@ OJ.extendClass(
                 importJs(cls_path);
             }
 
-            // get the component tag class
-            if(OjStyleElement.isComponentTag(tag)){
-                cls = OjStyleElement.getTagComponent(tag);
-            }
-
             // process the class
-            if(cls){
+            if(cls = OjStyleElement.getTagComponent(tag)){
                 if(isFunction(cls)){
-                    child = cls(dom);
+                    return cls(dom, context);
                 }
-                else{
-                    child = new window[cls]();
-                }
+
+                const child = new window[cls]();
 
                 child._setDomSource(dom, context);
-            }
-            else{
-                child = new OjStyleElement(dom, context);
+
+                return child;
             }
 
-            return child;
+            return new OjStyleElement(dom, context);
         },
 
         "_processReferenceValue" : function(val, context, src){
-            var $ = this;
+            const $ = this;
 
             if(val && String.string(val).contains("$") && $ != context){
                 throw "Template Reference Value Processing Deferred"
@@ -488,7 +484,7 @@ OJ.extendClass(
 
             // setup the dom id if there isn"t one already
             if(!this._id){
-                this.id = this._id_;
+                this.id = this.oj_id;
             }
         },
 
@@ -586,14 +582,14 @@ OJ.extendClass(
             this.dispatchEvent(
                 new OjDragEvent(
                     OjDragEvent.DRAG,
-                    new_x - this._dragX,
-                    new_y - this._dragY,
+                    new_x - this._drag_x,
+                    new_y - this._drag_y,
                     evt, false, false
                 )
             );
 
-            this._dragX = new_x;
-            this._dragY = new_y;
+            this._drag_x = new_x;
+            this._drag_y = new_y;
         },
 
         "_onDragEnd" : function(evt){
@@ -603,18 +599,18 @@ OJ.extendClass(
             this.dispatchEvent(
                 new OjDragEvent(
                     OjDragEvent.END,
-                    evt.pageX - this._dragX,
-                    evt.pageY - this._dragY,
+                    evt.pageX - this._drag_x,
+                    evt.pageY - this._drag_y,
                     evt, false, false
                 )
             );
 
-            this._dragX = this._dragY = null;
+            this._drag_x = this._drag_y = null;
         },
 
         "_onDragStart" : function(evt){
-            this._dragX = evt.pageX;
-            this._dragY = evt.pageY;
+            this._drag_x = evt.pageX;
+            this._drag_y = evt.pageY;
 
             if(this.hasEventListener(OjDragEvent.DRAG)){
                 OJ.addEventListener(OjUiEvent.MOVE, this, "_onDrag");
@@ -640,8 +636,8 @@ OJ.extendClass(
 //                response = this._onEvent(evt);
 //
 //
-////            if(type == OjUiEvent.UP && (!this._draggable || (this._dragX == x && this._dragY == y))){
-////                print(this._draggable, this._dragX == x, this._dragY == y);
+////            if(type == OjUiEvent.UP && (!this._draggable || (this._drag_x == x && this._drag_y == y))){
+////                print(this._draggable, this._drag_x == x, this._drag_y == y);
 ////                this._onEvent(new OjUiEvent(OjUiEvent.PRESS, evt.getBubbles(), evt.getCancelable(), x, y));
 ////            }
 //
@@ -676,7 +672,7 @@ OJ.extendClass(
 
             // for native scroll events
             if(evt.is("OjScrollEvent")){
-                if(this._prev_x == (x = evt.scrollX) && this._prev_y == (y = evt.scrollY)){
+                if(this._prev_x == (x = evt.scroll_x) && this._prev_y == (y = evt.scroll_y)){
                     return;
                 }
 
@@ -687,7 +683,7 @@ OJ.extendClass(
             }
 
             // for touch scroll events
-            if(this._prev_x == (x = this.scrollX) && this._prev_y == (y = this.scrollY)){
+            if(this._prev_x == (x = this.scroll_x) && this._prev_y == (y = this.scroll_y)){
                 return;
             }
 
@@ -707,8 +703,8 @@ OJ.extendClass(
             else if(type == OjTouchEvent.START){
                 type = OjUiEvent.DOWN;
 
-                this._dragX = x;
-                this._dragY = y;
+                this._drag_x = x;
+                this._drag_y = y;
             }
             else if(type == OjTouchEvent.MOVE){
                 type = OjUiEvent.MOVE;
@@ -719,7 +715,7 @@ OJ.extendClass(
 
                 // if the touch hasn"t moved then issue a click event
                 if(type == OjUiEvent.UP && !this.hasEventListener(OjDragEvent.START) && this.hitTestPoint(x, y)){
-                    this._dragX = this._dragY = null;
+                    this._drag_x = this._drag_y = null;
                 }
             }
 
@@ -826,17 +822,16 @@ OJ.extendClass(
         },
 
         "addEventListener" : function(type){
-            var self = this,
-                is_touch = OJ.is_touch_capable,
-                proxy = self._getEventProxy(),
-                hammer = self._setupHammer();
+            const is_touch = OJ.is_touch_capable,
+                proxy = this._getEventProxy(),
+                hammer = this._setupHammer();
 
-            self._super(OjElement, "addEventListener", arguments);
+            this._super(OjElement, "addEventListener", arguments);
 
             if(type == OjScrollEvent.SCROLL){
-                self._scrollable = true;
+                this._scrollable = true;
 
-                proxy.onscroll = self._onDomScrollEvent;
+                proxy.onscroll = this._onDomScrollEvent;
 
 //                if(is_touch){
 //                    proxy.ontouchmove = this._onDomTouchEvent;
@@ -856,10 +851,10 @@ OJ.extendClass(
             }
             else if(type == OjUiEvent.DOWN){
                 if(is_touch){
-                    proxy.ontouchstart = self._onDomTouchEvent;
+                    proxy.ontouchstart = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmousedown = self._onDomOjUiEvent;
+                    proxy.onmousedown = this._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.LONG_PRESS){
@@ -869,39 +864,39 @@ OJ.extendClass(
             }
             else if(type == OjUiEvent.MOVE){
                 if(is_touch){
-                    proxy.ontouchmove = self._onDomTouchEvent;
+                    proxy.ontouchmove = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmousemove = self._onDomOjUiEvent;
+                    proxy.onmousemove = this._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.OUT){
-                proxy.onmouseout = self._onDomOjUiEvent;
+                proxy.onmouseout = this._onDomOjUiEvent;
             }
             else if(type == OjUiEvent.OVER){
-                proxy.onmouseover = self._onDomOjUiEvent;
+                proxy.onmouseover = this._onDomOjUiEvent;
             }
             else if(type == OjUiEvent.UP){
                 if(is_touch){
-                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = self._onDomTouchEvent;
+                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmouseup = self._onDomOjUiEvent;
-                    proxy.oncontextmenu = self._onDomOjUiEvent;
+                    proxy.onmouseup = this._onDomOjUiEvent;
+                    proxy.oncontextmenu = this._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.UP_OUTSIDE){
                 if(is_touch){
-                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = self._onDomTouchEvent;
+                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmousedown = self._onDomOjUiEvent;
+                    proxy.onmousedown = this._onDomOjUiEvent;
                 }
             }
 
             // drag events
             else if(OjDragEvent.isDragEvent(type)){
-                self._draggable = true;
+                this._draggable = true;
 //
 //                if(is_touch){
 //                    proxy.ontouchstart = proxy.ontouchmove = proxy.ontouchend = this._onDomTouchEvent;
@@ -910,65 +905,58 @@ OJ.extendClass(
 //                    proxy.onmousedown = this._onDomOjUiEvent;
 //                }
 
-                self.addEventListener(OjUiEvent.DOWN, self, "_onDragStart");
+                this.addEventListener(OjUiEvent.DOWN, this, "_onDragStart");
             }
 
             // keyboard events
             else if(type == OjKeyboardEvent.DOWN){
-                proxy.onkeydown = self._onDomOjKeyboardEvent;
+                proxy.onkeydown = this._onDomOjKeyboardEvent;
             }
             else if(type == OjKeyboardEvent.PRESS){
-                proxy.onkeypress = self._onDomOjKeyboardEvent;
+                proxy.onkeypress = this._onDomOjKeyboardEvent;
             }
             else if(type == OjKeyboardEvent.UP){
-                proxy.onkeyup = self._onDomOjKeyboardEvent;
+                proxy.onkeyup = this._onDomOjKeyboardEvent;
             }
 
             // focus events
             else if(type == OjFocusEvent.IN){
-                proxy.onfocus = self._onDomOjFocusEvent;
+                proxy.onfocus = this._onDomOjFocusEvent;
                 //proxy.onfocusin = self._onDomOjFocusEvent;
             }
             else if(type == OjFocusEvent.OUT){
-                proxy.onblur = self._onDomOjFocusEvent;
+                proxy.onblur = this._onDomOjFocusEvent;
             }
 
             // transform events
             else if(type == OjTransformEvent.MOVE){
-                if(!self._move_timer){
-                    self._move_timer = new OjTimer(250, 0);
-                    self._move_timer.addEventListener(OjTimer.TICK, self, "_onMoveTick");
+                if(!this._move_timer){
+                    this._move_timer = new OjTimer(250, 0);
+                    this._move_timer.addEventListener(OjTimer.TICK, this, "_onMoveTick");
 
-                    self._prev_rect = self.rect;
+                    this._prev_rect = this.rect;
 
-                    self._move_timer.start();
+                    this._move_timer.start();
                 }
             }
-            else if(type == OjTransformEvent.RESIZE && self._proxy != document.body){
-                self._prev_rect = self.rect;
+            else if(type == OjTransformEvent.RESIZE && proxy != document.body){
+                this._prev_rect = this.rect;
 
-                new ResizeSensor(proxy, function(){
-                    var cls = OjTransformEvent,
-                        prev = self._prev_rect;
-
-                    self.dispatchEvent(new cls(cls.RESIZE, self._prev_rect = self.rect, prev));
-                });
+                OjStyleElement._resize_observer.observe(proxy);
             }
 
             // misc dom events
             else if(type == OjDomEvent.CHANGE){
-                proxy.onchange = self._onOjDomEvent;
+                proxy.onchange = this._onOjDomEvent;
             }
         },
 
         "addGestureRecognizer" : function(recognizer){
-            var self = this;
-
-            if(!recognizer || self.hasGestureRecognizer(recognizer)){
+            if(!recognizer || this.hasGestureRecognizer(recognizer)){
                 return;
             }
 
-            recognizer._add(self._setupHammer());
+            recognizer._add(this._setupHammer());
         },
 
         "hasGestureRecognizer" : function(recognizer){
@@ -976,7 +964,7 @@ OJ.extendClass(
         },
 
         "removeEventListener" : function(type, context, callback){
-            var proxy = this._getEventProxy();
+            const proxy = this._getEventProxy();
 
             this._super(OjElement, "removeEventListener", arguments);
 
@@ -1099,7 +1087,7 @@ OJ.extendClass(
             }
             else if(type == OjTransformEvent.RESIZE){
                 if(!this.hasEventListener(OjTransformEvent.RESIZE)){
-                    ResizeSensor.detach(proxy);
+                    OjStyleElement._resize_observer.unobserve(proxy);
                 }
             }
 
@@ -1203,7 +1191,7 @@ OJ.extendClass(
         },
 
         "removeAllChildren" : function(){
-            var ln = this.num_children,
+            let ln = this.num_children,
                 ary = [];
 
             for(; ln--;){
@@ -1216,7 +1204,7 @@ OJ.extendClass(
         "removeChild" : function(child){
             if(child){
                 // this will help exclude text elements
-                if(child.is(OjStyleElement)){
+                if(child.is(OjElement)){
                     try{
                         this.dom.removeChild(child.dom);
                     }
@@ -1301,8 +1289,11 @@ OJ.extendClass(
 
         // misc functions
         "blur" : function(){
-            if(isFunction(this._dom.blur)){
-                this._dom.blur();
+            try{
+                this.dom.blur();
+            }
+            catch(e){
+                // do nothing
             }
         },
 
@@ -1311,12 +1302,15 @@ OJ.extendClass(
                 query = "#" + query.id;
             }
 
-            return OJ.query(query, this._dom);
+            return OJ.query(query, this.dom);
         },
 
         "focus" : function(){
-            if(isFunction(this._dom.focus)){
-                this._dom.focus();
+            try{
+                this.dom.focus();
+            }
+            catch(e){
+                // do nothing
             }
         },
 
@@ -1331,12 +1325,10 @@ OJ.extendClass(
             }
         },
 
-        ".isVisible" : function(){
-            var self = this;
-
-            return self._getStyle("display") != OjStyleElement.NONE &&
-                   self._getStyle("visibility") != "hidden" &&
-                   self.alpha > 0 && self.width > 0 && self.height > 0;
+        ".is_visible" : function(){
+            return this._getStyle("display") != OjStyleElement.NONE &&
+                   this._getStyle("visibility") != "hidden" &&
+                   this.alpha > 0 && this.width > 0 && this.height > 0;
         },
 
         "show" : function(should){
@@ -1353,24 +1345,24 @@ OJ.extendClass(
 
         // single style getter & setter functions
         "_getStyleBackup" : function(style){
-            return this._proxy.style.getPropertyValue(style);
+            return this._getProxy().style.getPropertyValue(style);
         },
 
         "_getStyleIe" : function(style){
-            return this._proxy.currentStyle.getPropertyValue(style);
+            return this._getProxy().currentStyle.getPropertyValue(style);
         },
 
         "_getStyle" : function(style){
-            return document.defaultView.getComputedStyle(this._proxy, null).getPropertyValue(style);
+            return document.defaultView.getComputedStyle(this._getProxy(), null).getPropertyValue(style);
         },
         "_setStyle" : function(style, value){
             if(isSet(value)){
-                this._proxy.style.setProperty(style, value);
+                this._getProxy().style.setProperty(style, value);
 
                 return value;
             }
 
-            this._proxy.style.removeProperty(style);
+            this._getProxy().style.removeProperty(style);
 
             return null;
         },
@@ -1481,7 +1473,7 @@ OJ.extendClass(
 
         // Attribute Getter & Setter Functions
         "attr" : function(key, val){
-            var proxy = this._proxy;
+            const proxy = this._getProxy();
 
             // process the key incase its an attribute object
             if(isObject(key)){
@@ -1522,13 +1514,7 @@ OJ.extendClass(
                 return
             }
 
-            // unregister the old id
-            OjElement.unregister(this);
-
-            (this._proxy || {}).ojProxy = (this.dom || {}).id = this._id = val;
-
-            // register the new id
-            OjElement.register(this);
+            (this.dom || {}).id = this._id = val;
         },
 
         // Content Getter & Setter Functions
@@ -1538,9 +1524,11 @@ OJ.extendClass(
         "=text" : function(str){
             this.removeAllChildren();
 
-            this.dom.innerHTML = String.string(str).html();
+            if(!isObjective(str, OjTextElement)){
+                str = new OjTextElement(str);
+            }
 
-            // we may want to process this html, just a thought
+            this.dom.appendChild(str.dom);
         },
 
         // Css Functions
@@ -1599,7 +1587,7 @@ OJ.extendClass(
         },
 
         ".css" : function(){
-            return this._proxy.className.trim();
+            return this._getProxy().className.trim();
         },
 
         ".css_list" : function(){
@@ -1615,7 +1603,7 @@ OJ.extendClass(
         },
 
         "=css" : function(css){
-            return this._proxy.className = (isArray(css) ? css.join(" ") : css).trim();
+            return this._getProxy().className = (isArray(css) ? css.join(" ") : css).trim();
         },
 
         "swapCss" : function(target, replacement){
@@ -1629,7 +1617,7 @@ OJ.extendClass(
 
         // Focus Functions
         "hasFocus" : function(){
-            return this._dom.hasFocus;
+            return this.dom.hasFocus;
         },
 
         "hitTest" : function(elm, local){
@@ -1675,16 +1663,16 @@ OJ.extendClass(
             this.innerWidth = w - this.getPaddingLeft() - this.getPaddingRight() - this.getMarginLeft() - Math.abs(this.getMarginRight());
         },
 
-        ".width" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
+        ".width" : function(){
+            // const proxy = this._getProxy();
 
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
+            // if(arguments[0] == OjStyleElement.PERCENT){
+            //     const parent = proxy.offsetParent || proxy;
+            //
+            //     return (proxy.offsetWidth / parent.offsetWidth) * 100;
+            // }
 
-                return (this._proxy.offsetWidth / parent.offsetWidth) * 100;
-            }
-
-            return this._proxy.offsetWidth || this._getStyleNum("width");
+            return this._getProxy().offsetWidth || this._getStyleNum("width");
         },
         "_setWidth" : function(val){
             this._setStyle("width", val);
@@ -1719,15 +1707,7 @@ OJ.extendClass(
         },
 
         ".height" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-
-                return (this._proxy.offsetHeight / parent.offsetHeight) * 100;
-            }
-
-            return this._proxy.offsetHeight || this._getStyleNum("height");
+            return this._getProxy().offsetHeight || this._getStyleNum("height");
         },
         "_setHeight" : function(val){
             this._setStyle("height", val);
@@ -1749,22 +1729,16 @@ OJ.extendClass(
 
         // Style Getter & Setter Functions
         ".x" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-
-                return (this._proxy.offsetLeft / parent.offsetWidth) * 100;
-            }
-
-            return this._proxy.offsetLeft;
+            return this._getProxy().offsetLeft;
         },
         ".pageX" : function(){
-            if(this._proxy.getBoundingClientRect){
-                return this._proxy.getBoundingClientRect().left;
+            const proxy = this._getProxy();
+
+            if(proxy.getBoundingClientRect){
+                return proxy.getBoundingClientRect().left;
             }
 
-            // add backup solution
+            // todo: add backup solution
         },
         "=x" : function(val_or_tuple){
             this.left = val_or_tuple;
@@ -1773,20 +1747,14 @@ OJ.extendClass(
             this.left = this.parent.localX(val);
         },
 
-        ".y" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-
-                return (this._proxy.offsetTop / parent.offsetHeight) * 100;
-            }
-
-            return this._proxy.offsetTop;
+        ".y" : function(){
+            return this._getProxy().offsetTop;
         },
         ".pageY" : function(){
-            if(this._proxy.getBoundingClientRect){
-                return this._proxy.getBoundingClientRect().top;
+            const proxy = this._getProxy();
+
+            if(proxy.getBoundingClientRect){
+                return proxy.getBoundingClientRect().top;
             }
 
             // add backup solution
@@ -1842,6 +1810,10 @@ OJ.extendClass(
             this._depth = this._setStyle("zIndex", depth);
         },
 
+        ".first_child" : function(){
+            return this.getChildAt(0);
+        },
+
         ".font_color" : function(){
             return this._getStyle("color");
         },
@@ -1854,6 +1826,10 @@ OJ.extendClass(
         },
         "=font_size" : function(size){
             this._setStyleNum("font-size", size, OJ.font_unit);
+        },
+
+        ".last_child" : function(){
+            return this.getChildAt(this.num_children - 1);
         },
 
         ".left" : function(){
@@ -1901,34 +1877,34 @@ OJ.extendClass(
             this._setStyleNum("right", val, units);
         },
 
-        ".scrollHeight" : function(){
-            return this._proxy.scrollHeight;
+        ".scroll_height" : function(){
+            return this._getProxy().scrollHeight;
         },
-        "=scrollHeight" : function(val){
-            this._proxy.scrollHeight = val;
-        },
-
-        ".scrollWidth" : function(){
-            return this._proxy.scrollWidth;
-        },
-        "=scrollWidth" : function(val){
-            this._proxy.scrollWidth = val;
+        "=scroll_height" : function(val){
+            this._getProxy().scrollHeight = val;
         },
 
-        ".scrollX" : function(){
-            return this._proxy.scrollLeft;
+        ".scroll_width" : function(){
+            return this._getProxy().scrollWidth;
+        },
+        "=scroll_width" : function(val){
+            this._getProxy().scrollWidth = val;
         },
 
-        "=scrollX" : function(val){
-            this._proxy.scrollLeft = val;
+        ".scroll_x" : function(){
+            return this._getProxy().scrollLeft;
         },
 
-        ".scrollY" : function(){
-            return this._proxy.scrollTop;
+        "=scroll_x" : function(val){
+            this._getProxy().scrollLeft = val;
         },
 
-        "=scrollY" : function(val){
-            this._proxy.scrollTop = val;
+        ".scroll_y" : function(){
+            return this._getProxy().scrollTop;
+        },
+
+        "=scroll_y" : function(val){
+            this._getProxy().scrollTop = val;
         },
 
         ".top" : function(){
@@ -2012,6 +1988,10 @@ OJ.extendClass(
             this._updateTransform();
         },
 
+        ".tag" : function(){
+            return this.dom.tagName;
+        },
+
         ".translate" : function(){
             return this._translate;
         },
@@ -2033,7 +2013,7 @@ OJ.extendClass(
         "STYLE_IE" : "styleIE",
 
         "STYLE_MODE" : (function(){
-            var elm = OjElement.elm("div");
+            const elm = OjElement.elm("div");
 
             if(elm.currentStyle){
                 return "styleIE";
@@ -2064,6 +2044,17 @@ OJ.extendClass(
         "PERCENT" : "%",
         "PX" : "px",
         "EM" : "em",
+
+        "_resize_observer" : new ResizeObserver((entries, observer) => {
+            const cls = OjTransformEvent;
+
+            for (const entry of entries) {
+                const self = OjElement.element(entry.target),
+                    prev = self._prev_rect;
+
+                self.dispatchEvent(new cls(cls.RESIZE, self._prev_rect = self.rect, prev));
+            }
+        }),
 
 
         "getTagComponent" : function(tag){

@@ -261,8 +261,8 @@ OJ.extendManager(
 
         'positionTopLeft' : function(target, menu){
             return new OjRect(
-                    target.pageX - menu.horzOffset,
-                    target.pageY - menu.height - menu.vertOffset,
+                    target.pageX - menu.horz_offset,
+                    target.pageY - menu.height - menu.vert_offset,
                     menu.width,
                     menu.height
             );

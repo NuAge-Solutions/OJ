@@ -1,26 +1,25 @@
 OJ.extendComponent(
-    'OjLabel', [OjComponent],
+    "OjLabel", [OjComponent],
     {
-        '_props_' : {
-            'prefix' : null,
-            'suffix' : null
+        "_props_" : {
+            "prefix" : null,
+            "suffix" : null
         },
 
-        '_template' : '<label></label>',
+        "_template" : "<label></label>",
 
 
-        '_constructor' : function(text){
-            this._super(OjComponent, '_constructor', []);
+        "_constructor" : function(text){
+            this._super(OjComponent, "_constructor", []);
 
             this.text = text;
         },
 
-        '_processDomSourceChild' : function(){
-            var self = this,
-                child = self._super(OjComponent, '_processDomSourceChild', arguments);
+        "_processDomSourceChild" : function(){
+            const child = this._super(OjComponent, "_processDomSourceChild", arguments);
 
-            if(child && (child.is(OjTextElement) || child.is(OjLabel) || !child.is(OjComponent))){
-                self.text = child.text;
+            if(child && child.is(OjTextElement)){
+                this.text = child;
 
                 return;
             }
@@ -28,50 +27,40 @@ OJ.extendComponent(
             return child;
         },
 
-        //'_processDomSourceChildren' : function(dom_elm, component){
-        //    var txt = dom_elm.innerHTML;
-        //
-        //    if(!isEmpty(txt)){
-        //        this.text = String.string(this.text) + String.string(txt);
-        //
-        //        return;
-        //    }
-        //
-        //    return this._super(OjComponent, '_processDomSourceChildren', arguments);
-        //},
+        "_addSpan" : function(css, text, target){
+            const span = new OjStyleElement("<span class='" + css + "'></span>");
+            span.text = text;
 
-        '_redrawText' : function(){
-            var self = this,
-                prefix = String.string(self.prefix).html(),
-                suffix = String.string(self.suffix).html(),
-                txt = String.string(self.text).html();
+            target.appendChild(span);
+        },
+
+        "_redrawText" : function(target){
+            const prefix = this.prefix,
+                suffix = this.suffix,
+                text = this.text;
+
+            target = target || this;
+
+            target.removeAllChildren();
 
             if(prefix){
-                prefix = "<span class='prefix'>" + prefix + "</span>";
-            }
-
-            if(suffix){
-                suffix = "<span class='suffix'>" + suffix + "</span>";
+                this._addSpan("prefix", prefix, target);
             }
 
             if(prefix || suffix){
-                txt = "<span class='stem'>" + txt+ "</span>";
+                this._addSpan("stem", text, target);
+            }
+            else if(text){
+                target.appendChild(text);
             }
 
-            self.dom.innerHTML = prefix + txt + suffix;
+            if(suffix){
+                this._addSpan("suffix", suffix, target);
+            }
         },
 
-
-        'appendText' : function(str){
-            this.text = String.string(this.text) + String.string(str);
-        },
-
-        'prependText' : function(str){
-            this.text = String.string(str) + String.string(this.text);
-        },
-
-        'redraw' : function(){
-            if(this._super(OjComponent, 'redraw', arguments)){
+        "redraw" : function(){
+            if(this._super(OjComponent, "redraw", arguments)){
                 this._redrawText();
 
                 return true;
@@ -81,42 +70,42 @@ OJ.extendComponent(
         },
 
 
-        '=prefix' : function(val){
+        "=prefix" : function(val){
             if(this._prefix == val){
                 return;
             }
 
-            this._prefix = val;
+            this._prefix = isObjective(val, OjTextElement) ? val : new OjTextElement(val);
 
             this.redraw();
         },
 
-        '=suffix' : function(val){
+        "=suffix" : function(val){
             if(this._suffix == val){
                 return;
             }
 
-            this._suffix = val;
+            this._suffix = isObjective(val, OjTextElement) ? val : new OjTextElement(val);
 
             this.redraw();
         },
 
         // these are needed to override the OjStyleElement text getter/setter
-        '.text' : function(){
+        ".text" : function(){
             return this._text;
         },
 
-        '=text' : function(val){
+        "=text" : function(val){
             if(this._text == val){
                 return;
             }
 
-            this._text = val;
+            this._text = isObjective(val, OjTextElement) ? val : new OjTextElement(val);
 
             this.redraw();
         }
     },
     {
-        '_TAGS' : ['label']
+        "_TAGS" : ["label"]
     }
 );

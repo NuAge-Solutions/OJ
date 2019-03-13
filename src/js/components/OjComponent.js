@@ -23,9 +23,8 @@ OJ.extendClass(
 
 
         "_constructor" : function(){
-            var self = this,
-                args = [null, self],
-                template = self._template;
+            const args = [null, this],
+                template = this._template;
 
             // process the template if any
             if(template){
@@ -39,13 +38,13 @@ OJ.extendClass(
             }
 
             // call super constructor
-            self._super(OjStyleElement, "_constructor", args);
+            this._super(OjStyleElement, "_constructor", args);
 
             // add the class name inheritance as css classes
-            self._setCss();
+            this._setCss();
 
             // setup the container
-            self._setContainer(self.container || self);
+            this._setContainer(this.container || this);
         },
 
         "_destructor" : function(){
@@ -56,33 +55,28 @@ OJ.extendClass(
 
 
         "_disableUiEvents" : function(){
-            var self = this;
+            this.removeEventListener(OjUiEvent.DOWN, this, "_onUiDown");
+            this.removeEventListener(OjUiEvent.PRESS, this, "_onUiPress");
+            this.removeEventListener(OjUiEvent.OVER, this, "_onUiOver");
+            this.removeEventListener(OjUiEvent.OUT, this, "_onUiOut");
 
-            self.removeEventListener(OjUiEvent.DOWN, self, "_onUiDown");
-            self.removeEventListener(OjUiEvent.PRESS, self, "_onUiPress");
-            self.removeEventListener(OjUiEvent.OVER, self, "_onUiOver");
-            self.removeEventListener(OjUiEvent.OUT, self, "_onUiOut");
-
-            OJ.removeEventListener(OjUiEvent.MOVE, self, "_onUiMove");
-            OJ.removeEventListener(OjUiEvent.UP, self, "_onUiUp");
+            OJ.removeEventListener(OjUiEvent.MOVE, this, "_onUiMove");
+            OJ.removeEventListener(OjUiEvent.UP, this, "_onUiUp");
         },
 
         "_enableUiEvents" : function(){
-            var self = this;
-
-            self.addEventListener(OjUiEvent.DOWN, self, "_onUiDown");
-            self.addEventListener(OjUiEvent.PRESS, self, "_onUiPress");
-            self.addEventListener(OjUiEvent.OVER, self, "_onUiOver");
+            this.addEventListener(OjUiEvent.DOWN, this, "_onUiDown");
+            this.addEventListener(OjUiEvent.PRESS, this, "_onUiPress");
+            this.addEventListener(OjUiEvent.OVER, this, "_onUiOver");
         },
 
 
         "_onUiDown" : function(evt){
-            var self = this;
+            OJ.addEventListener(OjUiEvent.UP, this, "_onUiUp");
 
-            OJ.addEventListener(OjUiEvent.UP, self, "_onUiUp");
-            self.addEventListener(OjUiEvent.UP, self, "_onUiUp");
+            this.addEventListener(OjUiEvent.UP, this, "_onUiUp");
 
-            self.addCss("ui-down");
+            this.addCss("ui-down");
         },
 
         "_onUiMove" : function(evt){
@@ -96,11 +90,7 @@ OJ.extendClass(
         },
 
         "_onUiOut" : function(evt){
-            var self = this;
-
-            self.removeCss("ui-over");
-
-            self._updateIcon(self._icon);
+            this.removeCss("ui-over");
         },
 
         "_onUiOver" : function(evt){
@@ -190,13 +180,12 @@ OJ.extendClass(
 
         "_setDomSource" : function(dom, context){
             // setup our vars
-            var ary, prev, nm, val, ln, i,
-                is_body = (dom == document.body),
-                source = is_body ? this._dom : dom,
-                target = is_body ? dom : this._dom;
+            const is_body = (dom == document.body),
+                _dom = this.dom,
+                source = is_body ? _dom : dom,
+                target = is_body ? dom : _dom;
 
-            // prevent events from dispatching while we are setting everything up
-//            this._prevent_dispatch = true;
+            let ary, prev, nm, val, ln, i;
 
             // process dom attributes
             this._processDomSourceAttributes(dom, context);
@@ -240,11 +229,8 @@ OJ.extendClass(
                 }
             }
 
-            // reengage event dispatching now that everything is setup
-//            this._prevent_dispatch = false;
-
             // update our dom var to the target
-            this._dom = target;
+            target.__oj__ = this._id_;
 
             // process any template vars
             this._processTemplateVars();
@@ -397,7 +383,7 @@ OJ.extendClass(
 
                 this._unset("_fader");
             }
-            else if(this.isVisible){
+            else if(this.is_visible){
                 return;
             }
 
@@ -420,7 +406,7 @@ OJ.extendClass(
 
                 this._unset("_fader");
             }
-            else if(!this.isVisible){
+            else if(!this.is_visible){
                 return;
             }
 

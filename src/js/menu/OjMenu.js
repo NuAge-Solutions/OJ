@@ -6,26 +6,24 @@ OJ.extendClass(
     {
         '_props_' : {
             'content' : null,
-            'horzOffset' : null,
+            'horz_offset' : null,
             'positioning' : null,
-            'parentMenu' : null,
-            'vertOffset' : 0
+            'parent_menu' : null,
+            'vert_offset' : 0
         },
 
 
-        '_constructor' : function(/*content, positioning, parent_menu*/){
-            this._super(OjComponent, '_constructor', []);
+        "_constructor" : function(content, positioning, parent_menu){
+            this._super(OjComponent, "_constructor", []);
 
-            this._processArguments(arguments, {
-                'content' : null,
-                'positioning' : [
-                    OjMenu.RIGHT_MIDDLE, OjMenu.RIGHT_TOP, OjMenu.RIGHT_BOTTOM,
-                    OjMenu.LEFT_MIDDLE, OjMenu.LEFT_TOP, OjMenu.LEFT_BOTTOM,
-                    OjMenu.BOTTOM_LEFT, OjMenu.BOTTOM_CENTER, OjMenu.BOTTOM_RIGHT,
-                    OjMenu.TOP_LEFT, OjMenu.TOP_CENTER, OjMenu.TOP_RIGHT
-                ],
-                'parentMenu' : null
-            });
+            this._set("content", content);
+            this._set("positioning", positioning, [
+                OjMenu.RIGHT_MIDDLE, OjMenu.RIGHT_TOP, OjMenu.RIGHT_BOTTOM,
+                OjMenu.LEFT_MIDDLE, OjMenu.LEFT_TOP, OjMenu.LEFT_BOTTOM,
+                OjMenu.BOTTOM_LEFT, OjMenu.BOTTOM_CENTER, OjMenu.BOTTOM_RIGHT,
+                OjMenu.TOP_LEFT, OjMenu.TOP_CENTER, OjMenu.TOP_RIGHT
+            ]);
+            this._set("parent_menu", parent_menu);
         },
 
         '_destructor' : function(){
@@ -37,7 +35,7 @@ OJ.extendClass(
 
         'hasSubMenu' : function(menu){
             while(menu){
-                if((menu = menu.parentMenu) == this){
+                if((menu = menu.parent_menu) == this){
                     return true;
                 }
             }

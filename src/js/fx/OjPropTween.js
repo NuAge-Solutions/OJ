@@ -12,19 +12,15 @@ OJ.extendClass(
             "units" : null
         },
 
-        //'_callback' : null, '_delta' : null, '_from_cache' : null,
 
-
-        "_constructor" : function(/*target = null, to = null, duration = 500, easing = NONE, units = null*/){
+        "_constructor" : function(target, to, duration, easing, units){
             this._super(OjTween, "_constructor", []);
 
-            this._processArguments(arguments, {
-                "target" : undefined,
-                "to" : undefined,
-                "duration" : 250,
-                "easing" : OjEasing.NONE,
-                "units" : undefined
-            });
+            this._set("target", target);
+            this._set("to", to);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
+            this._set("units", units);
 
 //            var engine = OJ.getEngine();
 //
@@ -82,7 +78,7 @@ OJ.extendClass(
                 units = self.units;
 
             if(target && cache && delta){
-                for(let key in delta){
+                for(const key in delta){
                     const args = [
                         Math.round(
                             easing(time, cache[key], delta[key], duration, 0, 0) * 1000

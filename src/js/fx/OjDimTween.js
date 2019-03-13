@@ -11,21 +11,17 @@ OJ.extendClass(
         },
 
 
-        "_constructor" : function(/*target, direction, amount, duration, easing, units*/){
-            var self = this;
+        "_constructor" : function(target, direction, amount, duration, easing, units){
+            this._super(OjPropTween, "_constructor", []);
 
-            self._super(OjPropTween, "_constructor", []);
+            this._to = {};
 
-            self._to = {};
-
-            self._processArguments(arguments, {
-                "target" : undefined,
-                "direction" : self._static.BOTH,
-                "amount": undefined,
-                "duration" : 250,
-                "easing" : OjEasing.NONE,
-                "units" : OJ.dim_unit
-            });
+            this._set("target", target);
+            this._set("direction", direction, this._static.BOTH);
+            this._set("amount", amount);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
+            this._set("units", units, OJ.dim_unit);
         }
     },
     {

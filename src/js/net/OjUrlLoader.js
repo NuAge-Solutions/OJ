@@ -31,25 +31,21 @@ OJ.extendClass(
         //"_url" : null,  "_xhr" : null,
 
 
-        "_constructor" : function(/*request, async,*/){
+        "_constructor" : function(request, async){
             this._super(OjActionable, "_constructor", []);
 
-            this._processArguments(arguments, {
-                "request": undefined,
-                "async": undefined
-            });
+            this._set("request", request);
+            this._set("async", async);
         },
 
         "_destructor" : function(){
-            var self = this;
-
-            if(self._xhr){
-                self._cleanupXhr();
+            if(this._xhr){
+                this._cleanupXhr();
             }
 
-            self._unset("_request");
+            this._unset("_request");
 
-            return self._super(OjActionable, "_destructor", arguments);
+            return this._super(OjActionable, "_destructor", arguments);
         },
 
 
@@ -137,7 +133,7 @@ OJ.extendClass(
         },
 
         '_process_json_data' : function(data){
-            return toJson(data);
+            return toJson(OjObject.exportData(data));
         },
 
         '_process_multipart_data' : function(data){
@@ -274,7 +270,7 @@ OJ.extendClass(
             // clear the timeout timer
             OJ.destroy(self._timer);
 
-            var error = new OjIoError(OjIoError.IO_ERROR, xhr.statusText, xhr.status);
+            const error = new OjIoError(OjIoError.IO_ERROR, xhr.statusText, xhr.status);
 
             self.dispatchEvent(error);
             self.dispatchEvent(new OjEvent(OjEvent.FAIL));

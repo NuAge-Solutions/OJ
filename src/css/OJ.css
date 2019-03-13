@@ -1,3 +1,38 @@
+/* TODO: add handling for rotation */
+body {
+    --btm-inset: 0px;
+    --btm-nav: 50px;
+    --lft-inset: 0px;
+    --rht-inset: 0px;
+    --top-inset: 0px;
+    --top-nav: 44px;
+}
+body.is-ios, body.is-android {
+    --top-inset: 20px;
+    --top-nav: 64px;
+}
+body.is-ios.constant-support, body.is-android.constant-support {
+    --btm-inset: constant(safe-area-inset-bottom);
+    --btm-nav: calc(50px + var(--btm-inset));
+    --lft-inset: constant(safe-area-inset-left);
+    --rht-inset: constant(safe-area-inset-right);
+    --top-inset: constant(safe-area-inset-top);
+    --top-nav: calc(44px + var(--top-inset));
+}
+body.is-ios.env-support, body.is-android.env-support {
+    --btm-inset: env(safe-area-inset-bottom);
+    --btm-nav: calc(50px + var(--btm-inset));
+    --lft-inset: env(safe-area-inset-left);
+    --rht-inset: env(safe-area-inset-right);
+    --top-inset: env(safe-area-inset-top);
+    --top-nav: calc(44px + var(--top-inset));
+}
+body.is-mac {
+    --top-inset: 15px;
+    --top-nav: 70px;
+}
+
+
 /* Standard HTML Element Styles */
 *, *:before, *:after {
     position: relative;

@@ -67,6 +67,27 @@ Date.prototype.toQueryString = function(key){
 };
 
 String.prototype.parseQueryString = function(){
+    // const params = new URLSearchParams(this),
+    //     obj = {};
+    //
+    // let key, val, ln;
+    //
+    // for(key of params.keys()){
+    //     val = params.getAll(key);
+    //     ln = val.length;
+    //
+    //     if(!ln){
+    //         val = null;
+    //     }
+    //     else if(ln == 1){
+    //         val = val[0];
+    //     }
+    //
+    //     obj[key] = val;
+    // }
+    //
+    // return obj;
+
     var str = this, obj = {}, vars, ln, parts, i, ln2, tmp;
 
     if(str[0] == '?'){

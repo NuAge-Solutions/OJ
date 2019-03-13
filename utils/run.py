@@ -1,5 +1,6 @@
 import argparse
 import utils
+import utils.sh as sh
 
 from utils import *
 
@@ -66,7 +67,7 @@ def run(src_path):
     parser = argparse.ArgumentParser(description="Compile Objective-JS Package(s).")
 
     parser.add_argument(
-        "action", choices=["add", "build", "compile", "dist", "remove", "setup"], default="compile",
+        "action", choices=["add", "build", "compile", "dist", "remove", "setup", "install"], default="compile",
         help="The action to take when running the script."
     )
 
@@ -174,8 +175,11 @@ def run(src_path):
             )
 
             with ZipFile(os.path.join("builds", "dist", zip_name)) as zip:
-                print(destination)
                 zip.extractall(destination)
+
+    elif args.actino == "install":
+        sh.npm.install("-g", "uglify-es")
+        sh.npm.install("-g", "clean-css")
 
     elif args.action == "remove":
         # setup compiler instance

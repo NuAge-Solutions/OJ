@@ -1,39 +1,35 @@
-importJs('oj.window.OjAlertEvent');
-importJs('oj.window.OjModal');
-importJs('oj.components.OjButton');
-importJs('oj.components.OjLabel');
+importJs("oj.window.OjAlertEvent");
+importJs("oj.window.OjModal");
+importJs("oj.components.OjButton");
+importJs("oj.components.OjLabel");
 
 
 OJ.extendClass(
-    'OjAlert', [OjComponent],
+    "OjAlert", [OjComponent],
     {
-        '_props_' : {
-            'buttons' : null,
-            'callback' : null,
+        "_props_" : {
+            "buttons" : null,
+            "callback" : null,
             "cancel_callback" : null,
-            'cancel_label' : null,
-            'content' : null,
-            'pane_height' : null,
-            'pane_width' : null,
-            'self_destruct' : 0, // OjAlert.NONE
-            'title' : null
+            "cancel_label" : null,
+            "content" : null,
+            "pane_height" : null,
+            "pane_width" : null,
+            "self_destruct" : 0, // OjAlert.NONE
+            "title" : null
         },
 
-        '_template' : 'oj.window.OjAlert',
+        "_template" : "oj.window.OjAlert",
 
 
-        '_constructor' : function(/*content, title, buttons, cancel_label, callback*/){
-            var self = this;
+        "_constructor" : function(content, title, buttons, cancel_label, callback){
+            this._super(OjComponent, "_constructor", []);
 
-            self._super(OjComponent, '_constructor', []);
-
-            self._processArguments(arguments, {
-                'content' : undefined,
-                'title' : undefined,
-                'buttons' : undefined,
-                'cancel_label' : OjAlert.CANCEL,
-                'callback' : undefined
-            });
+            this._set("content", content);
+            this._set("title", title);
+            this._set("buttons", buttons);
+            this._set("cancel_label", cancel_label, OjAlert.CANCEL);
+            this._set("callback", callback);
         },
 
         "_redrawButtons" : function(){
@@ -47,40 +43,33 @@ OJ.extendClass(
             }
         },
 
-        '_destructor' : function(/*depth = 1*/){
+        "_destructor" : function(/*depth = 1*/){
             var args = arguments,
                 depth = args.length ? args[0] : 0;
 
             if(!depth){
-                // remove all the content so it doesn't get destroyed
+                // remove all the content so it doesn"t get destroyed
                 this.container.removeAllChildren();
             }
 
-            return this._super(OjComponent, '_destructor', arguments);
+            return this._super(OjComponent, "_destructor", arguments);
         },
 
 
-        '_onButtonClick' : function(evt){
-            var self = this,
-                callback = self.callback,
+        "_onButtonClick" : function(evt){
+            const self = this,
                 index = self.btns.indexOfChild(evt.current_target) - 1; // offset for cancel
 
             self.dispatchEvent( new OjAlertEvent(OjAlertEvent.BUTTON_PRESS, index) );
 
-            if(callback){
-                if(callback(index) === false){
-                    return;
-                }
-            }
-
-            WindowManager.hide(self);
+            self.complete(index);
         },
 
-        '_onCancelPress' : function(evt){
+        "_onCancelPress" : function(evt){
             this.cancel();
         },
 
-        'cancel' : function(){
+        "cancel" : function(){
             let callback = this.cancel_callback;
 
             if(callback){
@@ -95,28 +84,40 @@ OJ.extendClass(
 
             WindowManager.hide(this);
         },
+        
+        "complete" : function(button_index){
+            const callback = this.callback
 
-        'hideButtons' : function(){
-            this.addCss('no-buttons');
+            if(callback){
+                if(callback(button_index) === false){
+                    return;
+                }
+            }
+
+            WindowManager.hide(this);
+        },
+
+        "hideButtons" : function(){
+            this.addCss("no-buttons");
 
             this.btns.hide();
         },
 
-        'present' : function(){
+        "present" : function(){
             WindowManager.show(this);
         },
 
-        'showButtons' : function(){
-            this.removeCss('no-buttons');
+        "showButtons" : function(){
+            this.removeCss("no-buttons");
 
             this.btns.show();
         },
 
 
-        '.buttons' : function(){
+        ".buttons" : function(){
             return this._buttons ? this._buttons.clone() : [];
         },
-        '=buttons' : function(buttons){
+        "=buttons" : function(buttons){
             this._buttons = buttons = buttons ? buttons.clone() : [];
 
             var num_btns = buttons.length,
@@ -127,7 +128,7 @@ OJ.extendClass(
                 for(; diff > 0; ){
                     this.btns.insertChildAt(btn = OjButton.button(buttons[num_btns - (diff--)]), ln + 1);
 
-                    btn.addEventListener(OjUiEvent.PRESS, this, '_onButtonClick');
+                    btn.addEventListener(OjUiEvent.PRESS, this, "_onButtonClick");
                 }
             }
             else if(diff < 0){
@@ -145,10 +146,10 @@ OJ.extendClass(
             this._redrawButtons();
         },
 
-        '.cancel_label' : function(){
+        ".cancel_label" : function(){
             return this.cancel_btn.label;
         },
-        '=cancel_label' : function(label){
+        "=cancel_label" : function(label){
             var btn = this.cancel_btn;
 
             btn.label = label;
@@ -158,7 +159,7 @@ OJ.extendClass(
             this._redrawButtons();
         },
 
-        '=content' : function(content){
+        "=content" : function(content){
             var self = this,
                 container = self.container;
 
@@ -171,7 +172,7 @@ OJ.extendClass(
             self._content = content;
 
             if(isString(content)){
-                content = new OjStyleElement('<p>' + content.replaceAll('\n', '<br />') + '</p>');
+                content = new OjStyleElement("<p>" + content.replaceAll("\n", "<br />") + "</p>");
             }
 
             container.appendChild(content);
@@ -181,7 +182,7 @@ OJ.extendClass(
             }
         },
 
-        '=title' : function(title){
+        "=title" : function(title){
             if(this._title == title){
                 return;
             }
@@ -189,27 +190,27 @@ OJ.extendClass(
             this.bar.text = this._title = title;
         },
 
-        '.pane_height' : function(){
+        ".pane_height" : function(){
             return this.pane.height;
         },
-        '=pane_height' : function(val/*, unit*/){
+        "=pane_height" : function(val/*, unit*/){
             this.pane.height = Array.array(arguments);
         },
 
-        '.pane_width' : function(){
+        ".pane_width" : function(){
             return this.pane.width;
         },
-        '=pane_width' : function(val/*, unit*/){
+        "=pane_width" : function(val/*, unit*/){
             this.pane.width = Array.array(arguments);
         }
     },
     {
-        'NONE' : 0,
-        'SHALLOW' : 1,
-        'DEEP' : 2,
+        "NONE" : 0,
+        "SHALLOW" : 1,
+        "DEEP" : 2,
 
-        'OK' : 'Ok',
-        'CANCEL' : 'Cancel',
+        "OK" : "Ok",
+        "CANCEL" : "Cancel",
         "CANCEL_INDEX" : -1
     }
 );

@@ -1,14 +1,33 @@
-importJs('oj.events.OjDomEvent');
+importJs("oj.events.OjDomEvent");
 
 
 
 
 OJ.extendClass(
-    'OjKeyboardEvent', [OjDomEvent],
-    {},
+    "OjKeyboardEvent", [OjDomEvent],
     {
-        'convertDomEvent' : function(evt){
-            var type;
+        "_get_props_" : {
+            "key_code": null
+        },
+
+        "_constructor" : function(type, key_code, bubbles, cancelable){
+            this._super(OjDomEvent, "_constructor", [type, bubbles, cancelable]);
+
+            this._key_code = key_code;
+        },
+
+
+        "clone" : function(){
+            const clone = this._super(OjDomEvent, "clone", arguments);
+
+            clone._key_code = this._key_code;
+
+            return clone;
+        }
+    },
+    {
+        "convertDomEvent" : function(evt){
+            let type;
 
             evt = OjDomEvent.normalizeDomEvent(evt);
 
@@ -22,22 +41,22 @@ OJ.extendClass(
                 type = OjKeyboardEvent.UP;
             }
 
-            return new OjKeyboardEvent(type, true, true);
+            return new OjKeyboardEvent(type, evt.keyCode, true, true);
         },
 
-        'isKeyboardEvent' : function(type){
+        "isKeyboardEvent" : function(type){
             return type == OjKeyboardEvent.DOWN || type == OjKeyboardEvent.PRESS || type == OjKeyboardEvent.UP;
         },
 
-        'isKeyboardDomEvent' : function(type){
+        "isKeyboardDomEvent" : function(type){
             return type == OjDomEvent.KEY_DOWN || type == OjDomEvent.KEY_PRESS || type == OjDomEvent.KEY_UP;
         },
 
-        'DOWN'  : 'onKeyDown',
-        'PRESS' : 'onKeyPress',
-        'UP'    : 'onKeyUp',
+        "DOWN"  : "onKeyDown",
+        "PRESS" : "onKeyPress",
+        "UP"    : "onKeyUp",
 
-        'SHOW'  : 'onKeyboardShow',
-        'HIDE'  : 'onKeyboardHide'
+        "SHOW"  : "onKeyboardShow",
+        "HIDE"  : "onKeyboardHide"
     }
 );

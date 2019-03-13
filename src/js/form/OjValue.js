@@ -15,14 +15,12 @@ OJ.extendComponent(
         '_template' : 'oj.form.OjValue',
 
 
-        '_constructor' : function(/*name, label, value*/){
-            this._super(OjComponent, '_constructor', []);
+        "_constructor" : function(name, label, value){
+            this._super(OjComponent, "_constructor", []);
 
-            this._processArguments(arguments, {
-                'name' : null,
-                'label' : null,
-                'value' : null
-            });
+            this._set("name", name);
+            this._set("label", label);
+            this._set("value", value);
         },
 
 

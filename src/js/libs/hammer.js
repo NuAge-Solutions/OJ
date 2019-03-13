@@ -1,1 +1,1 @@
-../../bower_components/hammerjs/hammer.min.js
+../../node_modules/hammerjs/hammer.min.js

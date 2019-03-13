@@ -6,12 +6,10 @@ importJs('oj.components.OjButton');
 OJ.extendComponent(
     'OjImageButton', [OjButton],
     {
-        '_constructor' : function(/*image*/){
-            this._super(OjButton, '_constructor', []);
+        "_constructor" : function(icon){
+            this._super(OjButton, "_constructor", []);
 
-            this._processArguments(arguments, {
-                'icon' : null
-            });
+            this._set("icon", icon);
 
             this.removeChild(this.label);
         },

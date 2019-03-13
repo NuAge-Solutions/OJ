@@ -7,27 +7,27 @@ OJ.extendClass(
     'OjScrollEvent', [OjDomEvent],
     {
         '_get_props_' : {
-            'scrollX' : NaN,
-            'scrollY' : NaN
+            'scroll_x' : NaN,
+            'scroll_y' : NaN
         },
 
 
-        '_constructor' : function(type, scrollX, scrollY/*, bubbles, cancelable*/){
+        '_constructor' : function(type, scroll_x, scroll_y/*, bubbles, cancelable*/){
             var args = Array.array(arguments).slice(3);
             args.unshift(type);
 
             this._super(OjDomEvent, '_constructor', args);
 
-            this._scrollX = scrollX;
-            this._scrollY = scrollY;
+            this._scroll_x = scroll_x;
+            this._scroll_y = scroll_y;
         },
 
 
         'clone' : function(){
             var clone = this._super(OjDomEvent, 'clone', arguments);
 
-            clone._scrollX = this._scrollX;
-            clone._scrollY = this._scrollY;
+            clone._scroll_x = this._scroll_x;
+            clone._scroll_y = this._scroll_y;
 
             return clone;
         }

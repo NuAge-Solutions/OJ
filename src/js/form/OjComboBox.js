@@ -133,16 +133,15 @@ OJ.extendComponent(
             input.removeAllChildren();
 
             self._options.forEachReverse(function(item, i){
-                input.insertChildAt(
-                    new OjStyleElement(
-                        "<option value='{0}'{1}>{2}</option>".format(
-                            item.id,
-                            i == slctd_i ? " selected='selected'" : "",
-                            item.label
-                        )
-                    ),
-                    0
+                const option = new OjStyleElement(
+                    "<option value='{0}'{1}></option>".format(
+                        item.id,
+                        i == slctd_i ? " selected='selected'" : ""
+                    )
                 );
+                option.text = item.label;
+
+                input.insertChildAt(option, 0);
             });
         },
 

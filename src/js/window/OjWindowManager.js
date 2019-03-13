@@ -75,7 +75,7 @@ OJ.extendManager(
 
 
         '_calcWindowWidth' : function(width, fullscreen){
-            var vp = OJ.viewport;
+            const vp = OJ.viewport;
 
             if(fullscreen){
                 return vp.width;
@@ -138,31 +138,40 @@ OJ.extendManager(
             return false;
         },
 
-        '_transIn' : function(modal){
-            var anim = new OjFade(modal, OjFade.IN, 250),
-                pane = modal.pane,
-                h, y;
+        '_transIn' : function(modal, transition){
+            if(transition === false){
+                modal.dispatchEvent(new OjEvent(this.SHOW));
+            }
+            else{
+                let anim = new OjFade(modal, OjFade.IN, 250),
+                    pane = modal.pane,
+                    h, y;
 
-            // transition the alert/modal
-            anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
-            anim.start();
+                modal._setIsAnimating(true);
 
-            if(this._isMobileModal(modal)){
-                h = pane.height;
-                y = pane.y;
-
-                pane.y += h;
-
-                // transition the modal
-                anim = new OjMove(pane, OjMove.Y, y, anim.duration, OjEasing.OUT);
+                // transition the alert/modal
+                anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
                 anim.start();
+
+                if(this._isMobileModal(modal)){
+                    h = pane.height;
+                    y = pane.y;
+
+                    pane.y += h;
+
+                    // transition the modal
+                    anim = new OjMove(pane, OjMove.Y, y, anim.duration, OjEasing.OUT);
+                    anim.start();
+                }
             }
         },
 
         '_transOut' : function(modal){
-            var anim = new OjFade(modal, OjFade.OUT, 250),
+            let anim = new OjFade(modal, OjFade.OUT, 250),
                 pane = modal.pane,
                 h, y;
+
+            modal._setIsAnimating(true);
 
             // transition the alert/modal
             anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
@@ -188,7 +197,9 @@ OJ.extendManager(
         },
 
         '_onShow' : function(evt){
-            var modal = evt.current_target.target;
+            const modal = evt.current_target.target;
+
+            modal._setIsAnimating(false);
 
             // destroy tween
             evt = OJ.destroy(evt);
@@ -199,8 +210,10 @@ OJ.extendManager(
 
 
         '_onHide' : function(evt){
-            var holder = this._modal_holder,
+            const holder = this._modal_holder,
                 modal = evt.current_target.target;
+
+            modal._setIsAnimating(false);
 
             // remove the modal from the holder
             holder.removeChild(modal);
@@ -219,7 +232,7 @@ OJ.extendManager(
             modal.dispatchEvent(new OjEvent(this.HIDE));
 
             // check to see if this modal is self destructing
-            var destruct = modal.self_destruct;
+            const destruct = modal.self_destruct;
 
             if(destruct){
                 OJ.destroy(modal, destruct);
@@ -300,7 +313,7 @@ OJ.extendManager(
             return self.show(modal);
         },
 
-        'modal' : function(content, title, width, height, fullscreen){
+        'modal' : function(content, title, width, height, fullscreen, transition){
             var self = this,
                 args = arguments,
                 modal = self.makeModal.apply(self, args);
@@ -314,7 +327,7 @@ OJ.extendManager(
             modal.pane_width = self._calcWindowWidth(width, fullscreen);
             modal.pane_height = self._calcWindowHeight(height, fullscreen);
 
-            self.show(modal);
+            self.show(modal, null, transition);
 
             return modal;
         },
@@ -430,21 +443,24 @@ OJ.extendManager(
             return target;
         },
 
-        'show' : function(modal, depth){
+        'show' : function(modal, depth, transition){
             var holder = this._modal_holder;
 
             // store the modal
             this._modals.append(modal);
 
             // make sure the holder is visible
-            if(!holder.isVisible){
+            if(!holder.is_visible){
                 holder.addCss('active');
                 holder.show();
             }
 
             // prep the modal
             modal.show();
-            modal.alpha = 0;
+
+            if(transition !== false){
+                modal.alpha = 0;
+            }
 
             // add the modal
             if(isSet(depth)){
@@ -454,7 +470,7 @@ OJ.extendManager(
                 holder.appendChild(modal);
             }
 
-            this._transIn(modal);
+            this._transIn(modal, transition);
         },
 
         'showLoading' : function(/*message, icon*/){

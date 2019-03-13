@@ -1,49 +1,53 @@
-
-
 OJ.extendClass(
-    'OjTextElement', [OjElement],
+    "OjTextElement", [OjElement],
     {
-        '_props_' : {
-            'text' : null
+        "_props_" : {
+            'on_change' : null,
+            "text" : null
         },
 
-        '_constructor' : function(/*text*/){
-            var self = this,
-                args = arguments,
-                ln = args.length,
-                is_dom = ln && isDomElement(args[0]);
+        "_constructor" : function(text_or_dom){
+            const self = this,
+                is_dom = isDomElement(text_or_dom);
 
-            self._super(OjElement, '_constructor', is_dom ? [args[0]] : []);
+            self._super(OjElement, "_constructor", is_dom ? [text_or_dom] : []);
 
-            if(ln && !is_dom){
-                self.text = args[0];
+            if(!is_dom){
+                self.text = text_or_dom;
             }
         },
 
-        '_setDom' : function(dom_elm){
+        "_setDom" : function(dom_elm){
             // force text dom elm
             if(dom_elm.nodeName != "#text"){
                 dom_elm = document.createTextNode(dom_elm.innerText);
             }
 
-            this._super(OjElement, '_setDom', [dom_elm]);
+            return this._super(OjElement, "_setDom", [dom_elm]);
         },
 
+        "clone" : function(){
+            const obj = this._super(OjElement, "clone", arguments);
+            obj.on_change = this.on_change;
+            obj.text = this.text;
 
-        'appendText' : function(str){
-            this.dom.nodeValue += str.toString();
+            return obj;
         },
 
-        'prependText' : function(str){
-            this.dom.nodeValue = str.toString() + this.dom.nodeValue;
-        },
-
-
-        '.text' : function(){
+        "toString" : function(){
             return this.dom.nodeValue;
         },
-        '=text' : function(str){
+
+        ".text" : function(str){
+            return this.dom.nodeValue;
+        },
+
+        "=text" : function(str){
             this.dom.nodeValue = String.string(str);
+
+            if(this._on_change){
+                this._on_change(this);
+            }
         }
     }
 );

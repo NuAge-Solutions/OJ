@@ -122,7 +122,7 @@ function isObjectiveClass(cls){
     return isFunction(cls) && isSet(cls.TYPE_KEY);
 }
 function isElement(obj){
-    return isObjective(obj) && isSet(obj._dom);
+    return isObjective(obj) && isSet(obj.dom);
 }
 function isComponent(obj, cls){
     return isElement(obj) && isSet(obj._template) && (!cls || obj.is(cls));

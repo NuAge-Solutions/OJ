@@ -41,6 +41,11 @@ OJ.extendComponent(
         },
 
 
+        "_getItemId" : function(item, index){
+            return isObjective(item) ? item.oj_id : (isUnset(index) ? item.toString() : index)
+        },
+
+
         // event functions
         '_addItemListener' : function(type){
             // apply the event listener to all the rendered items if it hasn't already been
@@ -211,7 +216,7 @@ OJ.extendComponent(
             var self = this,
                 cls = self.item_renderer,
                 key, evt,
-                id = isObjective(item) ? item.oj_id : (isUnset(index) ? item.toString() : index);
+                id = self._getItemId(item, index);
 
             // if we have already rendered the item then just return the cached value
             if(self._rendered[id] || cached_only){
@@ -234,8 +239,13 @@ OJ.extendComponent(
         },
 
         'unrenderItem' : function(item){
-            var self = this,
-                id = item.oj_id,
+            this.unrenderItemAt(this._elms.indexOf(item));
+        },
+
+        'unrenderItemAt' : function(index){
+            const self = this,
+                item = this.elms[index],
+                id = self._getItemId(item, index),
                 elm = self._rendered[id];
 
             if(elm){
@@ -246,10 +256,6 @@ OJ.extendComponent(
                     OJ.destroy(elm);
                 }
             }
-        },
-
-        'unrenderItemAt' : function(index){
-            this.unrenderItem(this.elms[index]);
         },
 
 

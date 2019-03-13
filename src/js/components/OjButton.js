@@ -10,16 +10,14 @@ OJ.extendComponent(
         },
 
 
-        "_constructor" : function(/*label, icon, callback*/){
+        "_constructor" : function(text, icon, callback){
             this._super(OjLink, "_constructor", []);
 
             this.addCss("no-select");
 
-            this._processArguments(arguments, {
-                "text" : undefined,
-                "icon" : undefined,
-                "callback" : undefined
-            });
+            this._set("text", text);
+            this._set("icon", icon);
+            this._set("callback", callback);
         },
 
 
@@ -77,7 +75,7 @@ OJ.extendComponent(
                 return new cls(params[0], params[1], params[2]);
 			}
 
-			if(isObject(params)){
+			if(isObject(params) && !isObjective(params, OjTextElement)){
 			    return new cls(params.label, params.icon, params.callback);
 			}
 

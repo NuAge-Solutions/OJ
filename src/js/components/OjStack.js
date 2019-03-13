@@ -550,6 +550,7 @@ OJ.extendComponent(
 
                 // update the direction
                 // create the transition out animation
+
                 self._makeTransOut(direction = self._animationDirection(self._prev_index = self._active_index, val));
             }
             else{

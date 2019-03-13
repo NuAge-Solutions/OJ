@@ -1,32 +1,28 @@
-importJs('oj.components.OjComponent');
+importJs("oj.components.OjComponent");
 
 
 OJ.extendComponent(
-    'OjIcon', [OjComponent], {
-        '_props_' : {
-            'source' : null
+    "OjIcon", [OjComponent], {
+        "_props_" : {
+            "source" : null
         },
 
-        '_template' : '<i></i>',
+        "_template" : "<i></i>",
 
 
-        '_constructor' : function(icon_class){
-            var self = this,
-                args = arguments;
-
-            self._super(OjComponent, '_constructor', []);
+        "_constructor" : function(icon_class){
+            this._super(OjComponent, "_constructor", []);
 
             if(icon_class){
-                self.source = args.length == 1 ? icon_class : Array.array(args).join(' ');
+                this.source = arguments.length == 1 ? icon_class : Array.array(arguments).join(" ");
             }
         },
 
-        '_processDomSourceChild' : function(){
-            var self = this,
-                child = self._super(OjComponent, '_processDomSourceChild', arguments);
+        "_processDomSourceChild" : function(){
+            const child = this._super(OjComponent, "_processDomSourceChild", arguments);
 
             if(child && child.is(OjTextElement)){
-                self.source = child.text;
+                this.source = child.text;
 
                 return;
             }
@@ -34,28 +30,34 @@ OJ.extendComponent(
             return child;
         },
 
-        // '_setCss' : function(){
-        //     // don't do anything here
+        "clone" : function(){
+            const obj = this._super(OjComponent, "clone", arguments);
+            obj.source = this.source;
+
+            return obj;
+        },
+
+        // "_setCss" : function(){
+        //     // don"t do anything here
         // },
 
-        '=source' : function(val){
-            var self = this,
-                old = self._source;
+        "=source" : function(val){
+            const old = this._source;
 
             if(old == val){
                 return;
             }
 
             if(old){
-                self.removeCss(old);
+                this.removeCss(old);
             }
 
-            if(self._source = val){
-                self.addCss(val);
+            if(this._source = val){
+                this.addCss(val);
             }
         }
     },
     {
-        '_TAGS' : ['i', 'icon']
+        "_TAGS" : ["i", "icon"]
     }
 );

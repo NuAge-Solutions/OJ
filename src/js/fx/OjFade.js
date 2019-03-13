@@ -13,15 +13,13 @@ OJ.extendClass(
         '_force' : false,
 
 
-        '_constructor' : function(/*target = null, direction = IN, duration = 250, easing = NONE*/){
-            this._super(OjPropTween, '_constructor', []);
+        "_constructor" : function(target, direction, duration, easing){
+            this._super(OjPropTween, "_constructor", []);
 
-            this._processArguments(arguments, {
-                'target' : undefined,
-                'direction' : OjFade.IN,
-                'duration' : undefined,
-                'easing' : undefined
-            });
+            this._set("target", target);
+            this._set("direction", direction, OjFade.IN);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
         },
 
 
