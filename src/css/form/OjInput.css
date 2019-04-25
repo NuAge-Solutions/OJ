@@ -156,3 +156,12 @@
     .OjInput.grey > .wrapper > .label {
         padding-right: 5px;
     }
+
+/*.OjInput input:-webkit-autofill {*/
+    /*background-color: #FF0000;*/
+      /*animation-name: onAutoFillStart;*/
+      /*transition: background-color 1s ease-in-out 0s;*/
+/*}*/
+/*.OjInput input:not(:-webkit-autofill) {*/
+  /*animation-name: onAutoFillCancel;*/
+/*}*/

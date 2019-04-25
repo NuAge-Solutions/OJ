@@ -136,6 +136,8 @@ OJ.extendClass(
 
         '_onInputFocusOut' : function(evt){
             this.removeCss('focus');
+
+            this._onInputChange(evt);
         },
 
         '_onInputChange' : function(evt){
@@ -162,9 +164,11 @@ OJ.extendClass(
         },
 
         'isValid' : function(){
+            const val = this.value;
+
             this._errors = [];
 
-            if(this._required && isEmpty(this._value)){
+            if(this._required && isEmpty(val)){
                 this._errors.append(this._formatError(OjInput.REQUIRED_ERROR));
 
                 return false;
@@ -292,6 +296,12 @@ OJ.extendClass(
             if(this._name = nm){
                 this.addCss(nm.toLowerCase() + '-input');
             }
+
+            const input = this.input;
+
+            if(input){
+                this.input.attr("name", this._name);
+            }
         },
 
         '.notes' : function(){
@@ -356,21 +366,27 @@ OJ.extendClass(
             this._validators = Array.array(validators);
         },
 
-        '=value' : function(value){
-            var self = this;
+        ".value" : function(){
+            if(isEmpty(this._value)){
+                this._onInputChange(null);
+            }
 
-            if(value == self._value){
+            return this._value;
+        },
+
+        '=value' : function(value){
+            if(value == this._value){
                 return;
             }
 
-            self._value = value;
+            this._value = value;
 
-            self._redrawValue();
+            this._redrawValue();
 
-            self._redrawDefault();
+            this._redrawDefault();
 
-            if(self._ready){
-                self.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+            if(this._ready){
+                this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
             }
         }
     },

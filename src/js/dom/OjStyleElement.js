@@ -520,7 +520,7 @@ OJ.extendClass(
         },
 
         "_onOjDomEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
                 proxy._onEvent(OjDomEvent.convertDomEvent(evt));
@@ -528,7 +528,7 @@ OJ.extendClass(
         },
 
         "_onDomOjUiEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
                 evt = OjUiEvent.convertDomEvent(evt);
@@ -542,7 +542,7 @@ OJ.extendClass(
         },
 
         "_onDomOjKeyboardEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
                 proxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
@@ -550,7 +550,7 @@ OJ.extendClass(
         },
 
         "_onDomOjFocusEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
                 proxy._onEvent(OjFocusEvent.convertDomEvent(evt));
@@ -558,7 +558,7 @@ OJ.extendClass(
         },
 
         "_onDomScrollEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
                 proxy._onScroll(OjScrollEvent.convertDomEvent(evt));
@@ -566,7 +566,7 @@ OJ.extendClass(
         },
 
         "_onDomTouchEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
 
             if(proxy && proxy._processEvent(evt)){
                 return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
@@ -815,7 +815,7 @@ OJ.extendClass(
 
         "_updateTouchEndListeners" : function(){
             if(!this.hasEventListeners(OjUiEvent.UP, OjUiEvent.UP_OUTSIDE, OjUiEvent.PRESS, OjDragEvent.END)){
-                var proxy = this._getEventProxy();
+                const proxy = this._getEventProxy();
 
                 proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = null;
             }
@@ -948,6 +948,7 @@ OJ.extendClass(
             // misc dom events
             else if(type == OjDomEvent.CHANGE){
                 proxy.onchange = this._onOjDomEvent;
+                proxy.onanimationstart = this._onOjDomEvent;  // hack for autofill issues with some browsers
             }
         },
 
@@ -1095,6 +1096,7 @@ OJ.extendClass(
             else if(type == OjDomEvent.CHANGE){
                 if(!this.hasEventListener(OjDomEvent.CHANGE)){
                     proxy.onchange = null;
+                    proxy.onanimationstart = null;  // hack for autofill issues with some browsers
                 }
             }
         },
