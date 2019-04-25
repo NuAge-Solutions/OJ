@@ -1,3 +1,7 @@
+importJs("oj.libs.Hammer");
+importJs("oj.libs.HammerPropagating");
+importJs("oj.libs.ResizeObserver");
+
 /*
  * Import Core
  */

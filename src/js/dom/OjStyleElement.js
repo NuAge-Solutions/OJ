@@ -11,9 +11,6 @@ importJs("oj.events.OjUiEvent");
 importJs("oj.events.OjScrollEvent");
 importJs("oj.events.OjTouchEvent");
 importJs("oj.events.OjTransformEvent");
-importJs("oj.libs.Hammer");
-importJs("oj.libs.HammerPropagating");
-importJs("oj.libs.ResizeObserver");
 
 
 OJ.extendClass(
