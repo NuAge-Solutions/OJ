@@ -1,4 +1,39 @@
 
+/* TODO: add handling for rotation */
+body {
+    --btm-inset: 0px;
+    --btm-nav: 50px;
+    --lft-inset: 0px;
+    --rht-inset: 0px;
+    --top-inset: 0px;
+    --top-nav: 44px;
+}
+body.is-ios, body.is-android {
+    --top-inset: 20px;
+    --top-nav: 64px;
+}
+body.is-ios.constant-support, body.is-android.constant-support {
+    --btm-inset: constant(safe-area-inset-bottom);
+    --btm-nav: calc(50px + var(--btm-inset));
+    --lft-inset: constant(safe-area-inset-left);
+    --rht-inset: constant(safe-area-inset-right);
+    --top-inset: constant(safe-area-inset-top);
+    --top-nav: calc(44px + var(--top-inset));
+}
+body.is-ios.env-support, body.is-android.env-support {
+    --btm-inset: env(safe-area-inset-bottom);
+    --btm-nav: calc(50px + var(--btm-inset));
+    --lft-inset: env(safe-area-inset-left);
+    --rht-inset: env(safe-area-inset-right);
+    --top-inset: env(safe-area-inset-top);
+    --top-nav: calc(44px + var(--top-inset));
+}
+body.is-mac {
+    --top-inset: 15px;
+    --top-nav: 70px;
+}
+
+
 /* Standard HTML Element Styles */
 *, *:before, *:after {
     position: relative;
@@ -138,6 +173,12 @@ body.is-mobile, body.is-tablet {
     -webkit-flex-direction: row;
     flex-direction: row;
 }
+[flex-h].reverse,
+.OjComponent[flex-h].reverse {
+    -ms-flex-direction: row-reverse;
+    -webkit-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+}
 
 [flex-v],
 .OjComponent[flex-v] {
@@ -150,6 +191,12 @@ body.is-mobile, body.is-tablet {
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
     flex-direction: column;
+}
+[flex-v].reverse,
+.OjComponent[flex-v].reverse {
+    -ms-flex-direction: column-reverse;
+    -webkit-flex-direction: column-reverse;
+    flex-direction: column-reverse;
 }
 
 
@@ -186,10 +233,10 @@ a, blockquote, label, p, pre {
 .table {
     display: table;
 }
-.row {
+.table .row {
     display: table-row;
 }
-.cell {
+.table .cell {
     display: table-cell;
 }
 
@@ -480,7 +527,7 @@ a, blockquote, label, p, pre {
     text-align: center;
 }.OjLabel {
     text-overflow: ellipsis;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }.flow-nav-controller {
     display: block;
 
@@ -490,8 +537,8 @@ a, blockquote, label, p, pre {
 
     overflow: hidden;
 }
-    .flow-nav-controller > .top,
-    .flow-nav-controller > .bottom {
+    .flow-nav-controller > .top_bar,
+    .flow-nav-controller > .bottom_bar {
         position: absolute;
 
         top: 0px;
@@ -581,7 +628,7 @@ a, blockquote, label, p, pre {
     }.OjLink {
     cursor: pointer;
 
-    overflow: hidden;
+    /*overflow: hidden;*/
     text-overflow: ellipsis;
 
     -webkit-justify-content: center;
@@ -610,7 +657,14 @@ a, blockquote, label, p, pre {
     }
     .OjLink.no-label > .lbl {
         display: none;
-    }.OjButton {
+    }
+    .OjLink.reverse > .icn {
+        padding-left: 5px;
+        padding-right: 0px;
+    }
+        .OjLink > .icn > * {
+            display: block;
+        }.OjButton {
     padding: 2px 10px;
 
     -webkit-justify-content: center;
@@ -751,9 +805,34 @@ a, blockquote, label, p, pre {
                 flex-grow: 1;
                 -webkit-flex-grow: 1;
             }
+            .OjAlert > .pane > .btns > :nth-child(2) {
+                padding-left: 15px;
+                border-top-left-radius: 3px;
+                border-bottom-left-radius: 3px;
+            }
             .OjAlert > .pane > .btns > :last-child {
                 margin-right: 0px;
-            }.OjModal {
+                padding-right: 15px;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
+            }
+            .OjAlert > .pane > .btns > .cancel_btn {
+                margin-right: 10px;
+                border-radius: 3px;
+            }
+
+
+.OjView > .OjNavStack {
+    position: absolute;
+
+    top: 60px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+
+
+.OjModal {
     -webkit-align-content: center;
     align-content: center;
 
@@ -773,10 +852,16 @@ a, blockquote, label, p, pre {
 
         border: none;
     }
-    .is-mobile .OjModal > .pane,
-    .OjModal.fullscreen > .pane {
-        width: 100%;
-        height: 100%;
+    .OjModal.fullscreen:not(.animating) > .pane {
+        position: absolute !important;
+
+        top: 0px !important;
+        left: 0px !important;
+        right: 0px !important;
+        bottom: 0px !important;
+
+        width: 100% !important;
+        height: 100% !important;
     }
         .OjModal > .pane > .bar {
             position: absolute;
@@ -799,12 +884,12 @@ a, blockquote, label, p, pre {
 
             overflow: hidden;
         }
-        .is-ios .OjModal.fullscreen > .pane > .bar {
-            height: 65px;
+        .OjModal.fullscreen > .pane > .bar {
+            height: var(--top-nav);
         }
-            .is-ios .OjModal.fullscreen > .pane > .bar .bottom,
-            .is-ios .OjModal.fullscreen > .pane > .bar .top {
-                top: 20px;
+            .OjModal.fullscreen > .pane > .bar .bottom_bar,
+            .OjModal.fullscreen > .pane > .bar .top_bar {
+                top: var(--top-inset);
             }
 
             .OjModal > .pane > .bar .title {
@@ -813,6 +898,14 @@ a, blockquote, label, p, pre {
                 font-weight: bold;
                 text-shadow: 1px 1px 1px #DDDDDD;
                 text-align: center;
+            }
+            .OjModal.fullscreen > .pane > .bar .title {
+                font-size: 24px;
+
+                padding-bottom: 15px;
+            }
+            .is-mobile .OjModal.fullscreen > .pane > .bar .title {
+                padding-bottom: 0px;
             }
 
         .OjModal > .pane > .content {
@@ -834,8 +927,8 @@ a, blockquote, label, p, pre {
 
             overflow: hidden;
         }
-        .is-ios .OjModal.fullscreen > .pane > .content {
-            top: 66px;
+        .OjModal.fullscreen > .pane > .content {
+            top: calc(var(--top-nav) + 1px);
         }
         .OjModal.no-buttons > .pane > .content {
             bottom: 0px;
@@ -846,15 +939,14 @@ a, blockquote, label, p, pre {
 
             -webkit-overflow-scrolling: touch;
         }
+            .OjModal > .pane > .content > .OjView {
+                max-width: 100%;
+                max-height: 100%;
 
-        .OjModal > .pane > .content > .OjView {
-            max-width: 100%;
-            max-height: 100%;
-
-            -ms-overflow-style: none;
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+                -ms-overflow-style: none;
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
+            }
 
         .OjModal > .pane > .buttons {
             position: absolute;
@@ -882,9 +974,17 @@ a, blockquote, label, p, pre {
 .OjList.horz {
     -webkit-flex-flow: row wrap;
     flex-flow: row wrap;
+
+    -ms-overflow-style: none;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 .OjList.vert {
     display: block;
+
+    -ms-overflow-style: none;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }.OjItemEditor {
     
 }
@@ -944,14 +1044,17 @@ a, blockquote, label, p, pre {
     overflow: visible;
 }
 .OjInput .wrapper {
-    display: table;
+    display: flex;
 
     width: 100%;
     height: 100%;
 
     background: #F7F7F7;
 
-    vertical-align: middle;
+    flex-wrap: nowrap;
+
+    align-items: center;
+    justify-content: space-between;
 }
 .OjInput .wrapper:hover {
     border-color: #AAAAAA;
@@ -963,10 +1066,6 @@ a, blockquote, label, p, pre {
     border-color: #ED541D;
 }
     .OjInput .wrapper > * {
-        display: table-cell;
-
-        height: 26px;
-
         margin: 0px;
         padding: 0px;
 
@@ -994,6 +1093,9 @@ a, blockquote, label, p, pre {
     }
 
     .OjInput .psuedoInput {
+        display: flex;
+        align-items: center;
+
         width: 100%;
         height: 100%;
 
@@ -1008,6 +1110,7 @@ a, blockquote, label, p, pre {
         .OjInput .stem {
             display: block;
 
+            width: 100%;
             height: 100%;
 
             min-width: 10px;
@@ -1017,13 +1120,12 @@ a, blockquote, label, p, pre {
         }
             .OjInput .input {
                 display: block;
-                position: absolute;
-
-                top: 0px;
-                left: 0px;
 
                 width: 100%;
                 height: 100%;
+
+                min-width: 26px; /* this is a hack bug fix for ios safari */
+                min-height: 26px; /* this is a hack bug fix for ios safari */
 
                 margin: 0px;
                 padding: 0px;
@@ -1083,7 +1185,16 @@ a, blockquote, label, p, pre {
     }
     .OjInput.grey > .wrapper > .label {
         padding-right: 5px;
-    }.OjComboBox {}
+    }
+
+/*.OjInput input:-webkit-autofill {*/
+    /*background-color: #FF0000;*/
+      /*animation-name: onAutoFillStart;*/
+      /*transition: background-color 1s ease-in-out 0s;*/
+/*}*/
+/*.OjInput input:not(:-webkit-autofill) {*/
+  /*animation-name: onAutoFillCancel;*/
+/*}*/.OjComboBox {}
     .OjComboBox > .wrapper > .psuedoInput .OjButton {
         display: inline-block;
 
@@ -1102,7 +1213,12 @@ a, blockquote, label, p, pre {
         margin: 0px;
         padding: 0px;
     }
-        .OjComboBox > .wrapper > .psuedoInput .value {
+        .OjComboBox > .wrapper > .psuedoInput > .stem > .input {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .OjComboBox > .wrapper > .psuedoInput > .stem > .value {
             color: #333333;
             font-family: Helvetica, Arial, sans-serif;
             font-size: 16px;
@@ -1315,8 +1431,11 @@ a, blockquote, label, p, pre {
                         -moz-border-radius: 0px;
                         border-radius: 0px;
                     }
-                        .OjSelector > .wrapper > .psuedoInput > .stem > .input > .items > .OjItemRenderer {
+                        .OjSelector > .wrapper > .psuedoInput > .stem > .input > .OjItemRenderer {
                             padding: 5px 0px;
+                        }
+                        .OjSelector > .wrapper > .psuedoInput > .stem > .input.vert > .OjItemRenderer {
+                            display: block;
                         }
 
 .OjSelector .options {
@@ -1349,13 +1468,16 @@ a, blockquote, label, p, pre {
         box-shadow:         none;
     }
         .OjSwitch.OjInput > .wrapper > .psuedoInput {
+            width: 50px;
+            height: 30px;
+
             background: transparent;
 
             -webkit-border-radius: 15px;
             -moz-border-radius: 15px;
             border-radius: 15px;
 
-            border: 2px solid;
+            border: 1px solid;
         }
         .OjSwitch.OjInput.off > .wrapper > .psuedoInput {
             border-color: #DDD
@@ -1413,9 +1535,9 @@ a, blockquote, label, p, pre {
 
                     top: 0px;
 
-                    width: 26px;
-                    height: 26px;
-                    min-height: 26px;
+                    width: 28px;
+                    height: 28px;
+                    min-height: 28px;
 
                     margin: 0px;
 
@@ -1631,9 +1753,11 @@ a, blockquote, label, p, pre {
         vertical-align: middle;
     }
 
-.OjTabNavController {}
+.OjTabNavController {
+    flex-wrap: nowrap;
+}
     .OjTabNavController > .OjButton {
-        max-width: 140px;
+        width: 100%;
         height: 46px;
 
         padding: 0px 20px;
@@ -1646,20 +1770,33 @@ a, blockquote, label, p, pre {
         box-shadow:         none;
 
         text-align: center;
+
+        flex-grow: 1;
+        flex-shrink: 1;
     }
     .OjTabNavController > .OjButton.active {
         background: rgba(255, 255, 255, 0.15);
     }
 
-        .OjTabNavController > .OjButton > .icon {
+        .OjTabNavController > .OjButton > .icn {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
             width: 30px;
             height: 30px;
 
             margin: 0px;
-            padding: 1px 0px;
-        }
+            padding: 0px 0px 1px;
 
-        .OjTabNavController > .OjButton > .label {
+            font-size: 30px;
+        }
+            .OjTabNavController > .OjButton > .icn > * {
+                display: block;
+            }
+
+        .OjTabNavController > .OjButton > .lbl {
             display: block;
 
             margin: 0px;
@@ -1670,6 +1807,6 @@ a, blockquote, label, p, pre {
             font-weight: normal;
             text-align: center;
         }
-        .OjTabNavController > .OjButton.active > .label {
+        .OjTabNavController > .OjButton.active > .lbl {
             color: #FFF;
         }

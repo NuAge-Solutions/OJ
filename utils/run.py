@@ -177,9 +177,10 @@ def run(src_path):
             with ZipFile(os.path.join("builds", "dist", zip_name)) as zip:
                 zip.extractall(destination)
 
-    elif args.actino == "install":
+    elif args.action == "install":
         sh.npm.install("-g", "uglify-es")
         sh.npm.install("-g", "clean-css")
+        sh.npm.install("-g", "clean-css-cli")
 
     elif args.action == "remove":
         # setup compiler instance

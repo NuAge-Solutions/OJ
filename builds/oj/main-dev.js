@@ -1,86 +1,1162 @@
-!function(a,b){"object"==typeof exports&&"undefined"!=typeof module?module.exports=b():"function"==typeof define&&define.amd?define(b):a.moment=b()}(this,function(){"use strict";function a(){return Rd.apply(null,arguments)}function b(a){Rd=a}function c(a){return"[object Array]"===Object.prototype.toString.call(a)}function d(a){return a instanceof Date||"[object Date]"===Object.prototype.toString.call(a)}function e(a,b){var c,d=[];for(c=0;c<a.length;++c)d.push(b(a[c],c));return d}function f(a,b){return Object.prototype.hasOwnProperty.call(a,b)}function g(a,b){for(var c in b)f(b,c)&&(a[c]=b[c]);return f(b,"toString")&&(a.toString=b.toString),f(b,"valueOf")&&(a.valueOf=b.valueOf),a}function h(a,b,c,d){return Da(a,b,c,d,!0).utc()}function i(){return{empty:!1,unusedTokens:[],unusedInput:[],overflow:-2,charsLeftOver:0,nullInput:!1,invalidMonth:null,invalidFormat:!1,userInvalidated:!1,iso:!1}}function j(a){return null==a._pf&&(a._pf=i()),a._pf}function k(a){if(null==a._isValid){var b=j(a);a._isValid=!(isNaN(a._d.getTime())||!(b.overflow<0)||b.empty||b.invalidMonth||b.invalidWeekday||b.nullInput||b.invalidFormat||b.userInvalidated),a._strict&&(a._isValid=a._isValid&&0===b.charsLeftOver&&0===b.unusedTokens.length&&void 0===b.bigHour)}return a._isValid}function l(a){var b=h(NaN);return null!=a?g(j(b),a):j(b).userInvalidated=!0,b}function m(a){return void 0===a}function n(a,b){var c,d,e;if(m(b._isAMomentObject)||(a._isAMomentObject=b._isAMomentObject),m(b._i)||(a._i=b._i),m(b._f)||(a._f=b._f),m(b._l)||(a._l=b._l),m(b._strict)||(a._strict=b._strict),m(b._tzm)||(a._tzm=b._tzm),m(b._isUTC)||(a._isUTC=b._isUTC),m(b._offset)||(a._offset=b._offset),m(b._pf)||(a._pf=j(b)),m(b._locale)||(a._locale=b._locale),Td.length>0)for(c in Td)d=Td[c],e=b[d],m(e)||(a[d]=e);return a}function o(b){n(this,b),this._d=new Date(null!=b._d?b._d.getTime():NaN),Ud===!1&&(Ud=!0,a.updateOffset(this),Ud=!1)}function p(a){return a instanceof o||null!=a&&null!=a._isAMomentObject}function q(a){return 0>a?Math.ceil(a):Math.floor(a)}function r(a){var b=+a,c=0;return 0!==b&&isFinite(b)&&(c=q(b)),c}function s(a,b,c){var d,e=Math.min(a.length,b.length),f=Math.abs(a.length-b.length),g=0;for(d=0;e>d;d++)(c&&a[d]!==b[d]||!c&&r(a[d])!==r(b[d]))&&g++;return g+f}function t(){}function u(a){return a?a.toLowerCase().replace("_","-"):a}function v(a){for(var b,c,d,e,f=0;f<a.length;){for(e=u(a[f]).split("-"),b=e.length,c=u(a[f+1]),c=c?c.split("-"):null;b>0;){if(d=w(e.slice(0,b).join("-")))return d;if(c&&c.length>=b&&s(e,c,!0)>=b-1)break;b--}f++}return null}function w(a){var b=null;if(!Vd[a]&&"undefined"!=typeof module&&module&&module.exports)try{b=Sd._abbr,require("./locale/"+a),x(b)}catch(c){}return Vd[a]}function x(a,b){var c;return a&&(c=m(b)?z(a):y(a,b),c&&(Sd=c)),Sd._abbr}function y(a,b){return null!==b?(b.abbr=a,Vd[a]=Vd[a]||new t,Vd[a].set(b),x(a),Vd[a]):(delete Vd[a],null)}function z(a){var b;if(a&&a._locale&&a._locale._abbr&&(a=a._locale._abbr),!a)return Sd;if(!c(a)){if(b=w(a))return b;a=[a]}return v(a)}function A(a,b){var c=a.toLowerCase();Wd[c]=Wd[c+"s"]=Wd[b]=a}function B(a){return"string"==typeof a?Wd[a]||Wd[a.toLowerCase()]:void 0}function C(a){var b,c,d={};for(c in a)f(a,c)&&(b=B(c),b&&(d[b]=a[c]));return d}function D(a){return a instanceof Function||"[object Function]"===Object.prototype.toString.call(a)}function E(b,c){return function(d){return null!=d?(G(this,b,d),a.updateOffset(this,c),this):F(this,b)}}function F(a,b){return a.isValid()?a._d["get"+(a._isUTC?"UTC":"")+b]():NaN}function G(a,b,c){a.isValid()&&a._d["set"+(a._isUTC?"UTC":"")+b](c)}function H(a,b){var c;if("object"==typeof a)for(c in a)this.set(c,a[c]);else if(a=B(a),D(this[a]))return this[a](b);return this}function I(a,b,c){var d=""+Math.abs(a),e=b-d.length,f=a>=0;return(f?c?"+":"":"-")+Math.pow(10,Math.max(0,e)).toString().substr(1)+d}function J(a,b,c,d){var e=d;"string"==typeof d&&(e=function(){return this[d]()}),a&&($d[a]=e),b&&($d[b[0]]=function(){return I(e.apply(this,arguments),b[1],b[2])}),c&&($d[c]=function(){return this.localeData().ordinal(e.apply(this,arguments),a)})}function K(a){return a.match(/\[[\s\S]/)?a.replace(/^\[|\]$/g,""):a.replace(/\\/g,"")}function L(a){var b,c,d=a.match(Xd);for(b=0,c=d.length;c>b;b++)$d[d[b]]?d[b]=$d[d[b]]:d[b]=K(d[b]);return function(e){var f="";for(b=0;c>b;b++)f+=d[b]instanceof Function?d[b].call(e,a):d[b];return f}}function M(a,b){return a.isValid()?(b=N(b,a.localeData()),Zd[b]=Zd[b]||L(b),Zd[b](a)):a.localeData().invalidDate()}function N(a,b){function c(a){return b.longDateFormat(a)||a}var d=5;for(Yd.lastIndex=0;d>=0&&Yd.test(a);)a=a.replace(Yd,c),Yd.lastIndex=0,d-=1;return a}function O(a,b,c){qe[a]=D(b)?b:function(a,d){return a&&c?c:b}}function P(a,b){return f(qe,a)?qe[a](b._strict,b._locale):new RegExp(Q(a))}function Q(a){return R(a.replace("\\","").replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g,function(a,b,c,d,e){return b||c||d||e}))}function R(a){return a.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")}function S(a,b){var c,d=b;for("string"==typeof a&&(a=[a]),"number"==typeof b&&(d=function(a,c){c[b]=r(a)}),c=0;c<a.length;c++)re[a[c]]=d}function T(a,b){S(a,function(a,c,d,e){d._w=d._w||{},b(a,d._w,d,e)})}function U(a,b,c){null!=b&&f(re,a)&&re[a](b,c._a,c,a)}function V(a,b){return new Date(Date.UTC(a,b+1,0)).getUTCDate()}function W(a,b){return c(this._months)?this._months[a.month()]:this._months[Be.test(b)?"format":"standalone"][a.month()]}function X(a,b){return c(this._monthsShort)?this._monthsShort[a.month()]:this._monthsShort[Be.test(b)?"format":"standalone"][a.month()]}function Y(a,b,c){var d,e,f;for(this._monthsParse||(this._monthsParse=[],this._longMonthsParse=[],this._shortMonthsParse=[]),d=0;12>d;d++){if(e=h([2e3,d]),c&&!this._longMonthsParse[d]&&(this._longMonthsParse[d]=new RegExp("^"+this.months(e,"").replace(".","")+"$","i"),this._shortMonthsParse[d]=new RegExp("^"+this.monthsShort(e,"").replace(".","")+"$","i")),c||this._monthsParse[d]||(f="^"+this.months(e,"")+"|^"+this.monthsShort(e,""),this._monthsParse[d]=new RegExp(f.replace(".",""),"i")),c&&"MMMM"===b&&this._longMonthsParse[d].test(a))return d;if(c&&"MMM"===b&&this._shortMonthsParse[d].test(a))return d;if(!c&&this._monthsParse[d].test(a))return d}}function Z(a,b){var c;return a.isValid()?"string"==typeof b&&(b=a.localeData().monthsParse(b),"number"!=typeof b)?a:(c=Math.min(a.date(),V(a.year(),b)),a._d["set"+(a._isUTC?"UTC":"")+"Month"](b,c),a):a}function $(b){return null!=b?(Z(this,b),a.updateOffset(this,!0),this):F(this,"Month")}function _(){return V(this.year(),this.month())}function aa(a){return this._monthsParseExact?(f(this,"_monthsRegex")||ca.call(this),a?this._monthsShortStrictRegex:this._monthsShortRegex):this._monthsShortStrictRegex&&a?this._monthsShortStrictRegex:this._monthsShortRegex}function ba(a){return this._monthsParseExact?(f(this,"_monthsRegex")||ca.call(this),a?this._monthsStrictRegex:this._monthsRegex):this._monthsStrictRegex&&a?this._monthsStrictRegex:this._monthsRegex}function ca(){function a(a,b){return b.length-a.length}var b,c,d=[],e=[],f=[];for(b=0;12>b;b++)c=h([2e3,b]),d.push(this.monthsShort(c,"")),e.push(this.months(c,"")),f.push(this.months(c,"")),f.push(this.monthsShort(c,""));for(d.sort(a),e.sort(a),f.sort(a),b=0;12>b;b++)d[b]=R(d[b]),e[b]=R(e[b]),f[b]=R(f[b]);this._monthsRegex=new RegExp("^("+f.join("|")+")","i"),this._monthsShortRegex=this._monthsRegex,this._monthsStrictRegex=new RegExp("^("+e.join("|")+")$","i"),this._monthsShortStrictRegex=new RegExp("^("+d.join("|")+")$","i")}function da(a){var b,c=a._a;return c&&-2===j(a).overflow&&(b=c[te]<0||c[te]>11?te:c[ue]<1||c[ue]>V(c[se],c[te])?ue:c[ve]<0||c[ve]>24||24===c[ve]&&(0!==c[we]||0!==c[xe]||0!==c[ye])?ve:c[we]<0||c[we]>59?we:c[xe]<0||c[xe]>59?xe:c[ye]<0||c[ye]>999?ye:-1,j(a)._overflowDayOfYear&&(se>b||b>ue)&&(b=ue),j(a)._overflowWeeks&&-1===b&&(b=ze),j(a)._overflowWeekday&&-1===b&&(b=Ae),j(a).overflow=b),a}function ea(b){a.suppressDeprecationWarnings===!1&&"undefined"!=typeof console&&console.warn&&console.warn("Deprecation warning: "+b)}function fa(a,b){var c=!0;return g(function(){return c&&(ea(a+"\nArguments: "+Array.prototype.slice.call(arguments).join(", ")+"\n"+(new Error).stack),c=!1),b.apply(this,arguments)},b)}function ga(a,b){Ge[a]||(ea(b),Ge[a]=!0)}function ha(a){var b,c,d,e,f,g,h=a._i,i=He.exec(h)||Ie.exec(h);if(i){for(j(a).iso=!0,b=0,c=Ke.length;c>b;b++)if(Ke[b][1].exec(i[1])){e=Ke[b][0],d=Ke[b][2]!==!1;break}if(null==e)return void(a._isValid=!1);if(i[3]){for(b=0,c=Le.length;c>b;b++)if(Le[b][1].exec(i[3])){f=(i[2]||" ")+Le[b][0];break}if(null==f)return void(a._isValid=!1)}if(!d&&null!=f)return void(a._isValid=!1);if(i[4]){if(!Je.exec(i[4]))return void(a._isValid=!1);g="Z"}a._f=e+(f||"")+(g||""),wa(a)}else a._isValid=!1}function ia(b){var c=Me.exec(b._i);return null!==c?void(b._d=new Date(+c[1])):(ha(b),void(b._isValid===!1&&(delete b._isValid,a.createFromInputFallback(b))))}function ja(a,b,c,d,e,f,g){var h=new Date(a,b,c,d,e,f,g);return 100>a&&a>=0&&isFinite(h.getFullYear())&&h.setFullYear(a),h}function ka(a){var b=new Date(Date.UTC.apply(null,arguments));return 100>a&&a>=0&&isFinite(b.getUTCFullYear())&&b.setUTCFullYear(a),b}function la(a){return ma(a)?366:365}function ma(a){return a%4===0&&a%100!==0||a%400===0}function na(){return ma(this.year())}function oa(a,b,c){var d=7+b-c,e=(7+ka(a,0,d).getUTCDay()-b)%7;return-e+d-1}function pa(a,b,c,d,e){var f,g,h=(7+c-d)%7,i=oa(a,d,e),j=1+7*(b-1)+h+i;return 0>=j?(f=a-1,g=la(f)+j):j>la(a)?(f=a+1,g=j-la(a)):(f=a,g=j),{year:f,dayOfYear:g}}function qa(a,b,c){var d,e,f=oa(a.year(),b,c),g=Math.floor((a.dayOfYear()-f-1)/7)+1;return 1>g?(e=a.year()-1,d=g+ra(e,b,c)):g>ra(a.year(),b,c)?(d=g-ra(a.year(),b,c),e=a.year()+1):(e=a.year(),d=g),{week:d,year:e}}function ra(a,b,c){var d=oa(a,b,c),e=oa(a+1,b,c);return(la(a)-d+e)/7}function sa(a,b,c){return null!=a?a:null!=b?b:c}function ta(b){var c=new Date(a.now());return b._useUTC?[c.getUTCFullYear(),c.getUTCMonth(),c.getUTCDate()]:[c.getFullYear(),c.getMonth(),c.getDate()]}function ua(a){var b,c,d,e,f=[];if(!a._d){for(d=ta(a),a._w&&null==a._a[ue]&&null==a._a[te]&&va(a),a._dayOfYear&&(e=sa(a._a[se],d[se]),a._dayOfYear>la(e)&&(j(a)._overflowDayOfYear=!0),c=ka(e,0,a._dayOfYear),a._a[te]=c.getUTCMonth(),a._a[ue]=c.getUTCDate()),b=0;3>b&&null==a._a[b];++b)a._a[b]=f[b]=d[b];for(;7>b;b++)a._a[b]=f[b]=null==a._a[b]?2===b?1:0:a._a[b];24===a._a[ve]&&0===a._a[we]&&0===a._a[xe]&&0===a._a[ye]&&(a._nextDay=!0,a._a[ve]=0),a._d=(a._useUTC?ka:ja).apply(null,f),null!=a._tzm&&a._d.setUTCMinutes(a._d.getUTCMinutes()-a._tzm),a._nextDay&&(a._a[ve]=24)}}function va(a){var b,c,d,e,f,g,h,i;b=a._w,null!=b.GG||null!=b.W||null!=b.E?(f=1,g=4,c=sa(b.GG,a._a[se],qa(Ea(),1,4).year),d=sa(b.W,1),e=sa(b.E,1),(1>e||e>7)&&(i=!0)):(f=a._locale._week.dow,g=a._locale._week.doy,c=sa(b.gg,a._a[se],qa(Ea(),f,g).year),d=sa(b.w,1),null!=b.d?(e=b.d,(0>e||e>6)&&(i=!0)):null!=b.e?(e=b.e+f,(b.e<0||b.e>6)&&(i=!0)):e=f),1>d||d>ra(c,f,g)?j(a)._overflowWeeks=!0:null!=i?j(a)._overflowWeekday=!0:(h=pa(c,d,e,f,g),a._a[se]=h.year,a._dayOfYear=h.dayOfYear)}function wa(b){if(b._f===a.ISO_8601)return void ha(b);b._a=[],j(b).empty=!0;var c,d,e,f,g,h=""+b._i,i=h.length,k=0;for(e=N(b._f,b._locale).match(Xd)||[],c=0;c<e.length;c++)f=e[c],d=(h.match(P(f,b))||[])[0],d&&(g=h.substr(0,h.indexOf(d)),g.length>0&&j(b).unusedInput.push(g),h=h.slice(h.indexOf(d)+d.length),k+=d.length),$d[f]?(d?j(b).empty=!1:j(b).unusedTokens.push(f),U(f,d,b)):b._strict&&!d&&j(b).unusedTokens.push(f);j(b).charsLeftOver=i-k,h.length>0&&j(b).unusedInput.push(h),j(b).bigHour===!0&&b._a[ve]<=12&&b._a[ve]>0&&(j(b).bigHour=void 0),b._a[ve]=xa(b._locale,b._a[ve],b._meridiem),ua(b),da(b)}function xa(a,b,c){var d;return null==c?b:null!=a.meridiemHour?a.meridiemHour(b,c):null!=a.isPM?(d=a.isPM(c),d&&12>b&&(b+=12),d||12!==b||(b=0),b):b}function ya(a){var b,c,d,e,f;if(0===a._f.length)return j(a).invalidFormat=!0,void(a._d=new Date(NaN));for(e=0;e<a._f.length;e++)f=0,b=n({},a),null!=a._useUTC&&(b._useUTC=a._useUTC),b._f=a._f[e],wa(b),k(b)&&(f+=j(b).charsLeftOver,f+=10*j(b).unusedTokens.length,j(b).score=f,(null==d||d>f)&&(d=f,c=b));g(a,c||b)}function za(a){if(!a._d){var b=C(a._i);a._a=e([b.year,b.month,b.day||b.date,b.hour,b.minute,b.second,b.millisecond],function(a){return a&&parseInt(a,10)}),ua(a)}}function Aa(a){var b=new o(da(Ba(a)));return b._nextDay&&(b.add(1,"d"),b._nextDay=void 0),b}function Ba(a){var b=a._i,e=a._f;return a._locale=a._locale||z(a._l),null===b||void 0===e&&""===b?l({nullInput:!0}):("string"==typeof b&&(a._i=b=a._locale.preparse(b)),p(b)?new o(da(b)):(c(e)?ya(a):e?wa(a):d(b)?a._d=b:Ca(a),k(a)||(a._d=null),a))}function Ca(b){var f=b._i;void 0===f?b._d=new Date(a.now()):d(f)?b._d=new Date(+f):"string"==typeof f?ia(b):c(f)?(b._a=e(f.slice(0),function(a){return parseInt(a,10)}),ua(b)):"object"==typeof f?za(b):"number"==typeof f?b._d=new Date(f):a.createFromInputFallback(b)}function Da(a,b,c,d,e){var f={};return"boolean"==typeof c&&(d=c,c=void 0),f._isAMomentObject=!0,f._useUTC=f._isUTC=e,f._l=c,f._i=a,f._f=b,f._strict=d,Aa(f)}function Ea(a,b,c,d){return Da(a,b,c,d,!1)}function Fa(a,b){var d,e;if(1===b.length&&c(b[0])&&(b=b[0]),!b.length)return Ea();for(d=b[0],e=1;e<b.length;++e)(!b[e].isValid()||b[e][a](d))&&(d=b[e]);return d}function Ga(){var a=[].slice.call(arguments,0);return Fa("isBefore",a)}function Ha(){var a=[].slice.call(arguments,0);return Fa("isAfter",a)}function Ia(a){var b=C(a),c=b.year||0,d=b.quarter||0,e=b.month||0,f=b.week||0,g=b.day||0,h=b.hour||0,i=b.minute||0,j=b.second||0,k=b.millisecond||0;this._milliseconds=+k+1e3*j+6e4*i+36e5*h,this._days=+g+7*f,this._months=+e+3*d+12*c,this._data={},this._locale=z(),this._bubble()}function Ja(a){return a instanceof Ia}function Ka(a,b){J(a,0,0,function(){var a=this.utcOffset(),c="+";return 0>a&&(a=-a,c="-"),c+I(~~(a/60),2)+b+I(~~a%60,2)})}function La(a,b){var c=(b||"").match(a)||[],d=c[c.length-1]||[],e=(d+"").match(Re)||["-",0,0],f=+(60*e[1])+r(e[2]);return"+"===e[0]?f:-f}function Ma(b,c){var e,f;return c._isUTC?(e=c.clone(),f=(p(b)||d(b)?+b:+Ea(b))-+e,e._d.setTime(+e._d+f),a.updateOffset(e,!1),e):Ea(b).local()}function Na(a){return 15*-Math.round(a._d.getTimezoneOffset()/15)}function Oa(b,c){var d,e=this._offset||0;return this.isValid()?null!=b?("string"==typeof b?b=La(ne,b):Math.abs(b)<16&&(b=60*b),!this._isUTC&&c&&(d=Na(this)),this._offset=b,this._isUTC=!0,null!=d&&this.add(d,"m"),e!==b&&(!c||this._changeInProgress?cb(this,Za(b-e,"m"),1,!1):this._changeInProgress||(this._changeInProgress=!0,a.updateOffset(this,!0),this._changeInProgress=null)),this):this._isUTC?e:Na(this):null!=b?this:NaN}function Pa(a,b){return null!=a?("string"!=typeof a&&(a=-a),this.utcOffset(a,b),this):-this.utcOffset()}function Qa(a){return this.utcOffset(0,a)}function Ra(a){return this._isUTC&&(this.utcOffset(0,a),this._isUTC=!1,a&&this.subtract(Na(this),"m")),this}function Sa(){return this._tzm?this.utcOffset(this._tzm):"string"==typeof this._i&&this.utcOffset(La(me,this._i)),this}function Ta(a){return this.isValid()?(a=a?Ea(a).utcOffset():0,(this.utcOffset()-a)%60===0):!1}function Ua(){return this.utcOffset()>this.clone().month(0).utcOffset()||this.utcOffset()>this.clone().month(5).utcOffset()}function Va(){if(!m(this._isDSTShifted))return this._isDSTShifted;var a={};if(n(a,this),a=Ba(a),a._a){var b=a._isUTC?h(a._a):Ea(a._a);this._isDSTShifted=this.isValid()&&s(a._a,b.toArray())>0}else this._isDSTShifted=!1;return this._isDSTShifted}function Wa(){return this.isValid()?!this._isUTC:!1}function Xa(){return this.isValid()?this._isUTC:!1}function Ya(){return this.isValid()?this._isUTC&&0===this._offset:!1}function Za(a,b){var c,d,e,g=a,h=null;return Ja(a)?g={ms:a._milliseconds,d:a._days,M:a._months}:"number"==typeof a?(g={},b?g[b]=a:g.milliseconds=a):(h=Se.exec(a))?(c="-"===h[1]?-1:1,g={y:0,d:r(h[ue])*c,h:r(h[ve])*c,m:r(h[we])*c,s:r(h[xe])*c,ms:r(h[ye])*c}):(h=Te.exec(a))?(c="-"===h[1]?-1:1,g={y:$a(h[2],c),M:$a(h[3],c),d:$a(h[4],c),h:$a(h[5],c),m:$a(h[6],c),s:$a(h[7],c),w:$a(h[8],c)}):null==g?g={}:"object"==typeof g&&("from"in g||"to"in g)&&(e=ab(Ea(g.from),Ea(g.to)),g={},g.ms=e.milliseconds,g.M=e.months),d=new Ia(g),Ja(a)&&f(a,"_locale")&&(d._locale=a._locale),d}function $a(a,b){var c=a&&parseFloat(a.replace(",","."));return(isNaN(c)?0:c)*b}function _a(a,b){var c={milliseconds:0,months:0};return c.months=b.month()-a.month()+12*(b.year()-a.year()),a.clone().add(c.months,"M").isAfter(b)&&--c.months,c.milliseconds=+b-+a.clone().add(c.months,"M"),c}function ab(a,b){var c;return a.isValid()&&b.isValid()?(b=Ma(b,a),a.isBefore(b)?c=_a(a,b):(c=_a(b,a),c.milliseconds=-c.milliseconds,c.months=-c.months),c):{milliseconds:0,months:0}}function bb(a,b){return function(c,d){var e,f;return null===d||isNaN(+d)||(ga(b,"moment()."+b+"(period, number) is deprecated. Please use moment()."+b+"(number, period)."),f=c,c=d,d=f),c="string"==typeof c?+c:c,e=Za(c,d),cb(this,e,a),this}}function cb(b,c,d,e){var f=c._milliseconds,g=c._days,h=c._months;b.isValid()&&(e=null==e?!0:e,f&&b._d.setTime(+b._d+f*d),g&&G(b,"Date",F(b,"Date")+g*d),h&&Z(b,F(b,"Month")+h*d),e&&a.updateOffset(b,g||h))}function db(a,b){var c=a||Ea(),d=Ma(c,this).startOf("day"),e=this.diff(d,"days",!0),f=-6>e?"sameElse":-1>e?"lastWeek":0>e?"lastDay":1>e?"sameDay":2>e?"nextDay":7>e?"nextWeek":"sameElse",g=b&&(D(b[f])?b[f]():b[f]);return this.format(g||this.localeData().calendar(f,this,Ea(c)))}function eb(){return new o(this)}function fb(a,b){var c=p(a)?a:Ea(a);return this.isValid()&&c.isValid()?(b=B(m(b)?"millisecond":b),"millisecond"===b?+this>+c:+c<+this.clone().startOf(b)):!1}function gb(a,b){var c=p(a)?a:Ea(a);return this.isValid()&&c.isValid()?(b=B(m(b)?"millisecond":b),"millisecond"===b?+c>+this:+this.clone().endOf(b)<+c):!1}function hb(a,b,c){return this.isAfter(a,c)&&this.isBefore(b,c)}function ib(a,b){var c,d=p(a)?a:Ea(a);return this.isValid()&&d.isValid()?(b=B(b||"millisecond"),"millisecond"===b?+this===+d:(c=+d,+this.clone().startOf(b)<=c&&c<=+this.clone().endOf(b))):!1}function jb(a,b){return this.isSame(a,b)||this.isAfter(a,b)}function kb(a,b){return this.isSame(a,b)||this.isBefore(a,b)}function lb(a,b,c){var d,e,f,g;return this.isValid()?(d=Ma(a,this),d.isValid()?(e=6e4*(d.utcOffset()-this.utcOffset()),b=B(b),"year"===b||"month"===b||"quarter"===b?(g=mb(this,d),"quarter"===b?g/=3:"year"===b&&(g/=12)):(f=this-d,g="second"===b?f/1e3:"minute"===b?f/6e4:"hour"===b?f/36e5:"day"===b?(f-e)/864e5:"week"===b?(f-e)/6048e5:f),c?g:q(g)):NaN):NaN}function mb(a,b){var c,d,e=12*(b.year()-a.year())+(b.month()-a.month()),f=a.clone().add(e,"months");return 0>b-f?(c=a.clone().add(e-1,"months"),d=(b-f)/(f-c)):(c=a.clone().add(e+1,"months"),d=(b-f)/(c-f)),-(e+d)}function nb(){return this.clone().locale("en").format("ddd MMM DD YYYY HH:mm:ss [GMT]ZZ")}function ob(){var a=this.clone().utc();return 0<a.year()&&a.year()<=9999?D(Date.prototype.toISOString)?this.toDate().toISOString():M(a,"YYYY-MM-DD[T]HH:mm:ss.SSS[Z]"):M(a,"YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]")}function pb(b){var c=M(this,b||a.defaultFormat);return this.localeData().postformat(c)}function qb(a,b){return this.isValid()&&(p(a)&&a.isValid()||Ea(a).isValid())?Za({to:this,from:a}).locale(this.locale()).humanize(!b):this.localeData().invalidDate()}function rb(a){return this.from(Ea(),a)}function sb(a,b){return this.isValid()&&(p(a)&&a.isValid()||Ea(a).isValid())?Za({from:this,to:a}).locale(this.locale()).humanize(!b):this.localeData().invalidDate()}function tb(a){return this.to(Ea(),a)}function ub(a){var b;return void 0===a?this._locale._abbr:(b=z(a),null!=b&&(this._locale=b),this)}function vb(){return this._locale}function wb(a){switch(a=B(a)){case"year":this.month(0);case"quarter":case"month":this.date(1);case"week":case"isoWeek":case"day":this.hours(0);case"hour":this.minutes(0);case"minute":this.seconds(0);case"second":this.milliseconds(0)}return"week"===a&&this.weekday(0),"isoWeek"===a&&this.isoWeekday(1),"quarter"===a&&this.month(3*Math.floor(this.month()/3)),this}function xb(a){return a=B(a),void 0===a||"millisecond"===a?this:this.startOf(a).add(1,"isoWeek"===a?"week":a).subtract(1,"ms")}function yb(){return+this._d-6e4*(this._offset||0)}function zb(){return Math.floor(+this/1e3)}function Ab(){return this._offset?new Date(+this):this._d}function Bb(){var a=this;return[a.year(),a.month(),a.date(),a.hour(),a.minute(),a.second(),a.millisecond()]}function Cb(){var a=this;return{years:a.year(),months:a.month(),date:a.date(),hours:a.hours(),minutes:a.minutes(),seconds:a.seconds(),milliseconds:a.milliseconds()}}function Db(){return this.isValid()?this.toISOString():"null"}function Eb(){return k(this)}function Fb(){return g({},j(this))}function Gb(){return j(this).overflow}function Hb(){return{input:this._i,format:this._f,locale:this._locale,isUTC:this._isUTC,strict:this._strict}}function Ib(a,b){J(0,[a,a.length],0,b)}function Jb(a){return Nb.call(this,a,this.week(),this.weekday(),this.localeData()._week.dow,this.localeData()._week.doy)}function Kb(a){return Nb.call(this,a,this.isoWeek(),this.isoWeekday(),1,4)}function Lb(){return ra(this.year(),1,4)}function Mb(){var a=this.localeData()._week;return ra(this.year(),a.dow,a.doy)}function Nb(a,b,c,d,e){var f;return null==a?qa(this,d,e).year:(f=ra(a,d,e),b>f&&(b=f),Ob.call(this,a,b,c,d,e))}function Ob(a,b,c,d,e){var f=pa(a,b,c,d,e),g=ka(f.year,0,f.dayOfYear);return this.year(g.getUTCFullYear()),this.month(g.getUTCMonth()),this.date(g.getUTCDate()),this}function Pb(a){return null==a?Math.ceil((this.month()+1)/3):this.month(3*(a-1)+this.month()%3)}function Qb(a){return qa(a,this._week.dow,this._week.doy).week}function Rb(){return this._week.dow}function Sb(){return this._week.doy}function Tb(a){var b=this.localeData().week(this);return null==a?b:this.add(7*(a-b),"d")}function Ub(a){var b=qa(this,1,4).week;return null==a?b:this.add(7*(a-b),"d")}function Vb(a,b){return"string"!=typeof a?a:isNaN(a)?(a=b.weekdaysParse(a),"number"==typeof a?a:null):parseInt(a,10)}function Wb(a,b){return c(this._weekdays)?this._weekdays[a.day()]:this._weekdays[this._weekdays.isFormat.test(b)?"format":"standalone"][a.day()]}function Xb(a){return this._weekdaysShort[a.day()]}function Yb(a){return this._weekdaysMin[a.day()]}function Zb(a,b,c){var d,e,f;for(this._weekdaysParse||(this._weekdaysParse=[],this._minWeekdaysParse=[],this._shortWeekdaysParse=[],this._fullWeekdaysParse=[]),d=0;7>d;d++){if(e=Ea([2e3,1]).day(d),c&&!this._fullWeekdaysParse[d]&&(this._fullWeekdaysParse[d]=new RegExp("^"+this.weekdays(e,"").replace(".",".?")+"$","i"),this._shortWeekdaysParse[d]=new RegExp("^"+this.weekdaysShort(e,"").replace(".",".?")+"$","i"),this._minWeekdaysParse[d]=new RegExp("^"+this.weekdaysMin(e,"").replace(".",".?")+"$","i")),this._weekdaysParse[d]||(f="^"+this.weekdays(e,"")+"|^"+this.weekdaysShort(e,"")+"|^"+this.weekdaysMin(e,""),this._weekdaysParse[d]=new RegExp(f.replace(".",""),"i")),c&&"dddd"===b&&this._fullWeekdaysParse[d].test(a))return d;if(c&&"ddd"===b&&this._shortWeekdaysParse[d].test(a))return d;if(c&&"dd"===b&&this._minWeekdaysParse[d].test(a))return d;if(!c&&this._weekdaysParse[d].test(a))return d}}function $b(a){if(!this.isValid())return null!=a?this:NaN;var b=this._isUTC?this._d.getUTCDay():this._d.getDay();return null!=a?(a=Vb(a,this.localeData()),this.add(a-b,"d")):b}function _b(a){if(!this.isValid())return null!=a?this:NaN;var b=(this.day()+7-this.localeData()._week.dow)%7;return null==a?b:this.add(a-b,"d")}function ac(a){return this.isValid()?null==a?this.day()||7:this.day(this.day()%7?a:a-7):null!=a?this:NaN}function bc(a){var b=Math.round((this.clone().startOf("day")-this.clone().startOf("year"))/864e5)+1;return null==a?b:this.add(a-b,"d")}function cc(){return this.hours()%12||12}function dc(a,b){J(a,0,0,function(){return this.localeData().meridiem(this.hours(),this.minutes(),b)})}function ec(a,b){return b._meridiemParse}function fc(a){return"p"===(a+"").toLowerCase().charAt(0)}function gc(a,b,c){return a>11?c?"pm":"PM":c?"am":"AM"}function hc(a,b){b[ye]=r(1e3*("0."+a))}function ic(){return this._isUTC?"UTC":""}function jc(){return this._isUTC?"Coordinated Universal Time":""}function kc(a){return Ea(1e3*a)}function lc(){return Ea.apply(null,arguments).parseZone()}function mc(a,b,c){var d=this._calendar[a];return D(d)?d.call(b,c):d}function nc(a){var b=this._longDateFormat[a],c=this._longDateFormat[a.toUpperCase()];return b||!c?b:(this._longDateFormat[a]=c.replace(/MMMM|MM|DD|dddd/g,function(a){return a.slice(1)}),this._longDateFormat[a])}function oc(){return this._invalidDate}function pc(a){return this._ordinal.replace("%d",a)}function qc(a){return a}function rc(a,b,c,d){var e=this._relativeTime[c];return D(e)?e(a,b,c,d):e.replace(/%d/i,a)}function sc(a,b){var c=this._relativeTime[a>0?"future":"past"];return D(c)?c(b):c.replace(/%s/i,b)}function tc(a){var b,c;for(c in a)b=a[c],D(b)?this[c]=b:this["_"+c]=b;this._ordinalParseLenient=new RegExp(this._ordinalParse.source+"|"+/\d{1,2}/.source)}function uc(a,b,c,d){var e=z(),f=h().set(d,b);return e[c](f,a)}function vc(a,b,c,d,e){if("number"==typeof a&&(b=a,a=void 0),a=a||"",null!=b)return uc(a,b,c,e);var f,g=[];for(f=0;d>f;f++)g[f]=uc(a,f,c,e);return g}function wc(a,b){return vc(a,b,"months",12,"month")}function xc(a,b){return vc(a,b,"monthsShort",12,"month")}function yc(a,b){return vc(a,b,"weekdays",7,"day")}function zc(a,b){return vc(a,b,"weekdaysShort",7,"day")}function Ac(a,b){return vc(a,b,"weekdaysMin",7,"day")}function Bc(){var a=this._data;return this._milliseconds=qf(this._milliseconds),this._days=qf(this._days),this._months=qf(this._months),a.milliseconds=qf(a.milliseconds),a.seconds=qf(a.seconds),a.minutes=qf(a.minutes),a.hours=qf(a.hours),a.months=qf(a.months),a.years=qf(a.years),this}function Cc(a,b,c,d){var e=Za(b,c);return a._milliseconds+=d*e._milliseconds,a._days+=d*e._days,a._months+=d*e._months,a._bubble()}function Dc(a,b){return Cc(this,a,b,1)}function Ec(a,b){return Cc(this,a,b,-1)}function Fc(a){return 0>a?Math.floor(a):Math.ceil(a)}function Gc(){var a,b,c,d,e,f=this._milliseconds,g=this._days,h=this._months,i=this._data;return f>=0&&g>=0&&h>=0||0>=f&&0>=g&&0>=h||(f+=864e5*Fc(Ic(h)+g),g=0,h=0),i.milliseconds=f%1e3,a=q(f/1e3),i.seconds=a%60,b=q(a/60),i.minutes=b%60,c=q(b/60),i.hours=c%24,g+=q(c/24),e=q(Hc(g)),h+=e,g-=Fc(Ic(e)),d=q(h/12),h%=12,i.days=g,i.months=h,i.years=d,this}function Hc(a){return 4800*a/146097}function Ic(a){return 146097*a/4800}function Jc(a){var b,c,d=this._milliseconds;if(a=B(a),"month"===a||"year"===a)return b=this._days+d/864e5,c=this._months+Hc(b),"month"===a?c:c/12;switch(b=this._days+Math.round(Ic(this._months)),a){case"week":return b/7+d/6048e5;case"day":return b+d/864e5;case"hour":return 24*b+d/36e5;case"minute":return 1440*b+d/6e4;case"second":return 86400*b+d/1e3;case"millisecond":return Math.floor(864e5*b)+d;default:throw new Error("Unknown unit "+a)}}function Kc(){return this._milliseconds+864e5*this._days+this._months%12*2592e6+31536e6*r(this._months/12)}function Lc(a){return function(){return this.as(a)}}function Mc(a){return a=B(a),this[a+"s"]()}function Nc(a){return function(){return this._data[a]}}function Oc(){return q(this.days()/7)}function Pc(a,b,c,d,e){return e.relativeTime(b||1,!!c,a,d)}function Qc(a,b,c){var d=Za(a).abs(),e=Gf(d.as("s")),f=Gf(d.as("m")),g=Gf(d.as("h")),h=Gf(d.as("d")),i=Gf(d.as("M")),j=Gf(d.as("y")),k=e<Hf.s&&["s",e]||1>=f&&["m"]||f<Hf.m&&["mm",f]||1>=g&&["h"]||g<Hf.h&&["hh",g]||1>=h&&["d"]||h<Hf.d&&["dd",h]||1>=i&&["M"]||i<Hf.M&&["MM",i]||1>=j&&["y"]||["yy",j];return k[2]=b,k[3]=+a>0,k[4]=c,Pc.apply(null,k)}function Rc(a,b){return void 0===Hf[a]?!1:void 0===b?Hf[a]:(Hf[a]=b,!0)}function Sc(a){var b=this.localeData(),c=Qc(this,!a,b);return a&&(c=b.pastFuture(+this,c)),b.postformat(c)}function Tc(){var a,b,c,d=If(this._milliseconds)/1e3,e=If(this._days),f=If(this._months);a=q(d/60),b=q(a/60),d%=60,a%=60,c=q(f/12),f%=12;var g=c,h=f,i=e,j=b,k=a,l=d,m=this.asSeconds();return m?(0>m?"-":"")+"P"+(g?g+"Y":"")+(h?h+"M":"")+(i?i+"D":"")+(j||k||l?"T":"")+(j?j+"H":"")+(k?k+"M":"")+(l?l+"S":""):"P0D"}
-//! moment.js locale configuration
-//! locale : belarusian (be)
-//! author : Dmitry Demidov : https://github.com/demidov91
-//! author: Praleska: http://praleska.pro/
-//! Author : Menelion Elensúle : https://github.com/Oire
-function Uc(a,b){var c=a.split("_");return b%10===1&&b%100!==11?c[0]:b%10>=2&&4>=b%10&&(10>b%100||b%100>=20)?c[1]:c[2]}function Vc(a,b,c){var d={mm:b?"хвіліна_хвіліны_хвілін":"хвіліну_хвіліны_хвілін",hh:b?"гадзіна_гадзіны_гадзін":"гадзіну_гадзіны_гадзін",dd:"дзень_дні_дзён",MM:"месяц_месяцы_месяцаў",yy:"год_гады_гадоў"};return"m"===c?b?"хвіліна":"хвіліну":"h"===c?b?"гадзіна":"гадзіну":a+" "+Uc(d[c],+a)}
-//! moment.js locale configuration
-//! locale : breton (br)
-//! author : Jean-Baptiste Le Duigou : https://github.com/jbleduigou
-function Wc(a,b,c){var d={mm:"munutenn",MM:"miz",dd:"devezh"};return a+" "+Zc(d[c],a)}function Xc(a){switch(Yc(a)){case 1:case 3:case 4:case 5:case 9:return a+" bloaz";default:return a+" vloaz"}}function Yc(a){return a>9?Yc(a%10):a}function Zc(a,b){return 2===b?$c(a):a}function $c(a){var b={m:"v",b:"v",d:"z"};return void 0===b[a.charAt(0)]?a:b[a.charAt(0)]+a.substring(1)}
-//! moment.js locale configuration
-//! locale : bosnian (bs)
-//! author : Nedim Cholich : https://github.com/frontyard
-//! based on (hr) translation by Bojan Marković
-function _c(a,b,c){var d=a+" ";switch(c){case"m":return b?"jedna minuta":"jedne minute";case"mm":return d+=1===a?"minuta":2===a||3===a||4===a?"minute":"minuta";case"h":return b?"jedan sat":"jednog sata";case"hh":return d+=1===a?"sat":2===a||3===a||4===a?"sata":"sati";case"dd":return d+=1===a?"dan":"dana";case"MM":return d+=1===a?"mjesec":2===a||3===a||4===a?"mjeseca":"mjeseci";case"yy":return d+=1===a?"godina":2===a||3===a||4===a?"godine":"godina"}}function ad(a){return a>1&&5>a&&1!==~~(a/10)}function bd(a,b,c,d){var e=a+" ";switch(c){case"s":return b||d?"pár sekund":"pár sekundami";case"m":return b?"minuta":d?"minutu":"minutou";case"mm":return b||d?e+(ad(a)?"minuty":"minut"):e+"minutami";break;case"h":return b?"hodina":d?"hodinu":"hodinou";case"hh":return b||d?e+(ad(a)?"hodiny":"hodin"):e+"hodinami";break;case"d":return b||d?"den":"dnem";case"dd":return b||d?e+(ad(a)?"dny":"dní"):e+"dny";break;case"M":return b||d?"měsíc":"měsícem";case"MM":return b||d?e+(ad(a)?"měsíce":"měsíců"):e+"měsíci";break;case"y":return b||d?"rok":"rokem";case"yy":return b||d?e+(ad(a)?"roky":"let"):e+"lety"}}
-//! moment.js locale configuration
-//! locale : austrian german (de-at)
-//! author : lluchs : https://github.com/lluchs
-//! author: Menelion Elensúle: https://github.com/Oire
-//! author : Martin Groller : https://github.com/MadMG
-//! author : Mikolaj Dadela : https://github.com/mik01aj
-function cd(a,b,c,d){var e={m:["eine Minute","einer Minute"],h:["eine Stunde","einer Stunde"],d:["ein Tag","einem Tag"],dd:[a+" Tage",a+" Tagen"],M:["ein Monat","einem Monat"],MM:[a+" Monate",a+" Monaten"],y:["ein Jahr","einem Jahr"],yy:[a+" Jahre",a+" Jahren"]};return b?e[c][0]:e[c][1]}
-//! moment.js locale configuration
-//! locale : german (de)
-//! author : lluchs : https://github.com/lluchs
-//! author: Menelion Elensúle: https://github.com/Oire
-//! author : Mikolaj Dadela : https://github.com/mik01aj
-function dd(a,b,c,d){var e={m:["eine Minute","einer Minute"],h:["eine Stunde","einer Stunde"],d:["ein Tag","einem Tag"],dd:[a+" Tage",a+" Tagen"],M:["ein Monat","einem Monat"],MM:[a+" Monate",a+" Monaten"],y:["ein Jahr","einem Jahr"],yy:[a+" Jahre",a+" Jahren"]};return b?e[c][0]:e[c][1]}
-//! moment.js locale configuration
-//! locale : estonian (et)
-//! author : Henry Kehlmann : https://github.com/madhenry
-//! improvements : Illimar Tambek : https://github.com/ragulka
-function ed(a,b,c,d){var e={s:["mõne sekundi","mõni sekund","paar sekundit"],m:["ühe minuti","üks minut"],mm:[a+" minuti",a+" minutit"],h:["ühe tunni","tund aega","üks tund"],hh:[a+" tunni",a+" tundi"],d:["ühe päeva","üks päev"],M:["kuu aja","kuu aega","üks kuu"],MM:[a+" kuu",a+" kuud"],y:["ühe aasta","aasta","üks aasta"],yy:[a+" aasta",a+" aastat"]};return b?e[c][2]?e[c][2]:e[c][1]:d?e[c][0]:e[c][1]}function fd(a,b,c,d){var e="";switch(c){case"s":return d?"muutaman sekunnin":"muutama sekunti";case"m":return d?"minuutin":"minuutti";case"mm":e=d?"minuutin":"minuuttia";break;case"h":return d?"tunnin":"tunti";case"hh":e=d?"tunnin":"tuntia";break;case"d":return d?"päivän":"päivä";case"dd":e=d?"päivän":"päivää";break;case"M":return d?"kuukauden":"kuukausi";case"MM":e=d?"kuukauden":"kuukautta";break;case"y":return d?"vuoden":"vuosi";case"yy":e=d?"vuoden":"vuotta"}return e=gd(a,d)+" "+e}function gd(a,b){return 10>a?b?fg[a]:eg[a]:a}
-//! moment.js locale configuration
-//! locale : hrvatski (hr)
-//! author : Bojan Marković : https://github.com/bmarkovic
-function hd(a,b,c){var d=a+" ";switch(c){case"m":return b?"jedna minuta":"jedne minute";case"mm":return d+=1===a?"minuta":2===a||3===a||4===a?"minute":"minuta";case"h":return b?"jedan sat":"jednog sata";case"hh":return d+=1===a?"sat":2===a||3===a||4===a?"sata":"sati";case"dd":return d+=1===a?"dan":"dana";case"MM":return d+=1===a?"mjesec":2===a||3===a||4===a?"mjeseca":"mjeseci";case"yy":return d+=1===a?"godina":2===a||3===a||4===a?"godine":"godina"}}function id(a,b,c,d){var e=a;switch(c){case"s":return d||b?"néhány másodperc":"néhány másodperce";case"m":return"egy"+(d||b?" perc":" perce");case"mm":return e+(d||b?" perc":" perce");case"h":return"egy"+(d||b?" óra":" órája");case"hh":return e+(d||b?" óra":" órája");case"d":return"egy"+(d||b?" nap":" napja");case"dd":return e+(d||b?" nap":" napja");case"M":return"egy"+(d||b?" hónap":" hónapja");case"MM":return e+(d||b?" hónap":" hónapja");case"y":return"egy"+(d||b?" év":" éve");case"yy":return e+(d||b?" év":" éve")}return""}function jd(a){return(a?"":"[múlt] ")+"["+pg[this.day()]+"] LT[-kor]"}
-//! moment.js locale configuration
-//! locale : icelandic (is)
-//! author : Hinrik Örn Sigurðsson : https://github.com/hinrik
-function kd(a){return a%100===11?!0:a%10===1?!1:!0}function ld(a,b,c,d){var e=a+" ";switch(c){case"s":return b||d?"nokkrar sekúndur":"nokkrum sekúndum";case"m":return b?"mínúta":"mínútu";case"mm":return kd(a)?e+(b||d?"mínútur":"mínútum"):b?e+"mínúta":e+"mínútu";case"hh":return kd(a)?e+(b||d?"klukkustundir":"klukkustundum"):e+"klukkustund";case"d":return b?"dagur":d?"dag":"degi";case"dd":return kd(a)?b?e+"dagar":e+(d?"daga":"dögum"):b?e+"dagur":e+(d?"dag":"degi");case"M":return b?"mánuður":d?"mánuð":"mánuði";case"MM":return kd(a)?b?e+"mánuðir":e+(d?"mánuði":"mánuðum"):b?e+"mánuður":e+(d?"mánuð":"mánuði");case"y":return b||d?"ár":"ári";case"yy":return kd(a)?e+(b||d?"ár":"árum"):e+(b||d?"ár":"ári")}}
-//! moment.js locale configuration
-//! locale : Luxembourgish (lb)
-//! author : mweimerskirch : https://github.com/mweimerskirch, David Raison : https://github.com/kwisatz
-function md(a,b,c,d){var e={m:["eng Minutt","enger Minutt"],h:["eng Stonn","enger Stonn"],d:["een Dag","engem Dag"],M:["ee Mount","engem Mount"],y:["ee Joer","engem Joer"]};return b?e[c][0]:e[c][1]}function nd(a){var b=a.substr(0,a.indexOf(" "));return pd(b)?"a "+a:"an "+a}function od(a){var b=a.substr(0,a.indexOf(" "));return pd(b)?"viru "+a:"virun "+a}function pd(a){if(a=parseInt(a,10),isNaN(a))return!1;if(0>a)return!0;if(10>a)return a>=4&&7>=a?!0:!1;if(100>a){var b=a%10,c=a/10;return pd(0===b?c:b)}if(1e4>a){for(;a>=10;)a/=10;return pd(a)}return a/=1e3,pd(a)}function qd(a,b,c,d){return b?"kelios sekundės":d?"kelių sekundžių":"kelias sekundes"}function rd(a,b,c,d){return b?td(c)[0]:d?td(c)[1]:td(c)[2]}function sd(a){return a%10===0||a>10&&20>a}function td(a){return rg[a].split("_")}function ud(a,b,c,d){var e=a+" ";return 1===a?e+rd(a,b,c[0],d):b?e+(sd(a)?td(c)[1]:td(c)[0]):d?e+td(c)[1]:e+(sd(a)?td(c)[1]:td(c)[2])}function vd(a,b,c){return c?b%10===1&&11!==b?a[2]:a[3]:b%10===1&&11!==b?a[0]:a[1]}function wd(a,b,c){return a+" "+vd(sg[c],a,b)}function xd(a,b,c){return vd(sg[c],a,b)}function yd(a,b){return b?"dažas sekundes":"dažām sekundēm"}function zd(a,b,c,d){var e="";if(b)switch(c){case"s":e="काही सेकंद";break;case"m":e="एक मिनिट";break;case"mm":e="%d मिनिटे";break;case"h":e="एक तास";break;case"hh":e="%d तास";break;case"d":e="एक दिवस";break;case"dd":e="%d दिवस";break;case"M":e="एक महिना";break;case"MM":e="%d महिने";break;case"y":e="एक वर्ष";break;case"yy":e="%d वर्षे"}else switch(c){case"s":e="काही सेकंदां";break;case"m":e="एका मिनिटा";break;case"mm":e="%d मिनिटां";break;case"h":e="एका तासा";break;case"hh":e="%d तासां";break;case"d":e="एका दिवसा";break;case"dd":e="%d दिवसां";break;case"M":e="एका महिन्या";break;case"MM":e="%d महिन्यां";break;case"y":e="एका वर्षा";break;case"yy":e="%d वर्षां"}return e.replace(/%d/i,a)}function Ad(a){return 5>a%10&&a%10>1&&~~(a/10)%10!==1}function Bd(a,b,c){var d=a+" ";switch(c){case"m":return b?"minuta":"minutę";case"mm":return d+(Ad(a)?"minuty":"minut");case"h":return b?"godzina":"godzinę";case"hh":return d+(Ad(a)?"godziny":"godzin");case"MM":return d+(Ad(a)?"miesiące":"miesięcy");case"yy":return d+(Ad(a)?"lata":"lat")}}
-//! moment.js locale configuration
-//! locale : romanian (ro)
-//! author : Vlad Gurdiga : https://github.com/gurdiga
-//! author : Valentin Agachi : https://github.com/avaly
-function Cd(a,b,c){var d={mm:"minute",hh:"ore",dd:"zile",MM:"luni",yy:"ani"},e=" ";return(a%100>=20||a>=100&&a%100===0)&&(e=" de "),a+e+d[c]}
-//! moment.js locale configuration
-//! locale : russian (ru)
-//! author : Viktorminator : https://github.com/Viktorminator
-//! Author : Menelion Elensúle : https://github.com/Oire
-function Dd(a,b){var c=a.split("_");return b%10===1&&b%100!==11?c[0]:b%10>=2&&4>=b%10&&(10>b%100||b%100>=20)?c[1]:c[2]}function Ed(a,b,c){var d={mm:b?"минута_минуты_минут":"минуту_минуты_минут",hh:"час_часа_часов",dd:"день_дня_дней",MM:"месяц_месяца_месяцев",yy:"год_года_лет"};return"m"===c?b?"минута":"минуту":a+" "+Dd(d[c],+a)}function Fd(a){return a>1&&5>a}function Gd(a,b,c,d){var e=a+" ";switch(c){case"s":return b||d?"pár sekúnd":"pár sekundami";case"m":return b?"minúta":d?"minútu":"minútou";case"mm":return b||d?e+(Fd(a)?"minúty":"minút"):e+"minútami";break;case"h":return b?"hodina":d?"hodinu":"hodinou";case"hh":return b||d?e+(Fd(a)?"hodiny":"hodín"):e+"hodinami";break;case"d":return b||d?"deň":"dňom";case"dd":return b||d?e+(Fd(a)?"dni":"dní"):e+"dňami";break;case"M":return b||d?"mesiac":"mesiacom";case"MM":return b||d?e+(Fd(a)?"mesiace":"mesiacov"):e+"mesiacmi";break;case"y":return b||d?"rok":"rokom";case"yy":return b||d?e+(Fd(a)?"roky":"rokov"):e+"rokmi"}}
-//! moment.js locale configuration
-//! locale : slovenian (sl)
-//! author : Robert Sedovšek : https://github.com/sedovsek
-function Hd(a,b,c,d){var e=a+" ";switch(c){case"s":return b||d?"nekaj sekund":"nekaj sekundami";case"m":return b?"ena minuta":"eno minuto";case"mm":return e+=1===a?b?"minuta":"minuto":2===a?b||d?"minuti":"minutama":5>a?b||d?"minute":"minutami":b||d?"minut":"minutami";case"h":return b?"ena ura":"eno uro";case"hh":return e+=1===a?b?"ura":"uro":2===a?b||d?"uri":"urama":5>a?b||d?"ure":"urami":b||d?"ur":"urami";case"d":return b||d?"en dan":"enim dnem";case"dd":return e+=1===a?b||d?"dan":"dnem":2===a?b||d?"dni":"dnevoma":b||d?"dni":"dnevi";case"M":return b||d?"en mesec":"enim mesecem";case"MM":return e+=1===a?b||d?"mesec":"mesecem":2===a?b||d?"meseca":"mesecema":5>a?b||d?"mesece":"meseci":b||d?"mesecev":"meseci";case"y":return b||d?"eno leto":"enim letom";case"yy":return e+=1===a?b||d?"leto":"letom":2===a?b||d?"leti":"letoma":5>a?b||d?"leta":"leti":b||d?"let":"leti"}}function Id(a){var b=a;return b=-1!==a.indexOf("jaj")?b.slice(0,-3)+"leS":-1!==a.indexOf("jar")?b.slice(0,-3)+"waQ":-1!==a.indexOf("DIS")?b.slice(0,-3)+"nem":b+" pIq"}function Jd(a){var b=a;return b=-1!==a.indexOf("jaj")?b.slice(0,-3)+"Hu’":-1!==a.indexOf("jar")?b.slice(0,-3)+"wen":-1!==a.indexOf("DIS")?b.slice(0,-3)+"ben":b+" ret"}function Kd(a,b,c,d){var e=Ld(a);switch(c){case"mm":return e+" tup";case"hh":return e+" rep";case"dd":return e+" jaj";case"MM":return e+" jar";case"yy":return e+" DIS"}}function Ld(a){var b=Math.floor(a%1e3/100),c=Math.floor(a%100/10),d=a%10,e="";return b>0&&(e+=Lg[b]+"vatlh"),c>0&&(e+=(""!==e?" ":"")+Lg[c]+"maH"),d>0&&(e+=(""!==e?" ":"")+Lg[d]),""===e?"pagh":e}function Md(a,b,c,d){var e={s:["viensas secunds","'iensas secunds"],m:["'n míut","'iens míut"],mm:[a+" míuts",""+a+" míuts"],h:["'n þora","'iensa þora"],hh:[a+" þoras",""+a+" þoras"],d:["'n ziua","'iensa ziua"],dd:[a+" ziuas",""+a+" ziuas"],M:["'n mes","'iens mes"],MM:[a+" mesen",""+a+" mesen"],y:["'n ar","'iens ar"],yy:[a+" ars",""+a+" ars"]};return d?e[c][0]:b?e[c][0]:e[c][1]}
-//! moment.js locale configuration
-//! locale : ukrainian (uk)
-//! author : zemlanin : https://github.com/zemlanin
-//! Author : Menelion Elensúle : https://github.com/Oire
-function Nd(a,b){var c=a.split("_");return b%10===1&&b%100!==11?c[0]:b%10>=2&&4>=b%10&&(10>b%100||b%100>=20)?c[1]:c[2]}function Od(a,b,c){var d={mm:b?"хвилина_хвилини_хвилин":"хвилину_хвилини_хвилин",hh:b?"година_години_годин":"годину_години_годин",dd:"день_дні_днів",MM:"місяць_місяці_місяців",yy:"рік_роки_років"};return"m"===c?b?"хвилина":"хвилину":"h"===c?b?"година":"годину":a+" "+Nd(d[c],+a)}function Pd(a,b){var c={nominative:"неділя_понеділок_вівторок_середа_четвер_п’ятниця_субота".split("_"),accusative:"неділю_понеділок_вівторок_середу_четвер_п’ятницю_суботу".split("_"),genitive:"неділі_понеділка_вівторка_середи_четверга_п’ятниці_суботи".split("_")},d=/(\[[ВвУу]\]) ?dddd/.test(b)?"accusative":/\[?(?:минулої|наступної)? ?\] ?dddd/.test(b)?"genitive":"nominative";return c[d][a.day()]}function Qd(a){return function(){return a+"о"+(11===this.hours()?"б":"")+"] LT"}}var Rd,Sd,Td=a.momentProperties=[],Ud=!1,Vd={},Wd={},Xd=/(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g,Yd=/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,Zd={},$d={},_d=/\d/,ae=/\d\d/,be=/\d{3}/,ce=/\d{4}/,de=/[+-]?\d{6}/,ee=/\d\d?/,fe=/\d\d\d\d?/,ge=/\d\d\d\d\d\d?/,he=/\d{1,3}/,ie=/\d{1,4}/,je=/[+-]?\d{1,6}/,ke=/\d+/,le=/[+-]?\d+/,me=/Z|[+-]\d\d:?\d\d/gi,ne=/Z|[+-]\d\d(?::?\d\d)?/gi,oe=/[+-]?\d+(\.\d{1,3})?/,pe=/[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i,qe={},re={},se=0,te=1,ue=2,ve=3,we=4,xe=5,ye=6,ze=7,Ae=8;J("M",["MM",2],"Mo",function(){return this.month()+1}),J("MMM",0,0,function(a){return this.localeData().monthsShort(this,a)}),J("MMMM",0,0,function(a){return this.localeData().months(this,a)}),A("month","M"),O("M",ee),O("MM",ee,ae),O("MMM",function(a,b){return b.monthsShortRegex(a)}),O("MMMM",function(a,b){return b.monthsRegex(a)}),S(["M","MM"],function(a,b){b[te]=r(a)-1}),S(["MMM","MMMM"],function(a,b,c,d){var e=c._locale.monthsParse(a,d,c._strict);null!=e?b[te]=e:j(c).invalidMonth=a});var Be=/D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/,Ce="January_February_March_April_May_June_July_August_September_October_November_December".split("_"),De="Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),Ee=pe,Fe=pe,Ge={};a.suppressDeprecationWarnings=!1;var He=/^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/,Ie=/^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/,Je=/Z|[+-]\d\d(?::?\d\d)?/,Ke=[["YYYYYY-MM-DD",/[+-]\d{6}-\d\d-\d\d/],["YYYY-MM-DD",/\d{4}-\d\d-\d\d/],["GGGG-[W]WW-E",/\d{4}-W\d\d-\d/],["GGGG-[W]WW",/\d{4}-W\d\d/,!1],["YYYY-DDD",/\d{4}-\d{3}/],["YYYY-MM",/\d{4}-\d\d/,!1],["YYYYYYMMDD",/[+-]\d{10}/],["YYYYMMDD",/\d{8}/],["GGGG[W]WWE",/\d{4}W\d{3}/],["GGGG[W]WW",/\d{4}W\d{2}/,!1],["YYYYDDD",/\d{7}/]],Le=[["HH:mm:ss.SSSS",/\d\d:\d\d:\d\d\.\d+/],["HH:mm:ss,SSSS",/\d\d:\d\d:\d\d,\d+/],["HH:mm:ss",/\d\d:\d\d:\d\d/],["HH:mm",/\d\d:\d\d/],["HHmmss.SSSS",/\d\d\d\d\d\d\.\d+/],["HHmmss,SSSS",/\d\d\d\d\d\d,\d+/],["HHmmss",/\d\d\d\d\d\d/],["HHmm",/\d\d\d\d/],["HH",/\d\d/]],Me=/^\/?Date\((\-?\d+)/i;a.createFromInputFallback=fa("moment construction falls back to js Date. This is discouraged and will be removed in upcoming major release. Please refer to https://github.com/moment/moment/issues/1407 for more info.",function(a){a._d=new Date(a._i+(a._useUTC?" UTC":""))}),J("Y",0,0,function(){var a=this.year();return 9999>=a?""+a:"+"+a}),J(0,["YY",2],0,function(){return this.year()%100}),J(0,["YYYY",4],0,"year"),J(0,["YYYYY",5],0,"year"),J(0,["YYYYYY",6,!0],0,"year"),A("year","y"),O("Y",le),O("YY",ee,ae),O("YYYY",ie,ce),O("YYYYY",je,de),O("YYYYYY",je,de),S(["YYYYY","YYYYYY"],se),S("YYYY",function(b,c){c[se]=2===b.length?a.parseTwoDigitYear(b):r(b)}),S("YY",function(b,c){c[se]=a.parseTwoDigitYear(b)}),S("Y",function(a,b){b[se]=parseInt(a,10)}),a.parseTwoDigitYear=function(a){return r(a)+(r(a)>68?1900:2e3)};var Ne=E("FullYear",!1);a.ISO_8601=function(){};var Oe=fa("moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548",function(){var a=Ea.apply(null,arguments);return this.isValid()&&a.isValid()?this>a?this:a:l()}),Pe=fa("moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548",function(){var a=Ea.apply(null,arguments);return this.isValid()&&a.isValid()?a>this?this:a:l()}),Qe=function(){return Date.now?Date.now():+new Date};Ka("Z",":"),Ka("ZZ",""),O("Z",ne),O("ZZ",ne),S(["Z","ZZ"],function(a,b,c){c._useUTC=!0,c._tzm=La(ne,a)});var Re=/([\+\-]|\d\d)/gi;a.updateOffset=function(){};var Se=/(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/,Te=/^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/;Za.fn=Ia.prototype;var Ue=bb(1,"add"),Ve=bb(-1,"subtract");a.defaultFormat="YYYY-MM-DDTHH:mm:ssZ";var We=fa("moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.",function(a){return void 0===a?this.localeData():this.locale(a)});J(0,["gg",2],0,function(){return this.weekYear()%100}),J(0,["GG",2],0,function(){return this.isoWeekYear()%100}),Ib("gggg","weekYear"),Ib("ggggg","weekYear"),Ib("GGGG","isoWeekYear"),Ib("GGGGG","isoWeekYear"),A("weekYear","gg"),A("isoWeekYear","GG"),O("G",le),O("g",le),O("GG",ee,ae),O("gg",ee,ae),O("GGGG",ie,ce),O("gggg",ie,ce),O("GGGGG",je,de),O("ggggg",je,de),T(["gggg","ggggg","GGGG","GGGGG"],function(a,b,c,d){b[d.substr(0,2)]=r(a)}),T(["gg","GG"],function(b,c,d,e){c[e]=a.parseTwoDigitYear(b)}),J("Q",0,"Qo","quarter"),A("quarter","Q"),O("Q",_d),S("Q",function(a,b){b[te]=3*(r(a)-1)}),J("w",["ww",2],"wo","week"),J("W",["WW",2],"Wo","isoWeek"),A("week","w"),A("isoWeek","W"),O("w",ee),O("ww",ee,ae),O("W",ee),O("WW",ee,ae),T(["w","ww","W","WW"],function(a,b,c,d){b[d.substr(0,1)]=r(a)});var Xe={dow:0,doy:6};J("D",["DD",2],"Do","date"),A("date","D"),O("D",ee),O("DD",ee,ae),O("Do",function(a,b){return a?b._ordinalParse:b._ordinalParseLenient}),S(["D","DD"],ue),S("Do",function(a,b){b[ue]=r(a.match(ee)[0],10)});var Ye=E("Date",!0);J("d",0,"do","day"),J("dd",0,0,function(a){return this.localeData().weekdaysMin(this,a)}),J("ddd",0,0,function(a){return this.localeData().weekdaysShort(this,a)}),J("dddd",0,0,function(a){return this.localeData().weekdays(this,a)}),J("e",0,0,"weekday"),J("E",0,0,"isoWeekday"),A("day","d"),A("weekday","e"),A("isoWeekday","E"),O("d",ee),O("e",ee),O("E",ee),O("dd",pe),O("ddd",pe),O("dddd",pe),T(["dd","ddd","dddd"],function(a,b,c,d){var e=c._locale.weekdaysParse(a,d,c._strict);null!=e?b.d=e:j(c).invalidWeekday=a}),T(["d","e","E"],function(a,b,c,d){b[d]=r(a)});var Ze="Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),$e="Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),_e="Su_Mo_Tu_We_Th_Fr_Sa".split("_");J("DDD",["DDDD",3],"DDDo","dayOfYear"),A("dayOfYear","DDD"),O("DDD",he),O("DDDD",be),S(["DDD","DDDD"],function(a,b,c){c._dayOfYear=r(a)}),J("H",["HH",2],0,"hour"),J("h",["hh",2],0,cc),J("hmm",0,0,function(){return""+cc.apply(this)+I(this.minutes(),2)}),J("hmmss",0,0,function(){return""+cc.apply(this)+I(this.minutes(),2)+I(this.seconds(),2)}),J("Hmm",0,0,function(){return""+this.hours()+I(this.minutes(),2)}),J("Hmmss",0,0,function(){return""+this.hours()+I(this.minutes(),2)+I(this.seconds(),2)}),dc("a",!0),dc("A",!1),A("hour","h"),O("a",ec),O("A",ec),O("H",ee),O("h",ee),O("HH",ee,ae),O("hh",ee,ae),O("hmm",fe),O("hmmss",ge),O("Hmm",fe),O("Hmmss",ge),S(["H","HH"],ve),S(["a","A"],function(a,b,c){c._isPm=c._locale.isPM(a),c._meridiem=a}),S(["h","hh"],function(a,b,c){b[ve]=r(a),j(c).bigHour=!0}),S("hmm",function(a,b,c){var d=a.length-2;b[ve]=r(a.substr(0,d)),b[we]=r(a.substr(d)),j(c).bigHour=!0}),S("hmmss",function(a,b,c){var d=a.length-4,e=a.length-2;b[ve]=r(a.substr(0,d)),b[we]=r(a.substr(d,2)),b[xe]=r(a.substr(e)),j(c).bigHour=!0}),S("Hmm",function(a,b,c){var d=a.length-2;b[ve]=r(a.substr(0,d)),b[we]=r(a.substr(d))}),S("Hmmss",function(a,b,c){var d=a.length-4,e=a.length-2;b[ve]=r(a.substr(0,d)),b[we]=r(a.substr(d,2)),b[xe]=r(a.substr(e))});var af=/[ap]\.?m?\.?/i,bf=E("Hours",!0);J("m",["mm",2],0,"minute"),A("minute","m"),O("m",ee),O("mm",ee,ae),S(["m","mm"],we);var cf=E("Minutes",!1);J("s",["ss",2],0,"second"),A("second","s"),O("s",ee),O("ss",ee,ae),S(["s","ss"],xe);var df=E("Seconds",!1);J("S",0,0,function(){return~~(this.millisecond()/100)}),J(0,["SS",2],0,function(){return~~(this.millisecond()/10)}),J(0,["SSS",3],0,"millisecond"),J(0,["SSSS",4],0,function(){return 10*this.millisecond()}),J(0,["SSSSS",5],0,function(){return 100*this.millisecond()}),J(0,["SSSSSS",6],0,function(){return 1e3*this.millisecond()}),J(0,["SSSSSSS",7],0,function(){return 1e4*this.millisecond()}),J(0,["SSSSSSSS",8],0,function(){return 1e5*this.millisecond()}),J(0,["SSSSSSSSS",9],0,function(){return 1e6*this.millisecond()}),A("millisecond","ms"),O("S",he,_d),O("SS",he,ae),O("SSS",he,be);var ef;for(ef="SSSS";ef.length<=9;ef+="S")O(ef,ke);for(ef="S";ef.length<=9;ef+="S")S(ef,hc);var ff=E("Milliseconds",!1);J("z",0,0,"zoneAbbr"),J("zz",0,0,"zoneName");var gf=o.prototype;gf.add=Ue,gf.calendar=db,gf.clone=eb,gf.diff=lb,gf.endOf=xb,gf.format=pb,gf.from=qb,gf.fromNow=rb,gf.to=sb,gf.toNow=tb,gf.get=H,gf.invalidAt=Gb,gf.isAfter=fb,gf.isBefore=gb,gf.isBetween=hb,gf.isSame=ib,gf.isSameOrAfter=jb,gf.isSameOrBefore=kb,gf.isValid=Eb,gf.lang=We,gf.locale=ub,gf.localeData=vb,gf.max=Pe,gf.min=Oe,gf.parsingFlags=Fb,gf.set=H,gf.startOf=wb,gf.subtract=Ve,gf.toArray=Bb,gf.toObject=Cb,gf.toDate=Ab,gf.toISOString=ob,gf.toJSON=Db,gf.toString=nb,gf.unix=zb,gf.valueOf=yb,gf.creationData=Hb,gf.year=Ne,gf.isLeapYear=na,gf.weekYear=Jb,gf.isoWeekYear=Kb,gf.quarter=gf.quarters=Pb,gf.month=$,gf.daysInMonth=_,gf.week=gf.weeks=Tb,gf.isoWeek=gf.isoWeeks=Ub,gf.weeksInYear=Mb,gf.isoWeeksInYear=Lb,gf.date=Ye,gf.day=gf.days=$b,gf.weekday=_b,gf.isoWeekday=ac,gf.dayOfYear=bc,gf.hour=gf.hours=bf,gf.minute=gf.minutes=cf,gf.second=gf.seconds=df,gf.millisecond=gf.milliseconds=ff,gf.utcOffset=Oa,gf.utc=Qa,gf.local=Ra,gf.parseZone=Sa,gf.hasAlignedHourOffset=Ta,gf.isDST=Ua,gf.isDSTShifted=Va,gf.isLocal=Wa,gf.isUtcOffset=Xa,gf.isUtc=Ya,gf.isUTC=Ya,gf.zoneAbbr=ic,gf.zoneName=jc,gf.dates=fa("dates accessor is deprecated. Use date instead.",Ye),gf.months=fa("months accessor is deprecated. Use month instead",$),gf.years=fa("years accessor is deprecated. Use year instead",Ne),gf.zone=fa("moment().zone is deprecated, use moment().utcOffset instead. https://github.com/moment/moment/issues/1779",Pa);var hf=gf,jf={sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},kf={LTS:"h:mm:ss A",LT:"h:mm A",L:"MM/DD/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY h:mm A",LLLL:"dddd, MMMM D, YYYY h:mm A"},lf="Invalid date",mf="%d",nf=/\d{1,2}/,of={future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},pf=t.prototype;pf._calendar=jf,pf.calendar=mc,pf._longDateFormat=kf,pf.longDateFormat=nc,pf._invalidDate=lf,pf.invalidDate=oc,pf._ordinal=mf,pf.ordinal=pc,pf._ordinalParse=nf,pf.preparse=qc,pf.postformat=qc,pf._relativeTime=of,pf.relativeTime=rc,pf.pastFuture=sc,pf.set=tc,pf.months=W,pf._months=Ce,pf.monthsShort=X,pf._monthsShort=De,pf.monthsParse=Y,pf._monthsRegex=Fe,pf.monthsRegex=ba,pf._monthsShortRegex=Ee,pf.monthsShortRegex=aa,pf.week=Qb,pf._week=Xe,pf.firstDayOfYear=Sb,pf.firstDayOfWeek=Rb,pf.weekdays=Wb,pf._weekdays=Ze,pf.weekdaysMin=Yb,pf._weekdaysMin=_e,pf.weekdaysShort=Xb,pf._weekdaysShort=$e,pf.weekdaysParse=Zb,pf.isPM=fc,pf._meridiemParse=af,pf.meridiem=gc,x("en",{ordinalParse:/\d{1,2}(th|st|nd|rd)/,ordinal:function(a){var b=a%10,c=1===r(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c}}),a.lang=fa("moment.lang is deprecated. Use moment.locale instead.",x),a.langData=fa("moment.langData is deprecated. Use moment.localeData instead.",z);var qf=Math.abs,rf=Lc("ms"),sf=Lc("s"),tf=Lc("m"),uf=Lc("h"),vf=Lc("d"),wf=Lc("w"),xf=Lc("M"),yf=Lc("y"),zf=Nc("milliseconds"),Af=Nc("seconds"),Bf=Nc("minutes"),Cf=Nc("hours"),Df=Nc("days"),Ef=Nc("months"),Ff=Nc("years"),Gf=Math.round,Hf={s:45,m:45,h:22,d:26,M:11},If=Math.abs,Jf=Ia.prototype;Jf.abs=Bc,Jf.add=Dc,Jf.subtract=Ec,Jf.as=Jc,Jf.asMilliseconds=rf,Jf.asSeconds=sf,Jf.asMinutes=tf,Jf.asHours=uf,Jf.asDays=vf,Jf.asWeeks=wf,Jf.asMonths=xf,Jf.asYears=yf,Jf.valueOf=Kc,Jf._bubble=Gc,Jf.get=Mc,Jf.milliseconds=zf,Jf.seconds=Af,Jf.minutes=Bf,Jf.hours=Cf,Jf.days=Df,Jf.weeks=Oc,Jf.months=Ef,Jf.years=Ff,Jf.humanize=Sc,Jf.toISOString=Tc,Jf.toString=Tc,Jf.toJSON=Tc,Jf.locale=ub,Jf.localeData=vb,Jf.toIsoString=fa("toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)",Tc),Jf.lang=We,J("X",0,0,"unix"),J("x",0,0,"valueOf"),O("x",le),O("X",oe),S("X",function(a,b,c){c._d=new Date(1e3*parseFloat(a,10))}),S("x",function(a,b,c){c._d=new Date(r(a))}),
-//! moment.js
-//! version : 2.11.1
-//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-//! license : MIT
-//! momentjs.com
-a.version="2.11.1",b(Ea),a.fn=hf,a.min=Ga,a.max=Ha,a.now=Qe,a.utc=h,a.unix=kc,a.months=wc,a.isDate=d,a.locale=x,a.invalid=l,a.duration=Za,a.isMoment=p,a.weekdays=yc,a.parseZone=lc,a.localeData=z,a.isDuration=Ja,a.monthsShort=xc,a.weekdaysMin=Ac,a.defineLocale=y,a.weekdaysShort=zc,a.normalizeUnits=B,a.relativeTimeThreshold=Rc,a.prototype=hf;var Kf=a,Lf=(Kf.defineLocale("af",{months:"Januarie_Februarie_Maart_April_Mei_Junie_Julie_Augustus_September_Oktober_November_Desember".split("_"),monthsShort:"Jan_Feb_Mar_Apr_Mei_Jun_Jul_Aug_Sep_Okt_Nov_Des".split("_"),weekdays:"Sondag_Maandag_Dinsdag_Woensdag_Donderdag_Vrydag_Saterdag".split("_"),weekdaysShort:"Son_Maa_Din_Woe_Don_Vry_Sat".split("_"),weekdaysMin:"So_Ma_Di_Wo_Do_Vr_Sa".split("_"),meridiemParse:/vm|nm/i,isPM:function(a){return/^nm$/i.test(a)},meridiem:function(a,b,c){return 12>a?c?"vm":"VM":c?"nm":"NM"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Vandag om] LT",nextDay:"[Môre om] LT",nextWeek:"dddd [om] LT",lastDay:"[Gister om] LT",lastWeek:"[Laas] dddd [om] LT",sameElse:"L"},relativeTime:{future:"oor %s",past:"%s gelede",s:"'n paar sekondes",m:"'n minuut",mm:"%d minute",h:"'n uur",hh:"%d ure",d:"'n dag",dd:"%d dae",M:"'n maand",MM:"%d maande",y:"'n jaar",yy:"%d jaar"},ordinalParse:/\d{1,2}(ste|de)/,ordinal:function(a){return a+(1===a||8===a||a>=20?"ste":"de")},week:{dow:1,doy:4}}),Kf.defineLocale("ar-ma",{months:"يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر".split("_"),monthsShort:"يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر".split("_"),weekdays:"الأحد_الإتنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت".split("_"),weekdaysShort:"احد_اتنين_ثلاثاء_اربعاء_خميس_جمعة_سبت".split("_"),weekdaysMin:"ح_ن_ث_ر_خ_ج_س".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[اليوم على الساعة] LT",nextDay:"[غدا على الساعة] LT",nextWeek:"dddd [على الساعة] LT",lastDay:"[أمس على الساعة] LT",lastWeek:"dddd [على الساعة] LT",sameElse:"L"},relativeTime:{future:"في %s",past:"منذ %s",s:"ثوان",m:"دقيقة",mm:"%d دقائق",h:"ساعة",hh:"%d ساعات",d:"يوم",dd:"%d أيام",M:"شهر",MM:"%d أشهر",y:"سنة",yy:"%d سنوات"},week:{dow:6,doy:12}}),{1:"١",2:"٢",3:"٣",4:"٤",5:"٥",6:"٦",7:"٧",8:"٨",9:"٩",0:"٠"}),Mf={"١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9","٠":"0"},Nf=(Kf.defineLocale("ar-sa",{months:"يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر".split("_"),monthsShort:"يناير_فبراير_مارس_أبريل_مايو_يونيو_يوليو_أغسطس_سبتمبر_أكتوبر_نوفمبر_ديسمبر".split("_"),weekdays:"الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت".split("_"),weekdaysShort:"أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت".split("_"),weekdaysMin:"ح_ن_ث_ر_خ_ج_س".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/ص|م/,isPM:function(a){return"م"===a},meridiem:function(a,b,c){return 12>a?"ص":"م"},calendar:{sameDay:"[اليوم على الساعة] LT",nextDay:"[غدا على الساعة] LT",nextWeek:"dddd [على الساعة] LT",lastDay:"[أمس على الساعة] LT",lastWeek:"dddd [على الساعة] LT",sameElse:"L"},relativeTime:{future:"في %s",past:"منذ %s",s:"ثوان",m:"دقيقة",mm:"%d دقائق",h:"ساعة",hh:"%d ساعات",d:"يوم",dd:"%d أيام",M:"شهر",MM:"%d أشهر",y:"سنة",yy:"%d سنوات"},preparse:function(a){return a.replace(/[١٢٣٤٥٦٧٨٩٠]/g,function(a){return Mf[a]}).replace(/،/g,",")},postformat:function(a){return a.replace(/\d/g,function(a){return Lf[a]}).replace(/,/g,"،")},week:{dow:6,doy:12}}),Kf.defineLocale("ar-tn",{months:"جانفي_فيفري_مارس_أفريل_ماي_جوان_جويلية_أوت_سبتمبر_أكتوبر_نوفمبر_ديسمبر".split("_"),monthsShort:"جانفي_فيفري_مارس_أفريل_ماي_جوان_جويلية_أوت_سبتمبر_أكتوبر_نوفمبر_ديسمبر".split("_"),weekdays:"الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت".split("_"),weekdaysShort:"أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت".split("_"),weekdaysMin:"ح_ن_ث_ر_خ_ج_س".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[اليوم على الساعة] LT",nextDay:"[غدا على الساعة] LT",nextWeek:"dddd [على الساعة] LT",lastDay:"[أمس على الساعة] LT",lastWeek:"dddd [على الساعة] LT",sameElse:"L"},relativeTime:{future:"في %s",past:"منذ %s",s:"ثوان",m:"دقيقة",mm:"%d دقائق",h:"ساعة",hh:"%d ساعات",d:"يوم",dd:"%d أيام",M:"شهر",MM:"%d أشهر",y:"سنة",yy:"%d سنوات"},week:{dow:1,doy:4}}),{1:"١",2:"٢",3:"٣",4:"٤",5:"٥",6:"٦",7:"٧",8:"٨",9:"٩",0:"٠"}),Of={"١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9","٠":"0"},Pf=function(a){return 0===a?0:1===a?1:2===a?2:a%100>=3&&10>=a%100?3:a%100>=11?4:5},Qf={s:["أقل من ثانية","ثانية واحدة",["ثانيتان","ثانيتين"],"%d ثوان","%d ثانية","%d ثانية"],m:["أقل من دقيقة","دقيقة واحدة",["دقيقتان","دقيقتين"],"%d دقائق","%d دقيقة","%d دقيقة"],h:["أقل من ساعة","ساعة واحدة",["ساعتان","ساعتين"],"%d ساعات","%d ساعة","%d ساعة"],d:["أقل من يوم","يوم واحد",["يومان","يومين"],"%d أيام","%d يومًا","%d يوم"],M:["أقل من شهر","شهر واحد",["شهران","شهرين"],"%d أشهر","%d شهرا","%d شهر"],y:["أقل من عام","عام واحد",["عامان","عامين"],"%d أعوام","%d عامًا","%d عام"]},Rf=function(a){return function(b,c,d,e){var f=Pf(b),g=Qf[a][Pf(b)];return 2===f&&(g=g[c?0:1]),g.replace(/%d/i,b)}},Sf=["كانون الثاني يناير","شباط فبراير","آذار مارس","نيسان أبريل","أيار مايو","حزيران يونيو","تموز يوليو","آب أغسطس","أيلول سبتمبر","تشرين الأول أكتوبر","تشرين الثاني نوفمبر","كانون الأول ديسمبر"],Tf=(Kf.defineLocale("ar",{months:Sf,monthsShort:Sf,weekdays:"الأحد_الإثنين_الثلاثاء_الأربعاء_الخميس_الجمعة_السبت".split("_"),weekdaysShort:"أحد_إثنين_ثلاثاء_أربعاء_خميس_جمعة_سبت".split("_"),weekdaysMin:"ح_ن_ث_ر_خ_ج_س".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"D/‏M/‏YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/ص|م/,isPM:function(a){return"م"===a},meridiem:function(a,b,c){return 12>a?"ص":"م"},calendar:{sameDay:"[اليوم عند الساعة] LT",nextDay:"[غدًا عند الساعة] LT",nextWeek:"dddd [عند الساعة] LT",lastDay:"[أمس عند الساعة] LT",lastWeek:"dddd [عند الساعة] LT",sameElse:"L"},relativeTime:{future:"بعد %s",past:"منذ %s",s:Rf("s"),m:Rf("m"),mm:Rf("m"),h:Rf("h"),hh:Rf("h"),d:Rf("d"),dd:Rf("d"),M:Rf("M"),MM:Rf("M"),y:Rf("y"),yy:Rf("y")},preparse:function(a){return a.replace(/\u200f/g,"").replace(/[١٢٣٤٥٦٧٨٩٠]/g,function(a){return Of[a]}).replace(/،/g,",")},postformat:function(a){return a.replace(/\d/g,function(a){return Nf[a]}).replace(/,/g,"،")},week:{dow:6,doy:12}}),{1:"-inci",5:"-inci",8:"-inci",70:"-inci",80:"-inci",2:"-nci",7:"-nci",20:"-nci",50:"-nci",3:"-üncü",4:"-üncü",100:"-üncü",6:"-ncı",9:"-uncu",10:"-uncu",30:"-uncu",60:"-ıncı",90:"-ıncı"}),Uf=(Kf.defineLocale("az",{months:"yanvar_fevral_mart_aprel_may_iyun_iyul_avqust_sentyabr_oktyabr_noyabr_dekabr".split("_"),monthsShort:"yan_fev_mar_apr_may_iyn_iyl_avq_sen_okt_noy_dek".split("_"),weekdays:"Bazar_Bazar ertəsi_Çərşənbə axşamı_Çərşənbə_Cümə axşamı_Cümə_Şənbə".split("_"),weekdaysShort:"Baz_BzE_ÇAx_Çər_CAx_Cüm_Şən".split("_"),weekdaysMin:"Bz_BE_ÇA_Çə_CA_Cü_Şə".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[bugün saat] LT",nextDay:"[sabah saat] LT",nextWeek:"[gələn həftə] dddd [saat] LT",lastDay:"[dünən] LT",lastWeek:"[keçən həftə] dddd [saat] LT",sameElse:"L"},relativeTime:{future:"%s sonra",past:"%s əvvəl",s:"birneçə saniyyə",m:"bir dəqiqə",mm:"%d dəqiqə",h:"bir saat",hh:"%d saat",d:"bir gün",dd:"%d gün",M:"bir ay",MM:"%d ay",y:"bir il",yy:"%d il"},meridiemParse:/gecə|səhər|gündüz|axşam/,isPM:function(a){return/^(gündüz|axşam)$/.test(a)},meridiem:function(a,b,c){return 4>a?"gecə":12>a?"səhər":17>a?"gündüz":"axşam"},ordinalParse:/\d{1,2}-(ıncı|inci|nci|üncü|ncı|uncu)/,ordinal:function(a){if(0===a)return a+"-ıncı";var b=a%10,c=a%100-b,d=a>=100?100:null;return a+(Tf[b]||Tf[c]||Tf[d])},week:{dow:1,doy:7}}),Kf.defineLocale("be",{months:{format:"студзеня_лютага_сакавіка_красавіка_траўня_чэрвеня_ліпеня_жніўня_верасня_кастрычніка_лістапада_снежня".split("_"),standalone:"студзень_люты_сакавік_красавік_травень_чэрвень_ліпень_жнівень_верасень_кастрычнік_лістапад_снежань".split("_")},monthsShort:"студ_лют_сак_крас_трав_чэрв_ліп_жнів_вер_каст_ліст_снеж".split("_"),weekdays:{format:"нядзелю_панядзелак_аўторак_сераду_чацвер_пятніцу_суботу".split("_"),standalone:"нядзеля_панядзелак_аўторак_серада_чацвер_пятніца_субота".split("_"),isFormat:/\[ ?[Вв] ?(?:мінулую|наступную)? ?\] ?dddd/},weekdaysShort:"нд_пн_ат_ср_чц_пт_сб".split("_"),weekdaysMin:"нд_пн_ат_ср_чц_пт_сб".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY г.",LLL:"D MMMM YYYY г., HH:mm",LLLL:"dddd, D MMMM YYYY г., HH:mm"},calendar:{sameDay:"[Сёння ў] LT",nextDay:"[Заўтра ў] LT",lastDay:"[Учора ў] LT",nextWeek:function(){return"[У] dddd [ў] LT"},lastWeek:function(){switch(this.day()){case 0:case 3:case 5:case 6:return"[У мінулую] dddd [ў] LT";case 1:case 2:case 4:return"[У мінулы] dddd [ў] LT"}},sameElse:"L"},relativeTime:{future:"праз %s",past:"%s таму",s:"некалькі секунд",m:Vc,mm:Vc,h:Vc,hh:Vc,d:"дзень",dd:Vc,M:"месяц",MM:Vc,y:"год",yy:Vc},meridiemParse:/ночы|раніцы|дня|вечара/,isPM:function(a){return/^(дня|вечара)$/.test(a)},meridiem:function(a,b,c){return 4>a?"ночы":12>a?"раніцы":17>a?"дня":"вечара"},ordinalParse:/\d{1,2}-(і|ы|га)/,ordinal:function(a,b){switch(b){case"M":case"d":case"DDD":case"w":case"W":return a%10!==2&&a%10!==3||a%100===12||a%100===13?a+"-ы":a+"-і";case"D":return a+"-га";default:return a}},week:{dow:1,doy:7}}),Kf.defineLocale("bg",{months:"януари_февруари_март_април_май_юни_юли_август_септември_октомври_ноември_декември".split("_"),monthsShort:"янр_фев_мар_апр_май_юни_юли_авг_сеп_окт_ное_дек".split("_"),weekdays:"неделя_понеделник_вторник_сряда_четвъртък_петък_събота".split("_"),weekdaysShort:"нед_пон_вто_сря_чет_пет_съб".split("_"),weekdaysMin:"нд_пн_вт_ср_чт_пт_сб".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"D.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd, D MMMM YYYY H:mm"},calendar:{sameDay:"[Днес в] LT",nextDay:"[Утре в] LT",nextWeek:"dddd [в] LT",lastDay:"[Вчера в] LT",lastWeek:function(){switch(this.day()){case 0:case 3:case 6:return"[В изминалата] dddd [в] LT";case 1:case 2:case 4:case 5:return"[В изминалия] dddd [в] LT"}},sameElse:"L"},relativeTime:{future:"след %s",past:"преди %s",s:"няколко секунди",m:"минута",mm:"%d минути",h:"час",hh:"%d часа",d:"ден",dd:"%d дни",M:"месец",MM:"%d месеца",y:"година",yy:"%d години"},ordinalParse:/\d{1,2}-(ев|ен|ти|ви|ри|ми)/,ordinal:function(a){var b=a%10,c=a%100;return 0===a?a+"-ев":0===c?a+"-ен":c>10&&20>c?a+"-ти":1===b?a+"-ви":2===b?a+"-ри":7===b||8===b?a+"-ми":a+"-ти"},week:{dow:1,doy:7}}),{1:"১",2:"২",3:"৩",4:"৪",5:"৫",6:"৬",7:"৭",8:"৮",9:"৯",0:"০"}),Vf={"১":"1","২":"2","৩":"3","৪":"4","৫":"5","৬":"6","৭":"7","৮":"8","৯":"9","০":"0"},Wf=(Kf.defineLocale("bn",{months:"জানুয়ারী_ফেবুয়ারী_মার্চ_এপ্রিল_মে_জুন_জুলাই_অগাস্ট_সেপ্টেম্বর_অক্টোবর_নভেম্বর_ডিসেম্বর".split("_"),monthsShort:"জানু_ফেব_মার্চ_এপর_মে_জুন_জুল_অগ_সেপ্ট_অক্টো_নভ_ডিসেম্".split("_"),weekdays:"রবিবার_সোমবার_মঙ্গলবার_বুধবার_বৃহস্পত্তিবার_শুক্রবার_শনিবার".split("_"),weekdaysShort:"রবি_সোম_মঙ্গল_বুধ_বৃহস্পত্তি_শুক্র_শনি".split("_"),weekdaysMin:"রব_সম_মঙ্গ_বু_ব্রিহ_শু_শনি".split("_"),longDateFormat:{LT:"A h:mm সময়",LTS:"A h:mm:ss সময়",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm সময়",LLLL:"dddd, D MMMM YYYY, A h:mm সময়"},calendar:{sameDay:"[আজ] LT",nextDay:"[আগামীকাল] LT",nextWeek:"dddd, LT",lastDay:"[গতকাল] LT",lastWeek:"[গত] dddd, LT",sameElse:"L"},relativeTime:{future:"%s পরে",past:"%s আগে",s:"কয়েক সেকেন্ড",m:"এক মিনিট",mm:"%d মিনিট",h:"এক ঘন্টা",hh:"%d ঘন্টা",d:"এক দিন",dd:"%d দিন",M:"এক মাস",MM:"%d মাস",y:"এক বছর",yy:"%d বছর"},preparse:function(a){return a.replace(/[১২৩৪৫৬৭৮৯০]/g,function(a){return Vf[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return Uf[a]})},meridiemParse:/রাত|সকাল|দুপুর|বিকাল|রাত/,isPM:function(a){return/^(দুপুর|বিকাল|রাত)$/.test(a)},meridiem:function(a,b,c){return 4>a?"রাত":10>a?"সকাল":17>a?"দুপুর":20>a?"বিকাল":"রাত"},week:{dow:0,doy:6}}),{1:"༡",2:"༢",3:"༣",4:"༤",5:"༥",6:"༦",7:"༧",8:"༨",9:"༩",0:"༠"}),Xf={"༡":"1","༢":"2","༣":"3","༤":"4","༥":"5","༦":"6","༧":"7","༨":"8","༩":"9","༠":"0"},Yf=(Kf.defineLocale("bo",{months:"ཟླ་བ་དང་པོ_ཟླ་བ་གཉིས་པ_ཟླ་བ་གསུམ་པ_ཟླ་བ་བཞི་པ_ཟླ་བ་ལྔ་པ_ཟླ་བ་དྲུག་པ_ཟླ་བ་བདུན་པ_ཟླ་བ་བརྒྱད་པ_ཟླ་བ་དགུ་པ_ཟླ་བ་བཅུ་པ_ཟླ་བ་བཅུ་གཅིག་པ_ཟླ་བ་བཅུ་གཉིས་པ".split("_"),monthsShort:"ཟླ་བ་དང་པོ_ཟླ་བ་གཉིས་པ_ཟླ་བ་གསུམ་པ_ཟླ་བ་བཞི་པ_ཟླ་བ་ལྔ་པ_ཟླ་བ་དྲུག་པ_ཟླ་བ་བདུན་པ_ཟླ་བ་བརྒྱད་པ_ཟླ་བ་དགུ་པ_ཟླ་བ་བཅུ་པ_ཟླ་བ་བཅུ་གཅིག་པ_ཟླ་བ་བཅུ་གཉིས་པ".split("_"),weekdays:"གཟའ་ཉི་མ་_གཟའ་ཟླ་བ་_གཟའ་མིག་དམར་_གཟའ་ལྷག་པ་_གཟའ་ཕུར་བུ_གཟའ་པ་སངས་_གཟའ་སྤེན་པ་".split("_"),weekdaysShort:"ཉི་མ་_ཟླ་བ་_མིག་དམར་_ལྷག་པ་_ཕུར་བུ_པ་སངས་_སྤེན་པ་".split("_"),weekdaysMin:"ཉི་མ་_ཟླ་བ་_མིག་དམར་_ལྷག་པ་_ཕུར་བུ_པ་སངས་_སྤེན་པ་".split("_"),longDateFormat:{LT:"A h:mm",LTS:"A h:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm",LLLL:"dddd, D MMMM YYYY, A h:mm"},calendar:{sameDay:"[དི་རིང] LT",nextDay:"[སང་ཉིན] LT",nextWeek:"[བདུན་ཕྲག་རྗེས་མ], LT",lastDay:"[ཁ་སང] LT",lastWeek:"[བདུན་ཕྲག་མཐའ་མ] dddd, LT",sameElse:"L"},relativeTime:{future:"%s ལ་",past:"%s སྔན་ལ",s:"ལམ་སང",m:"སྐར་མ་གཅིག",mm:"%d སྐར་མ",h:"ཆུ་ཚོད་གཅིག",hh:"%d ཆུ་ཚོད",d:"ཉིན་གཅིག",dd:"%d ཉིན་",M:"ཟླ་བ་གཅིག",MM:"%d ཟླ་བ",y:"ལོ་གཅིག",yy:"%d ལོ"},preparse:function(a){return a.replace(/[༡༢༣༤༥༦༧༨༩༠]/g,function(a){return Xf[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return Wf[a]})},meridiemParse:/མཚན་མོ|ཞོགས་ཀས|ཉིན་གུང|དགོང་དག|མཚན་མོ/,isPM:function(a){return/^(ཉིན་གུང|དགོང་དག|མཚན་མོ)$/.test(a)},meridiem:function(a,b,c){return 4>a?"མཚན་མོ":10>a?"ཞོགས་ཀས":17>a?"ཉིན་གུང":20>a?"དགོང་དག":"མཚན་མོ"},week:{dow:0,doy:6}}),Kf.defineLocale("br",{months:"Genver_C'hwevrer_Meurzh_Ebrel_Mae_Mezheven_Gouere_Eost_Gwengolo_Here_Du_Kerzu".split("_"),monthsShort:"Gen_C'hwe_Meu_Ebr_Mae_Eve_Gou_Eos_Gwe_Her_Du_Ker".split("_"),weekdays:"Sul_Lun_Meurzh_Merc'her_Yaou_Gwener_Sadorn".split("_"),weekdaysShort:"Sul_Lun_Meu_Mer_Yao_Gwe_Sad".split("_"),weekdaysMin:"Su_Lu_Me_Mer_Ya_Gw_Sa".split("_"),longDateFormat:{LT:"h[e]mm A",LTS:"h[e]mm:ss A",L:"DD/MM/YYYY",LL:"D [a viz] MMMM YYYY",LLL:"D [a viz] MMMM YYYY h[e]mm A",LLLL:"dddd, D [a viz] MMMM YYYY h[e]mm A"},calendar:{sameDay:"[Hiziv da] LT",nextDay:"[Warc'hoazh da] LT",nextWeek:"dddd [da] LT",lastDay:"[Dec'h da] LT",lastWeek:"dddd [paset da] LT",sameElse:"L"},relativeTime:{future:"a-benn %s",past:"%s 'zo",s:"un nebeud segondennoù",m:"ur vunutenn",mm:Wc,h:"un eur",hh:"%d eur",d:"un devezh",dd:Wc,M:"ur miz",MM:Wc,y:"ur bloaz",yy:Xc},ordinalParse:/\d{1,2}(añ|vet)/,ordinal:function(a){var b=1===a?"añ":"vet";return a+b},week:{dow:1,doy:4}}),Kf.defineLocale("bs",{months:"januar_februar_mart_april_maj_juni_juli_august_septembar_oktobar_novembar_decembar".split("_"),monthsShort:"jan._feb._mar._apr._maj._jun._jul._aug._sep._okt._nov._dec.".split("_"),weekdays:"nedjelja_ponedjeljak_utorak_srijeda_četvrtak_petak_subota".split("_"),weekdaysShort:"ned._pon._uto._sri._čet._pet._sub.".split("_"),weekdaysMin:"ne_po_ut_sr_če_pe_su".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD. MM. YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedjelju] [u] LT";case 3:return"[u] [srijedu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[jučer u] LT",lastWeek:function(){switch(this.day()){case 0:case 3:return"[prošlu] dddd [u] LT";case 6:return"[prošle] [subote] [u] LT";case 1:case 2:case 4:case 5:return"[prošli] dddd [u] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"prije %s",s:"par sekundi",m:_c,mm:_c,h:_c,hh:_c,d:"dan",dd:_c,M:"mjesec",MM:_c,y:"godinu",yy:_c},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),Kf.defineLocale("ca",{months:"gener_febrer_març_abril_maig_juny_juliol_agost_setembre_octubre_novembre_desembre".split("_"),monthsShort:"gen._febr._mar._abr._mai._jun._jul._ag._set._oct._nov._des.".split("_"),weekdays:"diumenge_dilluns_dimarts_dimecres_dijous_divendres_dissabte".split("_"),weekdaysShort:"dg._dl._dt._dc._dj._dv._ds.".split("_"),weekdaysMin:"Dg_Dl_Dt_Dc_Dj_Dv_Ds".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd D MMMM YYYY H:mm"},calendar:{sameDay:function(){return"[avui a "+(1!==this.hours()?"les":"la")+"] LT"},nextDay:function(){return"[demà a "+(1!==this.hours()?"les":"la")+"] LT"},nextWeek:function(){return"dddd [a "+(1!==this.hours()?"les":"la")+"] LT"},lastDay:function(){return"[ahir a "+(1!==this.hours()?"les":"la")+"] LT"},lastWeek:function(){return"[el] dddd [passat a "+(1!==this.hours()?"les":"la")+"] LT"},sameElse:"L"},relativeTime:{future:"en %s",past:"fa %s",s:"uns segons",m:"un minut",mm:"%d minuts",h:"una hora",hh:"%d hores",d:"un dia",dd:"%d dies",M:"un mes",MM:"%d mesos",y:"un any",yy:"%d anys"},ordinalParse:/\d{1,2}(r|n|t|è|a)/,ordinal:function(a,b){var c=1===a?"r":2===a?"n":3===a?"r":4===a?"t":"è";return("w"===b||"W"===b)&&(c="a"),a+c},week:{dow:1,doy:4}}),"leden_únor_březen_duben_květen_červen_červenec_srpen_září_říjen_listopad_prosinec".split("_")),Zf="led_úno_bře_dub_kvě_čvn_čvc_srp_zář_říj_lis_pro".split("_"),$f=(Kf.defineLocale("cs",{months:Yf,monthsShort:Zf,monthsParse:function(a,b){var c,d=[];for(c=0;12>c;c++)d[c]=new RegExp("^"+a[c]+"$|^"+b[c]+"$","i");return d}(Yf,Zf),shortMonthsParse:function(a){var b,c=[];for(b=0;12>b;b++)c[b]=new RegExp("^"+a[b]+"$","i");return c}(Zf),longMonthsParse:function(a){var b,c=[];for(b=0;12>b;b++)c[b]=new RegExp("^"+a[b]+"$","i");return c}(Yf),weekdays:"neděle_pondělí_úterý_středa_čtvrtek_pátek_sobota".split("_"),weekdaysShort:"ne_po_út_st_čt_pá_so".split("_"),weekdaysMin:"ne_po_út_st_čt_pá_so".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd D. MMMM YYYY H:mm"},calendar:{sameDay:"[dnes v] LT",nextDay:"[zítra v] LT",nextWeek:function(){switch(this.day()){case 0:return"[v neděli v] LT";case 1:case 2:return"[v] dddd [v] LT";case 3:return"[ve středu v] LT";case 4:return"[ve čtvrtek v] LT";case 5:return"[v pátek v] LT";case 6:return"[v sobotu v] LT"}},lastDay:"[včera v] LT",lastWeek:function(){switch(this.day()){case 0:return"[minulou neděli v] LT";case 1:case 2:return"[minulé] dddd [v] LT";case 3:return"[minulou středu v] LT";case 4:case 5:return"[minulý] dddd [v] LT";case 6:return"[minulou sobotu v] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"před %s",s:bd,m:bd,mm:bd,h:bd,hh:bd,d:bd,dd:bd,M:bd,MM:bd,y:bd,yy:bd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("cv",{months:"кӑрлач_нарӑс_пуш_ака_май_ҫӗртме_утӑ_ҫурла_авӑн_юпа_чӳк_раштав".split("_"),monthsShort:"кӑр_нар_пуш_ака_май_ҫӗр_утӑ_ҫур_авн_юпа_чӳк_раш".split("_"),weekdays:"вырсарникун_тунтикун_ытларикун_юнкун_кӗҫнерникун_эрнекун_шӑматкун".split("_"),weekdaysShort:"выр_тун_ытл_юн_кӗҫ_эрн_шӑм".split("_"),weekdaysMin:"вр_тн_ыт_юн_кҫ_эр_шм".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"YYYY [ҫулхи] MMMM [уйӑхӗн] D[-мӗшӗ]",LLL:"YYYY [ҫулхи] MMMM [уйӑхӗн] D[-мӗшӗ], HH:mm",LLLL:"dddd, YYYY [ҫулхи] MMMM [уйӑхӗн] D[-мӗшӗ], HH:mm"},calendar:{sameDay:"[Паян] LT [сехетре]",nextDay:"[Ыран] LT [сехетре]",lastDay:"[Ӗнер] LT [сехетре]",nextWeek:"[Ҫитес] dddd LT [сехетре]",lastWeek:"[Иртнӗ] dddd LT [сехетре]",sameElse:"L"},relativeTime:{future:function(a){var b=/сехет$/i.exec(a)?"рен":/ҫул$/i.exec(a)?"тан":"ран";return a+b},past:"%s каялла",s:"пӗр-ик ҫеккунт",m:"пӗр минут",mm:"%d минут",h:"пӗр сехет",hh:"%d сехет",d:"пӗр кун",dd:"%d кун",M:"пӗр уйӑх",MM:"%d уйӑх",y:"пӗр ҫул",yy:"%d ҫул"},ordinalParse:/\d{1,2}-мӗш/,ordinal:"%d-мӗш",week:{dow:1,doy:7}}),Kf.defineLocale("cy",{months:"Ionawr_Chwefror_Mawrth_Ebrill_Mai_Mehefin_Gorffennaf_Awst_Medi_Hydref_Tachwedd_Rhagfyr".split("_"),monthsShort:"Ion_Chwe_Maw_Ebr_Mai_Meh_Gor_Aws_Med_Hyd_Tach_Rhag".split("_"),weekdays:"Dydd Sul_Dydd Llun_Dydd Mawrth_Dydd Mercher_Dydd Iau_Dydd Gwener_Dydd Sadwrn".split("_"),weekdaysShort:"Sul_Llun_Maw_Mer_Iau_Gwe_Sad".split("_"),weekdaysMin:"Su_Ll_Ma_Me_Ia_Gw_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Heddiw am] LT",nextDay:"[Yfory am] LT",nextWeek:"dddd [am] LT",lastDay:"[Ddoe am] LT",lastWeek:"dddd [diwethaf am] LT",sameElse:"L"},relativeTime:{future:"mewn %s",past:"%s yn ôl",s:"ychydig eiliadau",m:"munud",mm:"%d munud",h:"awr",hh:"%d awr",d:"diwrnod",dd:"%d diwrnod",M:"mis",MM:"%d mis",y:"blwyddyn",yy:"%d flynedd"},ordinalParse:/\d{1,2}(fed|ain|af|il|ydd|ed|eg)/,ordinal:function(a){var b=a,c="",d=["","af","il","ydd","ydd","ed","ed","ed","fed","fed","fed","eg","fed","eg","eg","fed","eg","eg","fed","eg","fed"];return b>20?c=40===b||50===b||60===b||80===b||100===b?"fed":"ain":b>0&&(c=d[b]),a+c},week:{dow:1,doy:4}}),Kf.defineLocale("da",{months:"januar_februar_marts_april_maj_juni_juli_august_september_oktober_november_december".split("_"),monthsShort:"jan_feb_mar_apr_maj_jun_jul_aug_sep_okt_nov_dec".split("_"),weekdays:"søndag_mandag_tirsdag_onsdag_torsdag_fredag_lørdag".split("_"),weekdaysShort:"søn_man_tir_ons_tor_fre_lør".split("_"),weekdaysMin:"sø_ma_ti_on_to_fr_lø".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd [d.] D. MMMM YYYY HH:mm"},calendar:{sameDay:"[I dag kl.] LT",nextDay:"[I morgen kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[I går kl.] LT",lastWeek:"[sidste] dddd [kl] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"%s siden",s:"få sekunder",m:"et minut",mm:"%d minutter",h:"en time",hh:"%d timer",d:"en dag",dd:"%d dage",M:"en måned",MM:"%d måneder",y:"et år",yy:"%d år"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("de-at",{months:"Jänner_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"Jän._Febr._Mrz._Apr._Mai_Jun._Jul._Aug._Sept._Okt._Nov._Dez.".split("_"),weekdays:"Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag".split("_"),weekdaysShort:"So._Mo._Di._Mi._Do._Fr._Sa.".split("_"),weekdaysMin:"So_Mo_Di_Mi_Do_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd, D. MMMM YYYY HH:mm"},calendar:{sameDay:"[heute um] LT [Uhr]",sameElse:"L",nextDay:"[morgen um] LT [Uhr]",nextWeek:"dddd [um] LT [Uhr]",lastDay:"[gestern um] LT [Uhr]",lastWeek:"[letzten] dddd [um] LT [Uhr]"},relativeTime:{future:"in %s",past:"vor %s",s:"ein paar Sekunden",m:cd,mm:"%d Minuten",h:cd,hh:"%d Stunden",d:cd,dd:cd,M:cd,MM:cd,y:cd,yy:cd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("de",{months:"Januar_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"Jan._Febr._Mrz._Apr._Mai_Jun._Jul._Aug._Sept._Okt._Nov._Dez.".split("_"),weekdays:"Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag".split("_"),weekdaysShort:"So._Mo._Di._Mi._Do._Fr._Sa.".split("_"),weekdaysMin:"So_Mo_Di_Mi_Do_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd, D. MMMM YYYY HH:mm"},calendar:{sameDay:"[heute um] LT [Uhr]",sameElse:"L",nextDay:"[morgen um] LT [Uhr]",nextWeek:"dddd [um] LT [Uhr]",lastDay:"[gestern um] LT [Uhr]",lastWeek:"[letzten] dddd [um] LT [Uhr]"},relativeTime:{future:"in %s",past:"vor %s",s:"ein paar Sekunden",m:dd,mm:"%d Minuten",h:dd,hh:"%d Stunden",d:dd,dd:dd,M:dd,MM:dd,y:dd,yy:dd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),["ޖެނުއަރީ","ފެބްރުއަރީ","މާރިޗު","އޭޕްރީލު","މޭ","ޖޫން","ޖުލައި","އޯގަސްޓު","ސެޕްޓެމްބަރު","އޮކްޓޯބަރު","ނޮވެމްބަރު","ޑިސެމްބަރު"]),_f=["އާދިއްތަ","ހޯމަ","އަންގާރަ","ބުދަ","ބުރާސްފަތި","ހުކުރު","ހޮނިހިރު"],ag=(Kf.defineLocale("dv",{months:$f,monthsShort:$f,weekdays:_f,weekdaysShort:_f,weekdaysMin:"އާދި_ހޯމަ_އަން_ބުދަ_ބުރާ_ހުކު_ހޮނި".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"D/M/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/މކ|މފ/,isPM:function(a){return""===a},meridiem:function(a,b,c){return 12>a?"މކ":"މފ"},calendar:{sameDay:"[މިއަދު] LT",nextDay:"[މާދަމާ] LT",nextWeek:"dddd LT",lastDay:"[އިއްޔެ] LT",lastWeek:"[ފާއިތުވި] dddd LT",sameElse:"L"},relativeTime:{future:"ތެރޭގައި %s",past:"ކުރިން %s",s:"ސިކުންތުކޮޅެއް",m:"މިނިޓެއް",mm:"މިނިޓު %d",h:"ގަޑިއިރެއް",hh:"ގަޑިއިރު %d",d:"ދުވަހެއް",dd:"ދުވަސް %d",M:"މަހެއް",MM:"މަސް %d",y:"އަހަރެއް",yy:"އަހަރު %d"},preparse:function(a){return a.replace(/،/g,",")},postformat:function(a){return a.replace(/,/g,"،")},week:{dow:7,doy:12}}),Kf.defineLocale("el",{monthsNominativeEl:"Ιανουάριος_Φεβρουάριος_Μάρτιος_Απρίλιος_Μάιος_Ιούνιος_Ιούλιος_Αύγουστος_Σεπτέμβριος_Οκτώβριος_Νοέμβριος_Δεκέμβριος".split("_"),monthsGenitiveEl:"Ιανουαρίου_Φεβρουαρίου_Μαρτίου_Απριλίου_Μαΐου_Ιουνίου_Ιουλίου_Αυγούστου_Σεπτεμβρίου_Οκτωβρίου_Νοεμβρίου_Δεκεμβρίου".split("_"),months:function(a,b){return/D/.test(b.substring(0,b.indexOf("MMMM")))?this._monthsGenitiveEl[a.month()]:this._monthsNominativeEl[a.month()]},monthsShort:"Ιαν_Φεβ_Μαρ_Απρ_Μαϊ_Ιουν_Ιουλ_Αυγ_Σεπ_Οκτ_Νοε_Δεκ".split("_"),weekdays:"Κυριακή_Δευτέρα_Τρίτη_Τετάρτη_Πέμπτη_Παρασκευή_Σάββατο".split("_"),weekdaysShort:"Κυρ_Δευ_Τρι_Τετ_Πεμ_Παρ_Σαβ".split("_"),weekdaysMin:"Κυ_Δε_Τρ_Τε_Πε_Πα_Σα".split("_"),meridiem:function(a,b,c){return a>11?c?"μμ":"ΜΜ":c?"πμ":"ΠΜ"},isPM:function(a){return"μ"===(a+"").toLowerCase()[0]},meridiemParse:/[ΠΜ]\.?Μ?\.?/i,longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendarEl:{sameDay:"[Σήμερα {}] LT",nextDay:"[Αύριο {}] LT",nextWeek:"dddd [{}] LT",lastDay:"[Χθες {}] LT",lastWeek:function(){switch(this.day()){case 6:return"[το προηγούμενο] dddd [{}] LT";default:return"[την προηγούμενη] dddd [{}] LT"}},sameElse:"L"},calendar:function(a,b){var c=this._calendarEl[a],d=b&&b.hours();return D(c)&&(c=c.apply(b)),c.replace("{}",d%12===1?"στη":"στις")},relativeTime:{future:"σε %s",past:"%s πριν",s:"λίγα δευτερόλεπτα",m:"ένα λεπτό",mm:"%d λεπτά",h:"μία ώρα",hh:"%d ώρες",d:"μία μέρα",dd:"%d μέρες",M:"ένας μήνας",MM:"%d μήνες",y:"ένας χρόνος",yy:"%d χρόνια"},ordinalParse:/\d{1,2}η/,ordinal:"%dη",week:{dow:1,doy:4}}),Kf.defineLocale("en-au",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},ordinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),Kf.defineLocale("en-ca",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"YYYY-MM-DD",LL:"D MMMM, YYYY",LLL:"D MMMM, YYYY h:mm A",LLLL:"dddd, D MMMM, YYYY h:mm A"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},ordinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c}}),Kf.defineLocale("en-gb",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},ordinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),Kf.defineLocale("en-ie",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},ordinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),Kf.defineLocale("en-nz",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},ordinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),Kf.defineLocale("eo",{months:"januaro_februaro_marto_aprilo_majo_junio_julio_aŭgusto_septembro_oktobro_novembro_decembro".split("_"),monthsShort:"jan_feb_mar_apr_maj_jun_jul_aŭg_sep_okt_nov_dec".split("_"),weekdays:"Dimanĉo_Lundo_Mardo_Merkredo_Ĵaŭdo_Vendredo_Sabato".split("_"),
-weekdaysShort:"Dim_Lun_Mard_Merk_Ĵaŭ_Ven_Sab".split("_"),weekdaysMin:"Di_Lu_Ma_Me_Ĵa_Ve_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"D[-an de] MMMM, YYYY",LLL:"D[-an de] MMMM, YYYY HH:mm",LLLL:"dddd, [la] D[-an de] MMMM, YYYY HH:mm"},meridiemParse:/[ap]\.t\.m/i,isPM:function(a){return"p"===a.charAt(0).toLowerCase()},meridiem:function(a,b,c){return a>11?c?"p.t.m.":"P.T.M.":c?"a.t.m.":"A.T.M."},calendar:{sameDay:"[Hodiaŭ je] LT",nextDay:"[Morgaŭ je] LT",nextWeek:"dddd [je] LT",lastDay:"[Hieraŭ je] LT",lastWeek:"[pasinta] dddd [je] LT",sameElse:"L"},relativeTime:{future:"je %s",past:"antaŭ %s",s:"sekundoj",m:"minuto",mm:"%d minutoj",h:"horo",hh:"%d horoj",d:"tago",dd:"%d tagoj",M:"monato",MM:"%d monatoj",y:"jaro",yy:"%d jaroj"},ordinalParse:/\d{1,2}a/,ordinal:"%da",week:{dow:1,doy:7}}),"ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_")),bg="ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic".split("_"),cg=(Kf.defineLocale("es",{months:"enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split("_"),monthsShort:function(a,b){return/-MMM-/.test(b)?bg[a.month()]:ag[a.month()]},weekdays:"domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),weekdaysShort:"dom._lun._mar._mié._jue._vie._sáb.".split("_"),weekdaysMin:"do_lu_ma_mi_ju_vi_sá".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY H:mm",LLLL:"dddd, D [de] MMMM [de] YYYY H:mm"},calendar:{sameDay:function(){return"[hoy a la"+(1!==this.hours()?"s":"")+"] LT"},nextDay:function(){return"[mañana a la"+(1!==this.hours()?"s":"")+"] LT"},nextWeek:function(){return"dddd [a la"+(1!==this.hours()?"s":"")+"] LT"},lastDay:function(){return"[ayer a la"+(1!==this.hours()?"s":"")+"] LT"},lastWeek:function(){return"[el] dddd [pasado a la"+(1!==this.hours()?"s":"")+"] LT"},sameElse:"L"},relativeTime:{future:"en %s",past:"hace %s",s:"unos segundos",m:"un minuto",mm:"%d minutos",h:"una hora",hh:"%d horas",d:"un día",dd:"%d días",M:"un mes",MM:"%d meses",y:"un año",yy:"%d años"},ordinalParse:/\d{1,2}º/,ordinal:"%dº",week:{dow:1,doy:4}}),Kf.defineLocale("et",{months:"jaanuar_veebruar_märts_aprill_mai_juuni_juuli_august_september_oktoober_november_detsember".split("_"),monthsShort:"jaan_veebr_märts_apr_mai_juuni_juuli_aug_sept_okt_nov_dets".split("_"),weekdays:"pühapäev_esmaspäev_teisipäev_kolmapäev_neljapäev_reede_laupäev".split("_"),weekdaysShort:"P_E_T_K_N_R_L".split("_"),weekdaysMin:"P_E_T_K_N_R_L".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[Täna,] LT",nextDay:"[Homme,] LT",nextWeek:"[Järgmine] dddd LT",lastDay:"[Eile,] LT",lastWeek:"[Eelmine] dddd LT",sameElse:"L"},relativeTime:{future:"%s pärast",past:"%s tagasi",s:ed,m:ed,mm:ed,h:ed,hh:ed,d:ed,dd:"%d päeva",M:ed,MM:ed,y:ed,yy:ed},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("eu",{months:"urtarrila_otsaila_martxoa_apirila_maiatza_ekaina_uztaila_abuztua_iraila_urria_azaroa_abendua".split("_"),monthsShort:"urt._ots._mar._api._mai._eka._uzt._abu._ira._urr._aza._abe.".split("_"),weekdays:"igandea_astelehena_asteartea_asteazkena_osteguna_ostirala_larunbata".split("_"),weekdaysShort:"ig._al._ar._az._og._ol._lr.".split("_"),weekdaysMin:"ig_al_ar_az_og_ol_lr".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"YYYY[ko] MMMM[ren] D[a]",LLL:"YYYY[ko] MMMM[ren] D[a] HH:mm",LLLL:"dddd, YYYY[ko] MMMM[ren] D[a] HH:mm",l:"YYYY-M-D",ll:"YYYY[ko] MMM D[a]",lll:"YYYY[ko] MMM D[a] HH:mm",llll:"ddd, YYYY[ko] MMM D[a] HH:mm"},calendar:{sameDay:"[gaur] LT[etan]",nextDay:"[bihar] LT[etan]",nextWeek:"dddd LT[etan]",lastDay:"[atzo] LT[etan]",lastWeek:"[aurreko] dddd LT[etan]",sameElse:"L"},relativeTime:{future:"%s barru",past:"duela %s",s:"segundo batzuk",m:"minutu bat",mm:"%d minutu",h:"ordu bat",hh:"%d ordu",d:"egun bat",dd:"%d egun",M:"hilabete bat",MM:"%d hilabete",y:"urte bat",yy:"%d urte"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),{1:"۱",2:"۲",3:"۳",4:"۴",5:"۵",6:"۶",7:"۷",8:"۸",9:"۹",0:"۰"}),dg={"۱":"1","۲":"2","۳":"3","۴":"4","۵":"5","۶":"6","۷":"7","۸":"8","۹":"9","۰":"0"},eg=(Kf.defineLocale("fa",{months:"ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر".split("_"),monthsShort:"ژانویه_فوریه_مارس_آوریل_مه_ژوئن_ژوئیه_اوت_سپتامبر_اکتبر_نوامبر_دسامبر".split("_"),weekdays:"یک‌شنبه_دوشنبه_سه‌شنبه_چهارشنبه_پنج‌شنبه_جمعه_شنبه".split("_"),weekdaysShort:"یک‌شنبه_دوشنبه_سه‌شنبه_چهارشنبه_پنج‌شنبه_جمعه_شنبه".split("_"),weekdaysMin:"ی_د_س_چ_پ_ج_ش".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},meridiemParse:/قبل از ظهر|بعد از ظهر/,isPM:function(a){return/بعد از ظهر/.test(a)},meridiem:function(a,b,c){return 12>a?"قبل از ظهر":"بعد از ظهر"},calendar:{sameDay:"[امروز ساعت] LT",nextDay:"[فردا ساعت] LT",nextWeek:"dddd [ساعت] LT",lastDay:"[دیروز ساعت] LT",lastWeek:"dddd [پیش] [ساعت] LT",sameElse:"L"},relativeTime:{future:"در %s",past:"%s پیش",s:"چندین ثانیه",m:"یک دقیقه",mm:"%d دقیقه",h:"یک ساعت",hh:"%d ساعت",d:"یک روز",dd:"%d روز",M:"یک ماه",MM:"%d ماه",y:"یک سال",yy:"%d سال"},preparse:function(a){return a.replace(/[۰-۹]/g,function(a){return dg[a]}).replace(/،/g,",")},postformat:function(a){return a.replace(/\d/g,function(a){return cg[a]}).replace(/,/g,"،")},ordinalParse:/\d{1,2}م/,ordinal:"%dم",week:{dow:6,doy:12}}),"nolla yksi kaksi kolme neljä viisi kuusi seitsemän kahdeksan yhdeksän".split(" ")),fg=["nolla","yhden","kahden","kolmen","neljän","viiden","kuuden",eg[7],eg[8],eg[9]],gg=(Kf.defineLocale("fi",{months:"tammikuu_helmikuu_maaliskuu_huhtikuu_toukokuu_kesäkuu_heinäkuu_elokuu_syyskuu_lokakuu_marraskuu_joulukuu".split("_"),monthsShort:"tammi_helmi_maalis_huhti_touko_kesä_heinä_elo_syys_loka_marras_joulu".split("_"),weekdays:"sunnuntai_maanantai_tiistai_keskiviikko_torstai_perjantai_lauantai".split("_"),weekdaysShort:"su_ma_ti_ke_to_pe_la".split("_"),weekdaysMin:"su_ma_ti_ke_to_pe_la".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD.MM.YYYY",LL:"Do MMMM[ta] YYYY",LLL:"Do MMMM[ta] YYYY, [klo] HH.mm",LLLL:"dddd, Do MMMM[ta] YYYY, [klo] HH.mm",l:"D.M.YYYY",ll:"Do MMM YYYY",lll:"Do MMM YYYY, [klo] HH.mm",llll:"ddd, Do MMM YYYY, [klo] HH.mm"},calendar:{sameDay:"[tänään] [klo] LT",nextDay:"[huomenna] [klo] LT",nextWeek:"dddd [klo] LT",lastDay:"[eilen] [klo] LT",lastWeek:"[viime] dddd[na] [klo] LT",sameElse:"L"},relativeTime:{future:"%s päästä",past:"%s sitten",s:fd,m:fd,mm:fd,h:fd,hh:fd,d:fd,dd:fd,M:fd,MM:fd,y:fd,yy:fd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("fo",{months:"januar_februar_mars_apríl_mai_juni_juli_august_september_oktober_november_desember".split("_"),monthsShort:"jan_feb_mar_apr_mai_jun_jul_aug_sep_okt_nov_des".split("_"),weekdays:"sunnudagur_mánadagur_týsdagur_mikudagur_hósdagur_fríggjadagur_leygardagur".split("_"),weekdaysShort:"sun_mán_týs_mik_hós_frí_ley".split("_"),weekdaysMin:"su_má_tý_mi_hó_fr_le".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D. MMMM, YYYY HH:mm"},calendar:{sameDay:"[Í dag kl.] LT",nextDay:"[Í morgin kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[Í gjár kl.] LT",lastWeek:"[síðstu] dddd [kl] LT",sameElse:"L"},relativeTime:{future:"um %s",past:"%s síðani",s:"fá sekund",m:"ein minutt",mm:"%d minuttir",h:"ein tími",hh:"%d tímar",d:"ein dagur",dd:"%d dagar",M:"ein mánaði",MM:"%d mánaðir",y:"eitt ár",yy:"%d ár"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("fr-ca",{months:"janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),monthsShort:"janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),weekdays:"dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),weekdaysShort:"dim._lun._mar._mer._jeu._ven._sam.".split("_"),weekdaysMin:"Di_Lu_Ma_Me_Je_Ve_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Aujourd'hui à] LT",nextDay:"[Demain à] LT",nextWeek:"dddd [à] LT",lastDay:"[Hier à] LT",lastWeek:"dddd [dernier à] LT",sameElse:"L"},relativeTime:{future:"dans %s",past:"il y a %s",s:"quelques secondes",m:"une minute",mm:"%d minutes",h:"une heure",hh:"%d heures",d:"un jour",dd:"%d jours",M:"un mois",MM:"%d mois",y:"un an",yy:"%d ans"},ordinalParse:/\d{1,2}(er|e)/,ordinal:function(a){return a+(1===a?"er":"e")}}),Kf.defineLocale("fr-ch",{months:"janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),monthsShort:"janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),weekdays:"dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),weekdaysShort:"dim._lun._mar._mer._jeu._ven._sam.".split("_"),weekdaysMin:"Di_Lu_Ma_Me_Je_Ve_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Aujourd'hui à] LT",nextDay:"[Demain à] LT",nextWeek:"dddd [à] LT",lastDay:"[Hier à] LT",lastWeek:"dddd [dernier à] LT",sameElse:"L"},relativeTime:{future:"dans %s",past:"il y a %s",s:"quelques secondes",m:"une minute",mm:"%d minutes",h:"une heure",hh:"%d heures",d:"un jour",dd:"%d jours",M:"un mois",MM:"%d mois",y:"un an",yy:"%d ans"},ordinalParse:/\d{1,2}(er|e)/,ordinal:function(a){return a+(1===a?"er":"e")},week:{dow:1,doy:4}}),Kf.defineLocale("fr",{months:"janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre".split("_"),monthsShort:"janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.".split("_"),weekdays:"dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),weekdaysShort:"dim._lun._mar._mer._jeu._ven._sam.".split("_"),weekdaysMin:"Di_Lu_Ma_Me_Je_Ve_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Aujourd'hui à] LT",nextDay:"[Demain à] LT",nextWeek:"dddd [à] LT",lastDay:"[Hier à] LT",lastWeek:"dddd [dernier à] LT",sameElse:"L"},relativeTime:{future:"dans %s",past:"il y a %s",s:"quelques secondes",m:"une minute",mm:"%d minutes",h:"une heure",hh:"%d heures",d:"un jour",dd:"%d jours",M:"un mois",MM:"%d mois",y:"un an",yy:"%d ans"},ordinalParse:/\d{1,2}(er|)/,ordinal:function(a){return a+(1===a?"er":"")},week:{dow:1,doy:4}}),"jan._feb._mrt._apr._mai_jun._jul._aug._sep._okt._nov._des.".split("_")),hg="jan_feb_mrt_apr_mai_jun_jul_aug_sep_okt_nov_des".split("_"),ig=(Kf.defineLocale("fy",{months:"jannewaris_febrewaris_maart_april_maaie_juny_july_augustus_septimber_oktober_novimber_desimber".split("_"),monthsShort:function(a,b){return/-MMM-/.test(b)?hg[a.month()]:gg[a.month()]},weekdays:"snein_moandei_tiisdei_woansdei_tongersdei_freed_sneon".split("_"),weekdaysShort:"si._mo._ti._wo._to._fr._so.".split("_"),weekdaysMin:"Si_Mo_Ti_Wo_To_Fr_So".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[hjoed om] LT",nextDay:"[moarn om] LT",nextWeek:"dddd [om] LT",lastDay:"[juster om] LT",lastWeek:"[ôfrûne] dddd [om] LT",sameElse:"L"},relativeTime:{future:"oer %s",past:"%s lyn",s:"in pear sekonden",m:"ien minút",mm:"%d minuten",h:"ien oere",hh:"%d oeren",d:"ien dei",dd:"%d dagen",M:"ien moanne",MM:"%d moannen",y:"ien jier",yy:"%d jierren"},ordinalParse:/\d{1,2}(ste|de)/,ordinal:function(a){return a+(1===a||8===a||a>=20?"ste":"de")},week:{dow:1,doy:4}}),["Am Faoilleach","An Gearran","Am Màrt","An Giblean","An Cèitean","An t-Ògmhios","An t-Iuchar","An Lùnastal","An t-Sultain","An Dàmhair","An t-Samhain","An Dùbhlachd"]),jg=["Faoi","Gear","Màrt","Gibl","Cèit","Ògmh","Iuch","Lùn","Sult","Dàmh","Samh","Dùbh"],kg=["Didòmhnaich","Diluain","Dimàirt","Diciadain","Diardaoin","Dihaoine","Disathairne"],lg=["Did","Dil","Dim","Dic","Dia","Dih","Dis"],mg=["Dò","Lu","Mà","Ci","Ar","Ha","Sa"],ng=(Kf.defineLocale("gd",{months:ig,monthsShort:jg,monthsParseExact:!0,weekdays:kg,weekdaysShort:lg,weekdaysMin:mg,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[An-diugh aig] LT",nextDay:"[A-màireach aig] LT",nextWeek:"dddd [aig] LT",lastDay:"[An-dè aig] LT",lastWeek:"dddd [seo chaidh] [aig] LT",sameElse:"L"},relativeTime:{future:"ann an %s",past:"bho chionn %s",s:"beagan diogan",m:"mionaid",mm:"%d mionaidean",h:"uair",hh:"%d uairean",d:"latha",dd:"%d latha",M:"mìos",MM:"%d mìosan",y:"bliadhna",yy:"%d bliadhna"},ordinalParse:/\d{1,2}(d|na|mh)/,ordinal:function(a){var b=1===a?"d":a%10===2?"na":"mh";return a+b},week:{dow:1,doy:4}}),Kf.defineLocale("gl",{months:"Xaneiro_Febreiro_Marzo_Abril_Maio_Xuño_Xullo_Agosto_Setembro_Outubro_Novembro_Decembro".split("_"),monthsShort:"Xan._Feb._Mar._Abr._Mai._Xuñ._Xul._Ago._Set._Out._Nov._Dec.".split("_"),weekdays:"Domingo_Luns_Martes_Mércores_Xoves_Venres_Sábado".split("_"),weekdaysShort:"Dom._Lun._Mar._Mér._Xov._Ven._Sáb.".split("_"),weekdaysMin:"Do_Lu_Ma_Mé_Xo_Ve_Sá".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd D MMMM YYYY H:mm"},calendar:{sameDay:function(){return"[hoxe "+(1!==this.hours()?"ás":"á")+"] LT"},nextDay:function(){return"[mañá "+(1!==this.hours()?"ás":"á")+"] LT"},nextWeek:function(){return"dddd ["+(1!==this.hours()?"ás":"a")+"] LT"},lastDay:function(){return"[onte "+(1!==this.hours()?"á":"a")+"] LT"},lastWeek:function(){return"[o] dddd [pasado "+(1!==this.hours()?"ás":"a")+"] LT"},sameElse:"L"},relativeTime:{future:function(a){return"uns segundos"===a?"nuns segundos":"en "+a},past:"hai %s",s:"uns segundos",m:"un minuto",mm:"%d minutos",h:"unha hora",hh:"%d horas",d:"un día",dd:"%d días",M:"un mes",MM:"%d meses",y:"un ano",yy:"%d anos"},ordinalParse:/\d{1,2}º/,ordinal:"%dº",week:{dow:1,doy:7}}),Kf.defineLocale("he",{months:"ינואר_פברואר_מרץ_אפריל_מאי_יוני_יולי_אוגוסט_ספטמבר_אוקטובר_נובמבר_דצמבר".split("_"),monthsShort:"ינו׳_פבר׳_מרץ_אפר׳_מאי_יוני_יולי_אוג׳_ספט׳_אוק׳_נוב׳_דצמ׳".split("_"),weekdays:"ראשון_שני_שלישי_רביעי_חמישי_שישי_שבת".split("_"),weekdaysShort:"א׳_ב׳_ג׳_ד׳_ה׳_ו׳_ש׳".split("_"),weekdaysMin:"א_ב_ג_ד_ה_ו_ש".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D [ב]MMMM YYYY",LLL:"D [ב]MMMM YYYY HH:mm",LLLL:"dddd, D [ב]MMMM YYYY HH:mm",l:"D/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[היום ב־]LT",nextDay:"[מחר ב־]LT",nextWeek:"dddd [בשעה] LT",lastDay:"[אתמול ב־]LT",lastWeek:"[ביום] dddd [האחרון בשעה] LT",sameElse:"L"},relativeTime:{future:"בעוד %s",past:"לפני %s",s:"מספר שניות",m:"דקה",mm:"%d דקות",h:"שעה",hh:function(a){return 2===a?"שעתיים":a+" שעות"},d:"יום",dd:function(a){return 2===a?"יומיים":a+" ימים"},M:"חודש",MM:function(a){return 2===a?"חודשיים":a+" חודשים"},y:"שנה",yy:function(a){return 2===a?"שנתיים":a%10===0&&10!==a?a+" שנה":a+" שנים"}}}),{1:"१",2:"२",3:"३",4:"४",5:"५",6:"६",7:"७",8:"८",9:"९",0:"०"}),og={"१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9","०":"0"},pg=(Kf.defineLocale("hi",{months:"जनवरी_फ़रवरी_मार्च_अप्रैल_मई_जून_जुलाई_अगस्त_सितम्बर_अक्टूबर_नवम्बर_दिसम्बर".split("_"),monthsShort:"जन._फ़र._मार्च_अप्रै._मई_जून_जुल._अग._सित._अक्टू._नव._दिस.".split("_"),weekdays:"रविवार_सोमवार_मंगलवार_बुधवार_गुरूवार_शुक्रवार_शनिवार".split("_"),weekdaysShort:"रवि_सोम_मंगल_बुध_गुरू_शुक्र_शनि".split("_"),weekdaysMin:"र_सो_मं_बु_गु_शु_श".split("_"),longDateFormat:{LT:"A h:mm बजे",LTS:"A h:mm:ss बजे",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm बजे",LLLL:"dddd, D MMMM YYYY, A h:mm बजे"},calendar:{sameDay:"[आज] LT",nextDay:"[कल] LT",nextWeek:"dddd, LT",lastDay:"[कल] LT",lastWeek:"[पिछले] dddd, LT",sameElse:"L"},relativeTime:{future:"%s में",past:"%s पहले",s:"कुछ ही क्षण",m:"एक मिनट",mm:"%d मिनट",h:"एक घंटा",hh:"%d घंटे",d:"एक दिन",dd:"%d दिन",M:"एक महीने",MM:"%d महीने",y:"एक वर्ष",yy:"%d वर्ष"},preparse:function(a){return a.replace(/[१२३४५६७८९०]/g,function(a){return og[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return ng[a]})},meridiemParse:/रात|सुबह|दोपहर|शाम/,meridiemHour:function(a,b){return 12===a&&(a=0),"रात"===b?4>a?a:a+12:"सुबह"===b?a:"दोपहर"===b?a>=10?a:a+12:"शाम"===b?a+12:void 0},meridiem:function(a,b,c){return 4>a?"रात":10>a?"सुबह":17>a?"दोपहर":20>a?"शाम":"रात"},week:{dow:0,doy:6}}),Kf.defineLocale("hr",{months:{format:"siječnja_veljače_ožujka_travnja_svibnja_lipnja_srpnja_kolovoza_rujna_listopada_studenoga_prosinca".split("_"),standalone:"siječanj_veljača_ožujak_travanj_svibanj_lipanj_srpanj_kolovoz_rujan_listopad_studeni_prosinac".split("_")},monthsShort:"sij._velj._ožu._tra._svi._lip._srp._kol._ruj._lis._stu._pro.".split("_"),weekdays:"nedjelja_ponedjeljak_utorak_srijeda_četvrtak_petak_subota".split("_"),weekdaysShort:"ned._pon._uto._sri._čet._pet._sub.".split("_"),weekdaysMin:"ne_po_ut_sr_če_pe_su".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD. MM. YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedjelju] [u] LT";case 3:return"[u] [srijedu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[jučer u] LT",lastWeek:function(){switch(this.day()){case 0:case 3:return"[prošlu] dddd [u] LT";case 6:return"[prošle] [subote] [u] LT";case 1:case 2:case 4:case 5:return"[prošli] dddd [u] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"prije %s",s:"par sekundi",m:hd,mm:hd,h:hd,hh:hd,d:"dan",dd:hd,M:"mjesec",MM:hd,y:"godinu",yy:hd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),"vasárnap hétfőn kedden szerdán csütörtökön pénteken szombaton".split(" ")),qg=(Kf.defineLocale("hu",{months:"január_február_március_április_május_június_július_augusztus_szeptember_október_november_december".split("_"),monthsShort:"jan_feb_márc_ápr_máj_jún_júl_aug_szept_okt_nov_dec".split("_"),weekdays:"vasárnap_hétfő_kedd_szerda_csütörtök_péntek_szombat".split("_"),weekdaysShort:"vas_hét_kedd_sze_csüt_pén_szo".split("_"),weekdaysMin:"v_h_k_sze_cs_p_szo".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"YYYY.MM.DD.",LL:"YYYY. MMMM D.",LLL:"YYYY. MMMM D. H:mm",LLLL:"YYYY. MMMM D., dddd H:mm"},meridiemParse:/de|du/i,isPM:function(a){return"u"===a.charAt(1).toLowerCase()},meridiem:function(a,b,c){return 12>a?c===!0?"de":"DE":c===!0?"du":"DU"},calendar:{sameDay:"[ma] LT[-kor]",nextDay:"[holnap] LT[-kor]",nextWeek:function(){return jd.call(this,!0)},lastDay:"[tegnap] LT[-kor]",lastWeek:function(){return jd.call(this,!1)},sameElse:"L"},relativeTime:{future:"%s múlva",past:"%s",s:id,m:id,mm:id,h:id,hh:id,d:id,dd:id,M:id,MM:id,y:id,yy:id},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),Kf.defineLocale("hy-am",{months:{format:"հունվարի_փետրվարի_մարտի_ապրիլի_մայիսի_հունիսի_հուլիսի_օգոստոսի_սեպտեմբերի_հոկտեմբերի_նոյեմբերի_դեկտեմբերի".split("_"),standalone:"հունվար_փետրվար_մարտ_ապրիլ_մայիս_հունիս_հուլիս_օգոստոս_սեպտեմբեր_հոկտեմբեր_նոյեմբեր_դեկտեմբեր".split("_")},monthsShort:"հնվ_փտր_մրտ_ապր_մյս_հնս_հլս_օգս_սպտ_հկտ_նմբ_դկտ".split("_"),weekdays:"կիրակի_երկուշաբթի_երեքշաբթի_չորեքշաբթի_հինգշաբթի_ուրբաթ_շաբաթ".split("_"),weekdaysShort:"կրկ_երկ_երք_չրք_հնգ_ուրբ_շբթ".split("_"),weekdaysMin:"կրկ_երկ_երք_չրք_հնգ_ուրբ_շբթ".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY թ.",LLL:"D MMMM YYYY թ., HH:mm",LLLL:"dddd, D MMMM YYYY թ., HH:mm"},calendar:{sameDay:"[այսօր] LT",nextDay:"[վաղը] LT",lastDay:"[երեկ] LT",nextWeek:function(){return"dddd [օրը ժամը] LT"},lastWeek:function(){return"[անցած] dddd [օրը ժամը] LT"},sameElse:"L"},relativeTime:{future:"%s հետո",past:"%s առաջ",s:"մի քանի վայրկյան",m:"րոպե",mm:"%d րոպե",h:"ժամ",hh:"%d ժամ",d:"օր",dd:"%d օր",M:"ամիս",MM:"%d ամիս",y:"տարի",yy:"%d տարի"},meridiemParse:/գիշերվա|առավոտվա|ցերեկվա|երեկոյան/,isPM:function(a){return/^(ցերեկվա|երեկոյան)$/.test(a)},meridiem:function(a){return 4>a?"գիշերվա":12>a?"առավոտվա":17>a?"ցերեկվա":"երեկոյան"},ordinalParse:/\d{1,2}|\d{1,2}-(ին|րդ)/,ordinal:function(a,b){switch(b){case"DDD":case"w":case"W":case"DDDo":return 1===a?a+"-ին":a+"-րդ";default:return a}},week:{dow:1,doy:7}}),Kf.defineLocale("id",{months:"Januari_Februari_Maret_April_Mei_Juni_Juli_Agustus_September_Oktober_November_Desember".split("_"),monthsShort:"Jan_Feb_Mar_Apr_Mei_Jun_Jul_Ags_Sep_Okt_Nov_Des".split("_"),weekdays:"Minggu_Senin_Selasa_Rabu_Kamis_Jumat_Sabtu".split("_"),weekdaysShort:"Min_Sen_Sel_Rab_Kam_Jum_Sab".split("_"),weekdaysMin:"Mg_Sn_Sl_Rb_Km_Jm_Sb".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/pagi|siang|sore|malam/,meridiemHour:function(a,b){return 12===a&&(a=0),"pagi"===b?a:"siang"===b?a>=11?a:a+12:"sore"===b||"malam"===b?a+12:void 0},meridiem:function(a,b,c){return 11>a?"pagi":15>a?"siang":19>a?"sore":"malam"},calendar:{sameDay:"[Hari ini pukul] LT",nextDay:"[Besok pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kemarin pukul] LT",lastWeek:"dddd [lalu pukul] LT",sameElse:"L"},relativeTime:{future:"dalam %s",past:"%s yang lalu",s:"beberapa detik",m:"semenit",mm:"%d menit",h:"sejam",hh:"%d jam",d:"sehari",dd:"%d hari",M:"sebulan",MM:"%d bulan",y:"setahun",yy:"%d tahun"},week:{dow:1,doy:7}}),Kf.defineLocale("is",{months:"janúar_febrúar_mars_apríl_maí_júní_júlí_ágúst_september_október_nóvember_desember".split("_"),monthsShort:"jan_feb_mar_apr_maí_jún_júl_ágú_sep_okt_nóv_des".split("_"),weekdays:"sunnudagur_mánudagur_þriðjudagur_miðvikudagur_fimmtudagur_föstudagur_laugardagur".split("_"),weekdaysShort:"sun_mán_þri_mið_fim_fös_lau".split("_"),weekdaysMin:"Su_Má_Þr_Mi_Fi_Fö_La".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY [kl.] H:mm",LLLL:"dddd, D. MMMM YYYY [kl.] H:mm"},calendar:{sameDay:"[í dag kl.] LT",nextDay:"[á morgun kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[í gær kl.] LT",lastWeek:"[síðasta] dddd [kl.] LT",sameElse:"L"},relativeTime:{future:"eftir %s",past:"fyrir %s síðan",s:ld,m:ld,mm:ld,h:"klukkustund",hh:ld,d:ld,dd:ld,M:ld,MM:ld,y:ld,yy:ld},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("it",{months:"gennaio_febbraio_marzo_aprile_maggio_giugno_luglio_agosto_settembre_ottobre_novembre_dicembre".split("_"),monthsShort:"gen_feb_mar_apr_mag_giu_lug_ago_set_ott_nov_dic".split("_"),weekdays:"Domenica_Lunedì_Martedì_Mercoledì_Giovedì_Venerdì_Sabato".split("_"),weekdaysShort:"Dom_Lun_Mar_Mer_Gio_Ven_Sab".split("_"),weekdaysMin:"Do_Lu_Ma_Me_Gi_Ve_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Oggi alle] LT",nextDay:"[Domani alle] LT",nextWeek:"dddd [alle] LT",lastDay:"[Ieri alle] LT",lastWeek:function(){switch(this.day()){case 0:return"[la scorsa] dddd [alle] LT";default:return"[lo scorso] dddd [alle] LT"}},sameElse:"L"},relativeTime:{future:function(a){return(/^[0-9].+$/.test(a)?"tra":"in")+" "+a},past:"%s fa",s:"alcuni secondi",m:"un minuto",mm:"%d minuti",h:"un'ora",hh:"%d ore",d:"un giorno",dd:"%d giorni",M:"un mese",MM:"%d mesi",y:"un anno",yy:"%d anni"},ordinalParse:/\d{1,2}º/,ordinal:"%dº",week:{dow:1,doy:4}}),Kf.defineLocale("ja",{months:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日".split("_"),weekdaysShort:"日_月_火_水_木_金_土".split("_"),weekdaysMin:"日_月_火_水_木_金_土".split("_"),longDateFormat:{LT:"Ah時m分",LTS:"Ah時m分s秒",L:"YYYY/MM/DD",LL:"YYYY年M月D日",LLL:"YYYY年M月D日Ah時m分",LLLL:"YYYY年M月D日Ah時m分 dddd"},meridiemParse:/午前|午後/i,isPM:function(a){return"午後"===a},meridiem:function(a,b,c){return 12>a?"午前":"午後"},calendar:{sameDay:"[今日] LT",nextDay:"[明日] LT",nextWeek:"[来週]dddd LT",lastDay:"[昨日] LT",lastWeek:"[前週]dddd LT",sameElse:"L"},relativeTime:{future:"%s後",past:"%s前",s:"数秒",m:"1分",mm:"%d分",h:"1時間",hh:"%d時間",d:"1日",dd:"%d日",M:"1ヶ月",MM:"%dヶ月",y:"1年",yy:"%d年"}}),Kf.defineLocale("jv",{months:"Januari_Februari_Maret_April_Mei_Juni_Juli_Agustus_September_Oktober_Nopember_Desember".split("_"),monthsShort:"Jan_Feb_Mar_Apr_Mei_Jun_Jul_Ags_Sep_Okt_Nop_Des".split("_"),weekdays:"Minggu_Senen_Seloso_Rebu_Kemis_Jemuwah_Septu".split("_"),weekdaysShort:"Min_Sen_Sel_Reb_Kem_Jem_Sep".split("_"),weekdaysMin:"Mg_Sn_Sl_Rb_Km_Jm_Sp".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/enjing|siyang|sonten|ndalu/,meridiemHour:function(a,b){return 12===a&&(a=0),"enjing"===b?a:"siyang"===b?a>=11?a:a+12:"sonten"===b||"ndalu"===b?a+12:void 0},meridiem:function(a,b,c){return 11>a?"enjing":15>a?"siyang":19>a?"sonten":"ndalu"},calendar:{sameDay:"[Dinten puniko pukul] LT",nextDay:"[Mbenjang pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kala wingi pukul] LT",lastWeek:"dddd [kepengker pukul] LT",sameElse:"L"},relativeTime:{future:"wonten ing %s",past:"%s ingkang kepengker",s:"sawetawis detik",m:"setunggal menit",mm:"%d menit",h:"setunggal jam",hh:"%d jam",d:"sedinten",dd:"%d dinten",M:"sewulan",MM:"%d wulan",y:"setaun",yy:"%d taun"},week:{dow:1,doy:7}}),Kf.defineLocale("ka",{months:{standalone:"იანვარი_თებერვალი_მარტი_აპრილი_მაისი_ივნისი_ივლისი_აგვისტო_სექტემბერი_ოქტომბერი_ნოემბერი_დეკემბერი".split("_"),format:"იანვარს_თებერვალს_მარტს_აპრილის_მაისს_ივნისს_ივლისს_აგვისტს_სექტემბერს_ოქტომბერს_ნოემბერს_დეკემბერს".split("_")},monthsShort:"იან_თებ_მარ_აპრ_მაი_ივნ_ივლ_აგვ_სექ_ოქტ_ნოე_დეკ".split("_"),weekdays:{standalone:"კვირა_ორშაბათი_სამშაბათი_ოთხშაბათი_ხუთშაბათი_პარასკევი_შაბათი".split("_"),format:"კვირას_ორშაბათს_სამშაბათს_ოთხშაბათს_ხუთშაბათს_პარასკევს_შაბათს".split("_"),isFormat:/(წინა|შემდეგ)/},weekdaysShort:"კვი_ორშ_სამ_ოთხ_ხუთ_პარ_შაბ".split("_"),weekdaysMin:"კვ_ორ_სა_ოთ_ხუ_პა_შა".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[დღეს] LT[-ზე]",nextDay:"[ხვალ] LT[-ზე]",lastDay:"[გუშინ] LT[-ზე]",nextWeek:"[შემდეგ] dddd LT[-ზე]",lastWeek:"[წინა] dddd LT-ზე",sameElse:"L"},relativeTime:{future:function(a){return/(წამი|წუთი|საათი|წელი)/.test(a)?a.replace(/ი$/,"ში"):a+"ში"},past:function(a){return/(წამი|წუთი|საათი|დღე|თვე)/.test(a)?a.replace(/(ი|ე)$/,"ის წინ"):/წელი/.test(a)?a.replace(/წელი$/,"წლის წინ"):void 0},s:"რამდენიმე წამი",m:"წუთი",mm:"%d წუთი",h:"საათი",hh:"%d საათი",d:"დღე",dd:"%d დღე",M:"თვე",MM:"%d თვე",y:"წელი",yy:"%d წელი"},ordinalParse:/0|1-ლი|მე-\d{1,2}|\d{1,2}-ე/,ordinal:function(a){return 0===a?a:1===a?a+"-ლი":20>a||100>=a&&a%20===0||a%100===0?"მე-"+a:a+"-ე"},week:{dow:1,doy:7}}),{0:"-ші",1:"-ші",2:"-ші",3:"-ші",4:"-ші",5:"-ші",6:"-шы",7:"-ші",8:"-ші",9:"-шы",10:"-шы",20:"-шы",30:"-шы",40:"-шы",50:"-ші",60:"-шы",70:"-ші",80:"-ші",90:"-шы",100:"-ші"}),rg=(Kf.defineLocale("kk",{months:"Қаңтар_Ақпан_Наурыз_Сәуір_Мамыр_Маусым_Шілде_Тамыз_Қыркүйек_Қазан_Қараша_Желтоқсан".split("_"),monthsShort:"Қаң_Ақп_Нау_Сәу_Мам_Мау_Шіл_Там_Қыр_Қаз_Қар_Жел".split("_"),weekdays:"Жексенбі_Дүйсенбі_Сейсенбі_Сәрсенбі_Бейсенбі_Жұма_Сенбі".split("_"),weekdaysShort:"Жек_Дүй_Сей_Сәр_Бей_Жұм_Сен".split("_"),weekdaysMin:"Жк_Дй_Сй_Ср_Бй_Жм_Сн".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Бүгін сағат] LT",nextDay:"[Ертең сағат] LT",nextWeek:"dddd [сағат] LT",lastDay:"[Кеше сағат] LT",lastWeek:"[Өткен аптаның] dddd [сағат] LT",sameElse:"L"},relativeTime:{future:"%s ішінде",past:"%s бұрын",s:"бірнеше секунд",m:"бір минут",mm:"%d минут",h:"бір сағат",hh:"%d сағат",d:"бір күн",dd:"%d күн",M:"бір ай",MM:"%d ай",y:"бір жыл",yy:"%d жыл"},ordinalParse:/\d{1,2}-(ші|шы)/,ordinal:function(a){var b=a%10,c=a>=100?100:null;return a+(qg[a]||qg[b]||qg[c])},week:{dow:1,doy:7}}),Kf.defineLocale("km",{months:"មករា_កុម្ភៈ_មិនា_មេសា_ឧសភា_មិថុនា_កក្កដា_សីហា_កញ្ញា_តុលា_វិច្ឆិកា_ធ្នូ".split("_"),monthsShort:"មករា_កុម្ភៈ_មិនា_មេសា_ឧសភា_មិថុនា_កក្កដា_សីហា_កញ្ញា_តុលា_វិច្ឆិកា_ធ្នូ".split("_"),weekdays:"អាទិត្យ_ច័ន្ទ_អង្គារ_ពុធ_ព្រហស្បតិ៍_សុក្រ_សៅរ៍".split("_"),weekdaysShort:"អាទិត្យ_ច័ន្ទ_អង្គារ_ពុធ_ព្រហស្បតិ៍_សុក្រ_សៅរ៍".split("_"),weekdaysMin:"អាទិត្យ_ច័ន្ទ_អង្គារ_ពុធ_ព្រហស្បតិ៍_សុក្រ_សៅរ៍".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[ថ្ងៃនេះ ម៉ោង] LT",nextDay:"[ស្អែក ម៉ោង] LT",nextWeek:"dddd [ម៉ោង] LT",lastDay:"[ម្សិលមិញ ម៉ោង] LT",lastWeek:"dddd [សប្តាហ៍មុន] [ម៉ោង] LT",sameElse:"L"},relativeTime:{future:"%sទៀត",past:"%sមុន",s:"ប៉ុន្មានវិនាទី",m:"មួយនាទី",mm:"%d នាទី",h:"មួយម៉ោង",hh:"%d ម៉ោង",d:"មួយថ្ងៃ",dd:"%d ថ្ងៃ",M:"មួយខែ",MM:"%d ខែ",y:"មួយឆ្នាំ",yy:"%d ឆ្នាំ"},week:{dow:1,doy:4}}),Kf.defineLocale("ko",{months:"1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월".split("_"),monthsShort:"1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월".split("_"),weekdays:"일요일_월요일_화요일_수요일_목요일_금요일_토요일".split("_"),weekdaysShort:"일_월_화_수_목_금_토".split("_"),weekdaysMin:"일_월_화_수_목_금_토".split("_"),longDateFormat:{LT:"A h시 m분",LTS:"A h시 m분 s초",L:"YYYY.MM.DD",LL:"YYYY년 MMMM D일",LLL:"YYYY년 MMMM D일 A h시 m분",LLLL:"YYYY년 MMMM D일 dddd A h시 m분"},calendar:{sameDay:"오늘 LT",nextDay:"내일 LT",nextWeek:"dddd LT",lastDay:"어제 LT",lastWeek:"지난주 dddd LT",sameElse:"L"},relativeTime:{future:"%s 후",past:"%s 전",s:"몇초",ss:"%d초",m:"일분",mm:"%d분",h:"한시간",hh:"%d시간",d:"하루",dd:"%d일",M:"한달",MM:"%d달",y:"일년",yy:"%d년"},ordinalParse:/\d{1,2}일/,ordinal:"%d일",meridiemParse:/오전|오후/,isPM:function(a){return"오후"===a},meridiem:function(a,b,c){return 12>a?"오전":"오후"}}),Kf.defineLocale("lb",{months:"Januar_Februar_Mäerz_Abrëll_Mee_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"Jan._Febr._Mrz._Abr._Mee_Jun._Jul._Aug._Sept._Okt._Nov._Dez.".split("_"),weekdays:"Sonndeg_Méindeg_Dënschdeg_Mëttwoch_Donneschdeg_Freideg_Samschdeg".split("_"),weekdaysShort:"So._Mé._Dë._Më._Do._Fr._Sa.".split("_"),weekdaysMin:"So_Mé_Dë_Më_Do_Fr_Sa".split("_"),longDateFormat:{LT:"H:mm [Auer]",LTS:"H:mm:ss [Auer]",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm [Auer]",LLLL:"dddd, D. MMMM YYYY H:mm [Auer]"},calendar:{sameDay:"[Haut um] LT",sameElse:"L",nextDay:"[Muer um] LT",nextWeek:"dddd [um] LT",lastDay:"[Gëschter um] LT",lastWeek:function(){switch(this.day()){case 2:case 4:return"[Leschten] dddd [um] LT";default:return"[Leschte] dddd [um] LT"}}},relativeTime:{future:nd,past:od,s:"e puer Sekonnen",m:md,mm:"%d Minutten",h:md,hh:"%d Stonnen",d:md,dd:"%d Deeg",M:md,MM:"%d Méint",y:md,yy:"%d Joer"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("lo",{months:"ມັງກອນ_ກຸມພາ_ມີນາ_ເມສາ_ພຶດສະພາ_ມິຖຸນາ_ກໍລະກົດ_ສິງຫາ_ກັນຍາ_ຕຸລາ_ພະຈິກ_ທັນວາ".split("_"),monthsShort:"ມັງກອນ_ກຸມພາ_ມີນາ_ເມສາ_ພຶດສະພາ_ມິຖຸນາ_ກໍລະກົດ_ສິງຫາ_ກັນຍາ_ຕຸລາ_ພະຈິກ_ທັນວາ".split("_"),weekdays:"ອາທິດ_ຈັນ_ອັງຄານ_ພຸດ_ພະຫັດ_ສຸກ_ເສົາ".split("_"),weekdaysShort:"ທິດ_ຈັນ_ອັງຄານ_ພຸດ_ພະຫັດ_ສຸກ_ເສົາ".split("_"),weekdaysMin:"ທ_ຈ_ອຄ_ພ_ພຫ_ສກ_ສ".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"ວັນdddd D MMMM YYYY HH:mm"},meridiemParse:/ຕອນເຊົ້າ|ຕອນແລງ/,isPM:function(a){return"ຕອນແລງ"===a},meridiem:function(a,b,c){return 12>a?"ຕອນເຊົ້າ":"ຕອນແລງ"},calendar:{sameDay:"[ມື້ນີ້ເວລາ] LT",nextDay:"[ມື້ອື່ນເວລາ] LT",nextWeek:"[ວັນ]dddd[ໜ້າເວລາ] LT",lastDay:"[ມື້ວານນີ້ເວລາ] LT",lastWeek:"[ວັນ]dddd[ແລ້ວນີ້ເວລາ] LT",sameElse:"L"},relativeTime:{future:"ອີກ %s",past:"%sຜ່ານມາ",s:"ບໍ່ເທົ່າໃດວິນາທີ",m:"1 ນາທີ",mm:"%d ນາທີ",h:"1 ຊົ່ວໂມງ",hh:"%d ຊົ່ວໂມງ",d:"1 ມື້",dd:"%d ມື້",M:"1 ເດືອນ",MM:"%d ເດືອນ",y:"1 ປີ",yy:"%d ປີ"},ordinalParse:/(ທີ່)\d{1,2}/,ordinal:function(a){
-return"ທີ່"+a}}),{m:"minutė_minutės_minutę",mm:"minutės_minučių_minutes",h:"valanda_valandos_valandą",hh:"valandos_valandų_valandas",d:"diena_dienos_dieną",dd:"dienos_dienų_dienas",M:"mėnuo_mėnesio_mėnesį",MM:"mėnesiai_mėnesių_mėnesius",y:"metai_metų_metus",yy:"metai_metų_metus"}),sg=(Kf.defineLocale("lt",{months:{format:"sausio_vasario_kovo_balandžio_gegužės_birželio_liepos_rugpjūčio_rugsėjo_spalio_lapkričio_gruodžio".split("_"),standalone:"sausis_vasaris_kovas_balandis_gegužė_birželis_liepa_rugpjūtis_rugsėjis_spalis_lapkritis_gruodis".split("_")},monthsShort:"sau_vas_kov_bal_geg_bir_lie_rgp_rgs_spa_lap_grd".split("_"),weekdays:{format:"sekmadienį_pirmadienį_antradienį_trečiadienį_ketvirtadienį_penktadienį_šeštadienį".split("_"),standalone:"sekmadienis_pirmadienis_antradienis_trečiadienis_ketvirtadienis_penktadienis_šeštadienis".split("_"),isFormat:/dddd HH:mm/},weekdaysShort:"Sek_Pir_Ant_Tre_Ket_Pen_Šeš".split("_"),weekdaysMin:"S_P_A_T_K_Pn_Š".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"YYYY [m.] MMMM D [d.]",LLL:"YYYY [m.] MMMM D [d.], HH:mm [val.]",LLLL:"YYYY [m.] MMMM D [d.], dddd, HH:mm [val.]",l:"YYYY-MM-DD",ll:"YYYY [m.] MMMM D [d.]",lll:"YYYY [m.] MMMM D [d.], HH:mm [val.]",llll:"YYYY [m.] MMMM D [d.], ddd, HH:mm [val.]"},calendar:{sameDay:"[Šiandien] LT",nextDay:"[Rytoj] LT",nextWeek:"dddd LT",lastDay:"[Vakar] LT",lastWeek:"[Praėjusį] dddd LT",sameElse:"L"},relativeTime:{future:"po %s",past:"prieš %s",s:qd,m:rd,mm:ud,h:rd,hh:ud,d:rd,dd:ud,M:rd,MM:ud,y:rd,yy:ud},ordinalParse:/\d{1,2}-oji/,ordinal:function(a){return a+"-oji"},week:{dow:1,doy:4}}),{m:"minūtes_minūtēm_minūte_minūtes".split("_"),mm:"minūtes_minūtēm_minūte_minūtes".split("_"),h:"stundas_stundām_stunda_stundas".split("_"),hh:"stundas_stundām_stunda_stundas".split("_"),d:"dienas_dienām_diena_dienas".split("_"),dd:"dienas_dienām_diena_dienas".split("_"),M:"mēneša_mēnešiem_mēnesis_mēneši".split("_"),MM:"mēneša_mēnešiem_mēnesis_mēneši".split("_"),y:"gada_gadiem_gads_gadi".split("_"),yy:"gada_gadiem_gads_gadi".split("_")}),tg=(Kf.defineLocale("lv",{months:"janvāris_februāris_marts_aprīlis_maijs_jūnijs_jūlijs_augusts_septembris_oktobris_novembris_decembris".split("_"),monthsShort:"jan_feb_mar_apr_mai_jūn_jūl_aug_sep_okt_nov_dec".split("_"),weekdays:"svētdiena_pirmdiena_otrdiena_trešdiena_ceturtdiena_piektdiena_sestdiena".split("_"),weekdaysShort:"Sv_P_O_T_C_Pk_S".split("_"),weekdaysMin:"Sv_P_O_T_C_Pk_S".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY.",LL:"YYYY. [gada] D. MMMM",LLL:"YYYY. [gada] D. MMMM, HH:mm",LLLL:"YYYY. [gada] D. MMMM, dddd, HH:mm"},calendar:{sameDay:"[Šodien pulksten] LT",nextDay:"[Rīt pulksten] LT",nextWeek:"dddd [pulksten] LT",lastDay:"[Vakar pulksten] LT",lastWeek:"[Pagājušā] dddd [pulksten] LT",sameElse:"L"},relativeTime:{future:"pēc %s",past:"pirms %s",s:yd,m:xd,mm:wd,h:xd,hh:wd,d:xd,dd:wd,M:xd,MM:wd,y:xd,yy:wd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),{words:{m:["jedan minut","jednog minuta"],mm:["minut","minuta","minuta"],h:["jedan sat","jednog sata"],hh:["sat","sata","sati"],dd:["dan","dana","dana"],MM:["mjesec","mjeseca","mjeseci"],yy:["godina","godine","godina"]},correctGrammaticalCase:function(a,b){return 1===a?b[0]:a>=2&&4>=a?b[1]:b[2]},translate:function(a,b,c){var d=tg.words[c];return 1===c.length?b?d[0]:d[1]:a+" "+tg.correctGrammaticalCase(a,d)}}),ug=(Kf.defineLocale("me",{months:["januar","februar","mart","april","maj","jun","jul","avgust","septembar","oktobar","novembar","decembar"],monthsShort:["jan.","feb.","mar.","apr.","maj","jun","jul","avg.","sep.","okt.","nov.","dec."],weekdays:["nedjelja","ponedjeljak","utorak","srijeda","četvrtak","petak","subota"],weekdaysShort:["ned.","pon.","uto.","sri.","čet.","pet.","sub."],weekdaysMin:["ne","po","ut","sr","če","pe","su"],longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD. MM. YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sjutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedjelju] [u] LT";case 3:return"[u] [srijedu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[juče u] LT",lastWeek:function(){var a=["[prošle] [nedjelje] [u] LT","[prošlog] [ponedjeljka] [u] LT","[prošlog] [utorka] [u] LT","[prošle] [srijede] [u] LT","[prošlog] [četvrtka] [u] LT","[prošlog] [petka] [u] LT","[prošle] [subote] [u] LT"];return a[this.day()]},sameElse:"L"},relativeTime:{future:"za %s",past:"prije %s",s:"nekoliko sekundi",m:tg.translate,mm:tg.translate,h:tg.translate,hh:tg.translate,d:"dan",dd:tg.translate,M:"mjesec",MM:tg.translate,y:"godinu",yy:tg.translate},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),Kf.defineLocale("mk",{months:"јануари_февруари_март_април_мај_јуни_јули_август_септември_октомври_ноември_декември".split("_"),monthsShort:"јан_фев_мар_апр_мај_јун_јул_авг_сеп_окт_ное_дек".split("_"),weekdays:"недела_понеделник_вторник_среда_четврток_петок_сабота".split("_"),weekdaysShort:"нед_пон_вто_сре_чет_пет_саб".split("_"),weekdaysMin:"нe_пo_вт_ср_че_пе_сa".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"D.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd, D MMMM YYYY H:mm"},calendar:{sameDay:"[Денес во] LT",nextDay:"[Утре во] LT",nextWeek:"[Во] dddd [во] LT",lastDay:"[Вчера во] LT",lastWeek:function(){switch(this.day()){case 0:case 3:case 6:return"[Изминатата] dddd [во] LT";case 1:case 2:case 4:case 5:return"[Изминатиот] dddd [во] LT"}},sameElse:"L"},relativeTime:{future:"после %s",past:"пред %s",s:"неколку секунди",m:"минута",mm:"%d минути",h:"час",hh:"%d часа",d:"ден",dd:"%d дена",M:"месец",MM:"%d месеци",y:"година",yy:"%d години"},ordinalParse:/\d{1,2}-(ев|ен|ти|ви|ри|ми)/,ordinal:function(a){var b=a%10,c=a%100;return 0===a?a+"-ев":0===c?a+"-ен":c>10&&20>c?a+"-ти":1===b?a+"-ви":2===b?a+"-ри":7===b||8===b?a+"-ми":a+"-ти"},week:{dow:1,doy:7}}),Kf.defineLocale("ml",{months:"ജനുവരി_ഫെബ്രുവരി_മാർച്ച്_ഏപ്രിൽ_മേയ്_ജൂൺ_ജൂലൈ_ഓഗസ്റ്റ്_സെപ്റ്റംബർ_ഒക്ടോബർ_നവംബർ_ഡിസംബർ".split("_"),monthsShort:"ജനു._ഫെബ്രു._മാർ._ഏപ്രി._മേയ്_ജൂൺ_ജൂലൈ._ഓഗ._സെപ്റ്റ._ഒക്ടോ._നവം._ഡിസം.".split("_"),weekdays:"ഞായറാഴ്ച_തിങ്കളാഴ്ച_ചൊവ്വാഴ്ച_ബുധനാഴ്ച_വ്യാഴാഴ്ച_വെള്ളിയാഴ്ച_ശനിയാഴ്ച".split("_"),weekdaysShort:"ഞായർ_തിങ്കൾ_ചൊവ്വ_ബുധൻ_വ്യാഴം_വെള്ളി_ശനി".split("_"),weekdaysMin:"ഞാ_തി_ചൊ_ബു_വ്യാ_വെ_ശ".split("_"),longDateFormat:{LT:"A h:mm -നു",LTS:"A h:mm:ss -നു",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm -നു",LLLL:"dddd, D MMMM YYYY, A h:mm -നു"},calendar:{sameDay:"[ഇന്ന്] LT",nextDay:"[നാളെ] LT",nextWeek:"dddd, LT",lastDay:"[ഇന്നലെ] LT",lastWeek:"[കഴിഞ്ഞ] dddd, LT",sameElse:"L"},relativeTime:{future:"%s കഴിഞ്ഞ്",past:"%s മുൻപ്",s:"അൽപ നിമിഷങ്ങൾ",m:"ഒരു മിനിറ്റ്",mm:"%d മിനിറ്റ്",h:"ഒരു മണിക്കൂർ",hh:"%d മണിക്കൂർ",d:"ഒരു ദിവസം",dd:"%d ദിവസം",M:"ഒരു മാസം",MM:"%d മാസം",y:"ഒരു വർഷം",yy:"%d വർഷം"},meridiemParse:/രാത്രി|രാവിലെ|ഉച്ച കഴിഞ്ഞ്|വൈകുന്നേരം|രാത്രി/i,isPM:function(a){return/^(ഉച്ച കഴിഞ്ഞ്|വൈകുന്നേരം|രാത്രി)$/.test(a)},meridiem:function(a,b,c){return 4>a?"രാത്രി":12>a?"രാവിലെ":17>a?"ഉച്ച കഴിഞ്ഞ്":20>a?"വൈകുന്നേരം":"രാത്രി"}}),{1:"१",2:"२",3:"३",4:"४",5:"५",6:"६",7:"७",8:"८",9:"९",0:"०"}),vg={"१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9","०":"0"},wg=(Kf.defineLocale("mr",{months:"जानेवारी_फेब्रुवारी_मार्च_एप्रिल_मे_जून_जुलै_ऑगस्ट_सप्टेंबर_ऑक्टोबर_नोव्हेंबर_डिसेंबर".split("_"),monthsShort:"जाने._फेब्रु._मार्च._एप्रि._मे._जून._जुलै._ऑग._सप्टें._ऑक्टो._नोव्हें._डिसें.".split("_"),weekdays:"रविवार_सोमवार_मंगळवार_बुधवार_गुरूवार_शुक्रवार_शनिवार".split("_"),weekdaysShort:"रवि_सोम_मंगळ_बुध_गुरू_शुक्र_शनि".split("_"),weekdaysMin:"र_सो_मं_बु_गु_शु_श".split("_"),longDateFormat:{LT:"A h:mm वाजता",LTS:"A h:mm:ss वाजता",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm वाजता",LLLL:"dddd, D MMMM YYYY, A h:mm वाजता"},calendar:{sameDay:"[आज] LT",nextDay:"[उद्या] LT",nextWeek:"dddd, LT",lastDay:"[काल] LT",lastWeek:"[मागील] dddd, LT",sameElse:"L"},relativeTime:{future:"%sमध्ये",past:"%sपूर्वी",s:zd,m:zd,mm:zd,h:zd,hh:zd,d:zd,dd:zd,M:zd,MM:zd,y:zd,yy:zd},preparse:function(a){return a.replace(/[१२३४५६७८९०]/g,function(a){return vg[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return ug[a]})},meridiemParse:/रात्री|सकाळी|दुपारी|सायंकाळी/,meridiemHour:function(a,b){return 12===a&&(a=0),"रात्री"===b?4>a?a:a+12:"सकाळी"===b?a:"दुपारी"===b?a>=10?a:a+12:"सायंकाळी"===b?a+12:void 0},meridiem:function(a,b,c){return 4>a?"रात्री":10>a?"सकाळी":17>a?"दुपारी":20>a?"सायंकाळी":"रात्री"},week:{dow:0,doy:6}}),Kf.defineLocale("ms-my",{months:"Januari_Februari_Mac_April_Mei_Jun_Julai_Ogos_September_Oktober_November_Disember".split("_"),monthsShort:"Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ogs_Sep_Okt_Nov_Dis".split("_"),weekdays:"Ahad_Isnin_Selasa_Rabu_Khamis_Jumaat_Sabtu".split("_"),weekdaysShort:"Ahd_Isn_Sel_Rab_Kha_Jum_Sab".split("_"),weekdaysMin:"Ah_Is_Sl_Rb_Km_Jm_Sb".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/pagi|tengahari|petang|malam/,meridiemHour:function(a,b){return 12===a&&(a=0),"pagi"===b?a:"tengahari"===b?a>=11?a:a+12:"petang"===b||"malam"===b?a+12:void 0},meridiem:function(a,b,c){return 11>a?"pagi":15>a?"tengahari":19>a?"petang":"malam"},calendar:{sameDay:"[Hari ini pukul] LT",nextDay:"[Esok pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kelmarin pukul] LT",lastWeek:"dddd [lepas pukul] LT",sameElse:"L"},relativeTime:{future:"dalam %s",past:"%s yang lepas",s:"beberapa saat",m:"seminit",mm:"%d minit",h:"sejam",hh:"%d jam",d:"sehari",dd:"%d hari",M:"sebulan",MM:"%d bulan",y:"setahun",yy:"%d tahun"},week:{dow:1,doy:7}}),Kf.defineLocale("ms",{months:"Januari_Februari_Mac_April_Mei_Jun_Julai_Ogos_September_Oktober_November_Disember".split("_"),monthsShort:"Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ogs_Sep_Okt_Nov_Dis".split("_"),weekdays:"Ahad_Isnin_Selasa_Rabu_Khamis_Jumaat_Sabtu".split("_"),weekdaysShort:"Ahd_Isn_Sel_Rab_Kha_Jum_Sab".split("_"),weekdaysMin:"Ah_Is_Sl_Rb_Km_Jm_Sb".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/pagi|tengahari|petang|malam/,meridiemHour:function(a,b){return 12===a&&(a=0),"pagi"===b?a:"tengahari"===b?a>=11?a:a+12:"petang"===b||"malam"===b?a+12:void 0},meridiem:function(a,b,c){return 11>a?"pagi":15>a?"tengahari":19>a?"petang":"malam"},calendar:{sameDay:"[Hari ini pukul] LT",nextDay:"[Esok pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kelmarin pukul] LT",lastWeek:"dddd [lepas pukul] LT",sameElse:"L"},relativeTime:{future:"dalam %s",past:"%s yang lepas",s:"beberapa saat",m:"seminit",mm:"%d minit",h:"sejam",hh:"%d jam",d:"sehari",dd:"%d hari",M:"sebulan",MM:"%d bulan",y:"setahun",yy:"%d tahun"},week:{dow:1,doy:7}}),{1:"၁",2:"၂",3:"၃",4:"၄",5:"၅",6:"၆",7:"၇",8:"၈",9:"၉",0:"၀"}),xg={"၁":"1","၂":"2","၃":"3","၄":"4","၅":"5","၆":"6","၇":"7","၈":"8","၉":"9","၀":"0"},yg=(Kf.defineLocale("my",{months:"ဇန်နဝါရီ_ဖေဖော်ဝါရီ_မတ်_ဧပြီ_မေ_ဇွန်_ဇူလိုင်_သြဂုတ်_စက်တင်ဘာ_အောက်တိုဘာ_နိုဝင်ဘာ_ဒီဇင်ဘာ".split("_"),monthsShort:"ဇန်_ဖေ_မတ်_ပြီ_မေ_ဇွန်_လိုင်_သြ_စက်_အောက်_နို_ဒီ".split("_"),weekdays:"တနင်္ဂနွေ_တနင်္လာ_အင်္ဂါ_ဗုဒ္ဓဟူး_ကြာသပတေး_သောကြာ_စနေ".split("_"),weekdaysShort:"နွေ_လာ_ဂါ_ဟူး_ကြာ_သော_နေ".split("_"),weekdaysMin:"နွေ_လာ_ဂါ_ဟူး_ကြာ_သော_နေ".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[ယနေ.] LT [မှာ]",nextDay:"[မနက်ဖြန်] LT [မှာ]",nextWeek:"dddd LT [မှာ]",lastDay:"[မနေ.က] LT [မှာ]",lastWeek:"[ပြီးခဲ့သော] dddd LT [မှာ]",sameElse:"L"},relativeTime:{future:"လာမည့် %s မှာ",past:"လွန်ခဲ့သော %s က",s:"စက္ကန်.အနည်းငယ်",m:"တစ်မိနစ်",mm:"%d မိနစ်",h:"တစ်နာရီ",hh:"%d နာရီ",d:"တစ်ရက်",dd:"%d ရက်",M:"တစ်လ",MM:"%d လ",y:"တစ်နှစ်",yy:"%d နှစ်"},preparse:function(a){return a.replace(/[၁၂၃၄၅၆၇၈၉၀]/g,function(a){return xg[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return wg[a]})},week:{dow:1,doy:4}}),Kf.defineLocale("nb",{months:"januar_februar_mars_april_mai_juni_juli_august_september_oktober_november_desember".split("_"),monthsShort:"jan._feb._mars_april_mai_juni_juli_aug._sep._okt._nov._des.".split("_"),weekdays:"søndag_mandag_tirsdag_onsdag_torsdag_fredag_lørdag".split("_"),weekdaysShort:"sø._ma._ti._on._to._fr._lø.".split("_"),weekdaysMin:"sø_ma_ti_on_to_fr_lø".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY [kl.] HH:mm",LLLL:"dddd D. MMMM YYYY [kl.] HH:mm"},calendar:{sameDay:"[i dag kl.] LT",nextDay:"[i morgen kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[i går kl.] LT",lastWeek:"[forrige] dddd [kl.] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"for %s siden",s:"noen sekunder",m:"ett minutt",mm:"%d minutter",h:"en time",hh:"%d timer",d:"en dag",dd:"%d dager",M:"en måned",MM:"%d måneder",y:"ett år",yy:"%d år"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),{1:"१",2:"२",3:"३",4:"४",5:"५",6:"६",7:"७",8:"८",9:"९",0:"०"}),zg={"१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9","०":"0"},Ag=(Kf.defineLocale("ne",{months:"जनवरी_फेब्रुवरी_मार्च_अप्रिल_मई_जुन_जुलाई_अगष्ट_सेप्टेम्बर_अक्टोबर_नोभेम्बर_डिसेम्बर".split("_"),monthsShort:"जन._फेब्रु._मार्च_अप्रि._मई_जुन_जुलाई._अग._सेप्ट._अक्टो._नोभे._डिसे.".split("_"),weekdays:"आइतबार_सोमबार_मङ्गलबार_बुधबार_बिहिबार_शुक्रबार_शनिबार".split("_"),weekdaysShort:"आइत._सोम._मङ्गल._बुध._बिहि._शुक्र._शनि.".split("_"),weekdaysMin:"आ._सो._मं._बु._बि._शु._श.".split("_"),longDateFormat:{LT:"Aको h:mm बजे",LTS:"Aको h:mm:ss बजे",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, Aको h:mm बजे",LLLL:"dddd, D MMMM YYYY, Aको h:mm बजे"},preparse:function(a){return a.replace(/[१२३४५६७८९०]/g,function(a){return zg[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return yg[a]})},meridiemParse:/राति|बिहान|दिउँसो|साँझ/,meridiemHour:function(a,b){return 12===a&&(a=0),"राति"===b?4>a?a:a+12:"बिहान"===b?a:"दिउँसो"===b?a>=10?a:a+12:"साँझ"===b?a+12:void 0},meridiem:function(a,b,c){return 3>a?"राति":12>a?"बिहान":16>a?"दिउँसो":20>a?"साँझ":"राति"},calendar:{sameDay:"[आज] LT",nextDay:"[भोलि] LT",nextWeek:"[आउँदो] dddd[,] LT",lastDay:"[हिजो] LT",lastWeek:"[गएको] dddd[,] LT",sameElse:"L"},relativeTime:{future:"%sमा",past:"%s अगाडि",s:"केही क्षण",m:"एक मिनेट",mm:"%d मिनेट",h:"एक घण्टा",hh:"%d घण्टा",d:"एक दिन",dd:"%d दिन",M:"एक महिना",MM:"%d महिना",y:"एक बर्ष",yy:"%d बर्ष"},week:{dow:0,doy:6}}),"jan._feb._mrt._apr._mei_jun._jul._aug._sep._okt._nov._dec.".split("_")),Bg="jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec".split("_"),Cg=(Kf.defineLocale("nl",{months:"januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december".split("_"),monthsShort:function(a,b){return/-MMM-/.test(b)?Bg[a.month()]:Ag[a.month()]},weekdays:"zondag_maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag".split("_"),weekdaysShort:"zo._ma._di._wo._do._vr._za.".split("_"),weekdaysMin:"Zo_Ma_Di_Wo_Do_Vr_Za".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[vandaag om] LT",nextDay:"[morgen om] LT",nextWeek:"dddd [om] LT",lastDay:"[gisteren om] LT",lastWeek:"[afgelopen] dddd [om] LT",sameElse:"L"},relativeTime:{future:"over %s",past:"%s geleden",s:"een paar seconden",m:"één minuut",mm:"%d minuten",h:"één uur",hh:"%d uur",d:"één dag",dd:"%d dagen",M:"één maand",MM:"%d maanden",y:"één jaar",yy:"%d jaar"},ordinalParse:/\d{1,2}(ste|de)/,ordinal:function(a){return a+(1===a||8===a||a>=20?"ste":"de")},week:{dow:1,doy:4}}),Kf.defineLocale("nn",{months:"januar_februar_mars_april_mai_juni_juli_august_september_oktober_november_desember".split("_"),monthsShort:"jan_feb_mar_apr_mai_jun_jul_aug_sep_okt_nov_des".split("_"),weekdays:"sundag_måndag_tysdag_onsdag_torsdag_fredag_laurdag".split("_"),weekdaysShort:"sun_mån_tys_ons_tor_fre_lau".split("_"),weekdaysMin:"su_må_ty_on_to_fr_lø".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY [kl.] H:mm",LLLL:"dddd D. MMMM YYYY [kl.] HH:mm"},calendar:{sameDay:"[I dag klokka] LT",nextDay:"[I morgon klokka] LT",nextWeek:"dddd [klokka] LT",lastDay:"[I går klokka] LT",lastWeek:"[Føregåande] dddd [klokka] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"for %s sidan",s:"nokre sekund",m:"eit minutt",mm:"%d minutt",h:"ein time",hh:"%d timar",d:"ein dag",dd:"%d dagar",M:"ein månad",MM:"%d månader",y:"eit år",yy:"%d år"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),"styczeń_luty_marzec_kwiecień_maj_czerwiec_lipiec_sierpień_wrzesień_październik_listopad_grudzień".split("_")),Dg="stycznia_lutego_marca_kwietnia_maja_czerwca_lipca_sierpnia_września_października_listopada_grudnia".split("_"),Eg=(Kf.defineLocale("pl",{months:function(a,b){return""===b?"("+Dg[a.month()]+"|"+Cg[a.month()]+")":/D MMMM/.test(b)?Dg[a.month()]:Cg[a.month()]},monthsShort:"sty_lut_mar_kwi_maj_cze_lip_sie_wrz_paź_lis_gru".split("_"),weekdays:"niedziela_poniedziałek_wtorek_środa_czwartek_piątek_sobota".split("_"),weekdaysShort:"nie_pon_wt_śr_czw_pt_sb".split("_"),weekdaysMin:"Nd_Pn_Wt_Śr_Cz_Pt_So".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Dziś o] LT",nextDay:"[Jutro o] LT",nextWeek:"[W] dddd [o] LT",lastDay:"[Wczoraj o] LT",lastWeek:function(){switch(this.day()){case 0:return"[W zeszłą niedzielę o] LT";case 3:return"[W zeszłą środę o] LT";case 6:return"[W zeszłą sobotę o] LT";default:return"[W zeszły] dddd [o] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"%s temu",s:"kilka sekund",m:Bd,mm:Bd,h:Bd,hh:Bd,d:"1 dzień",dd:"%d dni",M:"miesiąc",MM:Bd,y:"rok",yy:Bd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("pt-br",{months:"Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro".split("_"),monthsShort:"Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez".split("_"),weekdays:"Domingo_Segunda-Feira_Terça-Feira_Quarta-Feira_Quinta-Feira_Sexta-Feira_Sábado".split("_"),weekdaysShort:"Dom_Seg_Ter_Qua_Qui_Sex_Sáb".split("_"),weekdaysMin:"Dom_2ª_3ª_4ª_5ª_6ª_Sáb".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY [às] HH:mm",LLLL:"dddd, D [de] MMMM [de] YYYY [às] HH:mm"},calendar:{sameDay:"[Hoje às] LT",nextDay:"[Amanhã às] LT",nextWeek:"dddd [às] LT",lastDay:"[Ontem às] LT",lastWeek:function(){return 0===this.day()||6===this.day()?"[Último] dddd [às] LT":"[Última] dddd [às] LT"},sameElse:"L"},relativeTime:{future:"em %s",past:"%s atrás",s:"poucos segundos",m:"um minuto",mm:"%d minutos",h:"uma hora",hh:"%d horas",d:"um dia",dd:"%d dias",M:"um mês",MM:"%d meses",y:"um ano",yy:"%d anos"},ordinalParse:/\d{1,2}º/,ordinal:"%dº"}),Kf.defineLocale("pt",{months:"Janeiro_Fevereiro_Março_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro".split("_"),monthsShort:"Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez".split("_"),weekdays:"Domingo_Segunda-Feira_Terça-Feira_Quarta-Feira_Quinta-Feira_Sexta-Feira_Sábado".split("_"),weekdaysShort:"Dom_Seg_Ter_Qua_Qui_Sex_Sáb".split("_"),weekdaysMin:"Dom_2ª_3ª_4ª_5ª_6ª_Sáb".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY HH:mm",LLLL:"dddd, D [de] MMMM [de] YYYY HH:mm"},calendar:{sameDay:"[Hoje às] LT",nextDay:"[Amanhã às] LT",nextWeek:"dddd [às] LT",lastDay:"[Ontem às] LT",lastWeek:function(){return 0===this.day()||6===this.day()?"[Último] dddd [às] LT":"[Última] dddd [às] LT"},sameElse:"L"},relativeTime:{future:"em %s",past:"há %s",s:"segundos",m:"um minuto",mm:"%d minutos",h:"uma hora",hh:"%d horas",d:"um dia",dd:"%d dias",M:"um mês",MM:"%d meses",y:"um ano",yy:"%d anos"},ordinalParse:/\d{1,2}º/,ordinal:"%dº",week:{dow:1,doy:4}}),Kf.defineLocale("ro",{months:"ianuarie_februarie_martie_aprilie_mai_iunie_iulie_august_septembrie_octombrie_noiembrie_decembrie".split("_"),monthsShort:"ian._febr._mart._apr._mai_iun._iul._aug._sept._oct._nov._dec.".split("_"),weekdays:"duminică_luni_marți_miercuri_joi_vineri_sâmbătă".split("_"),weekdaysShort:"Dum_Lun_Mar_Mie_Joi_Vin_Sâm".split("_"),weekdaysMin:"Du_Lu_Ma_Mi_Jo_Vi_Sâ".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd, D MMMM YYYY H:mm"},calendar:{sameDay:"[azi la] LT",nextDay:"[mâine la] LT",nextWeek:"dddd [la] LT",lastDay:"[ieri la] LT",lastWeek:"[fosta] dddd [la] LT",sameElse:"L"},relativeTime:{future:"peste %s",past:"%s în urmă",s:"câteva secunde",m:"un minut",mm:Cd,h:"o oră",hh:Cd,d:"o zi",dd:Cd,M:"o lună",MM:Cd,y:"un an",yy:Cd},week:{dow:1,doy:7}}),[/^янв/i,/^фев/i,/^мар/i,/^апр/i,/^ма[й|я]/i,/^июн/i,/^июл/i,/^авг/i,/^сен/i,/^окт/i,/^ноя/i,/^дек/i]),Fg=(Kf.defineLocale("ru",{months:{format:"Января_Февраля_Марта_Апреля_Мая_Июня_Июля_Августа_Сентября_Октября_Ноября_Декабря".split("_"),standalone:"Январь_Февраль_Март_Апрель_Май_Июнь_Июль_Август_Сентябрь_Октябрь_Ноябрь_Декабрь".split("_")},monthsShort:{format:"янв_фев_мар_апр_мая_июня_июля_авг_сен_окт_ноя_дек".split("_"),standalone:"янв_фев_март_апр_май_июнь_июль_авг_сен_окт_ноя_дек".split("_")},weekdays:{standalone:"Воскресенье_Понедельник_Вторник_Среда_Четверг_Пятница_Суббота".split("_"),format:"Воскресенье_Понедельник_Вторник_Среду_Четверг_Пятницу_Субботу".split("_"),isFormat:/\[ ?[Вв] ?(?:прошлую|следующую|эту)? ?\] ?dddd/},weekdaysShort:"Вс_Пн_Вт_Ср_Чт_Пт_Сб".split("_"),weekdaysMin:"Вс_Пн_Вт_Ср_Чт_Пт_Сб".split("_"),monthsParse:Eg,longMonthsParse:Eg,shortMonthsParse:Eg,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY г.",LLL:"D MMMM YYYY г., HH:mm",LLLL:"dddd, D MMMM YYYY г., HH:mm"},calendar:{sameDay:"[Сегодня в] LT",nextDay:"[Завтра в] LT",lastDay:"[Вчера в] LT",nextWeek:function(a){if(a.week()===this.week())return 2===this.day()?"[Во] dddd [в] LT":"[В] dddd [в] LT";switch(this.day()){case 0:return"[В следующее] dddd [в] LT";case 1:case 2:case 4:return"[В следующий] dddd [в] LT";case 3:case 5:case 6:return"[В следующую] dddd [в] LT"}},lastWeek:function(a){if(a.week()===this.week())return 2===this.day()?"[Во] dddd [в] LT":"[В] dddd [в] LT";switch(this.day()){case 0:return"[В прошлое] dddd [в] LT";case 1:case 2:case 4:return"[В прошлый] dddd [в] LT";case 3:case 5:case 6:return"[В прошлую] dddd [в] LT"}},sameElse:"L"},relativeTime:{future:"через %s",past:"%s назад",s:"несколько секунд",m:Ed,mm:Ed,h:"час",hh:Ed,d:"день",dd:Ed,M:"месяц",MM:Ed,y:"год",yy:Ed},meridiemParse:/ночи|утра|дня|вечера/i,isPM:function(a){return/^(дня|вечера)$/.test(a)},meridiem:function(a,b,c){return 4>a?"ночи":12>a?"утра":17>a?"дня":"вечера"},ordinalParse:/\d{1,2}-(й|го|я)/,ordinal:function(a,b){switch(b){case"M":case"d":case"DDD":return a+"-й";case"D":return a+"-го";case"w":case"W":return a+"-я";default:return a}},week:{dow:1,doy:7}}),Kf.defineLocale("se",{months:"ođđajagemánnu_guovvamánnu_njukčamánnu_cuoŋománnu_miessemánnu_geassemánnu_suoidnemánnu_borgemánnu_čakčamánnu_golggotmánnu_skábmamánnu_juovlamánnu".split("_"),monthsShort:"ođđj_guov_njuk_cuo_mies_geas_suoi_borg_čakč_golg_skáb_juov".split("_"),weekdays:"sotnabeaivi_vuossárga_maŋŋebárga_gaskavahkku_duorastat_bearjadat_lávvardat".split("_"),weekdaysShort:"sotn_vuos_maŋ_gask_duor_bear_láv".split("_"),weekdaysMin:"s_v_m_g_d_b_L".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"MMMM D. [b.] YYYY",LLL:"MMMM D. [b.] YYYY [ti.] HH:mm",LLLL:"dddd, MMMM D. [b.] YYYY [ti.] HH:mm"},calendar:{sameDay:"[otne ti] LT",nextDay:"[ihttin ti] LT",nextWeek:"dddd [ti] LT",lastDay:"[ikte ti] LT",lastWeek:"[ovddit] dddd [ti] LT",sameElse:"L"},relativeTime:{future:"%s geažes",past:"maŋit %s",s:"moadde sekunddat",m:"okta minuhta",mm:"%d minuhtat",h:"okta diimmu",hh:"%d diimmut",d:"okta beaivi",dd:"%d beaivvit",M:"okta mánnu",MM:"%d mánut",y:"okta jahki",yy:"%d jagit"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("si",{months:"ජනවාරි_පෙබරවාරි_මාර්තු_අප්‍රේල්_මැයි_ජූනි_ජූලි_අගෝස්තු_සැප්තැම්බර්_ඔක්තෝබර්_නොවැම්බර්_දෙසැම්බර්".split("_"),monthsShort:"ජන_පෙබ_මාර්_අප්_මැයි_ජූනි_ජූලි_අගෝ_සැප්_ඔක්_නොවැ_දෙසැ".split("_"),weekdays:"ඉරිදා_සඳුදා_අඟහරුවාදා_බදාදා_බ්‍රහස්පතින්දා_සිකුරාදා_සෙනසුරාදා".split("_"),weekdaysShort:"ඉරි_සඳු_අඟ_බදා_බ්‍රහ_සිකු_සෙන".split("_"),weekdaysMin:"ඉ_ස_අ_බ_බ්‍ර_සි_සෙ".split("_"),longDateFormat:{LT:"a h:mm",LTS:"a h:mm:ss",L:"YYYY/MM/DD",LL:"YYYY MMMM D",LLL:"YYYY MMMM D, a h:mm",LLLL:"YYYY MMMM D [වැනි] dddd, a h:mm:ss"},calendar:{sameDay:"[අද] LT[ට]",nextDay:"[හෙට] LT[ට]",nextWeek:"dddd LT[ට]",lastDay:"[ඊයේ] LT[ට]",lastWeek:"[පසුගිය] dddd LT[ට]",sameElse:"L"},relativeTime:{future:"%sකින්",past:"%sකට පෙර",s:"තත්පර කිහිපය",m:"මිනිත්තුව",mm:"මිනිත්තු %d",h:"පැය",hh:"පැය %d",d:"දිනය",dd:"දින %d",M:"මාසය",MM:"මාස %d",y:"වසර",yy:"වසර %d"},ordinalParse:/\d{1,2} වැනි/,ordinal:function(a){return a+" වැනි"},meridiem:function(a,b,c){return a>11?c?"ප.ව.":"පස් වරු":c?"පෙ.ව.":"පෙර වරු"}}),"január_február_marec_apríl_máj_jún_júl_august_september_október_november_december".split("_")),Gg="jan_feb_mar_apr_máj_jún_júl_aug_sep_okt_nov_dec".split("_"),Hg=(Kf.defineLocale("sk",{months:Fg,monthsShort:Gg,weekdays:"nedeľa_pondelok_utorok_streda_štvrtok_piatok_sobota".split("_"),weekdaysShort:"ne_po_ut_st_št_pi_so".split("_"),weekdaysMin:"ne_po_ut_st_št_pi_so".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd D. MMMM YYYY H:mm"},calendar:{sameDay:"[dnes o] LT",nextDay:"[zajtra o] LT",nextWeek:function(){switch(this.day()){case 0:return"[v nedeľu o] LT";case 1:case 2:return"[v] dddd [o] LT";case 3:return"[v stredu o] LT";case 4:return"[vo štvrtok o] LT";case 5:return"[v piatok o] LT";case 6:return"[v sobotu o] LT"}},lastDay:"[včera o] LT",lastWeek:function(){switch(this.day()){case 0:return"[minulú nedeľu o] LT";case 1:case 2:return"[minulý] dddd [o] LT";case 3:return"[minulú stredu o] LT";case 4:case 5:return"[minulý] dddd [o] LT";case 6:return"[minulú sobotu o] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"pred %s",s:Gd,m:Gd,mm:Gd,h:Gd,hh:Gd,d:Gd,dd:Gd,M:Gd,MM:Gd,y:Gd,yy:Gd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("sl",{months:"januar_februar_marec_april_maj_junij_julij_avgust_september_oktober_november_december".split("_"),monthsShort:"jan._feb._mar._apr._maj._jun._jul._avg._sep._okt._nov._dec.".split("_"),weekdays:"nedelja_ponedeljek_torek_sreda_četrtek_petek_sobota".split("_"),weekdaysShort:"ned._pon._tor._sre._čet._pet._sob.".split("_"),weekdaysMin:"ne_po_to_sr_če_pe_so".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD. MM. YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danes ob] LT",nextDay:"[jutri ob] LT",nextWeek:function(){switch(this.day()){case 0:return"[v] [nedeljo] [ob] LT";case 3:return"[v] [sredo] [ob] LT";case 6:return"[v] [soboto] [ob] LT";case 1:case 2:case 4:case 5:return"[v] dddd [ob] LT"}},lastDay:"[včeraj ob] LT",lastWeek:function(){switch(this.day()){case 0:return"[prejšnjo] [nedeljo] [ob] LT";case 3:return"[prejšnjo] [sredo] [ob] LT";case 6:return"[prejšnjo] [soboto] [ob] LT";case 1:case 2:case 4:case 5:return"[prejšnji] dddd [ob] LT"}},sameElse:"L"},relativeTime:{future:"čez %s",past:"pred %s",s:Hd,m:Hd,mm:Hd,h:Hd,hh:Hd,d:Hd,dd:Hd,M:Hd,MM:Hd,y:Hd,yy:Hd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),Kf.defineLocale("sq",{months:"Janar_Shkurt_Mars_Prill_Maj_Qershor_Korrik_Gusht_Shtator_Tetor_Nëntor_Dhjetor".split("_"),monthsShort:"Jan_Shk_Mar_Pri_Maj_Qer_Kor_Gus_Sht_Tet_Nën_Dhj".split("_"),weekdays:"E Diel_E Hënë_E Martë_E Mërkurë_E Enjte_E Premte_E Shtunë".split("_"),weekdaysShort:"Die_Hën_Mar_Mër_Enj_Pre_Sht".split("_"),weekdaysMin:"D_H_Ma_Më_E_P_Sh".split("_"),meridiemParse:/PD|MD/,isPM:function(a){return"M"===a.charAt(0)},meridiem:function(a,b,c){return 12>a?"PD":"MD"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Sot në] LT",nextDay:"[Nesër në] LT",nextWeek:"dddd [në] LT",lastDay:"[Dje në] LT",lastWeek:"dddd [e kaluar në] LT",sameElse:"L"},relativeTime:{future:"në %s",past:"%s më parë",s:"disa sekonda",m:"një minutë",mm:"%d minuta",h:"një orë",hh:"%d orë",d:"një ditë",dd:"%d ditë",M:"një muaj",MM:"%d muaj",y:"një vit",yy:"%d vite"},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),{words:{m:["један минут","једне минуте"],mm:["минут","минуте","минута"],h:["један сат","једног сата"],hh:["сат","сата","сати"],dd:["дан","дана","дана"],MM:["месец","месеца","месеци"],yy:["година","године","година"]},correctGrammaticalCase:function(a,b){return 1===a?b[0]:a>=2&&4>=a?b[1]:b[2]},translate:function(a,b,c){var d=Hg.words[c];return 1===c.length?b?d[0]:d[1]:a+" "+Hg.correctGrammaticalCase(a,d)}}),Ig=(Kf.defineLocale("sr-cyrl",{months:["јануар","фебруар","март","април","мај","јун","јул","август","септембар","октобар","новембар","децембар"],monthsShort:["јан.","феб.","мар.","апр.","мај","јун","јул","авг.","сеп.","окт.","нов.","дец."],weekdays:["недеља","понедељак","уторак","среда","четвртак","петак","субота"],weekdaysShort:["нед.","пон.","уто.","сре.","чет.","пет.","суб."],weekdaysMin:["не","по","ут","ср","че","пе","су"],longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD. MM. YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[данас у] LT",nextDay:"[сутра у] LT",nextWeek:function(){switch(this.day()){case 0:return"[у] [недељу] [у] LT";case 3:return"[у] [среду] [у] LT";case 6:return"[у] [суботу] [у] LT";case 1:case 2:case 4:case 5:return"[у] dddd [у] LT"}},lastDay:"[јуче у] LT",lastWeek:function(){var a=["[прошле] [недеље] [у] LT","[прошлог] [понедељка] [у] LT","[прошлог] [уторка] [у] LT","[прошле] [среде] [у] LT","[прошлог] [четвртка] [у] LT","[прошлог] [петка] [у] LT","[прошле] [суботе] [у] LT"];return a[this.day()]},sameElse:"L"},relativeTime:{future:"за %s",past:"пре %s",s:"неколико секунди",m:Hg.translate,mm:Hg.translate,h:Hg.translate,hh:Hg.translate,d:"дан",dd:Hg.translate,M:"месец",MM:Hg.translate,y:"годину",yy:Hg.translate},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),{words:{m:["jedan minut","jedne minute"],mm:["minut","minute","minuta"],h:["jedan sat","jednog sata"],hh:["sat","sata","sati"],dd:["dan","dana","dana"],MM:["mesec","meseca","meseci"],yy:["godina","godine","godina"]},correctGrammaticalCase:function(a,b){return 1===a?b[0]:a>=2&&4>=a?b[1]:b[2]},translate:function(a,b,c){var d=Ig.words[c];return 1===c.length?b?d[0]:d[1]:a+" "+Ig.correctGrammaticalCase(a,d)}}),Jg=(Kf.defineLocale("sr",{months:["januar","februar","mart","april","maj","jun","jul","avgust","septembar","oktobar","novembar","decembar"],monthsShort:["jan.","feb.","mar.","apr.","maj","jun","jul","avg.","sep.","okt.","nov.","dec."],weekdays:["nedelja","ponedeljak","utorak","sreda","četvrtak","petak","subota"],weekdaysShort:["ned.","pon.","uto.","sre.","čet.","pet.","sub."],weekdaysMin:["ne","po","ut","sr","če","pe","su"],longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD. MM. YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedelju] [u] LT";case 3:return"[u] [sredu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[juče u] LT",lastWeek:function(){var a=["[prošle] [nedelje] [u] LT","[prošlog] [ponedeljka] [u] LT","[prošlog] [utorka] [u] LT","[prošle] [srede] [u] LT","[prošlog] [četvrtka] [u] LT","[prošlog] [petka] [u] LT","[prošle] [subote] [u] LT"];return a[this.day()]},sameElse:"L"},relativeTime:{future:"za %s",past:"pre %s",s:"nekoliko sekundi",m:Ig.translate,mm:Ig.translate,h:Ig.translate,hh:Ig.translate,d:"dan",dd:Ig.translate,M:"mesec",MM:Ig.translate,y:"godinu",yy:Ig.translate
-},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),Kf.defineLocale("sv",{months:"januari_februari_mars_april_maj_juni_juli_augusti_september_oktober_november_december".split("_"),monthsShort:"jan_feb_mar_apr_maj_jun_jul_aug_sep_okt_nov_dec".split("_"),weekdays:"söndag_måndag_tisdag_onsdag_torsdag_fredag_lördag".split("_"),weekdaysShort:"sön_mån_tis_ons_tor_fre_lör".split("_"),weekdaysMin:"sö_må_ti_on_to_fr_lö".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Idag] LT",nextDay:"[Imorgon] LT",lastDay:"[Igår] LT",nextWeek:"[På] dddd LT",lastWeek:"[I] dddd[s] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"för %s sedan",s:"några sekunder",m:"en minut",mm:"%d minuter",h:"en timme",hh:"%d timmar",d:"en dag",dd:"%d dagar",M:"en månad",MM:"%d månader",y:"ett år",yy:"%d år"},ordinalParse:/\d{1,2}(e|a)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"e":1===b?"a":2===b?"a":"e";return a+c},week:{dow:1,doy:4}}),Kf.defineLocale("sw",{months:"Januari_Februari_Machi_Aprili_Mei_Juni_Julai_Agosti_Septemba_Oktoba_Novemba_Desemba".split("_"),monthsShort:"Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ago_Sep_Okt_Nov_Des".split("_"),weekdays:"Jumapili_Jumatatu_Jumanne_Jumatano_Alhamisi_Ijumaa_Jumamosi".split("_"),weekdaysShort:"Jpl_Jtat_Jnne_Jtan_Alh_Ijm_Jmos".split("_"),weekdaysMin:"J2_J3_J4_J5_Al_Ij_J1".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[leo saa] LT",nextDay:"[kesho saa] LT",nextWeek:"[wiki ijayo] dddd [saat] LT",lastDay:"[jana] LT",lastWeek:"[wiki iliyopita] dddd [saat] LT",sameElse:"L"},relativeTime:{future:"%s baadaye",past:"tokea %s",s:"hivi punde",m:"dakika moja",mm:"dakika %d",h:"saa limoja",hh:"masaa %d",d:"siku moja",dd:"masiku %d",M:"mwezi mmoja",MM:"miezi %d",y:"mwaka mmoja",yy:"miaka %d"},week:{dow:1,doy:7}}),{1:"௧",2:"௨",3:"௩",4:"௪",5:"௫",6:"௬",7:"௭",8:"௮",9:"௯",0:"௦"}),Kg={"௧":"1","௨":"2","௩":"3","௪":"4","௫":"5","௬":"6","௭":"7","௮":"8","௯":"9","௦":"0"},Lg=(Kf.defineLocale("ta",{months:"ஜனவரி_பிப்ரவரி_மார்ச்_ஏப்ரல்_மே_ஜூன்_ஜூலை_ஆகஸ்ட்_செப்டெம்பர்_அக்டோபர்_நவம்பர்_டிசம்பர்".split("_"),monthsShort:"ஜனவரி_பிப்ரவரி_மார்ச்_ஏப்ரல்_மே_ஜூன்_ஜூலை_ஆகஸ்ட்_செப்டெம்பர்_அக்டோபர்_நவம்பர்_டிசம்பர்".split("_"),weekdays:"ஞாயிற்றுக்கிழமை_திங்கட்கிழமை_செவ்வாய்கிழமை_புதன்கிழமை_வியாழக்கிழமை_வெள்ளிக்கிழமை_சனிக்கிழமை".split("_"),weekdaysShort:"ஞாயிறு_திங்கள்_செவ்வாய்_புதன்_வியாழன்_வெள்ளி_சனி".split("_"),weekdaysMin:"ஞா_தி_செ_பு_வி_வெ_ச".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, HH:mm",LLLL:"dddd, D MMMM YYYY, HH:mm"},calendar:{sameDay:"[இன்று] LT",nextDay:"[நாளை] LT",nextWeek:"dddd, LT",lastDay:"[நேற்று] LT",lastWeek:"[கடந்த வாரம்] dddd, LT",sameElse:"L"},relativeTime:{future:"%s இல்",past:"%s முன்",s:"ஒரு சில விநாடிகள்",m:"ஒரு நிமிடம்",mm:"%d நிமிடங்கள்",h:"ஒரு மணி நேரம்",hh:"%d மணி நேரம்",d:"ஒரு நாள்",dd:"%d நாட்கள்",M:"ஒரு மாதம்",MM:"%d மாதங்கள்",y:"ஒரு வருடம்",yy:"%d ஆண்டுகள்"},ordinalParse:/\d{1,2}வது/,ordinal:function(a){return a+"வது"},preparse:function(a){return a.replace(/[௧௨௩௪௫௬௭௮௯௦]/g,function(a){return Kg[a]})},postformat:function(a){return a.replace(/\d/g,function(a){return Jg[a]})},meridiemParse:/யாமம்|வைகறை|காலை|நண்பகல்|எற்பாடு|மாலை/,meridiem:function(a,b,c){return 2>a?" யாமம்":6>a?" வைகறை":10>a?" காலை":14>a?" நண்பகல்":18>a?" எற்பாடு":22>a?" மாலை":" யாமம்"},meridiemHour:function(a,b){return 12===a&&(a=0),"யாமம்"===b?2>a?a:a+12:"வைகறை"===b||"காலை"===b?a:"நண்பகல்"===b&&a>=10?a:a+12},week:{dow:0,doy:6}}),Kf.defineLocale("te",{months:"జనవరి_ఫిబ్రవరి_మార్చి_ఏప్రిల్_మే_జూన్_జూలై_ఆగస్టు_సెప్టెంబర్_అక్టోబర్_నవంబర్_డిసెంబర్".split("_"),monthsShort:"జన._ఫిబ్ర._మార్చి_ఏప్రి._మే_జూన్_జూలై_ఆగ._సెప్._అక్టో._నవ._డిసె.".split("_"),weekdays:"ఆదివారం_సోమవారం_మంగళవారం_బుధవారం_గురువారం_శుక్రవారం_శనివారం".split("_"),weekdaysShort:"ఆది_సోమ_మంగళ_బుధ_గురు_శుక్ర_శని".split("_"),weekdaysMin:"ఆ_సో_మం_బు_గు_శు_శ".split("_"),longDateFormat:{LT:"A h:mm",LTS:"A h:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm",LLLL:"dddd, D MMMM YYYY, A h:mm"},calendar:{sameDay:"[నేడు] LT",nextDay:"[రేపు] LT",nextWeek:"dddd, LT",lastDay:"[నిన్న] LT",lastWeek:"[గత] dddd, LT",sameElse:"L"},relativeTime:{future:"%s లో",past:"%s క్రితం",s:"కొన్ని క్షణాలు",m:"ఒక నిమిషం",mm:"%d నిమిషాలు",h:"ఒక గంట",hh:"%d గంటలు",d:"ఒక రోజు",dd:"%d రోజులు",M:"ఒక నెల",MM:"%d నెలలు",y:"ఒక సంవత్సరం",yy:"%d సంవత్సరాలు"},ordinalParse:/\d{1,2}వ/,ordinal:"%dవ",meridiemParse:/రాత్రి|ఉదయం|మధ్యాహ్నం|సాయంత్రం/,meridiemHour:function(a,b){return 12===a&&(a=0),"రాత్రి"===b?4>a?a:a+12:"ఉదయం"===b?a:"మధ్యాహ్నం"===b?a>=10?a:a+12:"సాయంత్రం"===b?a+12:void 0},meridiem:function(a,b,c){return 4>a?"రాత్రి":10>a?"ఉదయం":17>a?"మధ్యాహ్నం":20>a?"సాయంత్రం":"రాత్రి"},week:{dow:0,doy:6}}),Kf.defineLocale("th",{months:"มกราคม_กุมภาพันธ์_มีนาคม_เมษายน_พฤษภาคม_มิถุนายน_กรกฎาคม_สิงหาคม_กันยายน_ตุลาคม_พฤศจิกายน_ธันวาคม".split("_"),monthsShort:"มกรา_กุมภา_มีนา_เมษา_พฤษภา_มิถุนา_กรกฎา_สิงหา_กันยา_ตุลา_พฤศจิกา_ธันวา".split("_"),weekdays:"อาทิตย์_จันทร์_อังคาร_พุธ_พฤหัสบดี_ศุกร์_เสาร์".split("_"),weekdaysShort:"อาทิตย์_จันทร์_อังคาร_พุธ_พฤหัส_ศุกร์_เสาร์".split("_"),weekdaysMin:"อา._จ._อ._พ._พฤ._ศ._ส.".split("_"),longDateFormat:{LT:"H นาฬิกา m นาที",LTS:"H นาฬิกา m นาที s วินาที",L:"YYYY/MM/DD",LL:"D MMMM YYYY",LLL:"D MMMM YYYY เวลา H นาฬิกา m นาที",LLLL:"วันddddที่ D MMMM YYYY เวลา H นาฬิกา m นาที"},meridiemParse:/ก่อนเที่ยง|หลังเที่ยง/,isPM:function(a){return"หลังเที่ยง"===a},meridiem:function(a,b,c){return 12>a?"ก่อนเที่ยง":"หลังเที่ยง"},calendar:{sameDay:"[วันนี้ เวลา] LT",nextDay:"[พรุ่งนี้ เวลา] LT",nextWeek:"dddd[หน้า เวลา] LT",lastDay:"[เมื่อวานนี้ เวลา] LT",lastWeek:"[วัน]dddd[ที่แล้ว เวลา] LT",sameElse:"L"},relativeTime:{future:"อีก %s",past:"%sที่แล้ว",s:"ไม่กี่วินาที",m:"1 นาที",mm:"%d นาที",h:"1 ชั่วโมง",hh:"%d ชั่วโมง",d:"1 วัน",dd:"%d วัน",M:"1 เดือน",MM:"%d เดือน",y:"1 ปี",yy:"%d ปี"}}),Kf.defineLocale("tl-ph",{months:"Enero_Pebrero_Marso_Abril_Mayo_Hunyo_Hulyo_Agosto_Setyembre_Oktubre_Nobyembre_Disyembre".split("_"),monthsShort:"Ene_Peb_Mar_Abr_May_Hun_Hul_Ago_Set_Okt_Nob_Dis".split("_"),weekdays:"Linggo_Lunes_Martes_Miyerkules_Huwebes_Biyernes_Sabado".split("_"),weekdaysShort:"Lin_Lun_Mar_Miy_Huw_Biy_Sab".split("_"),weekdaysMin:"Li_Lu_Ma_Mi_Hu_Bi_Sab".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"MM/D/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY HH:mm",LLLL:"dddd, MMMM DD, YYYY HH:mm"},calendar:{sameDay:"[Ngayon sa] LT",nextDay:"[Bukas sa] LT",nextWeek:"dddd [sa] LT",lastDay:"[Kahapon sa] LT",lastWeek:"dddd [huling linggo] LT",sameElse:"L"},relativeTime:{future:"sa loob ng %s",past:"%s ang nakalipas",s:"ilang segundo",m:"isang minuto",mm:"%d minuto",h:"isang oras",hh:"%d oras",d:"isang araw",dd:"%d araw",M:"isang buwan",MM:"%d buwan",y:"isang taon",yy:"%d taon"},ordinalParse:/\d{1,2}/,ordinal:function(a){return a},week:{dow:1,doy:4}}),"pagh_wa’_cha’_wej_loS_vagh_jav_Soch_chorgh_Hut".split("_")),Mg=(Kf.defineLocale("tlh",{months:"tera’ jar wa’_tera’ jar cha’_tera’ jar wej_tera’ jar loS_tera’ jar vagh_tera’ jar jav_tera’ jar Soch_tera’ jar chorgh_tera’ jar Hut_tera’ jar wa’maH_tera’ jar wa’maH wa’_tera’ jar wa’maH cha’".split("_"),monthsShort:"jar wa’_jar cha’_jar wej_jar loS_jar vagh_jar jav_jar Soch_jar chorgh_jar Hut_jar wa’maH_jar wa’maH wa’_jar wa’maH cha’".split("_"),weekdays:"lojmItjaj_DaSjaj_povjaj_ghItlhjaj_loghjaj_buqjaj_ghInjaj".split("_"),weekdaysShort:"lojmItjaj_DaSjaj_povjaj_ghItlhjaj_loghjaj_buqjaj_ghInjaj".split("_"),weekdaysMin:"lojmItjaj_DaSjaj_povjaj_ghItlhjaj_loghjaj_buqjaj_ghInjaj".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[DaHjaj] LT",nextDay:"[wa’leS] LT",nextWeek:"LLL",lastDay:"[wa’Hu’] LT",lastWeek:"LLL",sameElse:"L"},relativeTime:{future:Id,past:Jd,s:"puS lup",m:"wa’ tup",mm:Kd,h:"wa’ rep",hh:Kd,d:"wa’ jaj",dd:Kd,M:"wa’ jar",MM:Kd,y:"wa’ DIS",yy:Kd},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),{1:"'inci",5:"'inci",8:"'inci",70:"'inci",80:"'inci",2:"'nci",7:"'nci",20:"'nci",50:"'nci",3:"'üncü",4:"'üncü",100:"'üncü",6:"'ncı",9:"'uncu",10:"'uncu",30:"'uncu",60:"'ıncı",90:"'ıncı"}),Ng=(Kf.defineLocale("tr",{months:"Ocak_Şubat_Mart_Nisan_Mayıs_Haziran_Temmuz_Ağustos_Eylül_Ekim_Kasım_Aralık".split("_"),monthsShort:"Oca_Şub_Mar_Nis_May_Haz_Tem_Ağu_Eyl_Eki_Kas_Ara".split("_"),weekdays:"Pazar_Pazartesi_Salı_Çarşamba_Perşembe_Cuma_Cumartesi".split("_"),weekdaysShort:"Paz_Pts_Sal_Çar_Per_Cum_Cts".split("_"),weekdaysMin:"Pz_Pt_Sa_Ça_Pe_Cu_Ct".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[bugün saat] LT",nextDay:"[yarın saat] LT",nextWeek:"[haftaya] dddd [saat] LT",lastDay:"[dün] LT",lastWeek:"[geçen hafta] dddd [saat] LT",sameElse:"L"},relativeTime:{future:"%s sonra",past:"%s önce",s:"birkaç saniye",m:"bir dakika",mm:"%d dakika",h:"bir saat",hh:"%d saat",d:"bir gün",dd:"%d gün",M:"bir ay",MM:"%d ay",y:"bir yıl",yy:"%d yıl"},ordinalParse:/\d{1,2}'(inci|nci|üncü|ncı|uncu|ıncı)/,ordinal:function(a){if(0===a)return a+"'ıncı";var b=a%10,c=a%100-b,d=a>=100?100:null;return a+(Mg[b]||Mg[c]||Mg[d])},week:{dow:1,doy:7}}),Kf.defineLocale("tzl",{months:"Januar_Fevraglh_Març_Avrïu_Mai_Gün_Julia_Guscht_Setemvar_Listopäts_Noemvar_Zecemvar".split("_"),monthsShort:"Jan_Fev_Mar_Avr_Mai_Gün_Jul_Gus_Set_Lis_Noe_Zec".split("_"),weekdays:"Súladi_Lúneçi_Maitzi_Márcuri_Xhúadi_Viénerçi_Sáturi".split("_"),weekdaysShort:"Súl_Lún_Mai_Már_Xhú_Vié_Sát".split("_"),weekdaysMin:"Sú_Lú_Ma_Má_Xh_Vi_Sá".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD.MM.YYYY",LL:"D. MMMM [dallas] YYYY",LLL:"D. MMMM [dallas] YYYY HH.mm",LLLL:"dddd, [li] D. MMMM [dallas] YYYY HH.mm"},meridiem:function(a,b,c){return a>11?c?"d'o":"D'O":c?"d'a":"D'A"},calendar:{sameDay:"[oxhi à] LT",nextDay:"[demà à] LT",nextWeek:"dddd [à] LT",lastDay:"[ieiri à] LT",lastWeek:"[sür el] dddd [lasteu à] LT",sameElse:"L"},relativeTime:{future:"osprei %s",past:"ja%s",s:Md,m:Md,mm:Md,h:Md,hh:Md,d:Md,dd:Md,M:Md,MM:Md,y:Md,yy:Md},ordinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),Kf.defineLocale("tzm-latn",{months:"innayr_brˤayrˤ_marˤsˤ_ibrir_mayyw_ywnyw_ywlywz_ɣwšt_šwtanbir_ktˤwbrˤ_nwwanbir_dwjnbir".split("_"),monthsShort:"innayr_brˤayrˤ_marˤsˤ_ibrir_mayyw_ywnyw_ywlywz_ɣwšt_šwtanbir_ktˤwbrˤ_nwwanbir_dwjnbir".split("_"),weekdays:"asamas_aynas_asinas_akras_akwas_asimwas_asiḍyas".split("_"),weekdaysShort:"asamas_aynas_asinas_akras_akwas_asimwas_asiḍyas".split("_"),weekdaysMin:"asamas_aynas_asinas_akras_akwas_asimwas_asiḍyas".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[asdkh g] LT",nextDay:"[aska g] LT",nextWeek:"dddd [g] LT",lastDay:"[assant g] LT",lastWeek:"dddd [g] LT",sameElse:"L"},relativeTime:{future:"dadkh s yan %s",past:"yan %s",s:"imik",m:"minuḍ",mm:"%d minuḍ",h:"saɛa",hh:"%d tassaɛin",d:"ass",dd:"%d ossan",M:"ayowr",MM:"%d iyyirn",y:"asgas",yy:"%d isgasn"},week:{dow:6,doy:12}}),Kf.defineLocale("tzm",{months:"ⵉⵏⵏⴰⵢⵔ_ⴱⵕⴰⵢⵕ_ⵎⴰⵕⵚ_ⵉⴱⵔⵉⵔ_ⵎⴰⵢⵢⵓ_ⵢⵓⵏⵢⵓ_ⵢⵓⵍⵢⵓⵣ_ⵖⵓⵛⵜ_ⵛⵓⵜⴰⵏⴱⵉⵔ_ⴽⵟⵓⴱⵕ_ⵏⵓⵡⴰⵏⴱⵉⵔ_ⴷⵓⵊⵏⴱⵉⵔ".split("_"),monthsShort:"ⵉⵏⵏⴰⵢⵔ_ⴱⵕⴰⵢⵕ_ⵎⴰⵕⵚ_ⵉⴱⵔⵉⵔ_ⵎⴰⵢⵢⵓ_ⵢⵓⵏⵢⵓ_ⵢⵓⵍⵢⵓⵣ_ⵖⵓⵛⵜ_ⵛⵓⵜⴰⵏⴱⵉⵔ_ⴽⵟⵓⴱⵕ_ⵏⵓⵡⴰⵏⴱⵉⵔ_ⴷⵓⵊⵏⴱⵉⵔ".split("_"),weekdays:"ⴰⵙⴰⵎⴰⵙ_ⴰⵢⵏⴰⵙ_ⴰⵙⵉⵏⴰⵙ_ⴰⴽⵔⴰⵙ_ⴰⴽⵡⴰⵙ_ⴰⵙⵉⵎⵡⴰⵙ_ⴰⵙⵉⴹⵢⴰⵙ".split("_"),weekdaysShort:"ⴰⵙⴰⵎⴰⵙ_ⴰⵢⵏⴰⵙ_ⴰⵙⵉⵏⴰⵙ_ⴰⴽⵔⴰⵙ_ⴰⴽⵡⴰⵙ_ⴰⵙⵉⵎⵡⴰⵙ_ⴰⵙⵉⴹⵢⴰⵙ".split("_"),weekdaysMin:"ⴰⵙⴰⵎⴰⵙ_ⴰⵢⵏⴰⵙ_ⴰⵙⵉⵏⴰⵙ_ⴰⴽⵔⴰⵙ_ⴰⴽⵡⴰⵙ_ⴰⵙⵉⵎⵡⴰⵙ_ⴰⵙⵉⴹⵢⴰⵙ".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[ⴰⵙⴷⵅ ⴴ] LT",nextDay:"[ⴰⵙⴽⴰ ⴴ] LT",nextWeek:"dddd [ⴴ] LT",lastDay:"[ⴰⵚⴰⵏⵜ ⴴ] LT",lastWeek:"dddd [ⴴ] LT",sameElse:"L"},relativeTime:{future:"ⴷⴰⴷⵅ ⵙ ⵢⴰⵏ %s",past:"ⵢⴰⵏ %s",s:"ⵉⵎⵉⴽ",m:"ⵎⵉⵏⵓⴺ",mm:"%d ⵎⵉⵏⵓⴺ",h:"ⵙⴰⵄⴰ",hh:"%d ⵜⴰⵙⵙⴰⵄⵉⵏ",d:"ⴰⵙⵙ",dd:"%d oⵙⵙⴰⵏ",M:"ⴰⵢoⵓⵔ",MM:"%d ⵉⵢⵢⵉⵔⵏ",y:"ⴰⵙⴳⴰⵙ",yy:"%d ⵉⵙⴳⴰⵙⵏ"},week:{dow:6,doy:12}}),Kf.defineLocale("uk",{months:{format:"січня_лютого_березня_квітня_травня_червня_липня_серпня_вересня_жовтня_листопада_грудня".split("_"),standalone:"січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листопад_грудень".split("_")},monthsShort:"січ_лют_бер_квіт_трав_черв_лип_серп_вер_жовт_лист_груд".split("_"),weekdays:Pd,weekdaysShort:"нд_пн_вт_ср_чт_пт_сб".split("_"),weekdaysMin:"нд_пн_вт_ср_чт_пт_сб".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY р.",LLL:"D MMMM YYYY р., HH:mm",LLLL:"dddd, D MMMM YYYY р., HH:mm"},calendar:{sameDay:Qd("[Сьогодні "),nextDay:Qd("[Завтра "),lastDay:Qd("[Вчора "),nextWeek:Qd("[У] dddd ["),lastWeek:function(){switch(this.day()){case 0:case 3:case 5:case 6:return Qd("[Минулої] dddd [").call(this);case 1:case 2:case 4:return Qd("[Минулого] dddd [").call(this)}},sameElse:"L"},relativeTime:{future:"за %s",past:"%s тому",s:"декілька секунд",m:Od,mm:Od,h:"годину",hh:Od,d:"день",dd:Od,M:"місяць",MM:Od,y:"рік",yy:Od},meridiemParse:/ночі|ранку|дня|вечора/,isPM:function(a){return/^(дня|вечора)$/.test(a)},meridiem:function(a,b,c){return 4>a?"ночі":12>a?"ранку":17>a?"дня":"вечора"},ordinalParse:/\d{1,2}-(й|го)/,ordinal:function(a,b){switch(b){case"M":case"d":case"DDD":case"w":case"W":return a+"-й";case"D":return a+"-го";default:return a}},week:{dow:1,doy:7}}),Kf.defineLocale("uz",{months:"январ_феврал_март_апрел_май_июн_июл_август_сентябр_октябр_ноябр_декабр".split("_"),monthsShort:"янв_фев_мар_апр_май_июн_июл_авг_сен_окт_ноя_дек".split("_"),weekdays:"Якшанба_Душанба_Сешанба_Чоршанба_Пайшанба_Жума_Шанба".split("_"),weekdaysShort:"Якш_Душ_Сеш_Чор_Пай_Жум_Шан".split("_"),weekdaysMin:"Як_Ду_Се_Чо_Па_Жу_Ша".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Бугун соат] LT [да]",nextDay:"[Эртага] LT [да]",nextWeek:"dddd [куни соат] LT [да]",lastDay:"[Кеча соат] LT [да]",lastWeek:"[Утган] dddd [куни соат] LT [да]",sameElse:"L"},relativeTime:{future:"Якин %s ичида",past:"Бир неча %s олдин",s:"фурсат",m:"бир дакика",mm:"%d дакика",h:"бир соат",hh:"%d соат",d:"бир кун",dd:"%d кун",M:"бир ой",MM:"%d ой",y:"бир йил",yy:"%d йил"},week:{dow:1,doy:7}}),Kf.defineLocale("vi",{months:"tháng 1_tháng 2_tháng 3_tháng 4_tháng 5_tháng 6_tháng 7_tháng 8_tháng 9_tháng 10_tháng 11_tháng 12".split("_"),monthsShort:"Th01_Th02_Th03_Th04_Th05_Th06_Th07_Th08_Th09_Th10_Th11_Th12".split("_"),weekdays:"chủ nhật_thứ hai_thứ ba_thứ tư_thứ năm_thứ sáu_thứ bảy".split("_"),weekdaysShort:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysMin:"CN_T2_T3_T4_T5_T6_T7".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM [năm] YYYY",LLL:"D MMMM [năm] YYYY HH:mm",LLLL:"dddd, D MMMM [năm] YYYY HH:mm",l:"DD/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[Hôm nay lúc] LT",nextDay:"[Ngày mai lúc] LT",nextWeek:"dddd [tuần tới lúc] LT",lastDay:"[Hôm qua lúc] LT",lastWeek:"dddd [tuần rồi lúc] LT",sameElse:"L"},relativeTime:{future:"%s tới",past:"%s trước",s:"vài giây",m:"một phút",mm:"%d phút",h:"một giờ",hh:"%d giờ",d:"một ngày",dd:"%d ngày",M:"một tháng",MM:"%d tháng",y:"một năm",yy:"%d năm"},ordinalParse:/\d{1,2}/,ordinal:function(a){return a},week:{dow:1,doy:4}}),Kf.defineLocale("zh-cn",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"周日_周一_周二_周三_周四_周五_周六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"Ah点mm分",LTS:"Ah点m分s秒",L:"YYYY-MM-DD",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日Ah点mm分",LLLL:"YYYY年MMMD日ddddAh点mm分",l:"YYYY-MM-DD",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日Ah点mm分",llll:"YYYY年MMMD日ddddAh点mm分"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"下午"===b||"晚上"===b?a+12:a>=11?a:a+12},meridiem:function(a,b,c){var d=100*a+b;return 600>d?"凌晨":900>d?"早上":1130>d?"上午":1230>d?"中午":1800>d?"下午":"晚上"},calendar:{sameDay:function(){return 0===this.minutes()?"[今天]Ah[点整]":"[今天]LT"},nextDay:function(){return 0===this.minutes()?"[明天]Ah[点整]":"[明天]LT"},lastDay:function(){return 0===this.minutes()?"[昨天]Ah[点整]":"[昨天]LT"},nextWeek:function(){var a,b;return a=Kf().startOf("week"),b=this.unix()-a.unix()>=604800?"[下]":"[本]",0===this.minutes()?b+"dddAh点整":b+"dddAh点mm"},lastWeek:function(){var a,b;return a=Kf().startOf("week"),b=this.unix()<a.unix()?"[上]":"[本]",0===this.minutes()?b+"dddAh点整":b+"dddAh点mm"},sameElse:"LL"},ordinalParse:/\d{1,2}(日|月|周)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"周";default:return a}},relativeTime:{future:"%s内",past:"%s前",s:"几秒",m:"1 分钟",mm:"%d 分钟",h:"1 小时",hh:"%d 小时",d:"1 天",dd:"%d 天",M:"1 个月",MM:"%d 个月",y:"1 年",yy:"%d 年"},week:{dow:1,doy:4}}),Kf.defineLocale("zh-tw",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"Ah點mm分",LTS:"Ah點m分s秒",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日Ah點mm分",LLLL:"YYYY年MMMD日ddddAh點mm分",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日Ah點mm分",llll:"YYYY年MMMD日ddddAh點mm分"},meridiemParse:/早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return 900>d?"早上":1130>d?"上午":1230>d?"中午":1800>d?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},ordinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"一分鐘",mm:"%d分鐘",h:"一小時",hh:"%d小時",d:"一天",dd:"%d天",M:"一個月",MM:"%d個月",y:"一年",yy:"%d年"}}),Kf);return Ng.locale("en"),Ng});
+/*! Hammer.JS - v2.0.7 - 2016-04-22
+ * http://hammerjs.github.io/
+ *
+ * Copyright (c) 2016 Jorik Tangelder;
+ * Licensed under the MIT license */
+!function(a,b,c,d){"use strict";function e(a,b,c){return setTimeout(j(a,c),b)}function f(a,b,c){return Array.isArray(a)?(g(a,c[b],c),!0):!1}function g(a,b,c){var e;if(a)if(a.forEach)a.forEach(b,c);else if(a.length!==d)for(e=0;e<a.length;)b.call(c,a[e],e,a),e++;else for(e in a)a.hasOwnProperty(e)&&b.call(c,a[e],e,a)}function h(b,c,d){var e="DEPRECATED METHOD: "+c+"\n"+d+" AT \n";return function(){var c=new Error("get-stack-trace"),d=c&&c.stack?c.stack.replace(/^[^\(]+?[\n$]/gm,"").replace(/^\s+at\s+/gm,"").replace(/^Object.<anonymous>\s*\(/gm,"{anonymous}()@"):"Unknown Stack Trace",f=a.console&&(a.console.warn||a.console.log);return f&&f.call(a.console,e,d),b.apply(this,arguments)}}function i(a,b,c){var d,e=b.prototype;d=a.prototype=Object.create(e),d.constructor=a,d._super=e,c&&la(d,c)}function j(a,b){return function(){return a.apply(b,arguments)}}function k(a,b){return typeof a==oa?a.apply(b?b[0]||d:d,b):a}function l(a,b){return a===d?b:a}function m(a,b,c){g(q(b),function(b){a.addEventListener(b,c,!1)})}function n(a,b,c){g(q(b),function(b){a.removeEventListener(b,c,!1)})}function o(a,b){for(;a;){if(a==b)return!0;a=a.parentNode}return!1}function p(a,b){return a.indexOf(b)>-1}function q(a){return a.trim().split(/\s+/g)}function r(a,b,c){if(a.indexOf&&!c)return a.indexOf(b);for(var d=0;d<a.length;){if(c&&a[d][c]==b||!c&&a[d]===b)return d;d++}return-1}function s(a){return Array.prototype.slice.call(a,0)}function t(a,b,c){for(var d=[],e=[],f=0;f<a.length;){var g=b?a[f][b]:a[f];r(e,g)<0&&d.push(a[f]),e[f]=g,f++}return c&&(d=b?d.sort(function(a,c){return a[b]>c[b]}):d.sort()),d}function u(a,b){for(var c,e,f=b[0].toUpperCase()+b.slice(1),g=0;g<ma.length;){if(c=ma[g],e=c?c+f:b,e in a)return e;g++}return d}function v(){return ua++}function w(b){var c=b.ownerDocument||b;return c.defaultView||c.parentWindow||a}function x(a,b){var c=this;this.manager=a,this.callback=b,this.element=a.element,this.target=a.options.inputTarget,this.domHandler=function(b){k(a.options.enable,[a])&&c.handler(b)},this.init()}function y(a){var b,c=a.options.inputClass;return new(b=c?c:xa?M:ya?P:wa?R:L)(a,z)}function z(a,b,c){var d=c.pointers.length,e=c.changedPointers.length,f=b&Ea&&d-e===0,g=b&(Ga|Ha)&&d-e===0;c.isFirst=!!f,c.isFinal=!!g,f&&(a.session={}),c.eventType=b,A(a,c),a.emit("hammer.input",c),a.recognize(c),a.session.prevInput=c}function A(a,b){var c=a.session,d=b.pointers,e=d.length;c.firstInput||(c.firstInput=D(b)),e>1&&!c.firstMultiple?c.firstMultiple=D(b):1===e&&(c.firstMultiple=!1);var f=c.firstInput,g=c.firstMultiple,h=g?g.center:f.center,i=b.center=E(d);b.timeStamp=ra(),b.deltaTime=b.timeStamp-f.timeStamp,b.angle=I(h,i),b.distance=H(h,i),B(c,b),b.offsetDirection=G(b.deltaX,b.deltaY);var j=F(b.deltaTime,b.deltaX,b.deltaY);b.overallVelocityX=j.x,b.overallVelocityY=j.y,b.overallVelocity=qa(j.x)>qa(j.y)?j.x:j.y,b.scale=g?K(g.pointers,d):1,b.rotation=g?J(g.pointers,d):0,b.maxPointers=c.prevInput?b.pointers.length>c.prevInput.maxPointers?b.pointers.length:c.prevInput.maxPointers:b.pointers.length,C(c,b);var k=a.element;o(b.srcEvent.target,k)&&(k=b.srcEvent.target),b.target=k}function B(a,b){var c=b.center,d=a.offsetDelta||{},e=a.prevDelta||{},f=a.prevInput||{};b.eventType!==Ea&&f.eventType!==Ga||(e=a.prevDelta={x:f.deltaX||0,y:f.deltaY||0},d=a.offsetDelta={x:c.x,y:c.y}),b.deltaX=e.x+(c.x-d.x),b.deltaY=e.y+(c.y-d.y)}function C(a,b){var c,e,f,g,h=a.lastInterval||b,i=b.timeStamp-h.timeStamp;if(b.eventType!=Ha&&(i>Da||h.velocity===d)){var j=b.deltaX-h.deltaX,k=b.deltaY-h.deltaY,l=F(i,j,k);e=l.x,f=l.y,c=qa(l.x)>qa(l.y)?l.x:l.y,g=G(j,k),a.lastInterval=b}else c=h.velocity,e=h.velocityX,f=h.velocityY,g=h.direction;b.velocity=c,b.velocityX=e,b.velocityY=f,b.direction=g}function D(a){for(var b=[],c=0;c<a.pointers.length;)b[c]={clientX:pa(a.pointers[c].clientX),clientY:pa(a.pointers[c].clientY)},c++;return{timeStamp:ra(),pointers:b,center:E(b),deltaX:a.deltaX,deltaY:a.deltaY}}function E(a){var b=a.length;if(1===b)return{x:pa(a[0].clientX),y:pa(a[0].clientY)};for(var c=0,d=0,e=0;b>e;)c+=a[e].clientX,d+=a[e].clientY,e++;return{x:pa(c/b),y:pa(d/b)}}function F(a,b,c){return{x:b/a||0,y:c/a||0}}function G(a,b){return a===b?Ia:qa(a)>=qa(b)?0>a?Ja:Ka:0>b?La:Ma}function H(a,b,c){c||(c=Qa);var d=b[c[0]]-a[c[0]],e=b[c[1]]-a[c[1]];return Math.sqrt(d*d+e*e)}function I(a,b,c){c||(c=Qa);var d=b[c[0]]-a[c[0]],e=b[c[1]]-a[c[1]];return 180*Math.atan2(e,d)/Math.PI}function J(a,b){return I(b[1],b[0],Ra)+I(a[1],a[0],Ra)}function K(a,b){return H(b[0],b[1],Ra)/H(a[0],a[1],Ra)}function L(){this.evEl=Ta,this.evWin=Ua,this.pressed=!1,x.apply(this,arguments)}function M(){this.evEl=Xa,this.evWin=Ya,x.apply(this,arguments),this.store=this.manager.session.pointerEvents=[]}function N(){this.evTarget=$a,this.evWin=_a,this.started=!1,x.apply(this,arguments)}function O(a,b){var c=s(a.touches),d=s(a.changedTouches);return b&(Ga|Ha)&&(c=t(c.concat(d),"identifier",!0)),[c,d]}function P(){this.evTarget=bb,this.targetIds={},x.apply(this,arguments)}function Q(a,b){var c=s(a.touches),d=this.targetIds;if(b&(Ea|Fa)&&1===c.length)return d[c[0].identifier]=!0,[c,c];var e,f,g=s(a.changedTouches),h=[],i=this.target;if(f=c.filter(function(a){return o(a.target,i)}),b===Ea)for(e=0;e<f.length;)d[f[e].identifier]=!0,e++;for(e=0;e<g.length;)d[g[e].identifier]&&h.push(g[e]),b&(Ga|Ha)&&delete d[g[e].identifier],e++;return h.length?[t(f.concat(h),"identifier",!0),h]:void 0}function R(){x.apply(this,arguments);var a=j(this.handler,this);this.touch=new P(this.manager,a),this.mouse=new L(this.manager,a),this.primaryTouch=null,this.lastTouches=[]}function S(a,b){a&Ea?(this.primaryTouch=b.changedPointers[0].identifier,T.call(this,b)):a&(Ga|Ha)&&T.call(this,b)}function T(a){var b=a.changedPointers[0];if(b.identifier===this.primaryTouch){var c={x:b.clientX,y:b.clientY};this.lastTouches.push(c);var d=this.lastTouches,e=function(){var a=d.indexOf(c);a>-1&&d.splice(a,1)};setTimeout(e,cb)}}function U(a){for(var b=a.srcEvent.clientX,c=a.srcEvent.clientY,d=0;d<this.lastTouches.length;d++){var e=this.lastTouches[d],f=Math.abs(b-e.x),g=Math.abs(c-e.y);if(db>=f&&db>=g)return!0}return!1}function V(a,b){this.manager=a,this.set(b)}function W(a){if(p(a,jb))return jb;var b=p(a,kb),c=p(a,lb);return b&&c?jb:b||c?b?kb:lb:p(a,ib)?ib:hb}function X(){if(!fb)return!1;var b={},c=a.CSS&&a.CSS.supports;return["auto","manipulation","pan-y","pan-x","pan-x pan-y","none"].forEach(function(d){b[d]=c?a.CSS.supports("touch-action",d):!0}),b}function Y(a){this.options=la({},this.defaults,a||{}),this.id=v(),this.manager=null,this.options.enable=l(this.options.enable,!0),this.state=nb,this.simultaneous={},this.requireFail=[]}function Z(a){return a&sb?"cancel":a&qb?"end":a&pb?"move":a&ob?"start":""}function $(a){return a==Ma?"down":a==La?"up":a==Ja?"left":a==Ka?"right":""}function _(a,b){var c=b.manager;return c?c.get(a):a}function aa(){Y.apply(this,arguments)}function ba(){aa.apply(this,arguments),this.pX=null,this.pY=null}function ca(){aa.apply(this,arguments)}function da(){Y.apply(this,arguments),this._timer=null,this._input=null}function ea(){aa.apply(this,arguments)}function fa(){aa.apply(this,arguments)}function ga(){Y.apply(this,arguments),this.pTime=!1,this.pCenter=!1,this._timer=null,this._input=null,this.count=0}function ha(a,b){return b=b||{},b.recognizers=l(b.recognizers,ha.defaults.preset),new ia(a,b)}function ia(a,b){this.options=la({},ha.defaults,b||{}),this.options.inputTarget=this.options.inputTarget||a,this.handlers={},this.session={},this.recognizers=[],this.oldCssProps={},this.element=a,this.input=y(this),this.touchAction=new V(this,this.options.touchAction),ja(this,!0),g(this.options.recognizers,function(a){var b=this.add(new a[0](a[1]));a[2]&&b.recognizeWith(a[2]),a[3]&&b.requireFailure(a[3])},this)}function ja(a,b){var c=a.element;if(c.style){var d;g(a.options.cssProps,function(e,f){d=u(c.style,f),b?(a.oldCssProps[d]=c.style[d],c.style[d]=e):c.style[d]=a.oldCssProps[d]||""}),b||(a.oldCssProps={})}}function ka(a,c){var d=b.createEvent("Event");d.initEvent(a,!0,!0),d.gesture=c,c.target.dispatchEvent(d)}var la,ma=["","webkit","Moz","MS","ms","o"],na=b.createElement("div"),oa="function",pa=Math.round,qa=Math.abs,ra=Date.now;la="function"!=typeof Object.assign?function(a){if(a===d||null===a)throw new TypeError("Cannot convert undefined or null to object");for(var b=Object(a),c=1;c<arguments.length;c++){var e=arguments[c];if(e!==d&&null!==e)for(var f in e)e.hasOwnProperty(f)&&(b[f]=e[f])}return b}:Object.assign;var sa=h(function(a,b,c){for(var e=Object.keys(b),f=0;f<e.length;)(!c||c&&a[e[f]]===d)&&(a[e[f]]=b[e[f]]),f++;return a},"extend","Use `assign`."),ta=h(function(a,b){return sa(a,b,!0)},"merge","Use `assign`."),ua=1,va=/mobile|tablet|ip(ad|hone|od)|android/i,wa="ontouchstart"in a,xa=u(a,"PointerEvent")!==d,ya=wa&&va.test(navigator.userAgent),za="touch",Aa="pen",Ba="mouse",Ca="kinect",Da=25,Ea=1,Fa=2,Ga=4,Ha=8,Ia=1,Ja=2,Ka=4,La=8,Ma=16,Na=Ja|Ka,Oa=La|Ma,Pa=Na|Oa,Qa=["x","y"],Ra=["clientX","clientY"];x.prototype={handler:function(){},init:function(){this.evEl&&m(this.element,this.evEl,this.domHandler),this.evTarget&&m(this.target,this.evTarget,this.domHandler),this.evWin&&m(w(this.element),this.evWin,this.domHandler)},destroy:function(){this.evEl&&n(this.element,this.evEl,this.domHandler),this.evTarget&&n(this.target,this.evTarget,this.domHandler),this.evWin&&n(w(this.element),this.evWin,this.domHandler)}};var Sa={mousedown:Ea,mousemove:Fa,mouseup:Ga},Ta="mousedown",Ua="mousemove mouseup";i(L,x,{handler:function(a){var b=Sa[a.type];b&Ea&&0===a.button&&(this.pressed=!0),b&Fa&&1!==a.which&&(b=Ga),this.pressed&&(b&Ga&&(this.pressed=!1),this.callback(this.manager,b,{pointers:[a],changedPointers:[a],pointerType:Ba,srcEvent:a}))}});var Va={pointerdown:Ea,pointermove:Fa,pointerup:Ga,pointercancel:Ha,pointerout:Ha},Wa={2:za,3:Aa,4:Ba,5:Ca},Xa="pointerdown",Ya="pointermove pointerup pointercancel";a.MSPointerEvent&&!a.PointerEvent&&(Xa="MSPointerDown",Ya="MSPointerMove MSPointerUp MSPointerCancel"),i(M,x,{handler:function(a){var b=this.store,c=!1,d=a.type.toLowerCase().replace("ms",""),e=Va[d],f=Wa[a.pointerType]||a.pointerType,g=f==za,h=r(b,a.pointerId,"pointerId");e&Ea&&(0===a.button||g)?0>h&&(b.push(a),h=b.length-1):e&(Ga|Ha)&&(c=!0),0>h||(b[h]=a,this.callback(this.manager,e,{pointers:b,changedPointers:[a],pointerType:f,srcEvent:a}),c&&b.splice(h,1))}});var Za={touchstart:Ea,touchmove:Fa,touchend:Ga,touchcancel:Ha},$a="touchstart",_a="touchstart touchmove touchend touchcancel";i(N,x,{handler:function(a){var b=Za[a.type];if(b===Ea&&(this.started=!0),this.started){var c=O.call(this,a,b);b&(Ga|Ha)&&c[0].length-c[1].length===0&&(this.started=!1),this.callback(this.manager,b,{pointers:c[0],changedPointers:c[1],pointerType:za,srcEvent:a})}}});var ab={touchstart:Ea,touchmove:Fa,touchend:Ga,touchcancel:Ha},bb="touchstart touchmove touchend touchcancel";i(P,x,{handler:function(a){var b=ab[a.type],c=Q.call(this,a,b);c&&this.callback(this.manager,b,{pointers:c[0],changedPointers:c[1],pointerType:za,srcEvent:a})}});var cb=2500,db=25;i(R,x,{handler:function(a,b,c){var d=c.pointerType==za,e=c.pointerType==Ba;if(!(e&&c.sourceCapabilities&&c.sourceCapabilities.firesTouchEvents)){if(d)S.call(this,b,c);else if(e&&U.call(this,c))return;this.callback(a,b,c)}},destroy:function(){this.touch.destroy(),this.mouse.destroy()}});var eb=u(na.style,"touchAction"),fb=eb!==d,gb="compute",hb="auto",ib="manipulation",jb="none",kb="pan-x",lb="pan-y",mb=X();V.prototype={set:function(a){a==gb&&(a=this.compute()),fb&&this.manager.element.style&&mb[a]&&(this.manager.element.style[eb]=a),this.actions=a.toLowerCase().trim()},update:function(){this.set(this.manager.options.touchAction)},compute:function(){var a=[];return g(this.manager.recognizers,function(b){k(b.options.enable,[b])&&(a=a.concat(b.getTouchAction()))}),W(a.join(" "))},preventDefaults:function(a){var b=a.srcEvent,c=a.offsetDirection;if(this.manager.session.prevented)return void b.preventDefault();var d=this.actions,e=p(d,jb)&&!mb[jb],f=p(d,lb)&&!mb[lb],g=p(d,kb)&&!mb[kb];if(e){var h=1===a.pointers.length,i=a.distance<2,j=a.deltaTime<250;if(h&&i&&j)return}return g&&f?void 0:e||f&&c&Na||g&&c&Oa?this.preventSrc(b):void 0},preventSrc:function(a){this.manager.session.prevented=!0,a.preventDefault()}};var nb=1,ob=2,pb=4,qb=8,rb=qb,sb=16,tb=32;Y.prototype={defaults:{},set:function(a){return la(this.options,a),this.manager&&this.manager.touchAction.update(),this},recognizeWith:function(a){if(f(a,"recognizeWith",this))return this;var b=this.simultaneous;return a=_(a,this),b[a.id]||(b[a.id]=a,a.recognizeWith(this)),this},dropRecognizeWith:function(a){return f(a,"dropRecognizeWith",this)?this:(a=_(a,this),delete this.simultaneous[a.id],this)},requireFailure:function(a){if(f(a,"requireFailure",this))return this;var b=this.requireFail;return a=_(a,this),-1===r(b,a)&&(b.push(a),a.requireFailure(this)),this},dropRequireFailure:function(a){if(f(a,"dropRequireFailure",this))return this;a=_(a,this);var b=r(this.requireFail,a);return b>-1&&this.requireFail.splice(b,1),this},hasRequireFailures:function(){return this.requireFail.length>0},canRecognizeWith:function(a){return!!this.simultaneous[a.id]},emit:function(a){function b(b){c.manager.emit(b,a)}var c=this,d=this.state;qb>d&&b(c.options.event+Z(d)),b(c.options.event),a.additionalEvent&&b(a.additionalEvent),d>=qb&&b(c.options.event+Z(d))},tryEmit:function(a){return this.canEmit()?this.emit(a):void(this.state=tb)},canEmit:function(){for(var a=0;a<this.requireFail.length;){if(!(this.requireFail[a].state&(tb|nb)))return!1;a++}return!0},recognize:function(a){var b=la({},a);return k(this.options.enable,[this,b])?(this.state&(rb|sb|tb)&&(this.state=nb),this.state=this.process(b),void(this.state&(ob|pb|qb|sb)&&this.tryEmit(b))):(this.reset(),void(this.state=tb))},process:function(a){},getTouchAction:function(){},reset:function(){}},i(aa,Y,{defaults:{pointers:1},attrTest:function(a){var b=this.options.pointers;return 0===b||a.pointers.length===b},process:function(a){var b=this.state,c=a.eventType,d=b&(ob|pb),e=this.attrTest(a);return d&&(c&Ha||!e)?b|sb:d||e?c&Ga?b|qb:b&ob?b|pb:ob:tb}}),i(ba,aa,{defaults:{event:"pan",threshold:10,pointers:1,direction:Pa},getTouchAction:function(){var a=this.options.direction,b=[];return a&Na&&b.push(lb),a&Oa&&b.push(kb),b},directionTest:function(a){var b=this.options,c=!0,d=a.distance,e=a.direction,f=a.deltaX,g=a.deltaY;return e&b.direction||(b.direction&Na?(e=0===f?Ia:0>f?Ja:Ka,c=f!=this.pX,d=Math.abs(a.deltaX)):(e=0===g?Ia:0>g?La:Ma,c=g!=this.pY,d=Math.abs(a.deltaY))),a.direction=e,c&&d>b.threshold&&e&b.direction},attrTest:function(a){return aa.prototype.attrTest.call(this,a)&&(this.state&ob||!(this.state&ob)&&this.directionTest(a))},emit:function(a){this.pX=a.deltaX,this.pY=a.deltaY;var b=$(a.direction);b&&(a.additionalEvent=this.options.event+b),this._super.emit.call(this,a)}}),i(ca,aa,{defaults:{event:"pinch",threshold:0,pointers:2},getTouchAction:function(){return[jb]},attrTest:function(a){return this._super.attrTest.call(this,a)&&(Math.abs(a.scale-1)>this.options.threshold||this.state&ob)},emit:function(a){if(1!==a.scale){var b=a.scale<1?"in":"out";a.additionalEvent=this.options.event+b}this._super.emit.call(this,a)}}),i(da,Y,{defaults:{event:"press",pointers:1,time:251,threshold:9},getTouchAction:function(){return[hb]},process:function(a){var b=this.options,c=a.pointers.length===b.pointers,d=a.distance<b.threshold,f=a.deltaTime>b.time;if(this._input=a,!d||!c||a.eventType&(Ga|Ha)&&!f)this.reset();else if(a.eventType&Ea)this.reset(),this._timer=e(function(){this.state=rb,this.tryEmit()},b.time,this);else if(a.eventType&Ga)return rb;return tb},reset:function(){clearTimeout(this._timer)},emit:function(a){this.state===rb&&(a&&a.eventType&Ga?this.manager.emit(this.options.event+"up",a):(this._input.timeStamp=ra(),this.manager.emit(this.options.event,this._input)))}}),i(ea,aa,{defaults:{event:"rotate",threshold:0,pointers:2},getTouchAction:function(){return[jb]},attrTest:function(a){return this._super.attrTest.call(this,a)&&(Math.abs(a.rotation)>this.options.threshold||this.state&ob)}}),i(fa,aa,{defaults:{event:"swipe",threshold:10,velocity:.3,direction:Na|Oa,pointers:1},getTouchAction:function(){return ba.prototype.getTouchAction.call(this)},attrTest:function(a){var b,c=this.options.direction;return c&(Na|Oa)?b=a.overallVelocity:c&Na?b=a.overallVelocityX:c&Oa&&(b=a.overallVelocityY),this._super.attrTest.call(this,a)&&c&a.offsetDirection&&a.distance>this.options.threshold&&a.maxPointers==this.options.pointers&&qa(b)>this.options.velocity&&a.eventType&Ga},emit:function(a){var b=$(a.offsetDirection);b&&this.manager.emit(this.options.event+b,a),this.manager.emit(this.options.event,a)}}),i(ga,Y,{defaults:{event:"tap",pointers:1,taps:1,interval:300,time:250,threshold:9,posThreshold:10},getTouchAction:function(){return[ib]},process:function(a){var b=this.options,c=a.pointers.length===b.pointers,d=a.distance<b.threshold,f=a.deltaTime<b.time;if(this.reset(),a.eventType&Ea&&0===this.count)return this.failTimeout();if(d&&f&&c){if(a.eventType!=Ga)return this.failTimeout();var g=this.pTime?a.timeStamp-this.pTime<b.interval:!0,h=!this.pCenter||H(this.pCenter,a.center)<b.posThreshold;this.pTime=a.timeStamp,this.pCenter=a.center,h&&g?this.count+=1:this.count=1,this._input=a;var i=this.count%b.taps;if(0===i)return this.hasRequireFailures()?(this._timer=e(function(){this.state=rb,this.tryEmit()},b.interval,this),ob):rb}return tb},failTimeout:function(){return this._timer=e(function(){this.state=tb},this.options.interval,this),tb},reset:function(){clearTimeout(this._timer)},emit:function(){this.state==rb&&(this._input.tapCount=this.count,this.manager.emit(this.options.event,this._input))}}),ha.VERSION="2.0.7",ha.defaults={domEvents:!1,touchAction:gb,enable:!0,inputTarget:null,inputClass:null,preset:[[ea,{enable:!1}],[ca,{enable:!1},["rotate"]],[fa,{direction:Na}],[ba,{direction:Na},["swipe"]],[ga],[ga,{event:"doubletap",taps:2},["tap"]],[da]],cssProps:{userSelect:"none",touchSelect:"none",touchCallout:"none",contentZooming:"none",userDrag:"none",tapHighlightColor:"rgba(0,0,0,0)"}};var ub=1,vb=2;ia.prototype={set:function(a){return la(this.options,a),a.touchAction&&this.touchAction.update(),a.inputTarget&&(this.input.destroy(),this.input.target=a.inputTarget,this.input.init()),this},stop:function(a){this.session.stopped=a?vb:ub},recognize:function(a){var b=this.session;if(!b.stopped){this.touchAction.preventDefaults(a);var c,d=this.recognizers,e=b.curRecognizer;(!e||e&&e.state&rb)&&(e=b.curRecognizer=null);for(var f=0;f<d.length;)c=d[f],b.stopped===vb||e&&c!=e&&!c.canRecognizeWith(e)?c.reset():c.recognize(a),!e&&c.state&(ob|pb|qb)&&(e=b.curRecognizer=c),f++}},get:function(a){if(a instanceof Y)return a;for(var b=this.recognizers,c=0;c<b.length;c++)if(b[c].options.event==a)return b[c];return null},add:function(a){if(f(a,"add",this))return this;var b=this.get(a.options.event);return b&&this.remove(b),this.recognizers.push(a),a.manager=this,this.touchAction.update(),a},remove:function(a){if(f(a,"remove",this))return this;if(a=this.get(a)){var b=this.recognizers,c=r(b,a);-1!==c&&(b.splice(c,1),this.touchAction.update())}return this},on:function(a,b){if(a!==d&&b!==d){var c=this.handlers;return g(q(a),function(a){c[a]=c[a]||[],c[a].push(b)}),this}},off:function(a,b){if(a!==d){var c=this.handlers;return g(q(a),function(a){b?c[a]&&c[a].splice(r(c[a],b),1):delete c[a]}),this}},emit:function(a,b){this.options.domEvents&&ka(a,b);var c=this.handlers[a]&&this.handlers[a].slice();if(c&&c.length){b.type=a,b.preventDefault=function(){b.srcEvent.preventDefault()};for(var d=0;d<c.length;)c[d](b),d++}},destroy:function(){this.element&&ja(this,!1),this.handlers={},this.session={},this.input.destroy(),this.element=null}},la(ha,{INPUT_START:Ea,INPUT_MOVE:Fa,INPUT_END:Ga,INPUT_CANCEL:Ha,STATE_POSSIBLE:nb,STATE_BEGAN:ob,STATE_CHANGED:pb,STATE_ENDED:qb,STATE_RECOGNIZED:rb,STATE_CANCELLED:sb,STATE_FAILED:tb,DIRECTION_NONE:Ia,DIRECTION_LEFT:Ja,DIRECTION_RIGHT:Ka,DIRECTION_UP:La,DIRECTION_DOWN:Ma,DIRECTION_HORIZONTAL:Na,DIRECTION_VERTICAL:Oa,DIRECTION_ALL:Pa,Manager:ia,Input:x,TouchAction:V,TouchInput:P,MouseInput:L,PointerEventInput:M,TouchMouseInput:R,SingleTouchInput:N,Recognizer:Y,AttrRecognizer:aa,Tap:ga,Pan:ba,Swipe:fa,Pinch:ca,Rotate:ea,Press:da,on:m,off:n,each:g,merge:ta,extend:sa,assign:la,inherit:i,bindFn:j,prefixed:u});var wb="undefined"!=typeof a?a:"undefined"!=typeof self?self:{};wb.Hammer=ha,"function"==typeof define&&define.amd?define(function(){return ha}):"undefined"!=typeof module&&module.exports?module.exports=ha:a[c]=ha}(window,document,"Hammer");
+//# map=hammer.min.js.map
+!function(e,a){"object"==typeof exports&&"undefined"!=typeof module?module.exports=a():"function"==typeof define&&define.amd?define(a):e.moment=a()}(this,function(){"use strict";var e,n;function l(){return e.apply(null,arguments)}function _(e){return e instanceof Array||"[object Array]"===Object.prototype.toString.call(e)}function i(e){return null!=e&&"[object Object]"===Object.prototype.toString.call(e)}function o(e){return void 0===e}function m(e){return"number"==typeof e||"[object Number]"===Object.prototype.toString.call(e)}function u(e){return e instanceof Date||"[object Date]"===Object.prototype.toString.call(e)}function M(e,a){var t,s=[];for(t=0;t<e.length;++t)s.push(a(e[t],t));return s}function h(e,a){return Object.prototype.hasOwnProperty.call(e,a)}function L(e,a){for(var t in a)h(a,t)&&(e[t]=a[t]);return h(a,"toString")&&(e.toString=a.toString),h(a,"valueOf")&&(e.valueOf=a.valueOf),e}function c(e,a,t,s){return Sa(e,a,t,s,!0).utc()}function Y(e){return null==e._pf&&(e._pf={empty:!1,unusedTokens:[],unusedInput:[],overflow:-2,charsLeftOver:0,nullInput:!1,invalidMonth:null,invalidFormat:!1,userInvalidated:!1,iso:!1,parsedDateParts:[],meridiem:null,rfc2822:!1,weekdayMismatch:!1}),e._pf}function y(e){if(null==e._isValid){var a=Y(e),t=n.call(a.parsedDateParts,function(e){return null!=e}),s=!isNaN(e._d.getTime())&&a.overflow<0&&!a.empty&&!a.invalidMonth&&!a.invalidWeekday&&!a.weekdayMismatch&&!a.nullInput&&!a.invalidFormat&&!a.userInvalidated&&(!a.meridiem||a.meridiem&&t);if(e._strict&&(s=s&&0===a.charsLeftOver&&0===a.unusedTokens.length&&void 0===a.bigHour),null!=Object.isFrozen&&Object.isFrozen(e))return s;e._isValid=s}return e._isValid}function f(e){var a=c(NaN);return null!=e?L(Y(a),e):Y(a).userInvalidated=!0,a}n=Array.prototype.some?Array.prototype.some:function(e){for(var a=Object(this),t=a.length>>>0,s=0;s<t;s++)if(s in a&&e.call(this,a[s],s,a))return!0;return!1};var d=l.momentProperties=[];function k(e,a){var t,s,n;if(o(a._isAMomentObject)||(e._isAMomentObject=a._isAMomentObject),o(a._i)||(e._i=a._i),o(a._f)||(e._f=a._f),o(a._l)||(e._l=a._l),o(a._strict)||(e._strict=a._strict),o(a._tzm)||(e._tzm=a._tzm),o(a._isUTC)||(e._isUTC=a._isUTC),o(a._offset)||(e._offset=a._offset),o(a._pf)||(e._pf=Y(a)),o(a._locale)||(e._locale=a._locale),0<d.length)for(t=0;t<d.length;t++)o(n=a[s=d[t]])||(e[s]=n);return e}var a=!1;function p(e){k(this,e),this._d=new Date(null!=e._d?e._d.getTime():NaN),this.isValid()||(this._d=new Date(NaN)),!1===a&&(a=!0,l.updateOffset(this),a=!1)}function D(e){return e instanceof p||null!=e&&null!=e._isAMomentObject}function T(e){return e<0?Math.ceil(e)||0:Math.floor(e)}function g(e){var a=+e,t=0;return 0!==a&&isFinite(a)&&(t=T(a)),t}function r(e,a,t){var s,n=Math.min(e.length,a.length),d=Math.abs(e.length-a.length),r=0;for(s=0;s<n;s++)(t&&e[s]!==a[s]||!t&&g(e[s])!==g(a[s]))&&r++;return r+d}function w(e){!1===l.suppressDeprecationWarnings&&"undefined"!=typeof console&&console.warn&&console.warn("Deprecation warning: "+e)}function t(n,d){var r=!0;return L(function(){if(null!=l.deprecationHandler&&l.deprecationHandler(null,n),r){for(var e,a=[],t=0;t<arguments.length;t++){if(e="","object"==typeof arguments[t]){for(var s in e+="\n["+t+"] ",arguments[0])e+=s+": "+arguments[0][s]+", ";e=e.slice(0,-2)}else e=arguments[t];a.push(e)}w(n+"\nArguments: "+Array.prototype.slice.call(a).join("")+"\n"+(new Error).stack),r=!1}return d.apply(this,arguments)},d)}var s,v={};function S(e,a){null!=l.deprecationHandler&&l.deprecationHandler(e,a),v[e]||(w(a),v[e]=!0)}function H(e){return e instanceof Function||"[object Function]"===Object.prototype.toString.call(e)}function b(e,a){var t,s=L({},e);for(t in a)h(a,t)&&(i(e[t])&&i(a[t])?(s[t]={},L(s[t],e[t]),L(s[t],a[t])):null!=a[t]?s[t]=a[t]:delete s[t]);for(t in e)h(e,t)&&!h(a,t)&&i(e[t])&&(s[t]=L({},s[t]));return s}function j(e){null!=e&&this.set(e)}l.suppressDeprecationWarnings=!1,l.deprecationHandler=null,s=Object.keys?Object.keys:function(e){var a,t=[];for(a in e)h(e,a)&&t.push(a);return t};var x={};function O(e,a){var t=e.toLowerCase();x[t]=x[t+"s"]=x[a]=e}function P(e){return"string"==typeof e?x[e]||x[e.toLowerCase()]:void 0}function W(e){var a,t,s={};for(t in e)h(e,t)&&(a=P(t))&&(s[a]=e[t]);return s}var A={};function E(e,a){A[e]=a}function F(e,a,t){var s=""+Math.abs(e),n=a-s.length;return(0<=e?t?"+":"":"-")+Math.pow(10,Math.max(0,n)).toString().substr(1)+s}var z=/(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g,J=/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,N={},R={};function C(e,a,t,s){var n=s;"string"==typeof s&&(n=function(){return this[s]()}),e&&(R[e]=n),a&&(R[a[0]]=function(){return F(n.apply(this,arguments),a[1],a[2])}),t&&(R[t]=function(){return this.localeData().ordinal(n.apply(this,arguments),e)})}function I(e,a){return e.isValid()?(a=U(a,e.localeData()),N[a]=N[a]||function(s){var e,n,a,d=s.match(z);for(e=0,n=d.length;e<n;e++)R[d[e]]?d[e]=R[d[e]]:d[e]=(a=d[e]).match(/\[[\s\S]/)?a.replace(/^\[|\]$/g,""):a.replace(/\\/g,"");return function(e){var a,t="";for(a=0;a<n;a++)t+=H(d[a])?d[a].call(e,s):d[a];return t}}(a),N[a](e)):e.localeData().invalidDate()}function U(e,a){var t=5;function s(e){return a.longDateFormat(e)||e}for(J.lastIndex=0;0<=t&&J.test(e);)e=e.replace(J,s),J.lastIndex=0,t-=1;return e}var G=/\d/,V=/\d\d/,K=/\d{3}/,Z=/\d{4}/,$=/[+-]?\d{6}/,B=/\d\d?/,q=/\d\d\d\d?/,Q=/\d\d\d\d\d\d?/,X=/\d{1,3}/,ee=/\d{1,4}/,ae=/[+-]?\d{1,6}/,te=/\d+/,se=/[+-]?\d+/,ne=/Z|[+-]\d\d:?\d\d/gi,de=/Z|[+-]\d\d(?::?\d\d)?/gi,re=/[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i,_e={};function ie(e,t,s){_e[e]=H(t)?t:function(e,a){return e&&s?s:t}}function oe(e,a){return h(_e,e)?_e[e](a._strict,a._locale):new RegExp(me(e.replace("\\","").replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g,function(e,a,t,s,n){return a||t||s||n})))}function me(e){return e.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")}var ue={};function le(e,t){var a,s=t;for("string"==typeof e&&(e=[e]),m(t)&&(s=function(e,a){a[t]=g(e)}),a=0;a<e.length;a++)ue[e[a]]=s}function Me(e,n){le(e,function(e,a,t,s){t._w=t._w||{},n(e,t._w,t,s)})}var he=0,Le=1,ce=2,Ye=3,ye=4,fe=5,ke=6,pe=7,De=8;function Te(e){return ge(e)?366:365}function ge(e){return e%4==0&&e%100!=0||e%400==0}C("Y",0,0,function(){var e=this.year();return e<=9999?""+e:"+"+e}),C(0,["YY",2],0,function(){return this.year()%100}),C(0,["YYYY",4],0,"year"),C(0,["YYYYY",5],0,"year"),C(0,["YYYYYY",6,!0],0,"year"),O("year","y"),E("year",1),ie("Y",se),ie("YY",B,V),ie("YYYY",ee,Z),ie("YYYYY",ae,$),ie("YYYYYY",ae,$),le(["YYYYY","YYYYYY"],he),le("YYYY",function(e,a){a[he]=2===e.length?l.parseTwoDigitYear(e):g(e)}),le("YY",function(e,a){a[he]=l.parseTwoDigitYear(e)}),le("Y",function(e,a){a[he]=parseInt(e,10)}),l.parseTwoDigitYear=function(e){return g(e)+(68<g(e)?1900:2e3)};var we,ve=Se("FullYear",!0);function Se(a,t){return function(e){return null!=e?(be(this,a,e),l.updateOffset(this,t),this):He(this,a)}}function He(e,a){return e.isValid()?e._d["get"+(e._isUTC?"UTC":"")+a]():NaN}function be(e,a,t){e.isValid()&&!isNaN(t)&&("FullYear"===a&&ge(e.year())&&1===e.month()&&29===e.date()?e._d["set"+(e._isUTC?"UTC":"")+a](t,e.month(),je(t,e.month())):e._d["set"+(e._isUTC?"UTC":"")+a](t))}function je(e,a){if(isNaN(e)||isNaN(a))return NaN;var t,s=(a%(t=12)+t)%t;return e+=(a-s)/12,1===s?ge(e)?29:28:31-s%7%2}we=Array.prototype.indexOf?Array.prototype.indexOf:function(e){var a;for(a=0;a<this.length;++a)if(this[a]===e)return a;return-1},C("M",["MM",2],"Mo",function(){return this.month()+1}),C("MMM",0,0,function(e){return this.localeData().monthsShort(this,e)}),C("MMMM",0,0,function(e){return this.localeData().months(this,e)}),O("month","M"),E("month",8),ie("M",B),ie("MM",B,V),ie("MMM",function(e,a){return a.monthsShortRegex(e)}),ie("MMMM",function(e,a){return a.monthsRegex(e)}),le(["M","MM"],function(e,a){a[Le]=g(e)-1}),le(["MMM","MMMM"],function(e,a,t,s){var n=t._locale.monthsParse(e,s,t._strict);null!=n?a[Le]=n:Y(t).invalidMonth=e});var xe=/D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/,Oe="January_February_March_April_May_June_July_August_September_October_November_December".split("_");var Pe="Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_");function We(e,a){var t;if(!e.isValid())return e;if("string"==typeof a)if(/^\d+$/.test(a))a=g(a);else if(!m(a=e.localeData().monthsParse(a)))return e;return t=Math.min(e.date(),je(e.year(),a)),e._d["set"+(e._isUTC?"UTC":"")+"Month"](a,t),e}function Ae(e){return null!=e?(We(this,e),l.updateOffset(this,!0),this):He(this,"Month")}var Ee=re;var Fe=re;function ze(){function e(e,a){return a.length-e.length}var a,t,s=[],n=[],d=[];for(a=0;a<12;a++)t=c([2e3,a]),s.push(this.monthsShort(t,"")),n.push(this.months(t,"")),d.push(this.months(t,"")),d.push(this.monthsShort(t,""));for(s.sort(e),n.sort(e),d.sort(e),a=0;a<12;a++)s[a]=me(s[a]),n[a]=me(n[a]);for(a=0;a<24;a++)d[a]=me(d[a]);this._monthsRegex=new RegExp("^("+d.join("|")+")","i"),this._monthsShortRegex=this._monthsRegex,this._monthsStrictRegex=new RegExp("^("+n.join("|")+")","i"),this._monthsShortStrictRegex=new RegExp("^("+s.join("|")+")","i")}function Je(e){var a;if(e<100&&0<=e){var t=Array.prototype.slice.call(arguments);t[0]=e+400,a=new Date(Date.UTC.apply(null,t)),isFinite(a.getUTCFullYear())&&a.setUTCFullYear(e)}else a=new Date(Date.UTC.apply(null,arguments));return a}function Ne(e,a,t){var s=7+a-t;return-((7+Je(e,0,s).getUTCDay()-a)%7)+s-1}function Re(e,a,t,s,n){var d,r,_=1+7*(a-1)+(7+t-s)%7+Ne(e,s,n);return r=_<=0?Te(d=e-1)+_:_>Te(e)?(d=e+1,_-Te(e)):(d=e,_),{year:d,dayOfYear:r}}function Ce(e,a,t){var s,n,d=Ne(e.year(),a,t),r=Math.floor((e.dayOfYear()-d-1)/7)+1;return r<1?s=r+Ie(n=e.year()-1,a,t):r>Ie(e.year(),a,t)?(s=r-Ie(e.year(),a,t),n=e.year()+1):(n=e.year(),s=r),{week:s,year:n}}function Ie(e,a,t){var s=Ne(e,a,t),n=Ne(e+1,a,t);return(Te(e)-s+n)/7}C("w",["ww",2],"wo","week"),C("W",["WW",2],"Wo","isoWeek"),O("week","w"),O("isoWeek","W"),E("week",5),E("isoWeek",5),ie("w",B),ie("ww",B,V),ie("W",B),ie("WW",B,V),Me(["w","ww","W","WW"],function(e,a,t,s){a[s.substr(0,1)]=g(e)});function Ue(e,a){return e.slice(a,7).concat(e.slice(0,a))}C("d",0,"do","day"),C("dd",0,0,function(e){return this.localeData().weekdaysMin(this,e)}),C("ddd",0,0,function(e){return this.localeData().weekdaysShort(this,e)}),C("dddd",0,0,function(e){return this.localeData().weekdays(this,e)}),C("e",0,0,"weekday"),C("E",0,0,"isoWeekday"),O("day","d"),O("weekday","e"),O("isoWeekday","E"),E("day",11),E("weekday",11),E("isoWeekday",11),ie("d",B),ie("e",B),ie("E",B),ie("dd",function(e,a){return a.weekdaysMinRegex(e)}),ie("ddd",function(e,a){return a.weekdaysShortRegex(e)}),ie("dddd",function(e,a){return a.weekdaysRegex(e)}),Me(["dd","ddd","dddd"],function(e,a,t,s){var n=t._locale.weekdaysParse(e,s,t._strict);null!=n?a.d=n:Y(t).invalidWeekday=e}),Me(["d","e","E"],function(e,a,t,s){a[s]=g(e)});var Ge="Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_");var Ve="Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_");var Ke="Su_Mo_Tu_We_Th_Fr_Sa".split("_");var Ze=re;var $e=re;var Be=re;function qe(){function e(e,a){return a.length-e.length}var a,t,s,n,d,r=[],_=[],i=[],o=[];for(a=0;a<7;a++)t=c([2e3,1]).day(a),s=this.weekdaysMin(t,""),n=this.weekdaysShort(t,""),d=this.weekdays(t,""),r.push(s),_.push(n),i.push(d),o.push(s),o.push(n),o.push(d);for(r.sort(e),_.sort(e),i.sort(e),o.sort(e),a=0;a<7;a++)_[a]=me(_[a]),i[a]=me(i[a]),o[a]=me(o[a]);this._weekdaysRegex=new RegExp("^("+o.join("|")+")","i"),this._weekdaysShortRegex=this._weekdaysRegex,this._weekdaysMinRegex=this._weekdaysRegex,this._weekdaysStrictRegex=new RegExp("^("+i.join("|")+")","i"),this._weekdaysShortStrictRegex=new RegExp("^("+_.join("|")+")","i"),this._weekdaysMinStrictRegex=new RegExp("^("+r.join("|")+")","i")}function Qe(){return this.hours()%12||12}function Xe(e,a){C(e,0,0,function(){return this.localeData().meridiem(this.hours(),this.minutes(),a)})}function ea(e,a){return a._meridiemParse}C("H",["HH",2],0,"hour"),C("h",["hh",2],0,Qe),C("k",["kk",2],0,function(){return this.hours()||24}),C("hmm",0,0,function(){return""+Qe.apply(this)+F(this.minutes(),2)}),C("hmmss",0,0,function(){return""+Qe.apply(this)+F(this.minutes(),2)+F(this.seconds(),2)}),C("Hmm",0,0,function(){return""+this.hours()+F(this.minutes(),2)}),C("Hmmss",0,0,function(){return""+this.hours()+F(this.minutes(),2)+F(this.seconds(),2)}),Xe("a",!0),Xe("A",!1),O("hour","h"),E("hour",13),ie("a",ea),ie("A",ea),ie("H",B),ie("h",B),ie("k",B),ie("HH",B,V),ie("hh",B,V),ie("kk",B,V),ie("hmm",q),ie("hmmss",Q),ie("Hmm",q),ie("Hmmss",Q),le(["H","HH"],Ye),le(["k","kk"],function(e,a,t){var s=g(e);a[Ye]=24===s?0:s}),le(["a","A"],function(e,a,t){t._isPm=t._locale.isPM(e),t._meridiem=e}),le(["h","hh"],function(e,a,t){a[Ye]=g(e),Y(t).bigHour=!0}),le("hmm",function(e,a,t){var s=e.length-2;a[Ye]=g(e.substr(0,s)),a[ye]=g(e.substr(s)),Y(t).bigHour=!0}),le("hmmss",function(e,a,t){var s=e.length-4,n=e.length-2;a[Ye]=g(e.substr(0,s)),a[ye]=g(e.substr(s,2)),a[fe]=g(e.substr(n)),Y(t).bigHour=!0}),le("Hmm",function(e,a,t){var s=e.length-2;a[Ye]=g(e.substr(0,s)),a[ye]=g(e.substr(s))}),le("Hmmss",function(e,a,t){var s=e.length-4,n=e.length-2;a[Ye]=g(e.substr(0,s)),a[ye]=g(e.substr(s,2)),a[fe]=g(e.substr(n))});var aa,ta=Se("Hours",!0),sa={calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},longDateFormat:{LTS:"h:mm:ss A",LT:"h:mm A",L:"MM/DD/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY h:mm A",LLLL:"dddd, MMMM D, YYYY h:mm A"},invalidDate:"Invalid date",ordinal:"%d",dayOfMonthOrdinalParse:/\d{1,2}/,relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},months:Oe,monthsShort:Pe,week:{dow:0,doy:6},weekdays:Ge,weekdaysMin:Ke,weekdaysShort:Ve,meridiemParse:/[ap]\.?m?\.?/i},na={},da={};function ra(e){return e?e.toLowerCase().replace("_","-"):e}function _a(e){var a=null;if(!na[e]&&"undefined"!=typeof module&&module&&module.exports)try{a=aa._abbr,require("./locale/"+e),ia(a)}catch(e){}return na[e]}function ia(e,a){var t;return e&&((t=o(a)?ma(e):oa(e,a))?aa=t:"undefined"!=typeof console&&console.warn&&console.warn("Locale "+e+" not found. Did you forget to load it?")),aa._abbr}function oa(e,a){if(null===a)return delete na[e],null;var t,s=sa;if(a.abbr=e,null!=na[e])S("defineLocaleOverride","use moment.updateLocale(localeName, config) to change an existing locale. moment.defineLocale(localeName, config) should only be used for creating a new locale See http://momentjs.com/guides/#/warnings/define-locale/ for more info."),s=na[e]._config;else if(null!=a.parentLocale)if(null!=na[a.parentLocale])s=na[a.parentLocale]._config;else{if(null==(t=_a(a.parentLocale)))return da[a.parentLocale]||(da[a.parentLocale]=[]),da[a.parentLocale].push({name:e,config:a}),null;s=t._config}return na[e]=new j(b(s,a)),da[e]&&da[e].forEach(function(e){oa(e.name,e.config)}),ia(e),na[e]}function ma(e){var a;if(e&&e._locale&&e._locale._abbr&&(e=e._locale._abbr),!e)return aa;if(!_(e)){if(a=_a(e))return a;e=[e]}return function(e){for(var a,t,s,n,d=0;d<e.length;){for(a=(n=ra(e[d]).split("-")).length,t=(t=ra(e[d+1]))?t.split("-"):null;0<a;){if(s=_a(n.slice(0,a).join("-")))return s;if(t&&t.length>=a&&r(n,t,!0)>=a-1)break;a--}d++}return aa}(e)}function ua(e){var a,t=e._a;return t&&-2===Y(e).overflow&&(a=t[Le]<0||11<t[Le]?Le:t[ce]<1||t[ce]>je(t[he],t[Le])?ce:t[Ye]<0||24<t[Ye]||24===t[Ye]&&(0!==t[ye]||0!==t[fe]||0!==t[ke])?Ye:t[ye]<0||59<t[ye]?ye:t[fe]<0||59<t[fe]?fe:t[ke]<0||999<t[ke]?ke:-1,Y(e)._overflowDayOfYear&&(a<he||ce<a)&&(a=ce),Y(e)._overflowWeeks&&-1===a&&(a=pe),Y(e)._overflowWeekday&&-1===a&&(a=De),Y(e).overflow=a),e}function la(e,a,t){return null!=e?e:null!=a?a:t}function Ma(e){var a,t,s,n,d,r=[];if(!e._d){var _,i;for(_=e,i=new Date(l.now()),s=_._useUTC?[i.getUTCFullYear(),i.getUTCMonth(),i.getUTCDate()]:[i.getFullYear(),i.getMonth(),i.getDate()],e._w&&null==e._a[ce]&&null==e._a[Le]&&function(e){var a,t,s,n,d,r,_,i;if(null!=(a=e._w).GG||null!=a.W||null!=a.E)d=1,r=4,t=la(a.GG,e._a[he],Ce(Ha(),1,4).year),s=la(a.W,1),((n=la(a.E,1))<1||7<n)&&(i=!0);else{d=e._locale._week.dow,r=e._locale._week.doy;var o=Ce(Ha(),d,r);t=la(a.gg,e._a[he],o.year),s=la(a.w,o.week),null!=a.d?((n=a.d)<0||6<n)&&(i=!0):null!=a.e?(n=a.e+d,(a.e<0||6<a.e)&&(i=!0)):n=d}s<1||s>Ie(t,d,r)?Y(e)._overflowWeeks=!0:null!=i?Y(e)._overflowWeekday=!0:(_=Re(t,s,n,d,r),e._a[he]=_.year,e._dayOfYear=_.dayOfYear)}(e),null!=e._dayOfYear&&(d=la(e._a[he],s[he]),(e._dayOfYear>Te(d)||0===e._dayOfYear)&&(Y(e)._overflowDayOfYear=!0),t=Je(d,0,e._dayOfYear),e._a[Le]=t.getUTCMonth(),e._a[ce]=t.getUTCDate()),a=0;a<3&&null==e._a[a];++a)e._a[a]=r[a]=s[a];for(;a<7;a++)e._a[a]=r[a]=null==e._a[a]?2===a?1:0:e._a[a];24===e._a[Ye]&&0===e._a[ye]&&0===e._a[fe]&&0===e._a[ke]&&(e._nextDay=!0,e._a[Ye]=0),e._d=(e._useUTC?Je:function(e,a,t,s,n,d,r){var _;return e<100&&0<=e?(_=new Date(e+400,a,t,s,n,d,r),isFinite(_.getFullYear())&&_.setFullYear(e)):_=new Date(e,a,t,s,n,d,r),_}).apply(null,r),n=e._useUTC?e._d.getUTCDay():e._d.getDay(),null!=e._tzm&&e._d.setUTCMinutes(e._d.getUTCMinutes()-e._tzm),e._nextDay&&(e._a[Ye]=24),e._w&&void 0!==e._w.d&&e._w.d!==n&&(Y(e).weekdayMismatch=!0)}}var ha=/^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/,La=/^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/,ca=/Z|[+-]\d\d(?::?\d\d)?/,Ya=[["YYYYYY-MM-DD",/[+-]\d{6}-\d\d-\d\d/],["YYYY-MM-DD",/\d{4}-\d\d-\d\d/],["GGGG-[W]WW-E",/\d{4}-W\d\d-\d/],["GGGG-[W]WW",/\d{4}-W\d\d/,!1],["YYYY-DDD",/\d{4}-\d{3}/],["YYYY-MM",/\d{4}-\d\d/,!1],["YYYYYYMMDD",/[+-]\d{10}/],["YYYYMMDD",/\d{8}/],["GGGG[W]WWE",/\d{4}W\d{3}/],["GGGG[W]WW",/\d{4}W\d{2}/,!1],["YYYYDDD",/\d{7}/]],ya=[["HH:mm:ss.SSSS",/\d\d:\d\d:\d\d\.\d+/],["HH:mm:ss,SSSS",/\d\d:\d\d:\d\d,\d+/],["HH:mm:ss",/\d\d:\d\d:\d\d/],["HH:mm",/\d\d:\d\d/],["HHmmss.SSSS",/\d\d\d\d\d\d\.\d+/],["HHmmss,SSSS",/\d\d\d\d\d\d,\d+/],["HHmmss",/\d\d\d\d\d\d/],["HHmm",/\d\d\d\d/],["HH",/\d\d/]],fa=/^\/?Date\((\-?\d+)/i;function ka(e){var a,t,s,n,d,r,_=e._i,i=ha.exec(_)||La.exec(_);if(i){for(Y(e).iso=!0,a=0,t=Ya.length;a<t;a++)if(Ya[a][1].exec(i[1])){n=Ya[a][0],s=!1!==Ya[a][2];break}if(null==n)return void(e._isValid=!1);if(i[3]){for(a=0,t=ya.length;a<t;a++)if(ya[a][1].exec(i[3])){d=(i[2]||" ")+ya[a][0];break}if(null==d)return void(e._isValid=!1)}if(!s&&null!=d)return void(e._isValid=!1);if(i[4]){if(!ca.exec(i[4]))return void(e._isValid=!1);r="Z"}e._f=n+(d||"")+(r||""),wa(e)}else e._isValid=!1}var pa=/^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/;function Da(e,a,t,s,n,d){var r=[function(e){var a=parseInt(e,10);{if(a<=49)return 2e3+a;if(a<=999)return 1900+a}return a}(e),Pe.indexOf(a),parseInt(t,10),parseInt(s,10),parseInt(n,10)];return d&&r.push(parseInt(d,10)),r}var Ta={UT:0,GMT:0,EDT:-240,EST:-300,CDT:-300,CST:-360,MDT:-360,MST:-420,PDT:-420,PST:-480};function ga(e){var a,t,s,n=pa.exec(e._i.replace(/\([^)]*\)|[\n\t]/g," ").replace(/(\s\s+)/g," ").replace(/^\s\s*/,"").replace(/\s\s*$/,""));if(n){var d=Da(n[4],n[3],n[2],n[5],n[6],n[7]);if(a=n[1],t=d,s=e,a&&Ve.indexOf(a)!==new Date(t[0],t[1],t[2]).getDay()&&(Y(s).weekdayMismatch=!0,!(s._isValid=!1)))return;e._a=d,e._tzm=function(e,a,t){if(e)return Ta[e];if(a)return 0;var s=parseInt(t,10),n=s%100;return(s-n)/100*60+n}(n[8],n[9],n[10]),e._d=Je.apply(null,e._a),e._d.setUTCMinutes(e._d.getUTCMinutes()-e._tzm),Y(e).rfc2822=!0}else e._isValid=!1}function wa(e){if(e._f!==l.ISO_8601)if(e._f!==l.RFC_2822){e._a=[],Y(e).empty=!0;var a,t,s,n,d,r,_,i,o=""+e._i,m=o.length,u=0;for(s=U(e._f,e._locale).match(z)||[],a=0;a<s.length;a++)n=s[a],(t=(o.match(oe(n,e))||[])[0])&&(0<(d=o.substr(0,o.indexOf(t))).length&&Y(e).unusedInput.push(d),o=o.slice(o.indexOf(t)+t.length),u+=t.length),R[n]?(t?Y(e).empty=!1:Y(e).unusedTokens.push(n),r=n,i=e,null!=(_=t)&&h(ue,r)&&ue[r](_,i._a,i,r)):e._strict&&!t&&Y(e).unusedTokens.push(n);Y(e).charsLeftOver=m-u,0<o.length&&Y(e).unusedInput.push(o),e._a[Ye]<=12&&!0===Y(e).bigHour&&0<e._a[Ye]&&(Y(e).bigHour=void 0),Y(e).parsedDateParts=e._a.slice(0),Y(e).meridiem=e._meridiem,e._a[Ye]=function(e,a,t){var s;if(null==t)return a;return null!=e.meridiemHour?e.meridiemHour(a,t):(null!=e.isPM&&((s=e.isPM(t))&&a<12&&(a+=12),s||12!==a||(a=0)),a)}(e._locale,e._a[Ye],e._meridiem),Ma(e),ua(e)}else ga(e);else ka(e)}function va(e){var a,t,s,n,d=e._i,r=e._f;return e._locale=e._locale||ma(e._l),null===d||void 0===r&&""===d?f({nullInput:!0}):("string"==typeof d&&(e._i=d=e._locale.preparse(d)),D(d)?new p(ua(d)):(u(d)?e._d=d:_(r)?function(e){var a,t,s,n,d;if(0===e._f.length)return Y(e).invalidFormat=!0,e._d=new Date(NaN);for(n=0;n<e._f.length;n++)d=0,a=k({},e),null!=e._useUTC&&(a._useUTC=e._useUTC),a._f=e._f[n],wa(a),y(a)&&(d+=Y(a).charsLeftOver,d+=10*Y(a).unusedTokens.length,Y(a).score=d,(null==s||d<s)&&(s=d,t=a));L(e,t||a)}(e):r?wa(e):o(t=(a=e)._i)?a._d=new Date(l.now()):u(t)?a._d=new Date(t.valueOf()):"string"==typeof t?(s=a,null===(n=fa.exec(s._i))?(ka(s),!1===s._isValid&&(delete s._isValid,ga(s),!1===s._isValid&&(delete s._isValid,l.createFromInputFallback(s)))):s._d=new Date(+n[1])):_(t)?(a._a=M(t.slice(0),function(e){return parseInt(e,10)}),Ma(a)):i(t)?function(e){if(!e._d){var a=W(e._i);e._a=M([a.year,a.month,a.day||a.date,a.hour,a.minute,a.second,a.millisecond],function(e){return e&&parseInt(e,10)}),Ma(e)}}(a):m(t)?a._d=new Date(t):l.createFromInputFallback(a),y(e)||(e._d=null),e))}function Sa(e,a,t,s,n){var d,r={};return!0!==t&&!1!==t||(s=t,t=void 0),(i(e)&&function(e){if(Object.getOwnPropertyNames)return 0===Object.getOwnPropertyNames(e).length;var a;for(a in e)if(e.hasOwnProperty(a))return!1;return!0}(e)||_(e)&&0===e.length)&&(e=void 0),r._isAMomentObject=!0,r._useUTC=r._isUTC=n,r._l=t,r._i=e,r._f=a,r._strict=s,(d=new p(ua(va(r))))._nextDay&&(d.add(1,"d"),d._nextDay=void 0),d}function Ha(e,a,t,s){return Sa(e,a,t,s,!1)}l.createFromInputFallback=t("value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged and will be removed in an upcoming major release. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.",function(e){e._d=new Date(e._i+(e._useUTC?" UTC":""))}),l.ISO_8601=function(){},l.RFC_2822=function(){};var ba=t("moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/",function(){var e=Ha.apply(null,arguments);return this.isValid()&&e.isValid()?e<this?this:e:f()}),ja=t("moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/",function(){var e=Ha.apply(null,arguments);return this.isValid()&&e.isValid()?this<e?this:e:f()});function xa(e,a){var t,s;if(1===a.length&&_(a[0])&&(a=a[0]),!a.length)return Ha();for(t=a[0],s=1;s<a.length;++s)a[s].isValid()&&!a[s][e](t)||(t=a[s]);return t}var Oa=["year","quarter","month","week","day","hour","minute","second","millisecond"];function Pa(e){var a=W(e),t=a.year||0,s=a.quarter||0,n=a.month||0,d=a.week||a.isoWeek||0,r=a.day||0,_=a.hour||0,i=a.minute||0,o=a.second||0,m=a.millisecond||0;this._isValid=function(e){for(var a in e)if(-1===we.call(Oa,a)||null!=e[a]&&isNaN(e[a]))return!1;for(var t=!1,s=0;s<Oa.length;++s)if(e[Oa[s]]){if(t)return!1;parseFloat(e[Oa[s]])!==g(e[Oa[s]])&&(t=!0)}return!0}(a),this._milliseconds=+m+1e3*o+6e4*i+1e3*_*60*60,this._days=+r+7*d,this._months=+n+3*s+12*t,this._data={},this._locale=ma(),this._bubble()}function Wa(e){return e instanceof Pa}function Aa(e){return e<0?-1*Math.round(-1*e):Math.round(e)}function Ea(e,t){C(e,0,0,function(){var e=this.utcOffset(),a="+";return e<0&&(e=-e,a="-"),a+F(~~(e/60),2)+t+F(~~e%60,2)})}Ea("Z",":"),Ea("ZZ",""),ie("Z",de),ie("ZZ",de),le(["Z","ZZ"],function(e,a,t){t._useUTC=!0,t._tzm=za(de,e)});var Fa=/([\+\-]|\d\d)/gi;function za(e,a){var t=(a||"").match(e);if(null===t)return null;var s=((t[t.length-1]||[])+"").match(Fa)||["-",0,0],n=60*s[1]+g(s[2]);return 0===n?0:"+"===s[0]?n:-n}function Ja(e,a){var t,s;return a._isUTC?(t=a.clone(),s=(D(e)||u(e)?e.valueOf():Ha(e).valueOf())-t.valueOf(),t._d.setTime(t._d.valueOf()+s),l.updateOffset(t,!1),t):Ha(e).local()}function Na(e){return 15*-Math.round(e._d.getTimezoneOffset()/15)}function Ra(){return!!this.isValid()&&(this._isUTC&&0===this._offset)}l.updateOffset=function(){};var Ca=/^(\-|\+)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/,Ia=/^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;function Ua(e,a){var t,s,n,d=e,r=null;return Wa(e)?d={ms:e._milliseconds,d:e._days,M:e._months}:m(e)?(d={},a?d[a]=e:d.milliseconds=e):(r=Ca.exec(e))?(t="-"===r[1]?-1:1,d={y:0,d:g(r[ce])*t,h:g(r[Ye])*t,m:g(r[ye])*t,s:g(r[fe])*t,ms:g(Aa(1e3*r[ke]))*t}):(r=Ia.exec(e))?(t="-"===r[1]?-1:1,d={y:Ga(r[2],t),M:Ga(r[3],t),w:Ga(r[4],t),d:Ga(r[5],t),h:Ga(r[6],t),m:Ga(r[7],t),s:Ga(r[8],t)}):null==d?d={}:"object"==typeof d&&("from"in d||"to"in d)&&(n=function(e,a){var t;if(!e.isValid()||!a.isValid())return{milliseconds:0,months:0};a=Ja(a,e),e.isBefore(a)?t=Va(e,a):((t=Va(a,e)).milliseconds=-t.milliseconds,t.months=-t.months);return t}(Ha(d.from),Ha(d.to)),(d={}).ms=n.milliseconds,d.M=n.months),s=new Pa(d),Wa(e)&&h(e,"_locale")&&(s._locale=e._locale),s}function Ga(e,a){var t=e&&parseFloat(e.replace(",","."));return(isNaN(t)?0:t)*a}function Va(e,a){var t={};return t.months=a.month()-e.month()+12*(a.year()-e.year()),e.clone().add(t.months,"M").isAfter(a)&&--t.months,t.milliseconds=+a-+e.clone().add(t.months,"M"),t}function Ka(s,n){return function(e,a){var t;return null===a||isNaN(+a)||(S(n,"moment()."+n+"(period, number) is deprecated. Please use moment()."+n+"(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info."),t=e,e=a,a=t),Za(this,Ua(e="string"==typeof e?+e:e,a),s),this}}function Za(e,a,t,s){var n=a._milliseconds,d=Aa(a._days),r=Aa(a._months);e.isValid()&&(s=null==s||s,r&&We(e,He(e,"Month")+r*t),d&&be(e,"Date",He(e,"Date")+d*t),n&&e._d.setTime(e._d.valueOf()+n*t),s&&l.updateOffset(e,d||r))}Ua.fn=Pa.prototype,Ua.invalid=function(){return Ua(NaN)};var $a=Ka(1,"add"),Ba=Ka(-1,"subtract");function qa(e,a){var t=12*(a.year()-e.year())+(a.month()-e.month()),s=e.clone().add(t,"months");return-(t+(a-s<0?(a-s)/(s-e.clone().add(t-1,"months")):(a-s)/(e.clone().add(t+1,"months")-s)))||0}function Qa(e){var a;return void 0===e?this._locale._abbr:(null!=(a=ma(e))&&(this._locale=a),this)}l.defaultFormat="YYYY-MM-DDTHH:mm:ssZ",l.defaultFormatUtc="YYYY-MM-DDTHH:mm:ss[Z]";var Xa=t("moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.",function(e){return void 0===e?this.localeData():this.locale(e)});function et(){return this._locale}var at=126227808e5;function tt(e,a){return(e%a+a)%a}function st(e,a,t){return e<100&&0<=e?new Date(e+400,a,t)-at:new Date(e,a,t).valueOf()}function nt(e,a,t){return e<100&&0<=e?Date.UTC(e+400,a,t)-at:Date.UTC(e,a,t)}function dt(e,a){C(0,[e,e.length],0,a)}function rt(e,a,t,s,n){var d;return null==e?Ce(this,s,n).year:((d=Ie(e,s,n))<a&&(a=d),function(e,a,t,s,n){var d=Re(e,a,t,s,n),r=Je(d.year,0,d.dayOfYear);return this.year(r.getUTCFullYear()),this.month(r.getUTCMonth()),this.date(r.getUTCDate()),this}.call(this,e,a,t,s,n))}C(0,["gg",2],0,function(){return this.weekYear()%100}),C(0,["GG",2],0,function(){return this.isoWeekYear()%100}),dt("gggg","weekYear"),dt("ggggg","weekYear"),dt("GGGG","isoWeekYear"),dt("GGGGG","isoWeekYear"),O("weekYear","gg"),O("isoWeekYear","GG"),E("weekYear",1),E("isoWeekYear",1),ie("G",se),ie("g",se),ie("GG",B,V),ie("gg",B,V),ie("GGGG",ee,Z),ie("gggg",ee,Z),ie("GGGGG",ae,$),ie("ggggg",ae,$),Me(["gggg","ggggg","GGGG","GGGGG"],function(e,a,t,s){a[s.substr(0,2)]=g(e)}),Me(["gg","GG"],function(e,a,t,s){a[s]=l.parseTwoDigitYear(e)}),C("Q",0,"Qo","quarter"),O("quarter","Q"),E("quarter",7),ie("Q",G),le("Q",function(e,a){a[Le]=3*(g(e)-1)}),C("D",["DD",2],"Do","date"),O("date","D"),E("date",9),ie("D",B),ie("DD",B,V),ie("Do",function(e,a){return e?a._dayOfMonthOrdinalParse||a._ordinalParse:a._dayOfMonthOrdinalParseLenient}),le(["D","DD"],ce),le("Do",function(e,a){a[ce]=g(e.match(B)[0])});var _t=Se("Date",!0);C("DDD",["DDDD",3],"DDDo","dayOfYear"),O("dayOfYear","DDD"),E("dayOfYear",4),ie("DDD",X),ie("DDDD",K),le(["DDD","DDDD"],function(e,a,t){t._dayOfYear=g(e)}),C("m",["mm",2],0,"minute"),O("minute","m"),E("minute",14),ie("m",B),ie("mm",B,V),le(["m","mm"],ye);var it=Se("Minutes",!1);C("s",["ss",2],0,"second"),O("second","s"),E("second",15),ie("s",B),ie("ss",B,V),le(["s","ss"],fe);var ot,mt=Se("Seconds",!1);for(C("S",0,0,function(){return~~(this.millisecond()/100)}),C(0,["SS",2],0,function(){return~~(this.millisecond()/10)}),C(0,["SSS",3],0,"millisecond"),C(0,["SSSS",4],0,function(){return 10*this.millisecond()}),C(0,["SSSSS",5],0,function(){return 100*this.millisecond()}),C(0,["SSSSSS",6],0,function(){return 1e3*this.millisecond()}),C(0,["SSSSSSS",7],0,function(){return 1e4*this.millisecond()}),C(0,["SSSSSSSS",8],0,function(){return 1e5*this.millisecond()}),C(0,["SSSSSSSSS",9],0,function(){return 1e6*this.millisecond()}),O("millisecond","ms"),E("millisecond",16),ie("S",X,G),ie("SS",X,V),ie("SSS",X,K),ot="SSSS";ot.length<=9;ot+="S")ie(ot,te);function ut(e,a){a[ke]=g(1e3*("0."+e))}for(ot="S";ot.length<=9;ot+="S")le(ot,ut);var lt=Se("Milliseconds",!1);C("z",0,0,"zoneAbbr"),C("zz",0,0,"zoneName");var Mt=p.prototype;function ht(e){return e}Mt.add=$a,Mt.calendar=function(e,a){var t=e||Ha(),s=Ja(t,this).startOf("day"),n=l.calendarFormat(this,s)||"sameElse",d=a&&(H(a[n])?a[n].call(this,t):a[n]);return this.format(d||this.localeData().calendar(n,this,Ha(t)))},Mt.clone=function(){return new p(this)},Mt.diff=function(e,a,t){var s,n,d;if(!this.isValid())return NaN;if(!(s=Ja(e,this)).isValid())return NaN;switch(n=6e4*(s.utcOffset()-this.utcOffset()),a=P(a)){case"year":d=qa(this,s)/12;break;case"month":d=qa(this,s);break;case"quarter":d=qa(this,s)/3;break;case"second":d=(this-s)/1e3;break;case"minute":d=(this-s)/6e4;break;case"hour":d=(this-s)/36e5;break;case"day":d=(this-s-n)/864e5;break;case"week":d=(this-s-n)/6048e5;break;default:d=this-s}return t?d:T(d)},Mt.endOf=function(e){var a;if(void 0===(e=P(e))||"millisecond"===e||!this.isValid())return this;var t=this._isUTC?nt:st;switch(e){case"year":a=t(this.year()+1,0,1)-1;break;case"quarter":a=t(this.year(),this.month()-this.month()%3+3,1)-1;break;case"month":a=t(this.year(),this.month()+1,1)-1;break;case"week":a=t(this.year(),this.month(),this.date()-this.weekday()+7)-1;break;case"isoWeek":a=t(this.year(),this.month(),this.date()-(this.isoWeekday()-1)+7)-1;break;case"day":case"date":a=t(this.year(),this.month(),this.date()+1)-1;break;case"hour":a=this._d.valueOf(),a+=36e5-tt(a+(this._isUTC?0:6e4*this.utcOffset()),36e5)-1;break;case"minute":a=this._d.valueOf(),a+=6e4-tt(a,6e4)-1;break;case"second":a=this._d.valueOf(),a+=1e3-tt(a,1e3)-1;break}return this._d.setTime(a),l.updateOffset(this,!0),this},Mt.format=function(e){e||(e=this.isUtc()?l.defaultFormatUtc:l.defaultFormat);var a=I(this,e);return this.localeData().postformat(a)},Mt.from=function(e,a){return this.isValid()&&(D(e)&&e.isValid()||Ha(e).isValid())?Ua({to:this,from:e}).locale(this.locale()).humanize(!a):this.localeData().invalidDate()},Mt.fromNow=function(e){return this.from(Ha(),e)},Mt.to=function(e,a){return this.isValid()&&(D(e)&&e.isValid()||Ha(e).isValid())?Ua({from:this,to:e}).locale(this.locale()).humanize(!a):this.localeData().invalidDate()},Mt.toNow=function(e){return this.to(Ha(),e)},Mt.get=function(e){return H(this[e=P(e)])?this[e]():this},Mt.invalidAt=function(){return Y(this).overflow},Mt.isAfter=function(e,a){var t=D(e)?e:Ha(e);return!(!this.isValid()||!t.isValid())&&("millisecond"===(a=P(a)||"millisecond")?this.valueOf()>t.valueOf():t.valueOf()<this.clone().startOf(a).valueOf())},Mt.isBefore=function(e,a){var t=D(e)?e:Ha(e);return!(!this.isValid()||!t.isValid())&&("millisecond"===(a=P(a)||"millisecond")?this.valueOf()<t.valueOf():this.clone().endOf(a).valueOf()<t.valueOf())},Mt.isBetween=function(e,a,t,s){var n=D(e)?e:Ha(e),d=D(a)?a:Ha(a);return!!(this.isValid()&&n.isValid()&&d.isValid())&&("("===(s=s||"()")[0]?this.isAfter(n,t):!this.isBefore(n,t))&&(")"===s[1]?this.isBefore(d,t):!this.isAfter(d,t))},Mt.isSame=function(e,a){var t,s=D(e)?e:Ha(e);return!(!this.isValid()||!s.isValid())&&("millisecond"===(a=P(a)||"millisecond")?this.valueOf()===s.valueOf():(t=s.valueOf(),this.clone().startOf(a).valueOf()<=t&&t<=this.clone().endOf(a).valueOf()))},Mt.isSameOrAfter=function(e,a){return this.isSame(e,a)||this.isAfter(e,a)},Mt.isSameOrBefore=function(e,a){return this.isSame(e,a)||this.isBefore(e,a)},Mt.isValid=function(){return y(this)},Mt.lang=Xa,Mt.locale=Qa,Mt.localeData=et,Mt.max=ja,Mt.min=ba,Mt.parsingFlags=function(){return L({},Y(this))},Mt.set=function(e,a){if("object"==typeof e)for(var t=function(e){var a=[];for(var t in e)a.push({unit:t,priority:A[t]});return a.sort(function(e,a){return e.priority-a.priority}),a}(e=W(e)),s=0;s<t.length;s++)this[t[s].unit](e[t[s].unit]);else if(H(this[e=P(e)]))return this[e](a);return this},Mt.startOf=function(e){var a;if(void 0===(e=P(e))||"millisecond"===e||!this.isValid())return this;var t=this._isUTC?nt:st;switch(e){case"year":a=t(this.year(),0,1);break;case"quarter":a=t(this.year(),this.month()-this.month()%3,1);break;case"month":a=t(this.year(),this.month(),1);break;case"week":a=t(this.year(),this.month(),this.date()-this.weekday());break;case"isoWeek":a=t(this.year(),this.month(),this.date()-(this.isoWeekday()-1));break;case"day":case"date":a=t(this.year(),this.month(),this.date());break;case"hour":a=this._d.valueOf(),a-=tt(a+(this._isUTC?0:6e4*this.utcOffset()),36e5);break;case"minute":a=this._d.valueOf(),a-=tt(a,6e4);break;case"second":a=this._d.valueOf(),a-=tt(a,1e3);break}return this._d.setTime(a),l.updateOffset(this,!0),this},Mt.subtract=Ba,Mt.toArray=function(){var e=this;return[e.year(),e.month(),e.date(),e.hour(),e.minute(),e.second(),e.millisecond()]},Mt.toObject=function(){var e=this;return{years:e.year(),months:e.month(),date:e.date(),hours:e.hours(),minutes:e.minutes(),seconds:e.seconds(),milliseconds:e.milliseconds()}},Mt.toDate=function(){return new Date(this.valueOf())},Mt.toISOString=function(e){if(!this.isValid())return null;var a=!0!==e,t=a?this.clone().utc():this;return t.year()<0||9999<t.year()?I(t,a?"YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]":"YYYYYY-MM-DD[T]HH:mm:ss.SSSZ"):H(Date.prototype.toISOString)?a?this.toDate().toISOString():new Date(this.valueOf()+60*this.utcOffset()*1e3).toISOString().replace("Z",I(t,"Z")):I(t,a?"YYYY-MM-DD[T]HH:mm:ss.SSS[Z]":"YYYY-MM-DD[T]HH:mm:ss.SSSZ")},Mt.inspect=function(){if(!this.isValid())return"moment.invalid(/* "+this._i+" */)";var e="moment",a="";this.isLocal()||(e=0===this.utcOffset()?"moment.utc":"moment.parseZone",a="Z");var t="["+e+'("]',s=0<=this.year()&&this.year()<=9999?"YYYY":"YYYYYY",n=a+'[")]';return this.format(t+s+"-MM-DD[T]HH:mm:ss.SSS"+n)},Mt.toJSON=function(){return this.isValid()?this.toISOString():null},Mt.toString=function(){return this.clone().locale("en").format("ddd MMM DD YYYY HH:mm:ss [GMT]ZZ")},Mt.unix=function(){return Math.floor(this.valueOf()/1e3)},Mt.valueOf=function(){return this._d.valueOf()-6e4*(this._offset||0)},Mt.creationData=function(){return{input:this._i,format:this._f,locale:this._locale,isUTC:this._isUTC,strict:this._strict}},Mt.year=ve,Mt.isLeapYear=function(){return ge(this.year())},Mt.weekYear=function(e){return rt.call(this,e,this.week(),this.weekday(),this.localeData()._week.dow,this.localeData()._week.doy)},Mt.isoWeekYear=function(e){return rt.call(this,e,this.isoWeek(),this.isoWeekday(),1,4)},Mt.quarter=Mt.quarters=function(e){return null==e?Math.ceil((this.month()+1)/3):this.month(3*(e-1)+this.month()%3)},Mt.month=Ae,Mt.daysInMonth=function(){return je(this.year(),this.month())},Mt.week=Mt.weeks=function(e){var a=this.localeData().week(this);return null==e?a:this.add(7*(e-a),"d")},Mt.isoWeek=Mt.isoWeeks=function(e){var a=Ce(this,1,4).week;return null==e?a:this.add(7*(e-a),"d")},Mt.weeksInYear=function(){var e=this.localeData()._week;return Ie(this.year(),e.dow,e.doy)},Mt.isoWeeksInYear=function(){return Ie(this.year(),1,4)},Mt.date=_t,Mt.day=Mt.days=function(e){if(!this.isValid())return null!=e?this:NaN;var a,t,s=this._isUTC?this._d.getUTCDay():this._d.getDay();return null!=e?(a=e,t=this.localeData(),e="string"!=typeof a?a:isNaN(a)?"number"==typeof(a=t.weekdaysParse(a))?a:null:parseInt(a,10),this.add(e-s,"d")):s},Mt.weekday=function(e){if(!this.isValid())return null!=e?this:NaN;var a=(this.day()+7-this.localeData()._week.dow)%7;return null==e?a:this.add(e-a,"d")},Mt.isoWeekday=function(e){if(!this.isValid())return null!=e?this:NaN;if(null==e)return this.day()||7;var a,t,s=(a=e,t=this.localeData(),"string"==typeof a?t.weekdaysParse(a)%7||7:isNaN(a)?null:a);return this.day(this.day()%7?s:s-7)},Mt.dayOfYear=function(e){var a=Math.round((this.clone().startOf("day")-this.clone().startOf("year"))/864e5)+1;return null==e?a:this.add(e-a,"d")},Mt.hour=Mt.hours=ta,Mt.minute=Mt.minutes=it,Mt.second=Mt.seconds=mt,Mt.millisecond=Mt.milliseconds=lt,Mt.utcOffset=function(e,a,t){var s,n=this._offset||0;if(!this.isValid())return null!=e?this:NaN;if(null==e)return this._isUTC?n:Na(this);if("string"==typeof e){if(null===(e=za(de,e)))return this}else Math.abs(e)<16&&!t&&(e*=60);return!this._isUTC&&a&&(s=Na(this)),this._offset=e,this._isUTC=!0,null!=s&&this.add(s,"m"),n!==e&&(!a||this._changeInProgress?Za(this,Ua(e-n,"m"),1,!1):this._changeInProgress||(this._changeInProgress=!0,l.updateOffset(this,!0),this._changeInProgress=null)),this},Mt.utc=function(e){return this.utcOffset(0,e)},Mt.local=function(e){return this._isUTC&&(this.utcOffset(0,e),this._isUTC=!1,e&&this.subtract(Na(this),"m")),this},Mt.parseZone=function(){if(null!=this._tzm)this.utcOffset(this._tzm,!1,!0);else if("string"==typeof this._i){var e=za(ne,this._i);null!=e?this.utcOffset(e):this.utcOffset(0,!0)}return this},Mt.hasAlignedHourOffset=function(e){return!!this.isValid()&&(e=e?Ha(e).utcOffset():0,(this.utcOffset()-e)%60==0)},Mt.isDST=function(){return this.utcOffset()>this.clone().month(0).utcOffset()||this.utcOffset()>this.clone().month(5).utcOffset()},Mt.isLocal=function(){return!!this.isValid()&&!this._isUTC},Mt.isUtcOffset=function(){return!!this.isValid()&&this._isUTC},Mt.isUtc=Ra,Mt.isUTC=Ra,Mt.zoneAbbr=function(){return this._isUTC?"UTC":""},Mt.zoneName=function(){return this._isUTC?"Coordinated Universal Time":""},Mt.dates=t("dates accessor is deprecated. Use date instead.",_t),Mt.months=t("months accessor is deprecated. Use month instead",Ae),Mt.years=t("years accessor is deprecated. Use year instead",ve),Mt.zone=t("moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/",function(e,a){return null!=e?("string"!=typeof e&&(e=-e),this.utcOffset(e,a),this):-this.utcOffset()}),Mt.isDSTShifted=t("isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information",function(){if(!o(this._isDSTShifted))return this._isDSTShifted;var e={};if(k(e,this),(e=va(e))._a){var a=e._isUTC?c(e._a):Ha(e._a);this._isDSTShifted=this.isValid()&&0<r(e._a,a.toArray())}else this._isDSTShifted=!1;return this._isDSTShifted});var Lt=j.prototype;function ct(e,a,t,s){var n=ma(),d=c().set(s,a);return n[t](d,e)}function Yt(e,a,t){if(m(e)&&(a=e,e=void 0),e=e||"",null!=a)return ct(e,a,t,"month");var s,n=[];for(s=0;s<12;s++)n[s]=ct(e,s,t,"month");return n}function yt(e,a,t,s){a=("boolean"==typeof e?m(a)&&(t=a,a=void 0):(a=e,e=!1,m(t=a)&&(t=a,a=void 0)),a||"");var n,d=ma(),r=e?d._week.dow:0;if(null!=t)return ct(a,(t+r)%7,s,"day");var _=[];for(n=0;n<7;n++)_[n]=ct(a,(n+r)%7,s,"day");return _}Lt.calendar=function(e,a,t){var s=this._calendar[e]||this._calendar.sameElse;return H(s)?s.call(a,t):s},Lt.longDateFormat=function(e){var a=this._longDateFormat[e],t=this._longDateFormat[e.toUpperCase()];return a||!t?a:(this._longDateFormat[e]=t.replace(/MMMM|MM|DD|dddd/g,function(e){return e.slice(1)}),this._longDateFormat[e])},Lt.invalidDate=function(){return this._invalidDate},Lt.ordinal=function(e){return this._ordinal.replace("%d",e)},Lt.preparse=ht,Lt.postformat=ht,Lt.relativeTime=function(e,a,t,s){var n=this._relativeTime[t];return H(n)?n(e,a,t,s):n.replace(/%d/i,e)},Lt.pastFuture=function(e,a){var t=this._relativeTime[0<e?"future":"past"];return H(t)?t(a):t.replace(/%s/i,a)},Lt.set=function(e){var a,t;for(t in e)H(a=e[t])?this[t]=a:this["_"+t]=a;this._config=e,this._dayOfMonthOrdinalParseLenient=new RegExp((this._dayOfMonthOrdinalParse.source||this._ordinalParse.source)+"|"+/\d{1,2}/.source)},Lt.months=function(e,a){return e?_(this._months)?this._months[e.month()]:this._months[(this._months.isFormat||xe).test(a)?"format":"standalone"][e.month()]:_(this._months)?this._months:this._months.standalone},Lt.monthsShort=function(e,a){return e?_(this._monthsShort)?this._monthsShort[e.month()]:this._monthsShort[xe.test(a)?"format":"standalone"][e.month()]:_(this._monthsShort)?this._monthsShort:this._monthsShort.standalone},Lt.monthsParse=function(e,a,t){var s,n,d;if(this._monthsParseExact)return function(e,a,t){var s,n,d,r=e.toLocaleLowerCase();if(!this._monthsParse)for(this._monthsParse=[],this._longMonthsParse=[],this._shortMonthsParse=[],s=0;s<12;++s)d=c([2e3,s]),this._shortMonthsParse[s]=this.monthsShort(d,"").toLocaleLowerCase(),this._longMonthsParse[s]=this.months(d,"").toLocaleLowerCase();return t?"MMM"===a?-1!==(n=we.call(this._shortMonthsParse,r))?n:null:-1!==(n=we.call(this._longMonthsParse,r))?n:null:"MMM"===a?-1!==(n=we.call(this._shortMonthsParse,r))?n:-1!==(n=we.call(this._longMonthsParse,r))?n:null:-1!==(n=we.call(this._longMonthsParse,r))?n:-1!==(n=we.call(this._shortMonthsParse,r))?n:null}.call(this,e,a,t);for(this._monthsParse||(this._monthsParse=[],this._longMonthsParse=[],this._shortMonthsParse=[]),s=0;s<12;s++){if(n=c([2e3,s]),t&&!this._longMonthsParse[s]&&(this._longMonthsParse[s]=new RegExp("^"+this.months(n,"").replace(".","")+"$","i"),this._shortMonthsParse[s]=new RegExp("^"+this.monthsShort(n,"").replace(".","")+"$","i")),t||this._monthsParse[s]||(d="^"+this.months(n,"")+"|^"+this.monthsShort(n,""),this._monthsParse[s]=new RegExp(d.replace(".",""),"i")),t&&"MMMM"===a&&this._longMonthsParse[s].test(e))return s;if(t&&"MMM"===a&&this._shortMonthsParse[s].test(e))return s;if(!t&&this._monthsParse[s].test(e))return s}},Lt.monthsRegex=function(e){return this._monthsParseExact?(h(this,"_monthsRegex")||ze.call(this),e?this._monthsStrictRegex:this._monthsRegex):(h(this,"_monthsRegex")||(this._monthsRegex=Fe),this._monthsStrictRegex&&e?this._monthsStrictRegex:this._monthsRegex)},Lt.monthsShortRegex=function(e){return this._monthsParseExact?(h(this,"_monthsRegex")||ze.call(this),e?this._monthsShortStrictRegex:this._monthsShortRegex):(h(this,"_monthsShortRegex")||(this._monthsShortRegex=Ee),this._monthsShortStrictRegex&&e?this._monthsShortStrictRegex:this._monthsShortRegex)},Lt.week=function(e){return Ce(e,this._week.dow,this._week.doy).week},Lt.firstDayOfYear=function(){return this._week.doy},Lt.firstDayOfWeek=function(){return this._week.dow},Lt.weekdays=function(e,a){var t=_(this._weekdays)?this._weekdays:this._weekdays[e&&!0!==e&&this._weekdays.isFormat.test(a)?"format":"standalone"];return!0===e?Ue(t,this._week.dow):e?t[e.day()]:t},Lt.weekdaysMin=function(e){return!0===e?Ue(this._weekdaysMin,this._week.dow):e?this._weekdaysMin[e.day()]:this._weekdaysMin},Lt.weekdaysShort=function(e){return!0===e?Ue(this._weekdaysShort,this._week.dow):e?this._weekdaysShort[e.day()]:this._weekdaysShort},Lt.weekdaysParse=function(e,a,t){var s,n,d;if(this._weekdaysParseExact)return function(e,a,t){var s,n,d,r=e.toLocaleLowerCase();if(!this._weekdaysParse)for(this._weekdaysParse=[],this._shortWeekdaysParse=[],this._minWeekdaysParse=[],s=0;s<7;++s)d=c([2e3,1]).day(s),this._minWeekdaysParse[s]=this.weekdaysMin(d,"").toLocaleLowerCase(),this._shortWeekdaysParse[s]=this.weekdaysShort(d,"").toLocaleLowerCase(),this._weekdaysParse[s]=this.weekdays(d,"").toLocaleLowerCase();return t?"dddd"===a?-1!==(n=we.call(this._weekdaysParse,r))?n:null:"ddd"===a?-1!==(n=we.call(this._shortWeekdaysParse,r))?n:null:-1!==(n=we.call(this._minWeekdaysParse,r))?n:null:"dddd"===a?-1!==(n=we.call(this._weekdaysParse,r))?n:-1!==(n=we.call(this._shortWeekdaysParse,r))?n:-1!==(n=we.call(this._minWeekdaysParse,r))?n:null:"ddd"===a?-1!==(n=we.call(this._shortWeekdaysParse,r))?n:-1!==(n=we.call(this._weekdaysParse,r))?n:-1!==(n=we.call(this._minWeekdaysParse,r))?n:null:-1!==(n=we.call(this._minWeekdaysParse,r))?n:-1!==(n=we.call(this._weekdaysParse,r))?n:-1!==(n=we.call(this._shortWeekdaysParse,r))?n:null}.call(this,e,a,t);for(this._weekdaysParse||(this._weekdaysParse=[],this._minWeekdaysParse=[],this._shortWeekdaysParse=[],this._fullWeekdaysParse=[]),s=0;s<7;s++){if(n=c([2e3,1]).day(s),t&&!this._fullWeekdaysParse[s]&&(this._fullWeekdaysParse[s]=new RegExp("^"+this.weekdays(n,"").replace(".","\\.?")+"$","i"),this._shortWeekdaysParse[s]=new RegExp("^"+this.weekdaysShort(n,"").replace(".","\\.?")+"$","i"),this._minWeekdaysParse[s]=new RegExp("^"+this.weekdaysMin(n,"").replace(".","\\.?")+"$","i")),this._weekdaysParse[s]||(d="^"+this.weekdays(n,"")+"|^"+this.weekdaysShort(n,"")+"|^"+this.weekdaysMin(n,""),this._weekdaysParse[s]=new RegExp(d.replace(".",""),"i")),t&&"dddd"===a&&this._fullWeekdaysParse[s].test(e))return s;if(t&&"ddd"===a&&this._shortWeekdaysParse[s].test(e))return s;if(t&&"dd"===a&&this._minWeekdaysParse[s].test(e))return s;if(!t&&this._weekdaysParse[s].test(e))return s}},Lt.weekdaysRegex=function(e){return this._weekdaysParseExact?(h(this,"_weekdaysRegex")||qe.call(this),e?this._weekdaysStrictRegex:this._weekdaysRegex):(h(this,"_weekdaysRegex")||(this._weekdaysRegex=Ze),this._weekdaysStrictRegex&&e?this._weekdaysStrictRegex:this._weekdaysRegex)},Lt.weekdaysShortRegex=function(e){return this._weekdaysParseExact?(h(this,"_weekdaysRegex")||qe.call(this),e?this._weekdaysShortStrictRegex:this._weekdaysShortRegex):(h(this,"_weekdaysShortRegex")||(this._weekdaysShortRegex=$e),this._weekdaysShortStrictRegex&&e?this._weekdaysShortStrictRegex:this._weekdaysShortRegex)},Lt.weekdaysMinRegex=function(e){return this._weekdaysParseExact?(h(this,"_weekdaysRegex")||qe.call(this),e?this._weekdaysMinStrictRegex:this._weekdaysMinRegex):(h(this,"_weekdaysMinRegex")||(this._weekdaysMinRegex=Be),this._weekdaysMinStrictRegex&&e?this._weekdaysMinStrictRegex:this._weekdaysMinRegex)},Lt.isPM=function(e){return"p"===(e+"").toLowerCase().charAt(0)},Lt.meridiem=function(e,a,t){return 11<e?t?"pm":"PM":t?"am":"AM"},ia("en",{dayOfMonthOrdinalParse:/\d{1,2}(th|st|nd|rd)/,ordinal:function(e){var a=e%10;return e+(1===g(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")}}),l.lang=t("moment.lang is deprecated. Use moment.locale instead.",ia),l.langData=t("moment.langData is deprecated. Use moment.localeData instead.",ma);var ft=Math.abs;function kt(e,a,t,s){var n=Ua(a,t);return e._milliseconds+=s*n._milliseconds,e._days+=s*n._days,e._months+=s*n._months,e._bubble()}function pt(e){return e<0?Math.floor(e):Math.ceil(e)}function Dt(e){return 4800*e/146097}function Tt(e){return 146097*e/4800}function gt(e){return function(){return this.as(e)}}var wt=gt("ms"),vt=gt("s"),St=gt("m"),Ht=gt("h"),bt=gt("d"),jt=gt("w"),xt=gt("M"),Ot=gt("Q"),Pt=gt("y");function Wt(e){return function(){return this.isValid()?this._data[e]:NaN}}var At=Wt("milliseconds"),Et=Wt("seconds"),Ft=Wt("minutes"),zt=Wt("hours"),Jt=Wt("days"),Nt=Wt("months"),Rt=Wt("years");var Ct=Math.round,It={ss:44,s:45,m:45,h:22,d:26,M:11};var Ut=Math.abs;function Gt(e){return(0<e)-(e<0)||+e}function Vt(){if(!this.isValid())return this.localeData().invalidDate();var e,a,t=Ut(this._milliseconds)/1e3,s=Ut(this._days),n=Ut(this._months);a=T((e=T(t/60))/60),t%=60,e%=60;var d=T(n/12),r=n%=12,_=s,i=a,o=e,m=t?t.toFixed(3).replace(/\.?0+$/,""):"",u=this.asSeconds();if(!u)return"P0D";var l=u<0?"-":"",M=Gt(this._months)!==Gt(u)?"-":"",h=Gt(this._days)!==Gt(u)?"-":"",L=Gt(this._milliseconds)!==Gt(u)?"-":"";return l+"P"+(d?M+d+"Y":"")+(r?M+r+"M":"")+(_?h+_+"D":"")+(i||o||m?"T":"")+(i?L+i+"H":"")+(o?L+o+"M":"")+(m?L+m+"S":"")}var Kt=Pa.prototype;Kt.isValid=function(){return this._isValid},Kt.abs=function(){var e=this._data;return this._milliseconds=ft(this._milliseconds),this._days=ft(this._days),this._months=ft(this._months),e.milliseconds=ft(e.milliseconds),e.seconds=ft(e.seconds),e.minutes=ft(e.minutes),e.hours=ft(e.hours),e.months=ft(e.months),e.years=ft(e.years),this},Kt.add=function(e,a){return kt(this,e,a,1)},Kt.subtract=function(e,a){return kt(this,e,a,-1)},Kt.as=function(e){if(!this.isValid())return NaN;var a,t,s=this._milliseconds;if("month"===(e=P(e))||"quarter"===e||"year"===e)switch(a=this._days+s/864e5,t=this._months+Dt(a),e){case"month":return t;case"quarter":return t/3;case"year":return t/12}else switch(a=this._days+Math.round(Tt(this._months)),e){case"week":return a/7+s/6048e5;case"day":return a+s/864e5;case"hour":return 24*a+s/36e5;case"minute":return 1440*a+s/6e4;case"second":return 86400*a+s/1e3;case"millisecond":return Math.floor(864e5*a)+s;default:throw new Error("Unknown unit "+e)}},Kt.asMilliseconds=wt,Kt.asSeconds=vt,Kt.asMinutes=St,Kt.asHours=Ht,Kt.asDays=bt,Kt.asWeeks=jt,Kt.asMonths=xt,Kt.asQuarters=Ot,Kt.asYears=Pt,Kt.valueOf=function(){return this.isValid()?this._milliseconds+864e5*this._days+this._months%12*2592e6+31536e6*g(this._months/12):NaN},Kt._bubble=function(){var e,a,t,s,n,d=this._milliseconds,r=this._days,_=this._months,i=this._data;return 0<=d&&0<=r&&0<=_||d<=0&&r<=0&&_<=0||(d+=864e5*pt(Tt(_)+r),_=r=0),i.milliseconds=d%1e3,e=T(d/1e3),i.seconds=e%60,a=T(e/60),i.minutes=a%60,t=T(a/60),i.hours=t%24,_+=n=T(Dt(r+=T(t/24))),r-=pt(Tt(n)),s=T(_/12),_%=12,i.days=r,i.months=_,i.years=s,this},Kt.clone=function(){return Ua(this)},Kt.get=function(e){return e=P(e),this.isValid()?this[e+"s"]():NaN},Kt.milliseconds=At,Kt.seconds=Et,Kt.minutes=Ft,Kt.hours=zt,Kt.days=Jt,Kt.weeks=function(){return T(this.days()/7)},Kt.months=Nt,Kt.years=Rt,Kt.humanize=function(e){if(!this.isValid())return this.localeData().invalidDate();var a,t,s,n,d,r,_,i,o,m,u,l=this.localeData(),M=(t=!e,s=l,n=Ua(a=this).abs(),d=Ct(n.as("s")),r=Ct(n.as("m")),_=Ct(n.as("h")),i=Ct(n.as("d")),o=Ct(n.as("M")),m=Ct(n.as("y")),(u=d<=It.ss&&["s",d]||d<It.s&&["ss",d]||r<=1&&["m"]||r<It.m&&["mm",r]||_<=1&&["h"]||_<It.h&&["hh",_]||i<=1&&["d"]||i<It.d&&["dd",i]||o<=1&&["M"]||o<It.M&&["MM",o]||m<=1&&["y"]||["yy",m])[2]=t,u[3]=0<+a,u[4]=s,function(e,a,t,s,n){return n.relativeTime(a||1,!!t,e,s)}.apply(null,u));return e&&(M=l.pastFuture(+this,M)),l.postformat(M)},Kt.toISOString=Vt,Kt.toString=Vt,Kt.toJSON=Vt,Kt.locale=Qa,Kt.localeData=et,Kt.toIsoString=t("toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)",Vt),Kt.lang=Xa,C("X",0,0,"unix"),C("x",0,0,"valueOf"),ie("x",se),ie("X",/[+-]?\d+(\.\d{1,3})?/),le("X",function(e,a,t){t._d=new Date(1e3*parseFloat(e,10))}),le("x",function(e,a,t){t._d=new Date(g(e))}),l.version="2.24.0",e=Ha,l.fn=Mt,l.min=function(){return xa("isBefore",[].slice.call(arguments,0))},l.max=function(){return xa("isAfter",[].slice.call(arguments,0))},l.now=function(){return Date.now?Date.now():+new Date},l.utc=c,l.unix=function(e){return Ha(1e3*e)},l.months=function(e,a){return Yt(e,a,"months")},l.isDate=u,l.locale=ia,l.invalid=f,l.duration=Ua,l.isMoment=D,l.weekdays=function(e,a,t){return yt(e,a,t,"weekdays")},l.parseZone=function(){return Ha.apply(null,arguments).parseZone()},l.localeData=ma,l.isDuration=Wa,l.monthsShort=function(e,a){return Yt(e,a,"monthsShort")},l.weekdaysMin=function(e,a,t){return yt(e,a,t,"weekdaysMin")},l.defineLocale=oa,l.updateLocale=function(e,a){if(null!=a){var t,s,n=sa;null!=(s=_a(e))&&(n=s._config),(t=new j(a=b(n,a))).parentLocale=na[e],na[e]=t,ia(e)}else null!=na[e]&&(null!=na[e].parentLocale?na[e]=na[e].parentLocale:null!=na[e]&&delete na[e]);return na[e]},l.locales=function(){return s(na)},l.weekdaysShort=function(e,a,t){return yt(e,a,t,"weekdaysShort")},l.normalizeUnits=P,l.relativeTimeRounding=function(e){return void 0===e?Ct:"function"==typeof e&&(Ct=e,!0)},l.relativeTimeThreshold=function(e,a){return void 0!==It[e]&&(void 0===a?It[e]:(It[e]=a,"s"===e&&(It.ss=a-1),!0))},l.calendarFormat=function(e,a){var t=e.diff(a,"days",!0);return t<-6?"sameElse":t<-1?"lastWeek":t<0?"lastDay":t<1?"sameDay":t<2?"nextDay":t<7?"nextWeek":"sameElse"},l.prototype=Mt,l.HTML5_FMT={DATETIME_LOCAL:"YYYY-MM-DDTHH:mm",DATETIME_LOCAL_SECONDS:"YYYY-MM-DDTHH:mm:ss",DATETIME_LOCAL_MS:"YYYY-MM-DDTHH:mm:ss.SSS",DATE:"YYYY-MM-DD",TIME:"HH:mm",TIME_SECONDS:"HH:mm:ss",TIME_MS:"HH:mm:ss.SSS",WEEK:"GGGG-[W]WW",MONTH:"YYYY-MM"},l.defineLocale("af",{months:"Januarie_Februarie_Maart_April_Mei_Junie_Julie_Augustus_September_Oktober_November_Desember".split("_"),monthsShort:"Jan_Feb_Mrt_Apr_Mei_Jun_Jul_Aug_Sep_Okt_Nov_Des".split("_"),weekdays:"Sondag_Maandag_Dinsdag_Woensdag_Donderdag_Vrydag_Saterdag".split("_"),weekdaysShort:"Son_Maa_Din_Woe_Don_Vry_Sat".split("_"),weekdaysMin:"So_Ma_Di_Wo_Do_Vr_Sa".split("_"),meridiemParse:/vm|nm/i,isPM:function(e){return/^nm$/i.test(e)},meridiem:function(e,a,t){return e<12?t?"vm":"VM":t?"nm":"NM"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Vandag om] LT",nextDay:"[M\xf4re om] LT",nextWeek:"dddd [om] LT",lastDay:"[Gister om] LT",lastWeek:"[Laas] dddd [om] LT",sameElse:"L"},relativeTime:{future:"oor %s",past:"%s gelede",s:"'n paar sekondes",ss:"%d sekondes",m:"'n minuut",mm:"%d minute",h:"'n uur",hh:"%d ure",d:"'n dag",dd:"%d dae",M:"'n maand",MM:"%d maande",y:"'n jaar",yy:"%d jaar"},dayOfMonthOrdinalParse:/\d{1,2}(ste|de)/,ordinal:function(e){return e+(1===e||8===e||20<=e?"ste":"de")},week:{dow:1,doy:4}}),l.defineLocale("ar-dz",{months:"\u062c\u0627\u0646\u0641\u064a_\u0641\u064a\u0641\u0631\u064a_\u0645\u0627\u0631\u0633_\u0623\u0641\u0631\u064a\u0644_\u0645\u0627\u064a_\u062c\u0648\u0627\u0646_\u062c\u0648\u064a\u0644\u064a\u0629_\u0623\u0648\u062a_\u0633\u0628\u062a\u0645\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0641\u0645\u0628\u0631_\u062f\u064a\u0633\u0645\u0628\u0631".split("_"),monthsShort:"\u062c\u0627\u0646\u0641\u064a_\u0641\u064a\u0641\u0631\u064a_\u0645\u0627\u0631\u0633_\u0623\u0641\u0631\u064a\u0644_\u0645\u0627\u064a_\u062c\u0648\u0627\u0646_\u062c\u0648\u064a\u0644\u064a\u0629_\u0623\u0648\u062a_\u0633\u0628\u062a\u0645\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0641\u0645\u0628\u0631_\u062f\u064a\u0633\u0645\u0628\u0631".split("_"),weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062b\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0627\u062d\u062f_\u0627\u062b\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u0623\u062d_\u0625\u062b_\u062b\u0644\u0627_\u0623\u0631_\u062e\u0645_\u062c\u0645_\u0633\u0628".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u0627 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0641\u064a %s",past:"\u0645\u0646\u0630 %s",s:"\u062b\u0648\u0627\u0646",ss:"%d \u062b\u0627\u0646\u064a\u0629",m:"\u062f\u0642\u064a\u0642\u0629",mm:"%d \u062f\u0642\u0627\u0626\u0642",h:"\u0633\u0627\u0639\u0629",hh:"%d \u0633\u0627\u0639\u0627\u062a",d:"\u064a\u0648\u0645",dd:"%d \u0623\u064a\u0627\u0645",M:"\u0634\u0647\u0631",MM:"%d \u0623\u0634\u0647\u0631",y:"\u0633\u0646\u0629",yy:"%d \u0633\u0646\u0648\u0627\u062a"},week:{dow:0,doy:4}}),l.defineLocale("ar-kw",{months:"\u064a\u0646\u0627\u064a\u0631_\u0641\u0628\u0631\u0627\u064a\u0631_\u0645\u0627\u0631\u0633_\u0623\u0628\u0631\u064a\u0644_\u0645\u0627\u064a_\u064a\u0648\u0646\u064a\u0648_\u064a\u0648\u0644\u064a\u0648\u0632_\u063a\u0634\u062a_\u0634\u062a\u0646\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0646\u0628\u0631_\u062f\u062c\u0646\u0628\u0631".split("_"),monthsShort:"\u064a\u0646\u0627\u064a\u0631_\u0641\u0628\u0631\u0627\u064a\u0631_\u0645\u0627\u0631\u0633_\u0623\u0628\u0631\u064a\u0644_\u0645\u0627\u064a_\u064a\u0648\u0646\u064a\u0648_\u064a\u0648\u0644\u064a\u0648\u0632_\u063a\u0634\u062a_\u0634\u062a\u0646\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0646\u0628\u0631_\u062f\u062c\u0646\u0628\u0631".split("_"),weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062a\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0627\u062d\u062f_\u0627\u062a\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u062d_\u0646_\u062b_\u0631_\u062e_\u062c_\u0633".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u0627 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0641\u064a %s",past:"\u0645\u0646\u0630 %s",s:"\u062b\u0648\u0627\u0646",ss:"%d \u062b\u0627\u0646\u064a\u0629",m:"\u062f\u0642\u064a\u0642\u0629",mm:"%d \u062f\u0642\u0627\u0626\u0642",h:"\u0633\u0627\u0639\u0629",hh:"%d \u0633\u0627\u0639\u0627\u062a",d:"\u064a\u0648\u0645",dd:"%d \u0623\u064a\u0627\u0645",M:"\u0634\u0647\u0631",MM:"%d \u0623\u0634\u0647\u0631",y:"\u0633\u0646\u0629",yy:"%d \u0633\u0646\u0648\u0627\u062a"},week:{dow:0,doy:12}});var Zt={1:"1",2:"2",3:"3",4:"4",5:"5",6:"6",7:"7",8:"8",9:"9",0:"0"},$t=function(e){return 0===e?0:1===e?1:2===e?2:3<=e%100&&e%100<=10?3:11<=e%100?4:5},Bt={s:["\u0623\u0642\u0644 \u0645\u0646 \u062b\u0627\u0646\u064a\u0629","\u062b\u0627\u0646\u064a\u0629 \u0648\u0627\u062d\u062f\u0629",["\u062b\u0627\u0646\u064a\u062a\u0627\u0646","\u062b\u0627\u0646\u064a\u062a\u064a\u0646"],"%d \u062b\u0648\u0627\u0646","%d \u062b\u0627\u0646\u064a\u0629","%d \u062b\u0627\u0646\u064a\u0629"],m:["\u0623\u0642\u0644 \u0645\u0646 \u062f\u0642\u064a\u0642\u0629","\u062f\u0642\u064a\u0642\u0629 \u0648\u0627\u062d\u062f\u0629",["\u062f\u0642\u064a\u0642\u062a\u0627\u0646","\u062f\u0642\u064a\u0642\u062a\u064a\u0646"],"%d \u062f\u0642\u0627\u0626\u0642","%d \u062f\u0642\u064a\u0642\u0629","%d \u062f\u0642\u064a\u0642\u0629"],h:["\u0623\u0642\u0644 \u0645\u0646 \u0633\u0627\u0639\u0629","\u0633\u0627\u0639\u0629 \u0648\u0627\u062d\u062f\u0629",["\u0633\u0627\u0639\u062a\u0627\u0646","\u0633\u0627\u0639\u062a\u064a\u0646"],"%d \u0633\u0627\u0639\u0627\u062a","%d \u0633\u0627\u0639\u0629","%d \u0633\u0627\u0639\u0629"],d:["\u0623\u0642\u0644 \u0645\u0646 \u064a\u0648\u0645","\u064a\u0648\u0645 \u0648\u0627\u062d\u062f",["\u064a\u0648\u0645\u0627\u0646","\u064a\u0648\u0645\u064a\u0646"],"%d \u0623\u064a\u0627\u0645","%d \u064a\u0648\u0645\u064b\u0627","%d \u064a\u0648\u0645"],M:["\u0623\u0642\u0644 \u0645\u0646 \u0634\u0647\u0631","\u0634\u0647\u0631 \u0648\u0627\u062d\u062f",["\u0634\u0647\u0631\u0627\u0646","\u0634\u0647\u0631\u064a\u0646"],"%d \u0623\u0634\u0647\u0631","%d \u0634\u0647\u0631\u0627","%d \u0634\u0647\u0631"],y:["\u0623\u0642\u0644 \u0645\u0646 \u0639\u0627\u0645","\u0639\u0627\u0645 \u0648\u0627\u062d\u062f",["\u0639\u0627\u0645\u0627\u0646","\u0639\u0627\u0645\u064a\u0646"],"%d \u0623\u0639\u0648\u0627\u0645","%d \u0639\u0627\u0645\u064b\u0627","%d \u0639\u0627\u0645"]},qt=function(r){return function(e,a,t,s){var n=$t(e),d=Bt[r][$t(e)];return 2===n&&(d=d[a?0:1]),d.replace(/%d/i,e)}},Qt=["\u064a\u0646\u0627\u064a\u0631","\u0641\u0628\u0631\u0627\u064a\u0631","\u0645\u0627\u0631\u0633","\u0623\u0628\u0631\u064a\u0644","\u0645\u0627\u064a\u0648","\u064a\u0648\u0646\u064a\u0648","\u064a\u0648\u0644\u064a\u0648","\u0623\u063a\u0633\u0637\u0633","\u0633\u0628\u062a\u0645\u0628\u0631","\u0623\u0643\u062a\u0648\u0628\u0631","\u0646\u0648\u0641\u0645\u0628\u0631","\u062f\u064a\u0633\u0645\u0628\u0631"];l.defineLocale("ar-ly",{months:Qt,monthsShort:Qt,weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062b\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0623\u062d\u062f_\u0625\u062b\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0623\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u062d_\u0646_\u062b_\u0631_\u062e_\u062c_\u0633".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"D/\u200fM/\u200fYYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/\u0635|\u0645/,isPM:function(e){return"\u0645"===e},meridiem:function(e,a,t){return e<12?"\u0635":"\u0645"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u064b\u0627 \u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0628\u0639\u062f %s",past:"\u0645\u0646\u0630 %s",s:qt("s"),ss:qt("s"),m:qt("m"),mm:qt("m"),h:qt("h"),hh:qt("h"),d:qt("d"),dd:qt("d"),M:qt("M"),MM:qt("M"),y:qt("y"),yy:qt("y")},preparse:function(e){return e.replace(/\u060c/g,",")},postformat:function(e){return e.replace(/\d/g,function(e){return Zt[e]}).replace(/,/g,"\u060c")},week:{dow:6,doy:12}}),l.defineLocale("ar-ma",{months:"\u064a\u0646\u0627\u064a\u0631_\u0641\u0628\u0631\u0627\u064a\u0631_\u0645\u0627\u0631\u0633_\u0623\u0628\u0631\u064a\u0644_\u0645\u0627\u064a_\u064a\u0648\u0646\u064a\u0648_\u064a\u0648\u0644\u064a\u0648\u0632_\u063a\u0634\u062a_\u0634\u062a\u0646\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0646\u0628\u0631_\u062f\u062c\u0646\u0628\u0631".split("_"),monthsShort:"\u064a\u0646\u0627\u064a\u0631_\u0641\u0628\u0631\u0627\u064a\u0631_\u0645\u0627\u0631\u0633_\u0623\u0628\u0631\u064a\u0644_\u0645\u0627\u064a_\u064a\u0648\u0646\u064a\u0648_\u064a\u0648\u0644\u064a\u0648\u0632_\u063a\u0634\u062a_\u0634\u062a\u0646\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0646\u0628\u0631_\u062f\u062c\u0646\u0628\u0631".split("_"),weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062a\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0627\u062d\u062f_\u0627\u062a\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u062d_\u0646_\u062b_\u0631_\u062e_\u062c_\u0633".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u0627 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0641\u064a %s",past:"\u0645\u0646\u0630 %s",s:"\u062b\u0648\u0627\u0646",ss:"%d \u062b\u0627\u0646\u064a\u0629",m:"\u062f\u0642\u064a\u0642\u0629",mm:"%d \u062f\u0642\u0627\u0626\u0642",h:"\u0633\u0627\u0639\u0629",hh:"%d \u0633\u0627\u0639\u0627\u062a",d:"\u064a\u0648\u0645",dd:"%d \u0623\u064a\u0627\u0645",M:"\u0634\u0647\u0631",MM:"%d \u0623\u0634\u0647\u0631",y:"\u0633\u0646\u0629",yy:"%d \u0633\u0646\u0648\u0627\u062a"},week:{dow:6,doy:12}});var Xt={1:"\u0661",2:"\u0662",3:"\u0663",4:"\u0664",5:"\u0665",6:"\u0666",7:"\u0667",8:"\u0668",9:"\u0669",0:"\u0660"},es={"\u0661":"1","\u0662":"2","\u0663":"3","\u0664":"4","\u0665":"5","\u0666":"6","\u0667":"7","\u0668":"8","\u0669":"9","\u0660":"0"};l.defineLocale("ar-sa",{months:"\u064a\u0646\u0627\u064a\u0631_\u0641\u0628\u0631\u0627\u064a\u0631_\u0645\u0627\u0631\u0633_\u0623\u0628\u0631\u064a\u0644_\u0645\u0627\u064a\u0648_\u064a\u0648\u0646\u064a\u0648_\u064a\u0648\u0644\u064a\u0648_\u0623\u063a\u0633\u0637\u0633_\u0633\u0628\u062a\u0645\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0641\u0645\u0628\u0631_\u062f\u064a\u0633\u0645\u0628\u0631".split("_"),monthsShort:"\u064a\u0646\u0627\u064a\u0631_\u0641\u0628\u0631\u0627\u064a\u0631_\u0645\u0627\u0631\u0633_\u0623\u0628\u0631\u064a\u0644_\u0645\u0627\u064a\u0648_\u064a\u0648\u0646\u064a\u0648_\u064a\u0648\u0644\u064a\u0648_\u0623\u063a\u0633\u0637\u0633_\u0633\u0628\u062a\u0645\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0641\u0645\u0628\u0631_\u062f\u064a\u0633\u0645\u0628\u0631".split("_"),weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062b\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0623\u062d\u062f_\u0625\u062b\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0623\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u062d_\u0646_\u062b_\u0631_\u062e_\u062c_\u0633".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/\u0635|\u0645/,isPM:function(e){return"\u0645"===e},meridiem:function(e,a,t){return e<12?"\u0635":"\u0645"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u0627 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0641\u064a %s",past:"\u0645\u0646\u0630 %s",s:"\u062b\u0648\u0627\u0646",ss:"%d \u062b\u0627\u0646\u064a\u0629",m:"\u062f\u0642\u064a\u0642\u0629",mm:"%d \u062f\u0642\u0627\u0626\u0642",h:"\u0633\u0627\u0639\u0629",hh:"%d \u0633\u0627\u0639\u0627\u062a",d:"\u064a\u0648\u0645",dd:"%d \u0623\u064a\u0627\u0645",M:"\u0634\u0647\u0631",MM:"%d \u0623\u0634\u0647\u0631",y:"\u0633\u0646\u0629",yy:"%d \u0633\u0646\u0648\u0627\u062a"},preparse:function(e){return e.replace(/[\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669\u0660]/g,function(e){return es[e]}).replace(/\u060c/g,",")},postformat:function(e){return e.replace(/\d/g,function(e){return Xt[e]}).replace(/,/g,"\u060c")},week:{dow:0,doy:6}}),l.defineLocale("ar-tn",{months:"\u062c\u0627\u0646\u0641\u064a_\u0641\u064a\u0641\u0631\u064a_\u0645\u0627\u0631\u0633_\u0623\u0641\u0631\u064a\u0644_\u0645\u0627\u064a_\u062c\u0648\u0627\u0646_\u062c\u0648\u064a\u0644\u064a\u0629_\u0623\u0648\u062a_\u0633\u0628\u062a\u0645\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0641\u0645\u0628\u0631_\u062f\u064a\u0633\u0645\u0628\u0631".split("_"),monthsShort:"\u062c\u0627\u0646\u0641\u064a_\u0641\u064a\u0641\u0631\u064a_\u0645\u0627\u0631\u0633_\u0623\u0641\u0631\u064a\u0644_\u0645\u0627\u064a_\u062c\u0648\u0627\u0646_\u062c\u0648\u064a\u0644\u064a\u0629_\u0623\u0648\u062a_\u0633\u0628\u062a\u0645\u0628\u0631_\u0623\u0643\u062a\u0648\u0628\u0631_\u0646\u0648\u0641\u0645\u0628\u0631_\u062f\u064a\u0633\u0645\u0628\u0631".split("_"),weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062b\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0623\u062d\u062f_\u0625\u062b\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0623\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u062d_\u0646_\u062b_\u0631_\u062e_\u062c_\u0633".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u0627 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0644\u0649 \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0641\u064a %s",past:"\u0645\u0646\u0630 %s",s:"\u062b\u0648\u0627\u0646",ss:"%d \u062b\u0627\u0646\u064a\u0629",m:"\u062f\u0642\u064a\u0642\u0629",mm:"%d \u062f\u0642\u0627\u0626\u0642",h:"\u0633\u0627\u0639\u0629",hh:"%d \u0633\u0627\u0639\u0627\u062a",d:"\u064a\u0648\u0645",dd:"%d \u0623\u064a\u0627\u0645",M:"\u0634\u0647\u0631",MM:"%d \u0623\u0634\u0647\u0631",y:"\u0633\u0646\u0629",yy:"%d \u0633\u0646\u0648\u0627\u062a"},week:{dow:1,doy:4}});var as={1:"\u0661",2:"\u0662",3:"\u0663",4:"\u0664",5:"\u0665",6:"\u0666",7:"\u0667",8:"\u0668",9:"\u0669",0:"\u0660"},ts={"\u0661":"1","\u0662":"2","\u0663":"3","\u0664":"4","\u0665":"5","\u0666":"6","\u0667":"7","\u0668":"8","\u0669":"9","\u0660":"0"},ss=function(e){return 0===e?0:1===e?1:2===e?2:3<=e%100&&e%100<=10?3:11<=e%100?4:5},ns={s:["\u0623\u0642\u0644 \u0645\u0646 \u062b\u0627\u0646\u064a\u0629","\u062b\u0627\u0646\u064a\u0629 \u0648\u0627\u062d\u062f\u0629",["\u062b\u0627\u0646\u064a\u062a\u0627\u0646","\u062b\u0627\u0646\u064a\u062a\u064a\u0646"],"%d \u062b\u0648\u0627\u0646","%d \u062b\u0627\u0646\u064a\u0629","%d \u062b\u0627\u0646\u064a\u0629"],m:["\u0623\u0642\u0644 \u0645\u0646 \u062f\u0642\u064a\u0642\u0629","\u062f\u0642\u064a\u0642\u0629 \u0648\u0627\u062d\u062f\u0629",["\u062f\u0642\u064a\u0642\u062a\u0627\u0646","\u062f\u0642\u064a\u0642\u062a\u064a\u0646"],"%d \u062f\u0642\u0627\u0626\u0642","%d \u062f\u0642\u064a\u0642\u0629","%d \u062f\u0642\u064a\u0642\u0629"],h:["\u0623\u0642\u0644 \u0645\u0646 \u0633\u0627\u0639\u0629","\u0633\u0627\u0639\u0629 \u0648\u0627\u062d\u062f\u0629",["\u0633\u0627\u0639\u062a\u0627\u0646","\u0633\u0627\u0639\u062a\u064a\u0646"],"%d \u0633\u0627\u0639\u0627\u062a","%d \u0633\u0627\u0639\u0629","%d \u0633\u0627\u0639\u0629"],d:["\u0623\u0642\u0644 \u0645\u0646 \u064a\u0648\u0645","\u064a\u0648\u0645 \u0648\u0627\u062d\u062f",["\u064a\u0648\u0645\u0627\u0646","\u064a\u0648\u0645\u064a\u0646"],"%d \u0623\u064a\u0627\u0645","%d \u064a\u0648\u0645\u064b\u0627","%d \u064a\u0648\u0645"],M:["\u0623\u0642\u0644 \u0645\u0646 \u0634\u0647\u0631","\u0634\u0647\u0631 \u0648\u0627\u062d\u062f",["\u0634\u0647\u0631\u0627\u0646","\u0634\u0647\u0631\u064a\u0646"],"%d \u0623\u0634\u0647\u0631","%d \u0634\u0647\u0631\u0627","%d \u0634\u0647\u0631"],y:["\u0623\u0642\u0644 \u0645\u0646 \u0639\u0627\u0645","\u0639\u0627\u0645 \u0648\u0627\u062d\u062f",["\u0639\u0627\u0645\u0627\u0646","\u0639\u0627\u0645\u064a\u0646"],"%d \u0623\u0639\u0648\u0627\u0645","%d \u0639\u0627\u0645\u064b\u0627","%d \u0639\u0627\u0645"]},ds=function(r){return function(e,a,t,s){var n=ss(e),d=ns[r][ss(e)];return 2===n&&(d=d[a?0:1]),d.replace(/%d/i,e)}},rs=["\u064a\u0646\u0627\u064a\u0631","\u0641\u0628\u0631\u0627\u064a\u0631","\u0645\u0627\u0631\u0633","\u0623\u0628\u0631\u064a\u0644","\u0645\u0627\u064a\u0648","\u064a\u0648\u0646\u064a\u0648","\u064a\u0648\u0644\u064a\u0648","\u0623\u063a\u0633\u0637\u0633","\u0633\u0628\u062a\u0645\u0628\u0631","\u0623\u0643\u062a\u0648\u0628\u0631","\u0646\u0648\u0641\u0645\u0628\u0631","\u062f\u064a\u0633\u0645\u0628\u0631"];l.defineLocale("ar",{months:rs,monthsShort:rs,weekdays:"\u0627\u0644\u0623\u062d\u062f_\u0627\u0644\u0625\u062b\u0646\u064a\u0646_\u0627\u0644\u062b\u0644\u0627\u062b\u0627\u0621_\u0627\u0644\u0623\u0631\u0628\u0639\u0627\u0621_\u0627\u0644\u062e\u0645\u064a\u0633_\u0627\u0644\u062c\u0645\u0639\u0629_\u0627\u0644\u0633\u0628\u062a".split("_"),weekdaysShort:"\u0623\u062d\u062f_\u0625\u062b\u0646\u064a\u0646_\u062b\u0644\u0627\u062b\u0627\u0621_\u0623\u0631\u0628\u0639\u0627\u0621_\u062e\u0645\u064a\u0633_\u062c\u0645\u0639\u0629_\u0633\u0628\u062a".split("_"),weekdaysMin:"\u062d_\u0646_\u062b_\u0631_\u062e_\u062c_\u0633".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"D/\u200fM/\u200fYYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/\u0635|\u0645/,isPM:function(e){return"\u0645"===e},meridiem:function(e,a,t){return e<12?"\u0635":"\u0645"},calendar:{sameDay:"[\u0627\u0644\u064a\u0648\u0645 \u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextDay:"[\u063a\u062f\u064b\u0627 \u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",nextWeek:"dddd [\u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastDay:"[\u0623\u0645\u0633 \u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",lastWeek:"dddd [\u0639\u0646\u062f \u0627\u0644\u0633\u0627\u0639\u0629] LT",sameElse:"L"},relativeTime:{future:"\u0628\u0639\u062f %s",past:"\u0645\u0646\u0630 %s",s:ds("s"),ss:ds("s"),m:ds("m"),mm:ds("m"),h:ds("h"),hh:ds("h"),d:ds("d"),dd:ds("d"),M:ds("M"),MM:ds("M"),y:ds("y"),yy:ds("y")},preparse:function(e){return e.replace(/[\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669\u0660]/g,function(e){return ts[e]}).replace(/\u060c/g,",")},postformat:function(e){return e.replace(/\d/g,function(e){return as[e]}).replace(/,/g,"\u060c")},week:{dow:6,doy:12}});var _s={1:"-inci",5:"-inci",8:"-inci",70:"-inci",80:"-inci",2:"-nci",7:"-nci",20:"-nci",50:"-nci",3:"-\xfcnc\xfc",4:"-\xfcnc\xfc",100:"-\xfcnc\xfc",6:"-nc\u0131",9:"-uncu",10:"-uncu",30:"-uncu",60:"-\u0131nc\u0131",90:"-\u0131nc\u0131"};function is(e,a,t){var s,n;return"m"===t?a?"\u0445\u0432\u0456\u043b\u0456\u043d\u0430":"\u0445\u0432\u0456\u043b\u0456\u043d\u0443":"h"===t?a?"\u0433\u0430\u0434\u0437\u0456\u043d\u0430":"\u0433\u0430\u0434\u0437\u0456\u043d\u0443":e+" "+(s=+e,n={ss:a?"\u0441\u0435\u043a\u0443\u043d\u0434\u0430_\u0441\u0435\u043a\u0443\u043d\u0434\u044b_\u0441\u0435\u043a\u0443\u043d\u0434":"\u0441\u0435\u043a\u0443\u043d\u0434\u0443_\u0441\u0435\u043a\u0443\u043d\u0434\u044b_\u0441\u0435\u043a\u0443\u043d\u0434",mm:a?"\u0445\u0432\u0456\u043b\u0456\u043d\u0430_\u0445\u0432\u0456\u043b\u0456\u043d\u044b_\u0445\u0432\u0456\u043b\u0456\u043d":"\u0445\u0432\u0456\u043b\u0456\u043d\u0443_\u0445\u0432\u0456\u043b\u0456\u043d\u044b_\u0445\u0432\u0456\u043b\u0456\u043d",hh:a?"\u0433\u0430\u0434\u0437\u0456\u043d\u0430_\u0433\u0430\u0434\u0437\u0456\u043d\u044b_\u0433\u0430\u0434\u0437\u0456\u043d":"\u0433\u0430\u0434\u0437\u0456\u043d\u0443_\u0433\u0430\u0434\u0437\u0456\u043d\u044b_\u0433\u0430\u0434\u0437\u0456\u043d",dd:"\u0434\u0437\u0435\u043d\u044c_\u0434\u043d\u0456_\u0434\u0437\u0451\u043d",MM:"\u043c\u0435\u0441\u044f\u0446_\u043c\u0435\u0441\u044f\u0446\u044b_\u043c\u0435\u0441\u044f\u0446\u0430\u045e",yy:"\u0433\u043e\u0434_\u0433\u0430\u0434\u044b_\u0433\u0430\u0434\u043e\u045e"}[t].split("_"),s%10==1&&s%100!=11?n[0]:2<=s%10&&s%10<=4&&(s%100<10||20<=s%100)?n[1]:n[2])}l.defineLocale("az",{months:"yanvar_fevral_mart_aprel_may_iyun_iyul_avqust_sentyabr_oktyabr_noyabr_dekabr".split("_"),monthsShort:"yan_fev_mar_apr_may_iyn_iyl_avq_sen_okt_noy_dek".split("_"),weekdays:"Bazar_Bazar ert\u0259si_\xc7\u0259r\u015f\u0259nb\u0259 ax\u015fam\u0131_\xc7\u0259r\u015f\u0259nb\u0259_C\xfcm\u0259 ax\u015fam\u0131_C\xfcm\u0259_\u015e\u0259nb\u0259".split("_"),weekdaysShort:"Baz_BzE_\xc7Ax_\xc7\u0259r_CAx_C\xfcm_\u015e\u0259n".split("_"),weekdaysMin:"Bz_BE_\xc7A_\xc7\u0259_CA_C\xfc_\u015e\u0259".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[bug\xfcn saat] LT",nextDay:"[sabah saat] LT",nextWeek:"[g\u0259l\u0259n h\u0259ft\u0259] dddd [saat] LT",lastDay:"[d\xfcn\u0259n] LT",lastWeek:"[ke\xe7\u0259n h\u0259ft\u0259] dddd [saat] LT",sameElse:"L"},relativeTime:{future:"%s sonra",past:"%s \u0259vv\u0259l",s:"birne\xe7\u0259 saniy\u0259",ss:"%d saniy\u0259",m:"bir d\u0259qiq\u0259",mm:"%d d\u0259qiq\u0259",h:"bir saat",hh:"%d saat",d:"bir g\xfcn",dd:"%d g\xfcn",M:"bir ay",MM:"%d ay",y:"bir il",yy:"%d il"},meridiemParse:/gec\u0259|s\u0259h\u0259r|g\xfcnd\xfcz|ax\u015fam/,isPM:function(e){return/^(g\xfcnd\xfcz|ax\u015fam)$/.test(e)},meridiem:function(e,a,t){return e<4?"gec\u0259":e<12?"s\u0259h\u0259r":e<17?"g\xfcnd\xfcz":"ax\u015fam"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0131nc\u0131|inci|nci|\xfcnc\xfc|nc\u0131|uncu)/,ordinal:function(e){if(0===e)return e+"-\u0131nc\u0131";var a=e%10;return e+(_s[a]||_s[e%100-a]||_s[100<=e?100:null])},week:{dow:1,doy:7}}),l.defineLocale("be",{months:{format:"\u0441\u0442\u0443\u0434\u0437\u0435\u043d\u044f_\u043b\u044e\u0442\u0430\u0433\u0430_\u0441\u0430\u043a\u0430\u0432\u0456\u043a\u0430_\u043a\u0440\u0430\u0441\u0430\u0432\u0456\u043a\u0430_\u0442\u0440\u0430\u045e\u043d\u044f_\u0447\u044d\u0440\u0432\u0435\u043d\u044f_\u043b\u0456\u043f\u0435\u043d\u044f_\u0436\u043d\u0456\u045e\u043d\u044f_\u0432\u0435\u0440\u0430\u0441\u043d\u044f_\u043a\u0430\u0441\u0442\u0440\u044b\u0447\u043d\u0456\u043a\u0430_\u043b\u0456\u0441\u0442\u0430\u043f\u0430\u0434\u0430_\u0441\u043d\u0435\u0436\u043d\u044f".split("_"),standalone:"\u0441\u0442\u0443\u0434\u0437\u0435\u043d\u044c_\u043b\u044e\u0442\u044b_\u0441\u0430\u043a\u0430\u0432\u0456\u043a_\u043a\u0440\u0430\u0441\u0430\u0432\u0456\u043a_\u0442\u0440\u0430\u0432\u0435\u043d\u044c_\u0447\u044d\u0440\u0432\u0435\u043d\u044c_\u043b\u0456\u043f\u0435\u043d\u044c_\u0436\u043d\u0456\u0432\u0435\u043d\u044c_\u0432\u0435\u0440\u0430\u0441\u0435\u043d\u044c_\u043a\u0430\u0441\u0442\u0440\u044b\u0447\u043d\u0456\u043a_\u043b\u0456\u0441\u0442\u0430\u043f\u0430\u0434_\u0441\u043d\u0435\u0436\u0430\u043d\u044c".split("_")},monthsShort:"\u0441\u0442\u0443\u0434_\u043b\u044e\u0442_\u0441\u0430\u043a_\u043a\u0440\u0430\u0441_\u0442\u0440\u0430\u0432_\u0447\u044d\u0440\u0432_\u043b\u0456\u043f_\u0436\u043d\u0456\u0432_\u0432\u0435\u0440_\u043a\u0430\u0441\u0442_\u043b\u0456\u0441\u0442_\u0441\u043d\u0435\u0436".split("_"),weekdays:{format:"\u043d\u044f\u0434\u0437\u0435\u043b\u044e_\u043f\u0430\u043d\u044f\u0434\u0437\u0435\u043b\u0430\u043a_\u0430\u045e\u0442\u043e\u0440\u0430\u043a_\u0441\u0435\u0440\u0430\u0434\u0443_\u0447\u0430\u0446\u0432\u0435\u0440_\u043f\u044f\u0442\u043d\u0456\u0446\u0443_\u0441\u0443\u0431\u043e\u0442\u0443".split("_"),standalone:"\u043d\u044f\u0434\u0437\u0435\u043b\u044f_\u043f\u0430\u043d\u044f\u0434\u0437\u0435\u043b\u0430\u043a_\u0430\u045e\u0442\u043e\u0440\u0430\u043a_\u0441\u0435\u0440\u0430\u0434\u0430_\u0447\u0430\u0446\u0432\u0435\u0440_\u043f\u044f\u0442\u043d\u0456\u0446\u0430_\u0441\u0443\u0431\u043e\u0442\u0430".split("_"),isFormat:/\[ ?[\u0423\u0443\u045e] ?(?:\u043c\u0456\u043d\u0443\u043b\u0443\u044e|\u043d\u0430\u0441\u0442\u0443\u043f\u043d\u0443\u044e)? ?\] ?dddd/},weekdaysShort:"\u043d\u0434_\u043f\u043d_\u0430\u0442_\u0441\u0440_\u0447\u0446_\u043f\u0442_\u0441\u0431".split("_"),weekdaysMin:"\u043d\u0434_\u043f\u043d_\u0430\u0442_\u0441\u0440_\u0447\u0446_\u043f\u0442_\u0441\u0431".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY \u0433.",LLL:"D MMMM YYYY \u0433., HH:mm",LLLL:"dddd, D MMMM YYYY \u0433., HH:mm"},calendar:{sameDay:"[\u0421\u0451\u043d\u043d\u044f \u045e] LT",nextDay:"[\u0417\u0430\u045e\u0442\u0440\u0430 \u045e] LT",lastDay:"[\u0423\u0447\u043e\u0440\u0430 \u045e] LT",nextWeek:function(){return"[\u0423] dddd [\u045e] LT"},lastWeek:function(){switch(this.day()){case 0:case 3:case 5:case 6:return"[\u0423 \u043c\u0456\u043d\u0443\u043b\u0443\u044e] dddd [\u045e] LT";case 1:case 2:case 4:return"[\u0423 \u043c\u0456\u043d\u0443\u043b\u044b] dddd [\u045e] LT"}},sameElse:"L"},relativeTime:{future:"\u043f\u0440\u0430\u0437 %s",past:"%s \u0442\u0430\u043c\u0443",s:"\u043d\u0435\u043a\u0430\u043b\u044c\u043a\u0456 \u0441\u0435\u043a\u0443\u043d\u0434",m:is,mm:is,h:is,hh:is,d:"\u0434\u0437\u0435\u043d\u044c",dd:is,M:"\u043c\u0435\u0441\u044f\u0446",MM:is,y:"\u0433\u043e\u0434",yy:is},meridiemParse:/\u043d\u043e\u0447\u044b|\u0440\u0430\u043d\u0456\u0446\u044b|\u0434\u043d\u044f|\u0432\u0435\u0447\u0430\u0440\u0430/,isPM:function(e){return/^(\u0434\u043d\u044f|\u0432\u0435\u0447\u0430\u0440\u0430)$/.test(e)},meridiem:function(e,a,t){return e<4?"\u043d\u043e\u0447\u044b":e<12?"\u0440\u0430\u043d\u0456\u0446\u044b":e<17?"\u0434\u043d\u044f":"\u0432\u0435\u0447\u0430\u0440\u0430"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0456|\u044b|\u0433\u0430)/,ordinal:function(e,a){switch(a){case"M":case"d":case"DDD":case"w":case"W":return e%10!=2&&e%10!=3||e%100==12||e%100==13?e+"-\u044b":e+"-\u0456";case"D":return e+"-\u0433\u0430";default:return e}},week:{dow:1,doy:7}}),l.defineLocale("bg",{months:"\u044f\u043d\u0443\u0430\u0440\u0438_\u0444\u0435\u0432\u0440\u0443\u0430\u0440\u0438_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0438\u043b_\u043c\u0430\u0439_\u044e\u043d\u0438_\u044e\u043b\u0438_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043f\u0442\u0435\u043c\u0432\u0440\u0438_\u043e\u043a\u0442\u043e\u043c\u0432\u0440\u0438_\u043d\u043e\u0435\u043c\u0432\u0440\u0438_\u0434\u0435\u043a\u0435\u043c\u0432\u0440\u0438".split("_"),monthsShort:"\u044f\u043d\u0440_\u0444\u0435\u0432_\u043c\u0430\u0440_\u0430\u043f\u0440_\u043c\u0430\u0439_\u044e\u043d\u0438_\u044e\u043b\u0438_\u0430\u0432\u0433_\u0441\u0435\u043f_\u043e\u043a\u0442_\u043d\u043e\u0435_\u0434\u0435\u043a".split("_"),weekdays:"\u043d\u0435\u0434\u0435\u043b\u044f_\u043f\u043e\u043d\u0435\u0434\u0435\u043b\u043d\u0438\u043a_\u0432\u0442\u043e\u0440\u043d\u0438\u043a_\u0441\u0440\u044f\u0434\u0430_\u0447\u0435\u0442\u0432\u044a\u0440\u0442\u044a\u043a_\u043f\u0435\u0442\u044a\u043a_\u0441\u044a\u0431\u043e\u0442\u0430".split("_"),weekdaysShort:"\u043d\u0435\u0434_\u043f\u043e\u043d_\u0432\u0442\u043e_\u0441\u0440\u044f_\u0447\u0435\u0442_\u043f\u0435\u0442_\u0441\u044a\u0431".split("_"),weekdaysMin:"\u043d\u0434_\u043f\u043d_\u0432\u0442_\u0441\u0440_\u0447\u0442_\u043f\u0442_\u0441\u0431".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"D.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd, D MMMM YYYY H:mm"},calendar:{sameDay:"[\u0414\u043d\u0435\u0441 \u0432] LT",nextDay:"[\u0423\u0442\u0440\u0435 \u0432] LT",nextWeek:"dddd [\u0432] LT",lastDay:"[\u0412\u0447\u0435\u0440\u0430 \u0432] LT",lastWeek:function(){switch(this.day()){case 0:case 3:case 6:return"[\u0412 \u0438\u0437\u043c\u0438\u043d\u0430\u043b\u0430\u0442\u0430] dddd [\u0432] LT";case 1:case 2:case 4:case 5:return"[\u0412 \u0438\u0437\u043c\u0438\u043d\u0430\u043b\u0438\u044f] dddd [\u0432] LT"}},sameElse:"L"},relativeTime:{future:"\u0441\u043b\u0435\u0434 %s",past:"\u043f\u0440\u0435\u0434\u0438 %s",s:"\u043d\u044f\u043a\u043e\u043b\u043a\u043e \u0441\u0435\u043a\u0443\u043d\u0434\u0438",ss:"%d \u0441\u0435\u043a\u0443\u043d\u0434\u0438",m:"\u043c\u0438\u043d\u0443\u0442\u0430",mm:"%d \u043c\u0438\u043d\u0443\u0442\u0438",h:"\u0447\u0430\u0441",hh:"%d \u0447\u0430\u0441\u0430",d:"\u0434\u0435\u043d",dd:"%d \u0434\u043d\u0438",M:"\u043c\u0435\u0441\u0435\u0446",MM:"%d \u043c\u0435\u0441\u0435\u0446\u0430",y:"\u0433\u043e\u0434\u0438\u043d\u0430",yy:"%d \u0433\u043e\u0434\u0438\u043d\u0438"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0435\u0432|\u0435\u043d|\u0442\u0438|\u0432\u0438|\u0440\u0438|\u043c\u0438)/,ordinal:function(e){var a=e%10,t=e%100;return 0===e?e+"-\u0435\u0432":0===t?e+"-\u0435\u043d":10<t&&t<20?e+"-\u0442\u0438":1===a?e+"-\u0432\u0438":2===a?e+"-\u0440\u0438":7===a||8===a?e+"-\u043c\u0438":e+"-\u0442\u0438"},week:{dow:1,doy:7}}),l.defineLocale("bm",{months:"Zanwuyekalo_Fewuruyekalo_Marisikalo_Awirilikalo_M\u025bkalo_Zuw\u025bnkalo_Zuluyekalo_Utikalo_S\u025btanburukalo_\u0254kut\u0254burukalo_Nowanburukalo_Desanburukalo".split("_"),monthsShort:"Zan_Few_Mar_Awi_M\u025b_Zuw_Zul_Uti_S\u025bt_\u0254ku_Now_Des".split("_"),weekdays:"Kari_Nt\u025bn\u025bn_Tarata_Araba_Alamisa_Juma_Sibiri".split("_"),weekdaysShort:"Kar_Nt\u025b_Tar_Ara_Ala_Jum_Sib".split("_"),weekdaysMin:"Ka_Nt_Ta_Ar_Al_Ju_Si".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"MMMM [tile] D [san] YYYY",LLL:"MMMM [tile] D [san] YYYY [l\u025br\u025b] HH:mm",LLLL:"dddd MMMM [tile] D [san] YYYY [l\u025br\u025b] HH:mm"},calendar:{sameDay:"[Bi l\u025br\u025b] LT",nextDay:"[Sini l\u025br\u025b] LT",nextWeek:"dddd [don l\u025br\u025b] LT",lastDay:"[Kunu l\u025br\u025b] LT",lastWeek:"dddd [t\u025bm\u025bnen l\u025br\u025b] LT",sameElse:"L"},relativeTime:{future:"%s k\u0254n\u0254",past:"a b\u025b %s b\u0254",s:"sanga dama dama",ss:"sekondi %d",m:"miniti kelen",mm:"miniti %d",h:"l\u025br\u025b kelen",hh:"l\u025br\u025b %d",d:"tile kelen",dd:"tile %d",M:"kalo kelen",MM:"kalo %d",y:"san kelen",yy:"san %d"},week:{dow:1,doy:4}});var os={1:"\u09e7",2:"\u09e8",3:"\u09e9",4:"\u09ea",5:"\u09eb",6:"\u09ec",7:"\u09ed",8:"\u09ee",9:"\u09ef",0:"\u09e6"},ms={"\u09e7":"1","\u09e8":"2","\u09e9":"3","\u09ea":"4","\u09eb":"5","\u09ec":"6","\u09ed":"7","\u09ee":"8","\u09ef":"9","\u09e6":"0"};l.defineLocale("bn",{months:"\u099c\u09be\u09a8\u09c1\u09df\u09be\u09b0\u09c0_\u09ab\u09c7\u09ac\u09cd\u09b0\u09c1\u09df\u09be\u09b0\u09bf_\u09ae\u09be\u09b0\u09cd\u099a_\u098f\u09aa\u09cd\u09b0\u09bf\u09b2_\u09ae\u09c7_\u099c\u09c1\u09a8_\u099c\u09c1\u09b2\u09be\u0987_\u0986\u0997\u09b8\u09cd\u099f_\u09b8\u09c7\u09aa\u09cd\u099f\u09c7\u09ae\u09cd\u09ac\u09b0_\u0985\u0995\u09cd\u099f\u09cb\u09ac\u09b0_\u09a8\u09ad\u09c7\u09ae\u09cd\u09ac\u09b0_\u09a1\u09bf\u09b8\u09c7\u09ae\u09cd\u09ac\u09b0".split("_"),monthsShort:"\u099c\u09be\u09a8\u09c1_\u09ab\u09c7\u09ac_\u09ae\u09be\u09b0\u09cd\u099a_\u098f\u09aa\u09cd\u09b0_\u09ae\u09c7_\u099c\u09c1\u09a8_\u099c\u09c1\u09b2_\u0986\u0997_\u09b8\u09c7\u09aa\u09cd\u099f_\u0985\u0995\u09cd\u099f\u09cb_\u09a8\u09ad\u09c7_\u09a1\u09bf\u09b8\u09c7".split("_"),weekdays:"\u09b0\u09ac\u09bf\u09ac\u09be\u09b0_\u09b8\u09cb\u09ae\u09ac\u09be\u09b0_\u09ae\u0999\u09cd\u0997\u09b2\u09ac\u09be\u09b0_\u09ac\u09c1\u09a7\u09ac\u09be\u09b0_\u09ac\u09c3\u09b9\u09b8\u09cd\u09aa\u09a4\u09bf\u09ac\u09be\u09b0_\u09b6\u09c1\u0995\u09cd\u09b0\u09ac\u09be\u09b0_\u09b6\u09a8\u09bf\u09ac\u09be\u09b0".split("_"),weekdaysShort:"\u09b0\u09ac\u09bf_\u09b8\u09cb\u09ae_\u09ae\u0999\u09cd\u0997\u09b2_\u09ac\u09c1\u09a7_\u09ac\u09c3\u09b9\u09b8\u09cd\u09aa\u09a4\u09bf_\u09b6\u09c1\u0995\u09cd\u09b0_\u09b6\u09a8\u09bf".split("_"),weekdaysMin:"\u09b0\u09ac\u09bf_\u09b8\u09cb\u09ae_\u09ae\u0999\u09cd\u0997_\u09ac\u09c1\u09a7_\u09ac\u09c3\u09b9\u0983_\u09b6\u09c1\u0995\u09cd\u09b0_\u09b6\u09a8\u09bf".split("_"),longDateFormat:{LT:"A h:mm \u09b8\u09ae\u09df",LTS:"A h:mm:ss \u09b8\u09ae\u09df",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm \u09b8\u09ae\u09df",LLLL:"dddd, D MMMM YYYY, A h:mm \u09b8\u09ae\u09df"},calendar:{sameDay:"[\u0986\u099c] LT",nextDay:"[\u0986\u0997\u09be\u09ae\u09c0\u0995\u09be\u09b2] LT",nextWeek:"dddd, LT",lastDay:"[\u0997\u09a4\u0995\u09be\u09b2] LT",lastWeek:"[\u0997\u09a4] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u09aa\u09b0\u09c7",past:"%s \u0986\u0997\u09c7",s:"\u0995\u09df\u09c7\u0995 \u09b8\u09c7\u0995\u09c7\u09a8\u09cd\u09a1",ss:"%d \u09b8\u09c7\u0995\u09c7\u09a8\u09cd\u09a1",m:"\u098f\u0995 \u09ae\u09bf\u09a8\u09bf\u099f",mm:"%d \u09ae\u09bf\u09a8\u09bf\u099f",h:"\u098f\u0995 \u0998\u09a8\u09cd\u099f\u09be",hh:"%d \u0998\u09a8\u09cd\u099f\u09be",d:"\u098f\u0995 \u09a6\u09bf\u09a8",dd:"%d \u09a6\u09bf\u09a8",M:"\u098f\u0995 \u09ae\u09be\u09b8",MM:"%d \u09ae\u09be\u09b8",y:"\u098f\u0995 \u09ac\u099b\u09b0",yy:"%d \u09ac\u099b\u09b0"},preparse:function(e){return e.replace(/[\u09e7\u09e8\u09e9\u09ea\u09eb\u09ec\u09ed\u09ee\u09ef\u09e6]/g,function(e){return ms[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return os[e]})},meridiemParse:/\u09b0\u09be\u09a4|\u09b8\u0995\u09be\u09b2|\u09a6\u09c1\u09aa\u09c1\u09b0|\u09ac\u09bf\u0995\u09be\u09b2|\u09b0\u09be\u09a4/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u09b0\u09be\u09a4"===a&&4<=e||"\u09a6\u09c1\u09aa\u09c1\u09b0"===a&&e<5||"\u09ac\u09bf\u0995\u09be\u09b2"===a?e+12:e},meridiem:function(e,a,t){return e<4?"\u09b0\u09be\u09a4":e<10?"\u09b8\u0995\u09be\u09b2":e<17?"\u09a6\u09c1\u09aa\u09c1\u09b0":e<20?"\u09ac\u09bf\u0995\u09be\u09b2":"\u09b0\u09be\u09a4"},week:{dow:0,doy:6}});var us={1:"\u0f21",2:"\u0f22",3:"\u0f23",4:"\u0f24",5:"\u0f25",6:"\u0f26",7:"\u0f27",8:"\u0f28",9:"\u0f29",0:"\u0f20"},ls={"\u0f21":"1","\u0f22":"2","\u0f23":"3","\u0f24":"4","\u0f25":"5","\u0f26":"6","\u0f27":"7","\u0f28":"8","\u0f29":"9","\u0f20":"0"};function Ms(e,a,t){var s,n,d;return e+" "+(s={mm:"munutenn",MM:"miz",dd:"devezh"}[t],2!==e?s:void 0!==(d={m:"v",b:"v",d:"z"})[(n=s).charAt(0)]?d[n.charAt(0)]+n.substring(1):n)}function hs(e,a,t){var s=e+" ";switch(t){case"ss":return s+=1===e?"sekunda":2===e||3===e||4===e?"sekunde":"sekundi";case"m":return a?"jedna minuta":"jedne minute";case"mm":return s+=1===e?"minuta":2===e||3===e||4===e?"minute":"minuta";case"h":return a?"jedan sat":"jednog sata";case"hh":return s+=1===e?"sat":2===e||3===e||4===e?"sata":"sati";case"dd":return s+=1===e?"dan":"dana";case"MM":return s+=1===e?"mjesec":2===e||3===e||4===e?"mjeseca":"mjeseci";case"yy":return s+=1===e?"godina":2===e||3===e||4===e?"godine":"godina"}}l.defineLocale("bo",{months:"\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f51\u0f44\u0f0b\u0f54\u0f7c_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f42\u0f49\u0f72\u0f66\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f42\u0f66\u0f74\u0f58\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f5e\u0f72\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f63\u0f94\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f51\u0fb2\u0f74\u0f42\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f51\u0f74\u0f53\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f62\u0f92\u0fb1\u0f51\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f51\u0f42\u0f74\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f45\u0f74\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f45\u0f74\u0f0b\u0f42\u0f45\u0f72\u0f42\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f45\u0f74\u0f0b\u0f42\u0f49\u0f72\u0f66\u0f0b\u0f54".split("_"),monthsShort:"\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f51\u0f44\u0f0b\u0f54\u0f7c_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f42\u0f49\u0f72\u0f66\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f42\u0f66\u0f74\u0f58\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f5e\u0f72\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f63\u0f94\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f51\u0fb2\u0f74\u0f42\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f51\u0f74\u0f53\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f62\u0f92\u0fb1\u0f51\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f51\u0f42\u0f74\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f45\u0f74\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f45\u0f74\u0f0b\u0f42\u0f45\u0f72\u0f42\u0f0b\u0f54_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f56\u0f45\u0f74\u0f0b\u0f42\u0f49\u0f72\u0f66\u0f0b\u0f54".split("_"),weekdays:"\u0f42\u0f5f\u0f60\u0f0b\u0f49\u0f72\u0f0b\u0f58\u0f0b_\u0f42\u0f5f\u0f60\u0f0b\u0f5f\u0fb3\u0f0b\u0f56\u0f0b_\u0f42\u0f5f\u0f60\u0f0b\u0f58\u0f72\u0f42\u0f0b\u0f51\u0f58\u0f62\u0f0b_\u0f42\u0f5f\u0f60\u0f0b\u0f63\u0fb7\u0f42\u0f0b\u0f54\u0f0b_\u0f42\u0f5f\u0f60\u0f0b\u0f55\u0f74\u0f62\u0f0b\u0f56\u0f74_\u0f42\u0f5f\u0f60\u0f0b\u0f54\u0f0b\u0f66\u0f44\u0f66\u0f0b_\u0f42\u0f5f\u0f60\u0f0b\u0f66\u0fa4\u0f7a\u0f53\u0f0b\u0f54\u0f0b".split("_"),weekdaysShort:"\u0f49\u0f72\u0f0b\u0f58\u0f0b_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b_\u0f58\u0f72\u0f42\u0f0b\u0f51\u0f58\u0f62\u0f0b_\u0f63\u0fb7\u0f42\u0f0b\u0f54\u0f0b_\u0f55\u0f74\u0f62\u0f0b\u0f56\u0f74_\u0f54\u0f0b\u0f66\u0f44\u0f66\u0f0b_\u0f66\u0fa4\u0f7a\u0f53\u0f0b\u0f54\u0f0b".split("_"),weekdaysMin:"\u0f49\u0f72\u0f0b\u0f58\u0f0b_\u0f5f\u0fb3\u0f0b\u0f56\u0f0b_\u0f58\u0f72\u0f42\u0f0b\u0f51\u0f58\u0f62\u0f0b_\u0f63\u0fb7\u0f42\u0f0b\u0f54\u0f0b_\u0f55\u0f74\u0f62\u0f0b\u0f56\u0f74_\u0f54\u0f0b\u0f66\u0f44\u0f66\u0f0b_\u0f66\u0fa4\u0f7a\u0f53\u0f0b\u0f54\u0f0b".split("_"),longDateFormat:{LT:"A h:mm",LTS:"A h:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm",LLLL:"dddd, D MMMM YYYY, A h:mm"},calendar:{sameDay:"[\u0f51\u0f72\u0f0b\u0f62\u0f72\u0f44] LT",nextDay:"[\u0f66\u0f44\u0f0b\u0f49\u0f72\u0f53] LT",nextWeek:"[\u0f56\u0f51\u0f74\u0f53\u0f0b\u0f55\u0fb2\u0f42\u0f0b\u0f62\u0f97\u0f7a\u0f66\u0f0b\u0f58], LT",lastDay:"[\u0f41\u0f0b\u0f66\u0f44] LT",lastWeek:"[\u0f56\u0f51\u0f74\u0f53\u0f0b\u0f55\u0fb2\u0f42\u0f0b\u0f58\u0f50\u0f60\u0f0b\u0f58] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0f63\u0f0b",past:"%s \u0f66\u0f94\u0f53\u0f0b\u0f63",s:"\u0f63\u0f58\u0f0b\u0f66\u0f44",ss:"%d \u0f66\u0f90\u0f62\u0f0b\u0f46\u0f0d",m:"\u0f66\u0f90\u0f62\u0f0b\u0f58\u0f0b\u0f42\u0f45\u0f72\u0f42",mm:"%d \u0f66\u0f90\u0f62\u0f0b\u0f58",h:"\u0f46\u0f74\u0f0b\u0f5a\u0f7c\u0f51\u0f0b\u0f42\u0f45\u0f72\u0f42",hh:"%d \u0f46\u0f74\u0f0b\u0f5a\u0f7c\u0f51",d:"\u0f49\u0f72\u0f53\u0f0b\u0f42\u0f45\u0f72\u0f42",dd:"%d \u0f49\u0f72\u0f53\u0f0b",M:"\u0f5f\u0fb3\u0f0b\u0f56\u0f0b\u0f42\u0f45\u0f72\u0f42",MM:"%d \u0f5f\u0fb3\u0f0b\u0f56",y:"\u0f63\u0f7c\u0f0b\u0f42\u0f45\u0f72\u0f42",yy:"%d \u0f63\u0f7c"},preparse:function(e){return e.replace(/[\u0f21\u0f22\u0f23\u0f24\u0f25\u0f26\u0f27\u0f28\u0f29\u0f20]/g,function(e){return ls[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return us[e]})},meridiemParse:/\u0f58\u0f5a\u0f53\u0f0b\u0f58\u0f7c|\u0f5e\u0f7c\u0f42\u0f66\u0f0b\u0f40\u0f66|\u0f49\u0f72\u0f53\u0f0b\u0f42\u0f74\u0f44|\u0f51\u0f42\u0f7c\u0f44\u0f0b\u0f51\u0f42|\u0f58\u0f5a\u0f53\u0f0b\u0f58\u0f7c/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0f58\u0f5a\u0f53\u0f0b\u0f58\u0f7c"===a&&4<=e||"\u0f49\u0f72\u0f53\u0f0b\u0f42\u0f74\u0f44"===a&&e<5||"\u0f51\u0f42\u0f7c\u0f44\u0f0b\u0f51\u0f42"===a?e+12:e},meridiem:function(e,a,t){return e<4?"\u0f58\u0f5a\u0f53\u0f0b\u0f58\u0f7c":e<10?"\u0f5e\u0f7c\u0f42\u0f66\u0f0b\u0f40\u0f66":e<17?"\u0f49\u0f72\u0f53\u0f0b\u0f42\u0f74\u0f44":e<20?"\u0f51\u0f42\u0f7c\u0f44\u0f0b\u0f51\u0f42":"\u0f58\u0f5a\u0f53\u0f0b\u0f58\u0f7c"},week:{dow:0,doy:6}}),l.defineLocale("br",{months:"Genver_C'hwevrer_Meurzh_Ebrel_Mae_Mezheven_Gouere_Eost_Gwengolo_Here_Du_Kerzu".split("_"),monthsShort:"Gen_C'hwe_Meu_Ebr_Mae_Eve_Gou_Eos_Gwe_Her_Du_Ker".split("_"),weekdays:"Sul_Lun_Meurzh_Merc'her_Yaou_Gwener_Sadorn".split("_"),weekdaysShort:"Sul_Lun_Meu_Mer_Yao_Gwe_Sad".split("_"),weekdaysMin:"Su_Lu_Me_Mer_Ya_Gw_Sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"h[e]mm A",LTS:"h[e]mm:ss A",L:"DD/MM/YYYY",LL:"D [a viz] MMMM YYYY",LLL:"D [a viz] MMMM YYYY h[e]mm A",LLLL:"dddd, D [a viz] MMMM YYYY h[e]mm A"},calendar:{sameDay:"[Hiziv da] LT",nextDay:"[Warc'hoazh da] LT",nextWeek:"dddd [da] LT",lastDay:"[Dec'h da] LT",lastWeek:"dddd [paset da] LT",sameElse:"L"},relativeTime:{future:"a-benn %s",past:"%s 'zo",s:"un nebeud segondenno\xf9",ss:"%d eilenn",m:"ur vunutenn",mm:Ms,h:"un eur",hh:"%d eur",d:"un devezh",dd:Ms,M:"ur miz",MM:Ms,y:"ur bloaz",yy:function(e){switch(function e(a){return 9<a?e(a%10):a}(e)){case 1:case 3:case 4:case 5:case 9:return e+" bloaz";default:return e+" vloaz"}}},dayOfMonthOrdinalParse:/\d{1,2}(a\xf1|vet)/,ordinal:function(e){return e+(1===e?"a\xf1":"vet")},week:{dow:1,doy:4}}),l.defineLocale("bs",{months:"januar_februar_mart_april_maj_juni_juli_august_septembar_oktobar_novembar_decembar".split("_"),monthsShort:"jan._feb._mar._apr._maj._jun._jul._aug._sep._okt._nov._dec.".split("_"),monthsParseExact:!0,weekdays:"nedjelja_ponedjeljak_utorak_srijeda_\u010detvrtak_petak_subota".split("_"),weekdaysShort:"ned._pon._uto._sri._\u010det._pet._sub.".split("_"),weekdaysMin:"ne_po_ut_sr_\u010de_pe_su".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedjelju] [u] LT";case 3:return"[u] [srijedu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[ju\u010der u] LT",lastWeek:function(){switch(this.day()){case 0:case 3:return"[pro\u0161lu] dddd [u] LT";case 6:return"[pro\u0161le] [subote] [u] LT";case 1:case 2:case 4:case 5:return"[pro\u0161li] dddd [u] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"prije %s",s:"par sekundi",ss:hs,m:hs,mm:hs,h:hs,hh:hs,d:"dan",dd:hs,M:"mjesec",MM:hs,y:"godinu",yy:hs},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),l.defineLocale("ca",{months:{standalone:"gener_febrer_mar\xe7_abril_maig_juny_juliol_agost_setembre_octubre_novembre_desembre".split("_"),format:"de gener_de febrer_de mar\xe7_d'abril_de maig_de juny_de juliol_d'agost_de setembre_d'octubre_de novembre_de desembre".split("_"),isFormat:/D[oD]?(\s)+MMMM/},monthsShort:"gen._febr._mar\xe7_abr._maig_juny_jul._ag._set._oct._nov._des.".split("_"),monthsParseExact:!0,weekdays:"diumenge_dilluns_dimarts_dimecres_dijous_divendres_dissabte".split("_"),weekdaysShort:"dg._dl._dt._dc._dj._dv._ds.".split("_"),weekdaysMin:"dg_dl_dt_dc_dj_dv_ds".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM [de] YYYY",ll:"D MMM YYYY",LLL:"D MMMM [de] YYYY [a les] H:mm",lll:"D MMM YYYY, H:mm",LLLL:"dddd D MMMM [de] YYYY [a les] H:mm",llll:"ddd D MMM YYYY, H:mm"},calendar:{sameDay:function(){return"[avui a "+(1!==this.hours()?"les":"la")+"] LT"},nextDay:function(){return"[dem\xe0 a "+(1!==this.hours()?"les":"la")+"] LT"},nextWeek:function(){return"dddd [a "+(1!==this.hours()?"les":"la")+"] LT"},lastDay:function(){return"[ahir a "+(1!==this.hours()?"les":"la")+"] LT"},lastWeek:function(){return"[el] dddd [passat a "+(1!==this.hours()?"les":"la")+"] LT"},sameElse:"L"},relativeTime:{future:"d'aqu\xed %s",past:"fa %s",s:"uns segons",ss:"%d segons",m:"un minut",mm:"%d minuts",h:"una hora",hh:"%d hores",d:"un dia",dd:"%d dies",M:"un mes",MM:"%d mesos",y:"un any",yy:"%d anys"},dayOfMonthOrdinalParse:/\d{1,2}(r|n|t|\xe8|a)/,ordinal:function(e,a){var t=1===e?"r":2===e?"n":3===e?"r":4===e?"t":"\xe8";return"w"!==a&&"W"!==a||(t="a"),e+t},week:{dow:1,doy:4}});var Ls="leden_\xfanor_b\u0159ezen_duben_kv\u011bten_\u010derven_\u010dervenec_srpen_z\xe1\u0159\xed_\u0159\xedjen_listopad_prosinec".split("_"),cs="led_\xfano_b\u0159e_dub_kv\u011b_\u010dvn_\u010dvc_srp_z\xe1\u0159_\u0159\xedj_lis_pro".split("_"),Ys=[/^led/i,/^\xfano/i,/^b\u0159e/i,/^dub/i,/^kv\u011b/i,/^(\u010dvn|\u010derven$|\u010dervna)/i,/^(\u010dvc|\u010dervenec|\u010dervence)/i,/^srp/i,/^z\xe1\u0159/i,/^\u0159\xedj/i,/^lis/i,/^pro/i],ys=/^(leden|\xfanor|b\u0159ezen|duben|kv\u011bten|\u010dervenec|\u010dervence|\u010derven|\u010dervna|srpen|z\xe1\u0159\xed|\u0159\xedjen|listopad|prosinec|led|\xfano|b\u0159e|dub|kv\u011b|\u010dvn|\u010dvc|srp|z\xe1\u0159|\u0159\xedj|lis|pro)/i;function fs(e){return 1<e&&e<5&&1!=~~(e/10)}function ks(e,a,t,s){var n=e+" ";switch(t){case"s":return a||s?"p\xe1r sekund":"p\xe1r sekundami";case"ss":return a||s?n+(fs(e)?"sekundy":"sekund"):n+"sekundami";break;case"m":return a?"minuta":s?"minutu":"minutou";case"mm":return a||s?n+(fs(e)?"minuty":"minut"):n+"minutami";break;case"h":return a?"hodina":s?"hodinu":"hodinou";case"hh":return a||s?n+(fs(e)?"hodiny":"hodin"):n+"hodinami";break;case"d":return a||s?"den":"dnem";case"dd":return a||s?n+(fs(e)?"dny":"dn\xed"):n+"dny";break;case"M":return a||s?"m\u011bs\xedc":"m\u011bs\xedcem";case"MM":return a||s?n+(fs(e)?"m\u011bs\xedce":"m\u011bs\xedc\u016f"):n+"m\u011bs\xedci";break;case"y":return a||s?"rok":"rokem";case"yy":return a||s?n+(fs(e)?"roky":"let"):n+"lety";break}}function ps(e,a,t,s){var n={m:["eine Minute","einer Minute"],h:["eine Stunde","einer Stunde"],d:["ein Tag","einem Tag"],dd:[e+" Tage",e+" Tagen"],M:["ein Monat","einem Monat"],MM:[e+" Monate",e+" Monaten"],y:["ein Jahr","einem Jahr"],yy:[e+" Jahre",e+" Jahren"]};return a?n[t][0]:n[t][1]}function Ds(e,a,t,s){var n={m:["eine Minute","einer Minute"],h:["eine Stunde","einer Stunde"],d:["ein Tag","einem Tag"],dd:[e+" Tage",e+" Tagen"],M:["ein Monat","einem Monat"],MM:[e+" Monate",e+" Monaten"],y:["ein Jahr","einem Jahr"],yy:[e+" Jahre",e+" Jahren"]};return a?n[t][0]:n[t][1]}function Ts(e,a,t,s){var n={m:["eine Minute","einer Minute"],h:["eine Stunde","einer Stunde"],d:["ein Tag","einem Tag"],dd:[e+" Tage",e+" Tagen"],M:["ein Monat","einem Monat"],MM:[e+" Monate",e+" Monaten"],y:["ein Jahr","einem Jahr"],yy:[e+" Jahre",e+" Jahren"]};return a?n[t][0]:n[t][1]}l.defineLocale("cs",{months:Ls,monthsShort:cs,monthsRegex:ys,monthsShortRegex:ys,monthsStrictRegex:/^(leden|ledna|\xfanora|\xfanor|b\u0159ezen|b\u0159ezna|duben|dubna|kv\u011bten|kv\u011btna|\u010dervenec|\u010dervence|\u010derven|\u010dervna|srpen|srpna|z\xe1\u0159\xed|\u0159\xedjen|\u0159\xedjna|listopadu|listopad|prosinec|prosince)/i,monthsShortStrictRegex:/^(led|\xfano|b\u0159e|dub|kv\u011b|\u010dvn|\u010dvc|srp|z\xe1\u0159|\u0159\xedj|lis|pro)/i,monthsParse:Ys,longMonthsParse:Ys,shortMonthsParse:Ys,weekdays:"ned\u011ble_pond\u011bl\xed_\xfater\xfd_st\u0159eda_\u010dtvrtek_p\xe1tek_sobota".split("_"),weekdaysShort:"ne_po_\xfat_st_\u010dt_p\xe1_so".split("_"),weekdaysMin:"ne_po_\xfat_st_\u010dt_p\xe1_so".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd D. MMMM YYYY H:mm",l:"D. M. YYYY"},calendar:{sameDay:"[dnes v] LT",nextDay:"[z\xedtra v] LT",nextWeek:function(){switch(this.day()){case 0:return"[v ned\u011bli v] LT";case 1:case 2:return"[v] dddd [v] LT";case 3:return"[ve st\u0159edu v] LT";case 4:return"[ve \u010dtvrtek v] LT";case 5:return"[v p\xe1tek v] LT";case 6:return"[v sobotu v] LT"}},lastDay:"[v\u010dera v] LT",lastWeek:function(){switch(this.day()){case 0:return"[minulou ned\u011bli v] LT";case 1:case 2:return"[minul\xe9] dddd [v] LT";case 3:return"[minulou st\u0159edu v] LT";case 4:case 5:return"[minul\xfd] dddd [v] LT";case 6:return"[minulou sobotu v] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"p\u0159ed %s",s:ks,ss:ks,m:ks,mm:ks,h:ks,hh:ks,d:ks,dd:ks,M:ks,MM:ks,y:ks,yy:ks},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("cv",{months:"\u043a\u04d1\u0440\u043b\u0430\u0447_\u043d\u0430\u0440\u04d1\u0441_\u043f\u0443\u0448_\u0430\u043a\u0430_\u043c\u0430\u0439_\u04ab\u04d7\u0440\u0442\u043c\u0435_\u0443\u0442\u04d1_\u04ab\u0443\u0440\u043b\u0430_\u0430\u0432\u04d1\u043d_\u044e\u043f\u0430_\u0447\u04f3\u043a_\u0440\u0430\u0448\u0442\u0430\u0432".split("_"),monthsShort:"\u043a\u04d1\u0440_\u043d\u0430\u0440_\u043f\u0443\u0448_\u0430\u043a\u0430_\u043c\u0430\u0439_\u04ab\u04d7\u0440_\u0443\u0442\u04d1_\u04ab\u0443\u0440_\u0430\u0432\u043d_\u044e\u043f\u0430_\u0447\u04f3\u043a_\u0440\u0430\u0448".split("_"),weekdays:"\u0432\u044b\u0440\u0441\u0430\u0440\u043d\u0438\u043a\u0443\u043d_\u0442\u0443\u043d\u0442\u0438\u043a\u0443\u043d_\u044b\u0442\u043b\u0430\u0440\u0438\u043a\u0443\u043d_\u044e\u043d\u043a\u0443\u043d_\u043a\u04d7\u04ab\u043d\u0435\u0440\u043d\u0438\u043a\u0443\u043d_\u044d\u0440\u043d\u0435\u043a\u0443\u043d_\u0448\u04d1\u043c\u0430\u0442\u043a\u0443\u043d".split("_"),weekdaysShort:"\u0432\u044b\u0440_\u0442\u0443\u043d_\u044b\u0442\u043b_\u044e\u043d_\u043a\u04d7\u04ab_\u044d\u0440\u043d_\u0448\u04d1\u043c".split("_"),weekdaysMin:"\u0432\u0440_\u0442\u043d_\u044b\u0442_\u044e\u043d_\u043a\u04ab_\u044d\u0440_\u0448\u043c".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"YYYY [\u04ab\u0443\u043b\u0445\u0438] MMMM [\u0443\u0439\u04d1\u0445\u04d7\u043d] D[-\u043c\u04d7\u0448\u04d7]",LLL:"YYYY [\u04ab\u0443\u043b\u0445\u0438] MMMM [\u0443\u0439\u04d1\u0445\u04d7\u043d] D[-\u043c\u04d7\u0448\u04d7], HH:mm",LLLL:"dddd, YYYY [\u04ab\u0443\u043b\u0445\u0438] MMMM [\u0443\u0439\u04d1\u0445\u04d7\u043d] D[-\u043c\u04d7\u0448\u04d7], HH:mm"},calendar:{sameDay:"[\u041f\u0430\u044f\u043d] LT [\u0441\u0435\u0445\u0435\u0442\u0440\u0435]",nextDay:"[\u042b\u0440\u0430\u043d] LT [\u0441\u0435\u0445\u0435\u0442\u0440\u0435]",lastDay:"[\u04d6\u043d\u0435\u0440] LT [\u0441\u0435\u0445\u0435\u0442\u0440\u0435]",nextWeek:"[\u04aa\u0438\u0442\u0435\u0441] dddd LT [\u0441\u0435\u0445\u0435\u0442\u0440\u0435]",lastWeek:"[\u0418\u0440\u0442\u043d\u04d7] dddd LT [\u0441\u0435\u0445\u0435\u0442\u0440\u0435]",sameElse:"L"},relativeTime:{future:function(e){return e+(/\u0441\u0435\u0445\u0435\u0442$/i.exec(e)?"\u0440\u0435\u043d":/\u04ab\u0443\u043b$/i.exec(e)?"\u0442\u0430\u043d":"\u0440\u0430\u043d")},past:"%s \u043a\u0430\u044f\u043b\u043b\u0430",s:"\u043f\u04d7\u0440-\u0438\u043a \u04ab\u0435\u043a\u043a\u0443\u043d\u0442",ss:"%d \u04ab\u0435\u043a\u043a\u0443\u043d\u0442",m:"\u043f\u04d7\u0440 \u043c\u0438\u043d\u0443\u0442",mm:"%d \u043c\u0438\u043d\u0443\u0442",h:"\u043f\u04d7\u0440 \u0441\u0435\u0445\u0435\u0442",hh:"%d \u0441\u0435\u0445\u0435\u0442",d:"\u043f\u04d7\u0440 \u043a\u0443\u043d",dd:"%d \u043a\u0443\u043d",M:"\u043f\u04d7\u0440 \u0443\u0439\u04d1\u0445",MM:"%d \u0443\u0439\u04d1\u0445",y:"\u043f\u04d7\u0440 \u04ab\u0443\u043b",yy:"%d \u04ab\u0443\u043b"},dayOfMonthOrdinalParse:/\d{1,2}-\u043c\u04d7\u0448/,ordinal:"%d-\u043c\u04d7\u0448",week:{dow:1,doy:7}}),l.defineLocale("cy",{months:"Ionawr_Chwefror_Mawrth_Ebrill_Mai_Mehefin_Gorffennaf_Awst_Medi_Hydref_Tachwedd_Rhagfyr".split("_"),monthsShort:"Ion_Chwe_Maw_Ebr_Mai_Meh_Gor_Aws_Med_Hyd_Tach_Rhag".split("_"),weekdays:"Dydd Sul_Dydd Llun_Dydd Mawrth_Dydd Mercher_Dydd Iau_Dydd Gwener_Dydd Sadwrn".split("_"),weekdaysShort:"Sul_Llun_Maw_Mer_Iau_Gwe_Sad".split("_"),weekdaysMin:"Su_Ll_Ma_Me_Ia_Gw_Sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Heddiw am] LT",nextDay:"[Yfory am] LT",nextWeek:"dddd [am] LT",lastDay:"[Ddoe am] LT",lastWeek:"dddd [diwethaf am] LT",sameElse:"L"},relativeTime:{future:"mewn %s",past:"%s yn \xf4l",s:"ychydig eiliadau",ss:"%d eiliad",m:"munud",mm:"%d munud",h:"awr",hh:"%d awr",d:"diwrnod",dd:"%d diwrnod",M:"mis",MM:"%d mis",y:"blwyddyn",yy:"%d flynedd"},dayOfMonthOrdinalParse:/\d{1,2}(fed|ain|af|il|ydd|ed|eg)/,ordinal:function(e){var a="";return 20<e?a=40===e||50===e||60===e||80===e||100===e?"fed":"ain":0<e&&(a=["","af","il","ydd","ydd","ed","ed","ed","fed","fed","fed","eg","fed","eg","eg","fed","eg","eg","fed","eg","fed"][e]),e+a},week:{dow:1,doy:4}}),l.defineLocale("da",{months:"januar_februar_marts_april_maj_juni_juli_august_september_oktober_november_december".split("_"),monthsShort:"jan_feb_mar_apr_maj_jun_jul_aug_sep_okt_nov_dec".split("_"),weekdays:"s\xf8ndag_mandag_tirsdag_onsdag_torsdag_fredag_l\xf8rdag".split("_"),weekdaysShort:"s\xf8n_man_tir_ons_tor_fre_l\xf8r".split("_"),weekdaysMin:"s\xf8_ma_ti_on_to_fr_l\xf8".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd [d.] D. MMMM YYYY [kl.] HH:mm"},calendar:{sameDay:"[i dag kl.] LT",nextDay:"[i morgen kl.] LT",nextWeek:"p\xe5 dddd [kl.] LT",lastDay:"[i g\xe5r kl.] LT",lastWeek:"[i] dddd[s kl.] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"%s siden",s:"f\xe5 sekunder",ss:"%d sekunder",m:"et minut",mm:"%d minutter",h:"en time",hh:"%d timer",d:"en dag",dd:"%d dage",M:"en m\xe5ned",MM:"%d m\xe5neder",y:"et \xe5r",yy:"%d \xe5r"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("de-at",{months:"J\xe4nner_Februar_M\xe4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"J\xe4n._Feb._M\xe4rz_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.".split("_"),monthsParseExact:!0,weekdays:"Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag".split("_"),weekdaysShort:"So._Mo._Di._Mi._Do._Fr._Sa.".split("_"),weekdaysMin:"So_Mo_Di_Mi_Do_Fr_Sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd, D. MMMM YYYY HH:mm"},calendar:{sameDay:"[heute um] LT [Uhr]",sameElse:"L",nextDay:"[morgen um] LT [Uhr]",nextWeek:"dddd [um] LT [Uhr]",lastDay:"[gestern um] LT [Uhr]",lastWeek:"[letzten] dddd [um] LT [Uhr]"},relativeTime:{future:"in %s",past:"vor %s",s:"ein paar Sekunden",ss:"%d Sekunden",m:ps,mm:"%d Minuten",h:ps,hh:"%d Stunden",d:ps,dd:ps,M:ps,MM:ps,y:ps,yy:ps},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("de-ch",{months:"Januar_Februar_M\xe4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"Jan._Feb._M\xe4rz_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.".split("_"),monthsParseExact:!0,weekdays:"Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag".split("_"),weekdaysShort:"So_Mo_Di_Mi_Do_Fr_Sa".split("_"),weekdaysMin:"So_Mo_Di_Mi_Do_Fr_Sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd, D. MMMM YYYY HH:mm"},calendar:{sameDay:"[heute um] LT [Uhr]",sameElse:"L",nextDay:"[morgen um] LT [Uhr]",nextWeek:"dddd [um] LT [Uhr]",lastDay:"[gestern um] LT [Uhr]",lastWeek:"[letzten] dddd [um] LT [Uhr]"},relativeTime:{future:"in %s",past:"vor %s",s:"ein paar Sekunden",ss:"%d Sekunden",m:Ds,mm:"%d Minuten",h:Ds,hh:"%d Stunden",d:Ds,dd:Ds,M:Ds,MM:Ds,y:Ds,yy:Ds},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("de",{months:"Januar_Februar_M\xe4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"Jan._Feb._M\xe4rz_Apr._Mai_Juni_Juli_Aug._Sep._Okt._Nov._Dez.".split("_"),monthsParseExact:!0,weekdays:"Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag".split("_"),weekdaysShort:"So._Mo._Di._Mi._Do._Fr._Sa.".split("_"),weekdaysMin:"So_Mo_Di_Mi_Do_Fr_Sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY HH:mm",LLLL:"dddd, D. MMMM YYYY HH:mm"},calendar:{sameDay:"[heute um] LT [Uhr]",sameElse:"L",nextDay:"[morgen um] LT [Uhr]",nextWeek:"dddd [um] LT [Uhr]",lastDay:"[gestern um] LT [Uhr]",lastWeek:"[letzten] dddd [um] LT [Uhr]"},relativeTime:{future:"in %s",past:"vor %s",s:"ein paar Sekunden",ss:"%d Sekunden",m:Ts,mm:"%d Minuten",h:Ts,hh:"%d Stunden",d:Ts,dd:Ts,M:Ts,MM:Ts,y:Ts,yy:Ts},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}});var gs=["\u0796\u07ac\u0782\u07aa\u0787\u07a6\u0783\u07a9","\u078a\u07ac\u0784\u07b0\u0783\u07aa\u0787\u07a6\u0783\u07a9","\u0789\u07a7\u0783\u07a8\u0797\u07aa","\u0787\u07ad\u0795\u07b0\u0783\u07a9\u078d\u07aa","\u0789\u07ad","\u0796\u07ab\u0782\u07b0","\u0796\u07aa\u078d\u07a6\u0787\u07a8","\u0787\u07af\u078e\u07a6\u0790\u07b0\u0793\u07aa","\u0790\u07ac\u0795\u07b0\u0793\u07ac\u0789\u07b0\u0784\u07a6\u0783\u07aa","\u0787\u07ae\u0786\u07b0\u0793\u07af\u0784\u07a6\u0783\u07aa","\u0782\u07ae\u0788\u07ac\u0789\u07b0\u0784\u07a6\u0783\u07aa","\u0791\u07a8\u0790\u07ac\u0789\u07b0\u0784\u07a6\u0783\u07aa"],ws=["\u0787\u07a7\u078b\u07a8\u0787\u07b0\u078c\u07a6","\u0780\u07af\u0789\u07a6","\u0787\u07a6\u0782\u07b0\u078e\u07a7\u0783\u07a6","\u0784\u07aa\u078b\u07a6","\u0784\u07aa\u0783\u07a7\u0790\u07b0\u078a\u07a6\u078c\u07a8","\u0780\u07aa\u0786\u07aa\u0783\u07aa","\u0780\u07ae\u0782\u07a8\u0780\u07a8\u0783\u07aa"];l.defineLocale("dv",{months:gs,monthsShort:gs,weekdays:ws,weekdaysShort:ws,weekdaysMin:"\u0787\u07a7\u078b\u07a8_\u0780\u07af\u0789\u07a6_\u0787\u07a6\u0782\u07b0_\u0784\u07aa\u078b\u07a6_\u0784\u07aa\u0783\u07a7_\u0780\u07aa\u0786\u07aa_\u0780\u07ae\u0782\u07a8".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"D/M/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},meridiemParse:/\u0789\u0786|\u0789\u078a/,isPM:function(e){return"\u0789\u078a"===e},meridiem:function(e,a,t){return e<12?"\u0789\u0786":"\u0789\u078a"},calendar:{sameDay:"[\u0789\u07a8\u0787\u07a6\u078b\u07aa] LT",nextDay:"[\u0789\u07a7\u078b\u07a6\u0789\u07a7] LT",nextWeek:"dddd LT",lastDay:"[\u0787\u07a8\u0787\u07b0\u0794\u07ac] LT",lastWeek:"[\u078a\u07a7\u0787\u07a8\u078c\u07aa\u0788\u07a8] dddd LT",sameElse:"L"},relativeTime:{future:"\u078c\u07ac\u0783\u07ad\u078e\u07a6\u0787\u07a8 %s",past:"\u0786\u07aa\u0783\u07a8\u0782\u07b0 %s",s:"\u0790\u07a8\u0786\u07aa\u0782\u07b0\u078c\u07aa\u0786\u07ae\u0785\u07ac\u0787\u07b0",ss:"d% \u0790\u07a8\u0786\u07aa\u0782\u07b0\u078c\u07aa",m:"\u0789\u07a8\u0782\u07a8\u0793\u07ac\u0787\u07b0",mm:"\u0789\u07a8\u0782\u07a8\u0793\u07aa %d",h:"\u078e\u07a6\u0791\u07a8\u0787\u07a8\u0783\u07ac\u0787\u07b0",hh:"\u078e\u07a6\u0791\u07a8\u0787\u07a8\u0783\u07aa %d",d:"\u078b\u07aa\u0788\u07a6\u0780\u07ac\u0787\u07b0",dd:"\u078b\u07aa\u0788\u07a6\u0790\u07b0 %d",M:"\u0789\u07a6\u0780\u07ac\u0787\u07b0",MM:"\u0789\u07a6\u0790\u07b0 %d",y:"\u0787\u07a6\u0780\u07a6\u0783\u07ac\u0787\u07b0",yy:"\u0787\u07a6\u0780\u07a6\u0783\u07aa %d"},preparse:function(e){return e.replace(/\u060c/g,",")},postformat:function(e){return e.replace(/,/g,"\u060c")},week:{dow:7,doy:12}}),l.defineLocale("el",{monthsNominativeEl:"\u0399\u03b1\u03bd\u03bf\u03c5\u03ac\u03c1\u03b9\u03bf\u03c2_\u03a6\u03b5\u03b2\u03c1\u03bf\u03c5\u03ac\u03c1\u03b9\u03bf\u03c2_\u039c\u03ac\u03c1\u03c4\u03b9\u03bf\u03c2_\u0391\u03c0\u03c1\u03af\u03bb\u03b9\u03bf\u03c2_\u039c\u03ac\u03b9\u03bf\u03c2_\u0399\u03bf\u03cd\u03bd\u03b9\u03bf\u03c2_\u0399\u03bf\u03cd\u03bb\u03b9\u03bf\u03c2_\u0391\u03cd\u03b3\u03bf\u03c5\u03c3\u03c4\u03bf\u03c2_\u03a3\u03b5\u03c0\u03c4\u03ad\u03bc\u03b2\u03c1\u03b9\u03bf\u03c2_\u039f\u03ba\u03c4\u03ce\u03b2\u03c1\u03b9\u03bf\u03c2_\u039d\u03bf\u03ad\u03bc\u03b2\u03c1\u03b9\u03bf\u03c2_\u0394\u03b5\u03ba\u03ad\u03bc\u03b2\u03c1\u03b9\u03bf\u03c2".split("_"),monthsGenitiveEl:"\u0399\u03b1\u03bd\u03bf\u03c5\u03b1\u03c1\u03af\u03bf\u03c5_\u03a6\u03b5\u03b2\u03c1\u03bf\u03c5\u03b1\u03c1\u03af\u03bf\u03c5_\u039c\u03b1\u03c1\u03c4\u03af\u03bf\u03c5_\u0391\u03c0\u03c1\u03b9\u03bb\u03af\u03bf\u03c5_\u039c\u03b1\u0390\u03bf\u03c5_\u0399\u03bf\u03c5\u03bd\u03af\u03bf\u03c5_\u0399\u03bf\u03c5\u03bb\u03af\u03bf\u03c5_\u0391\u03c5\u03b3\u03bf\u03cd\u03c3\u03c4\u03bf\u03c5_\u03a3\u03b5\u03c0\u03c4\u03b5\u03bc\u03b2\u03c1\u03af\u03bf\u03c5_\u039f\u03ba\u03c4\u03c9\u03b2\u03c1\u03af\u03bf\u03c5_\u039d\u03bf\u03b5\u03bc\u03b2\u03c1\u03af\u03bf\u03c5_\u0394\u03b5\u03ba\u03b5\u03bc\u03b2\u03c1\u03af\u03bf\u03c5".split("_"),months:function(e,a){return e?"string"==typeof a&&/D/.test(a.substring(0,a.indexOf("MMMM")))?this._monthsGenitiveEl[e.month()]:this._monthsNominativeEl[e.month()]:this._monthsNominativeEl},monthsShort:"\u0399\u03b1\u03bd_\u03a6\u03b5\u03b2_\u039c\u03b1\u03c1_\u0391\u03c0\u03c1_\u039c\u03b1\u03ca_\u0399\u03bf\u03c5\u03bd_\u0399\u03bf\u03c5\u03bb_\u0391\u03c5\u03b3_\u03a3\u03b5\u03c0_\u039f\u03ba\u03c4_\u039d\u03bf\u03b5_\u0394\u03b5\u03ba".split("_"),weekdays:"\u039a\u03c5\u03c1\u03b9\u03b1\u03ba\u03ae_\u0394\u03b5\u03c5\u03c4\u03ad\u03c1\u03b1_\u03a4\u03c1\u03af\u03c4\u03b7_\u03a4\u03b5\u03c4\u03ac\u03c1\u03c4\u03b7_\u03a0\u03ad\u03bc\u03c0\u03c4\u03b7_\u03a0\u03b1\u03c1\u03b1\u03c3\u03ba\u03b5\u03c5\u03ae_\u03a3\u03ac\u03b2\u03b2\u03b1\u03c4\u03bf".split("_"),weekdaysShort:"\u039a\u03c5\u03c1_\u0394\u03b5\u03c5_\u03a4\u03c1\u03b9_\u03a4\u03b5\u03c4_\u03a0\u03b5\u03bc_\u03a0\u03b1\u03c1_\u03a3\u03b1\u03b2".split("_"),weekdaysMin:"\u039a\u03c5_\u0394\u03b5_\u03a4\u03c1_\u03a4\u03b5_\u03a0\u03b5_\u03a0\u03b1_\u03a3\u03b1".split("_"),meridiem:function(e,a,t){return 11<e?t?"\u03bc\u03bc":"\u039c\u039c":t?"\u03c0\u03bc":"\u03a0\u039c"},isPM:function(e){return"\u03bc"===(e+"").toLowerCase()[0]},meridiemParse:/[\u03a0\u039c]\.?\u039c?\.?/i,longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendarEl:{sameDay:"[\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1 {}] LT",nextDay:"[\u0391\u03cd\u03c1\u03b9\u03bf {}] LT",nextWeek:"dddd [{}] LT",lastDay:"[\u03a7\u03b8\u03b5\u03c2 {}] LT",lastWeek:function(){switch(this.day()){case 6:return"[\u03c4\u03bf \u03c0\u03c1\u03bf\u03b7\u03b3\u03bf\u03cd\u03bc\u03b5\u03bd\u03bf] dddd [{}] LT";default:return"[\u03c4\u03b7\u03bd \u03c0\u03c1\u03bf\u03b7\u03b3\u03bf\u03cd\u03bc\u03b5\u03bd\u03b7] dddd [{}] LT"}},sameElse:"L"},calendar:function(e,a){var t=this._calendarEl[e],s=a&&a.hours();return H(t)&&(t=t.apply(a)),t.replace("{}",s%12==1?"\u03c3\u03c4\u03b7":"\u03c3\u03c4\u03b9\u03c2")},relativeTime:{future:"\u03c3\u03b5 %s",past:"%s \u03c0\u03c1\u03b9\u03bd",s:"\u03bb\u03af\u03b3\u03b1 \u03b4\u03b5\u03c5\u03c4\u03b5\u03c1\u03cc\u03bb\u03b5\u03c0\u03c4\u03b1",ss:"%d \u03b4\u03b5\u03c5\u03c4\u03b5\u03c1\u03cc\u03bb\u03b5\u03c0\u03c4\u03b1",m:"\u03ad\u03bd\u03b1 \u03bb\u03b5\u03c0\u03c4\u03cc",mm:"%d \u03bb\u03b5\u03c0\u03c4\u03ac",h:"\u03bc\u03af\u03b1 \u03ce\u03c1\u03b1",hh:"%d \u03ce\u03c1\u03b5\u03c2",d:"\u03bc\u03af\u03b1 \u03bc\u03ad\u03c1\u03b1",dd:"%d \u03bc\u03ad\u03c1\u03b5\u03c2",M:"\u03ad\u03bd\u03b1\u03c2 \u03bc\u03ae\u03bd\u03b1\u03c2",MM:"%d \u03bc\u03ae\u03bd\u03b5\u03c2",y:"\u03ad\u03bd\u03b1\u03c2 \u03c7\u03c1\u03cc\u03bd\u03bf\u03c2",yy:"%d \u03c7\u03c1\u03cc\u03bd\u03b9\u03b1"},dayOfMonthOrdinalParse:/\d{1,2}\u03b7/,ordinal:"%d\u03b7",week:{dow:1,doy:4}}),l.defineLocale("en-SG",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}}),l.defineLocale("en-au",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}}),l.defineLocale("en-ca",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"YYYY-MM-DD",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY h:mm A",LLLL:"dddd, MMMM D, YYYY h:mm A"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")}}),l.defineLocale("en-gb",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}}),l.defineLocale("en-ie",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}}),l.defineLocale("en-il",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")}}),l.defineLocale("en-nz",{months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",ss:"%d seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}}),l.defineLocale("eo",{months:"januaro_februaro_marto_aprilo_majo_junio_julio_a\u016dgusto_septembro_oktobro_novembro_decembro".split("_"),monthsShort:"jan_feb_mar_apr_maj_jun_jul_a\u016dg_sep_okt_nov_dec".split("_"),weekdays:"diman\u0109o_lundo_mardo_merkredo_\u0135a\u016ddo_vendredo_sabato".split("_"),weekdaysShort:"dim_lun_mard_merk_\u0135a\u016d_ven_sab".split("_"),weekdaysMin:"di_lu_ma_me_\u0135a_ve_sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"D[-a de] MMMM, YYYY",LLL:"D[-a de] MMMM, YYYY HH:mm",LLLL:"dddd, [la] D[-a de] MMMM, YYYY HH:mm"},meridiemParse:/[ap]\.t\.m/i,isPM:function(e){return"p"===e.charAt(0).toLowerCase()},meridiem:function(e,a,t){return 11<e?t?"p.t.m.":"P.T.M.":t?"a.t.m.":"A.T.M."},calendar:{sameDay:"[Hodia\u016d je] LT",nextDay:"[Morga\u016d je] LT",nextWeek:"dddd [je] LT",lastDay:"[Hiera\u016d je] LT",lastWeek:"[pasinta] dddd [je] LT",sameElse:"L"},relativeTime:{future:"post %s",past:"anta\u016d %s",s:"sekundoj",ss:"%d sekundoj",m:"minuto",mm:"%d minutoj",h:"horo",hh:"%d horoj",d:"tago",dd:"%d tagoj",M:"monato",MM:"%d monatoj",y:"jaro",yy:"%d jaroj"},dayOfMonthOrdinalParse:/\d{1,2}a/,ordinal:"%da",week:{dow:1,doy:7}});var vs="ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),Ss="ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic".split("_"),Hs=[/^ene/i,/^feb/i,/^mar/i,/^abr/i,/^may/i,/^jun/i,/^jul/i,/^ago/i,/^sep/i,/^oct/i,/^nov/i,/^dic/i],bs=/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;l.defineLocale("es-do",{months:"enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split("_"),monthsShort:function(e,a){return e?/-MMM-/.test(a)?Ss[e.month()]:vs[e.month()]:vs},monthsRegex:bs,monthsShortRegex:bs,monthsStrictRegex:/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,monthsShortStrictRegex:/^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,monthsParse:Hs,longMonthsParse:Hs,shortMonthsParse:Hs,weekdays:"domingo_lunes_martes_mi\xe9rcoles_jueves_viernes_s\xe1bado".split("_"),weekdaysShort:"dom._lun._mar._mi\xe9._jue._vie._s\xe1b.".split("_"),weekdaysMin:"do_lu_ma_mi_ju_vi_s\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY h:mm A",LLLL:"dddd, D [de] MMMM [de] YYYY h:mm A"},calendar:{sameDay:function(){return"[hoy a la"+(1!==this.hours()?"s":"")+"] LT"},nextDay:function(){return"[ma\xf1ana a la"+(1!==this.hours()?"s":"")+"] LT"},nextWeek:function(){return"dddd [a la"+(1!==this.hours()?"s":"")+"] LT"},lastDay:function(){return"[ayer a la"+(1!==this.hours()?"s":"")+"] LT"},lastWeek:function(){return"[el] dddd [pasado a la"+(1!==this.hours()?"s":"")+"] LT"},sameElse:"L"},relativeTime:{future:"en %s",past:"hace %s",s:"unos segundos",ss:"%d segundos",m:"un minuto",mm:"%d minutos",h:"una hora",hh:"%d horas",d:"un d\xeda",dd:"%d d\xedas",M:"un mes",MM:"%d meses",y:"un a\xf1o",yy:"%d a\xf1os"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}});var js="ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),xs="ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic".split("_"),Os=[/^ene/i,/^feb/i,/^mar/i,/^abr/i,/^may/i,/^jun/i,/^jul/i,/^ago/i,/^sep/i,/^oct/i,/^nov/i,/^dic/i],Ps=/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;l.defineLocale("es-us",{months:"enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split("_"),monthsShort:function(e,a){return e?/-MMM-/.test(a)?xs[e.month()]:js[e.month()]:js},monthsRegex:Ps,monthsShortRegex:Ps,monthsStrictRegex:/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,monthsShortStrictRegex:/^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,monthsParse:Os,longMonthsParse:Os,shortMonthsParse:Os,weekdays:"domingo_lunes_martes_mi\xe9rcoles_jueves_viernes_s\xe1bado".split("_"),weekdaysShort:"dom._lun._mar._mi\xe9._jue._vie._s\xe1b.".split("_"),weekdaysMin:"do_lu_ma_mi_ju_vi_s\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"MM/DD/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY h:mm A",LLLL:"dddd, D [de] MMMM [de] YYYY h:mm A"},calendar:{sameDay:function(){return"[hoy a la"+(1!==this.hours()?"s":"")+"] LT"},nextDay:function(){return"[ma\xf1ana a la"+(1!==this.hours()?"s":"")+"] LT"},nextWeek:function(){return"dddd [a la"+(1!==this.hours()?"s":"")+"] LT"},lastDay:function(){return"[ayer a la"+(1!==this.hours()?"s":"")+"] LT"},lastWeek:function(){return"[el] dddd [pasado a la"+(1!==this.hours()?"s":"")+"] LT"},sameElse:"L"},relativeTime:{future:"en %s",past:"hace %s",s:"unos segundos",ss:"%d segundos",m:"un minuto",mm:"%d minutos",h:"una hora",hh:"%d horas",d:"un d\xeda",dd:"%d d\xedas",M:"un mes",MM:"%d meses",y:"un a\xf1o",yy:"%d a\xf1os"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:0,doy:6}});var Ws="ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),As="ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic".split("_"),Es=[/^ene/i,/^feb/i,/^mar/i,/^abr/i,/^may/i,/^jun/i,/^jul/i,/^ago/i,/^sep/i,/^oct/i,/^nov/i,/^dic/i],Fs=/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;function zs(e,a,t,s){var n={s:["m\xf5ne sekundi","m\xf5ni sekund","paar sekundit"],ss:[e+"sekundi",e+"sekundit"],m:["\xfche minuti","\xfcks minut"],mm:[e+" minuti",e+" minutit"],h:["\xfche tunni","tund aega","\xfcks tund"],hh:[e+" tunni",e+" tundi"],d:["\xfche p\xe4eva","\xfcks p\xe4ev"],M:["kuu aja","kuu aega","\xfcks kuu"],MM:[e+" kuu",e+" kuud"],y:["\xfche aasta","aasta","\xfcks aasta"],yy:[e+" aasta",e+" aastat"]};return a?n[t][2]?n[t][2]:n[t][1]:s?n[t][0]:n[t][1]}l.defineLocale("es",{months:"enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split("_"),monthsShort:function(e,a){return e?/-MMM-/.test(a)?As[e.month()]:Ws[e.month()]:Ws},monthsRegex:Fs,monthsShortRegex:Fs,monthsStrictRegex:/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,monthsShortStrictRegex:/^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,monthsParse:Es,longMonthsParse:Es,shortMonthsParse:Es,weekdays:"domingo_lunes_martes_mi\xe9rcoles_jueves_viernes_s\xe1bado".split("_"),weekdaysShort:"dom._lun._mar._mi\xe9._jue._vie._s\xe1b.".split("_"),weekdaysMin:"do_lu_ma_mi_ju_vi_s\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY H:mm",LLLL:"dddd, D [de] MMMM [de] YYYY H:mm"},calendar:{sameDay:function(){return"[hoy a la"+(1!==this.hours()?"s":"")+"] LT"},nextDay:function(){return"[ma\xf1ana a la"+(1!==this.hours()?"s":"")+"] LT"},nextWeek:function(){return"dddd [a la"+(1!==this.hours()?"s":"")+"] LT"},lastDay:function(){return"[ayer a la"+(1!==this.hours()?"s":"")+"] LT"},lastWeek:function(){return"[el] dddd [pasado a la"+(1!==this.hours()?"s":"")+"] LT"},sameElse:"L"},relativeTime:{future:"en %s",past:"hace %s",s:"unos segundos",ss:"%d segundos",m:"un minuto",mm:"%d minutos",h:"una hora",hh:"%d horas",d:"un d\xeda",dd:"%d d\xedas",M:"un mes",MM:"%d meses",y:"un a\xf1o",yy:"%d a\xf1os"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}}),l.defineLocale("et",{months:"jaanuar_veebruar_m\xe4rts_aprill_mai_juuni_juuli_august_september_oktoober_november_detsember".split("_"),monthsShort:"jaan_veebr_m\xe4rts_apr_mai_juuni_juuli_aug_sept_okt_nov_dets".split("_"),weekdays:"p\xfchap\xe4ev_esmasp\xe4ev_teisip\xe4ev_kolmap\xe4ev_neljap\xe4ev_reede_laup\xe4ev".split("_"),weekdaysShort:"P_E_T_K_N_R_L".split("_"),weekdaysMin:"P_E_T_K_N_R_L".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[T\xe4na,] LT",nextDay:"[Homme,] LT",nextWeek:"[J\xe4rgmine] dddd LT",lastDay:"[Eile,] LT",lastWeek:"[Eelmine] dddd LT",sameElse:"L"},relativeTime:{future:"%s p\xe4rast",past:"%s tagasi",s:zs,ss:zs,m:zs,mm:zs,h:zs,hh:zs,d:zs,dd:"%d p\xe4eva",M:zs,MM:zs,y:zs,yy:zs},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("eu",{months:"urtarrila_otsaila_martxoa_apirila_maiatza_ekaina_uztaila_abuztua_iraila_urria_azaroa_abendua".split("_"),monthsShort:"urt._ots._mar._api._mai._eka._uzt._abu._ira._urr._aza._abe.".split("_"),monthsParseExact:!0,weekdays:"igandea_astelehena_asteartea_asteazkena_osteguna_ostirala_larunbata".split("_"),weekdaysShort:"ig._al._ar._az._og._ol._lr.".split("_"),weekdaysMin:"ig_al_ar_az_og_ol_lr".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"YYYY[ko] MMMM[ren] D[a]",LLL:"YYYY[ko] MMMM[ren] D[a] HH:mm",LLLL:"dddd, YYYY[ko] MMMM[ren] D[a] HH:mm",l:"YYYY-M-D",ll:"YYYY[ko] MMM D[a]",lll:"YYYY[ko] MMM D[a] HH:mm",llll:"ddd, YYYY[ko] MMM D[a] HH:mm"},calendar:{sameDay:"[gaur] LT[etan]",nextDay:"[bihar] LT[etan]",nextWeek:"dddd LT[etan]",lastDay:"[atzo] LT[etan]",lastWeek:"[aurreko] dddd LT[etan]",sameElse:"L"},relativeTime:{future:"%s barru",past:"duela %s",s:"segundo batzuk",ss:"%d segundo",m:"minutu bat",mm:"%d minutu",h:"ordu bat",hh:"%d ordu",d:"egun bat",dd:"%d egun",M:"hilabete bat",MM:"%d hilabete",y:"urte bat",yy:"%d urte"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}});var Js={1:"\u06f1",2:"\u06f2",3:"\u06f3",4:"\u06f4",5:"\u06f5",6:"\u06f6",7:"\u06f7",8:"\u06f8",9:"\u06f9",0:"\u06f0"},Ns={"\u06f1":"1","\u06f2":"2","\u06f3":"3","\u06f4":"4","\u06f5":"5","\u06f6":"6","\u06f7":"7","\u06f8":"8","\u06f9":"9","\u06f0":"0"};l.defineLocale("fa",{months:"\u0698\u0627\u0646\u0648\u06cc\u0647_\u0641\u0648\u0631\u06cc\u0647_\u0645\u0627\u0631\u0633_\u0622\u0648\u0631\u06cc\u0644_\u0645\u0647_\u0698\u0648\u0626\u0646_\u0698\u0648\u0626\u06cc\u0647_\u0627\u0648\u062a_\u0633\u067e\u062a\u0627\u0645\u0628\u0631_\u0627\u06a9\u062a\u0628\u0631_\u0646\u0648\u0627\u0645\u0628\u0631_\u062f\u0633\u0627\u0645\u0628\u0631".split("_"),monthsShort:"\u0698\u0627\u0646\u0648\u06cc\u0647_\u0641\u0648\u0631\u06cc\u0647_\u0645\u0627\u0631\u0633_\u0622\u0648\u0631\u06cc\u0644_\u0645\u0647_\u0698\u0648\u0626\u0646_\u0698\u0648\u0626\u06cc\u0647_\u0627\u0648\u062a_\u0633\u067e\u062a\u0627\u0645\u0628\u0631_\u0627\u06a9\u062a\u0628\u0631_\u0646\u0648\u0627\u0645\u0628\u0631_\u062f\u0633\u0627\u0645\u0628\u0631".split("_"),weekdays:"\u06cc\u06a9\u200c\u0634\u0646\u0628\u0647_\u062f\u0648\u0634\u0646\u0628\u0647_\u0633\u0647\u200c\u0634\u0646\u0628\u0647_\u0686\u0647\u0627\u0631\u0634\u0646\u0628\u0647_\u067e\u0646\u062c\u200c\u0634\u0646\u0628\u0647_\u062c\u0645\u0639\u0647_\u0634\u0646\u0628\u0647".split("_"),weekdaysShort:"\u06cc\u06a9\u200c\u0634\u0646\u0628\u0647_\u062f\u0648\u0634\u0646\u0628\u0647_\u0633\u0647\u200c\u0634\u0646\u0628\u0647_\u0686\u0647\u0627\u0631\u0634\u0646\u0628\u0647_\u067e\u0646\u062c\u200c\u0634\u0646\u0628\u0647_\u062c\u0645\u0639\u0647_\u0634\u0646\u0628\u0647".split("_"),weekdaysMin:"\u06cc_\u062f_\u0633_\u0686_\u067e_\u062c_\u0634".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},meridiemParse:/\u0642\u0628\u0644 \u0627\u0632 \u0638\u0647\u0631|\u0628\u0639\u062f \u0627\u0632 \u0638\u0647\u0631/,isPM:function(e){return/\u0628\u0639\u062f \u0627\u0632 \u0638\u0647\u0631/.test(e)},meridiem:function(e,a,t){return e<12?"\u0642\u0628\u0644 \u0627\u0632 \u0638\u0647\u0631":"\u0628\u0639\u062f \u0627\u0632 \u0638\u0647\u0631"},calendar:{sameDay:"[\u0627\u0645\u0631\u0648\u0632 \u0633\u0627\u0639\u062a] LT",nextDay:"[\u0641\u0631\u062f\u0627 \u0633\u0627\u0639\u062a] LT",nextWeek:"dddd [\u0633\u0627\u0639\u062a] LT",lastDay:"[\u062f\u06cc\u0631\u0648\u0632 \u0633\u0627\u0639\u062a] LT",lastWeek:"dddd [\u067e\u06cc\u0634] [\u0633\u0627\u0639\u062a] LT",sameElse:"L"},relativeTime:{future:"\u062f\u0631 %s",past:"%s \u067e\u06cc\u0634",s:"\u0686\u0646\u062f \u062b\u0627\u0646\u06cc\u0647",ss:"\u062b\u0627\u0646\u06cc\u0647 d%",m:"\u06cc\u06a9 \u062f\u0642\u06cc\u0642\u0647",mm:"%d \u062f\u0642\u06cc\u0642\u0647",h:"\u06cc\u06a9 \u0633\u0627\u0639\u062a",hh:"%d \u0633\u0627\u0639\u062a",d:"\u06cc\u06a9 \u0631\u0648\u0632",dd:"%d \u0631\u0648\u0632",M:"\u06cc\u06a9 \u0645\u0627\u0647",MM:"%d \u0645\u0627\u0647",y:"\u06cc\u06a9 \u0633\u0627\u0644",yy:"%d \u0633\u0627\u0644"},preparse:function(e){return e.replace(/[\u06f0-\u06f9]/g,function(e){return Ns[e]}).replace(/\u060c/g,",")},postformat:function(e){return e.replace(/\d/g,function(e){return Js[e]}).replace(/,/g,"\u060c")},dayOfMonthOrdinalParse:/\d{1,2}\u0645/,ordinal:"%d\u0645",week:{dow:6,doy:12}});var Rs="nolla yksi kaksi kolme nelj\xe4 viisi kuusi seitsem\xe4n kahdeksan yhdeks\xe4n".split(" "),Cs=["nolla","yhden","kahden","kolmen","nelj\xe4n","viiden","kuuden",Rs[7],Rs[8],Rs[9]];function Is(e,a,t,s){var n,d,r="";switch(t){case"s":return s?"muutaman sekunnin":"muutama sekunti";case"ss":return s?"sekunnin":"sekuntia";case"m":return s?"minuutin":"minuutti";case"mm":r=s?"minuutin":"minuuttia";break;case"h":return s?"tunnin":"tunti";case"hh":r=s?"tunnin":"tuntia";break;case"d":return s?"p\xe4iv\xe4n":"p\xe4iv\xe4";case"dd":r=s?"p\xe4iv\xe4n":"p\xe4iv\xe4\xe4";break;case"M":return s?"kuukauden":"kuukausi";case"MM":r=s?"kuukauden":"kuukautta";break;case"y":return s?"vuoden":"vuosi";case"yy":r=s?"vuoden":"vuotta";break}return d=s,r=((n=e)<10?d?Cs[n]:Rs[n]:n)+" "+r}l.defineLocale("fi",{months:"tammikuu_helmikuu_maaliskuu_huhtikuu_toukokuu_kes\xe4kuu_hein\xe4kuu_elokuu_syyskuu_lokakuu_marraskuu_joulukuu".split("_"),monthsShort:"tammi_helmi_maalis_huhti_touko_kes\xe4_hein\xe4_elo_syys_loka_marras_joulu".split("_"),weekdays:"sunnuntai_maanantai_tiistai_keskiviikko_torstai_perjantai_lauantai".split("_"),weekdaysShort:"su_ma_ti_ke_to_pe_la".split("_"),weekdaysMin:"su_ma_ti_ke_to_pe_la".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD.MM.YYYY",LL:"Do MMMM[ta] YYYY",LLL:"Do MMMM[ta] YYYY, [klo] HH.mm",LLLL:"dddd, Do MMMM[ta] YYYY, [klo] HH.mm",l:"D.M.YYYY",ll:"Do MMM YYYY",lll:"Do MMM YYYY, [klo] HH.mm",llll:"ddd, Do MMM YYYY, [klo] HH.mm"},calendar:{sameDay:"[t\xe4n\xe4\xe4n] [klo] LT",nextDay:"[huomenna] [klo] LT",nextWeek:"dddd [klo] LT",lastDay:"[eilen] [klo] LT",lastWeek:"[viime] dddd[na] [klo] LT",sameElse:"L"},relativeTime:{future:"%s p\xe4\xe4st\xe4",past:"%s sitten",s:Is,ss:Is,m:Is,mm:Is,h:Is,hh:Is,d:Is,dd:Is,M:Is,MM:Is,y:Is,yy:Is},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("fo",{months:"januar_februar_mars_apr\xedl_mai_juni_juli_august_september_oktober_november_desember".split("_"),monthsShort:"jan_feb_mar_apr_mai_jun_jul_aug_sep_okt_nov_des".split("_"),weekdays:"sunnudagur_m\xe1nadagur_t\xfdsdagur_mikudagur_h\xf3sdagur_fr\xedggjadagur_leygardagur".split("_"),weekdaysShort:"sun_m\xe1n_t\xfds_mik_h\xf3s_fr\xed_ley".split("_"),weekdaysMin:"su_m\xe1_t\xfd_mi_h\xf3_fr_le".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D. MMMM, YYYY HH:mm"},calendar:{sameDay:"[\xcd dag kl.] LT",nextDay:"[\xcd morgin kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[\xcd gj\xe1r kl.] LT",lastWeek:"[s\xed\xf0stu] dddd [kl] LT",sameElse:"L"},relativeTime:{future:"um %s",past:"%s s\xed\xf0ani",s:"f\xe1 sekund",ss:"%d sekundir",m:"ein minuttur",mm:"%d minuttir",h:"ein t\xedmi",hh:"%d t\xedmar",d:"ein dagur",dd:"%d dagar",M:"ein m\xe1na\xf0ur",MM:"%d m\xe1na\xf0ir",y:"eitt \xe1r",yy:"%d \xe1r"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("fr-ca",{months:"janvier_f\xe9vrier_mars_avril_mai_juin_juillet_ao\xfbt_septembre_octobre_novembre_d\xe9cembre".split("_"),monthsShort:"janv._f\xe9vr._mars_avr._mai_juin_juil._ao\xfbt_sept._oct._nov._d\xe9c.".split("_"),monthsParseExact:!0,weekdays:"dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),weekdaysShort:"dim._lun._mar._mer._jeu._ven._sam.".split("_"),weekdaysMin:"di_lu_ma_me_je_ve_sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Aujourd\u2019hui \xe0] LT",nextDay:"[Demain \xe0] LT",nextWeek:"dddd [\xe0] LT",lastDay:"[Hier \xe0] LT",lastWeek:"dddd [dernier \xe0] LT",sameElse:"L"},relativeTime:{future:"dans %s",past:"il y a %s",s:"quelques secondes",ss:"%d secondes",m:"une minute",mm:"%d minutes",h:"une heure",hh:"%d heures",d:"un jour",dd:"%d jours",M:"un mois",MM:"%d mois",y:"un an",yy:"%d ans"},dayOfMonthOrdinalParse:/\d{1,2}(er|e)/,ordinal:function(e,a){switch(a){default:case"M":case"Q":case"D":case"DDD":case"d":return e+(1===e?"er":"e");case"w":case"W":return e+(1===e?"re":"e")}}}),l.defineLocale("fr-ch",{months:"janvier_f\xe9vrier_mars_avril_mai_juin_juillet_ao\xfbt_septembre_octobre_novembre_d\xe9cembre".split("_"),monthsShort:"janv._f\xe9vr._mars_avr._mai_juin_juil._ao\xfbt_sept._oct._nov._d\xe9c.".split("_"),monthsParseExact:!0,weekdays:"dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),weekdaysShort:"dim._lun._mar._mer._jeu._ven._sam.".split("_"),weekdaysMin:"di_lu_ma_me_je_ve_sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Aujourd\u2019hui \xe0] LT",nextDay:"[Demain \xe0] LT",nextWeek:"dddd [\xe0] LT",lastDay:"[Hier \xe0] LT",lastWeek:"dddd [dernier \xe0] LT",sameElse:"L"},relativeTime:{future:"dans %s",past:"il y a %s",s:"quelques secondes",ss:"%d secondes",m:"une minute",mm:"%d minutes",h:"une heure",hh:"%d heures",d:"un jour",dd:"%d jours",M:"un mois",MM:"%d mois",y:"un an",yy:"%d ans"},dayOfMonthOrdinalParse:/\d{1,2}(er|e)/,ordinal:function(e,a){switch(a){default:case"M":case"Q":case"D":case"DDD":case"d":return e+(1===e?"er":"e");case"w":case"W":return e+(1===e?"re":"e")}},week:{dow:1,doy:4}}),l.defineLocale("fr",{months:"janvier_f\xe9vrier_mars_avril_mai_juin_juillet_ao\xfbt_septembre_octobre_novembre_d\xe9cembre".split("_"),monthsShort:"janv._f\xe9vr._mars_avr._mai_juin_juil._ao\xfbt_sept._oct._nov._d\xe9c.".split("_"),monthsParseExact:!0,weekdays:"dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi".split("_"),weekdaysShort:"dim._lun._mar._mer._jeu._ven._sam.".split("_"),weekdaysMin:"di_lu_ma_me_je_ve_sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Aujourd\u2019hui \xe0] LT",nextDay:"[Demain \xe0] LT",nextWeek:"dddd [\xe0] LT",lastDay:"[Hier \xe0] LT",lastWeek:"dddd [dernier \xe0] LT",sameElse:"L"},relativeTime:{future:"dans %s",past:"il y a %s",s:"quelques secondes",ss:"%d secondes",m:"une minute",mm:"%d minutes",h:"une heure",hh:"%d heures",d:"un jour",dd:"%d jours",M:"un mois",MM:"%d mois",y:"un an",yy:"%d ans"},dayOfMonthOrdinalParse:/\d{1,2}(er|)/,ordinal:function(e,a){switch(a){case"D":return e+(1===e?"er":"");default:case"M":case"Q":case"DDD":case"d":return e+(1===e?"er":"e");case"w":case"W":return e+(1===e?"re":"e")}},week:{dow:1,doy:4}});var Us="jan._feb._mrt._apr._mai_jun._jul._aug._sep._okt._nov._des.".split("_"),Gs="jan_feb_mrt_apr_mai_jun_jul_aug_sep_okt_nov_des".split("_");l.defineLocale("fy",{months:"jannewaris_febrewaris_maart_april_maaie_juny_july_augustus_septimber_oktober_novimber_desimber".split("_"),monthsShort:function(e,a){return e?/-MMM-/.test(a)?Gs[e.month()]:Us[e.month()]:Us},monthsParseExact:!0,weekdays:"snein_moandei_tiisdei_woansdei_tongersdei_freed_sneon".split("_"),weekdaysShort:"si._mo._ti._wo._to._fr._so.".split("_"),weekdaysMin:"Si_Mo_Ti_Wo_To_Fr_So".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[hjoed om] LT",nextDay:"[moarn om] LT",nextWeek:"dddd [om] LT",lastDay:"[juster om] LT",lastWeek:"[\xf4fr\xfbne] dddd [om] LT",sameElse:"L"},relativeTime:{future:"oer %s",past:"%s lyn",s:"in pear sekonden",ss:"%d sekonden",m:"ien min\xfat",mm:"%d minuten",h:"ien oere",hh:"%d oeren",d:"ien dei",dd:"%d dagen",M:"ien moanne",MM:"%d moannen",y:"ien jier",yy:"%d jierren"},dayOfMonthOrdinalParse:/\d{1,2}(ste|de)/,ordinal:function(e){return e+(1===e||8===e||20<=e?"ste":"de")},week:{dow:1,doy:4}});l.defineLocale("ga",{months:["Ean\xe1ir","Feabhra","M\xe1rta","Aibre\xe1n","Bealtaine","M\xe9itheamh","I\xfail","L\xfanasa","Me\xe1n F\xf3mhair","Deaireadh F\xf3mhair","Samhain","Nollaig"],monthsShort:["Ean\xe1","Feab","M\xe1rt","Aibr","Beal","M\xe9it","I\xfail","L\xfana","Me\xe1n","Deai","Samh","Noll"],monthsParseExact:!0,weekdays:["D\xe9 Domhnaigh","D\xe9 Luain","D\xe9 M\xe1irt","D\xe9 C\xe9adaoin","D\xe9ardaoin","D\xe9 hAoine","D\xe9 Satharn"],weekdaysShort:["Dom","Lua","M\xe1i","C\xe9a","D\xe9a","hAo","Sat"],weekdaysMin:["Do","Lu","M\xe1","Ce","D\xe9","hA","Sa"],longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Inniu ag] LT",nextDay:"[Am\xe1rach ag] LT",nextWeek:"dddd [ag] LT",lastDay:"[Inn\xe9 aig] LT",lastWeek:"dddd [seo caite] [ag] LT",sameElse:"L"},relativeTime:{future:"i %s",past:"%s \xf3 shin",s:"c\xfapla soicind",ss:"%d soicind",m:"n\xf3im\xe9ad",mm:"%d n\xf3im\xe9ad",h:"uair an chloig",hh:"%d uair an chloig",d:"l\xe1",dd:"%d l\xe1",M:"m\xed",MM:"%d m\xed",y:"bliain",yy:"%d bliain"},dayOfMonthOrdinalParse:/\d{1,2}(d|na|mh)/,ordinal:function(e){return e+(1===e?"d":e%10==2?"na":"mh")},week:{dow:1,doy:4}});function Vs(e,a,t,s){var n={s:["thodde secondanim","thodde second"],ss:[e+" secondanim",e+" second"],m:["eka mintan","ek minute"],mm:[e+" mintanim",e+" mintam"],h:["eka voran","ek vor"],hh:[e+" voranim",e+" voram"],d:["eka disan","ek dis"],dd:[e+" disanim",e+" dis"],M:["eka mhoinean","ek mhoino"],MM:[e+" mhoineanim",e+" mhoine"],y:["eka vorsan","ek voros"],yy:[e+" vorsanim",e+" vorsam"]};return a?n[t][0]:n[t][1]}l.defineLocale("gd",{months:["Am Faoilleach","An Gearran","Am M\xe0rt","An Giblean","An C\xe8itean","An t-\xd2gmhios","An t-Iuchar","An L\xf9nastal","An t-Sultain","An D\xe0mhair","An t-Samhain","An D\xf9bhlachd"],monthsShort:["Faoi","Gear","M\xe0rt","Gibl","C\xe8it","\xd2gmh","Iuch","L\xf9n","Sult","D\xe0mh","Samh","D\xf9bh"],monthsParseExact:!0,weekdays:["Did\xf2mhnaich","Diluain","Dim\xe0irt","Diciadain","Diardaoin","Dihaoine","Disathairne"],weekdaysShort:["Did","Dil","Dim","Dic","Dia","Dih","Dis"],weekdaysMin:["D\xf2","Lu","M\xe0","Ci","Ar","Ha","Sa"],longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[An-diugh aig] LT",nextDay:"[A-m\xe0ireach aig] LT",nextWeek:"dddd [aig] LT",lastDay:"[An-d\xe8 aig] LT",lastWeek:"dddd [seo chaidh] [aig] LT",sameElse:"L"},relativeTime:{future:"ann an %s",past:"bho chionn %s",s:"beagan diogan",ss:"%d diogan",m:"mionaid",mm:"%d mionaidean",h:"uair",hh:"%d uairean",d:"latha",dd:"%d latha",M:"m\xecos",MM:"%d m\xecosan",y:"bliadhna",yy:"%d bliadhna"},dayOfMonthOrdinalParse:/\d{1,2}(d|na|mh)/,ordinal:function(e){return e+(1===e?"d":e%10==2?"na":"mh")},week:{dow:1,doy:4}}),l.defineLocale("gl",{months:"xaneiro_febreiro_marzo_abril_maio_xu\xf1o_xullo_agosto_setembro_outubro_novembro_decembro".split("_"),monthsShort:"xan._feb._mar._abr._mai._xu\xf1._xul._ago._set._out._nov._dec.".split("_"),monthsParseExact:!0,weekdays:"domingo_luns_martes_m\xe9rcores_xoves_venres_s\xe1bado".split("_"),weekdaysShort:"dom._lun._mar._m\xe9r._xov._ven._s\xe1b.".split("_"),weekdaysMin:"do_lu_ma_m\xe9_xo_ve_s\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY H:mm",LLLL:"dddd, D [de] MMMM [de] YYYY H:mm"},calendar:{sameDay:function(){return"[hoxe "+(1!==this.hours()?"\xe1s":"\xe1")+"] LT"},nextDay:function(){return"[ma\xf1\xe1 "+(1!==this.hours()?"\xe1s":"\xe1")+"] LT"},nextWeek:function(){return"dddd ["+(1!==this.hours()?"\xe1s":"a")+"] LT"},lastDay:function(){return"[onte "+(1!==this.hours()?"\xe1":"a")+"] LT"},lastWeek:function(){return"[o] dddd [pasado "+(1!==this.hours()?"\xe1s":"a")+"] LT"},sameElse:"L"},relativeTime:{future:function(e){return 0===e.indexOf("un")?"n"+e:"en "+e},past:"hai %s",s:"uns segundos",ss:"%d segundos",m:"un minuto",mm:"%d minutos",h:"unha hora",hh:"%d horas",d:"un d\xeda",dd:"%d d\xedas",M:"un mes",MM:"%d meses",y:"un ano",yy:"%d anos"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}}),l.defineLocale("gom-latn",{months:"Janer_Febrer_Mars_Abril_Mai_Jun_Julai_Agost_Setembr_Otubr_Novembr_Dezembr".split("_"),monthsShort:"Jan._Feb._Mars_Abr._Mai_Jun_Jul._Ago._Set._Otu._Nov._Dez.".split("_"),monthsParseExact:!0,weekdays:"Aitar_Somar_Mongllar_Budvar_Brestar_Sukrar_Son'var".split("_"),weekdaysShort:"Ait._Som._Mon._Bud._Bre._Suk._Son.".split("_"),weekdaysMin:"Ai_Sm_Mo_Bu_Br_Su_Sn".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"A h:mm [vazta]",LTS:"A h:mm:ss [vazta]",L:"DD-MM-YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY A h:mm [vazta]",LLLL:"dddd, MMMM[achea] Do, YYYY, A h:mm [vazta]",llll:"ddd, D MMM YYYY, A h:mm [vazta]"},calendar:{sameDay:"[Aiz] LT",nextDay:"[Faleam] LT",nextWeek:"[Ieta to] dddd[,] LT",lastDay:"[Kal] LT",lastWeek:"[Fatlo] dddd[,] LT",sameElse:"L"},relativeTime:{future:"%s",past:"%s adim",s:Vs,ss:Vs,m:Vs,mm:Vs,h:Vs,hh:Vs,d:Vs,dd:Vs,M:Vs,MM:Vs,y:Vs,yy:Vs},dayOfMonthOrdinalParse:/\d{1,2}(er)/,ordinal:function(e,a){switch(a){case"D":return e+"er";default:case"M":case"Q":case"DDD":case"d":case"w":case"W":return e}},week:{dow:1,doy:4},meridiemParse:/rati|sokalli|donparam|sanje/,meridiemHour:function(e,a){return 12===e&&(e=0),"rati"===a?e<4?e:e+12:"sokalli"===a?e:"donparam"===a?12<e?e:e+12:"sanje"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"rati":e<12?"sokalli":e<16?"donparam":e<20?"sanje":"rati"}});var Ks={1:"\u0ae7",2:"\u0ae8",3:"\u0ae9",4:"\u0aea",5:"\u0aeb",6:"\u0aec",7:"\u0aed",8:"\u0aee",9:"\u0aef",0:"\u0ae6"},Zs={"\u0ae7":"1","\u0ae8":"2","\u0ae9":"3","\u0aea":"4","\u0aeb":"5","\u0aec":"6","\u0aed":"7","\u0aee":"8","\u0aef":"9","\u0ae6":"0"};l.defineLocale("gu",{months:"\u0a9c\u0abe\u0aa8\u0acd\u0aaf\u0ac1\u0a86\u0ab0\u0ac0_\u0aab\u0ac7\u0aac\u0acd\u0ab0\u0ac1\u0a86\u0ab0\u0ac0_\u0aae\u0abe\u0ab0\u0acd\u0a9a_\u0a8f\u0aaa\u0acd\u0ab0\u0abf\u0ab2_\u0aae\u0ac7_\u0a9c\u0ac2\u0aa8_\u0a9c\u0ac1\u0ab2\u0abe\u0a88_\u0a91\u0a97\u0ab8\u0acd\u0a9f_\u0ab8\u0aaa\u0acd\u0a9f\u0ac7\u0aae\u0acd\u0aac\u0ab0_\u0a91\u0a95\u0acd\u0a9f\u0acd\u0aac\u0ab0_\u0aa8\u0ab5\u0ac7\u0aae\u0acd\u0aac\u0ab0_\u0aa1\u0abf\u0ab8\u0ac7\u0aae\u0acd\u0aac\u0ab0".split("_"),monthsShort:"\u0a9c\u0abe\u0aa8\u0acd\u0aaf\u0ac1._\u0aab\u0ac7\u0aac\u0acd\u0ab0\u0ac1._\u0aae\u0abe\u0ab0\u0acd\u0a9a_\u0a8f\u0aaa\u0acd\u0ab0\u0abf._\u0aae\u0ac7_\u0a9c\u0ac2\u0aa8_\u0a9c\u0ac1\u0ab2\u0abe._\u0a91\u0a97._\u0ab8\u0aaa\u0acd\u0a9f\u0ac7._\u0a91\u0a95\u0acd\u0a9f\u0acd._\u0aa8\u0ab5\u0ac7._\u0aa1\u0abf\u0ab8\u0ac7.".split("_"),monthsParseExact:!0,weekdays:"\u0ab0\u0ab5\u0abf\u0ab5\u0abe\u0ab0_\u0ab8\u0acb\u0aae\u0ab5\u0abe\u0ab0_\u0aae\u0a82\u0a97\u0ab3\u0ab5\u0abe\u0ab0_\u0aac\u0ac1\u0aa7\u0acd\u0ab5\u0abe\u0ab0_\u0a97\u0ac1\u0ab0\u0ac1\u0ab5\u0abe\u0ab0_\u0ab6\u0ac1\u0a95\u0acd\u0ab0\u0ab5\u0abe\u0ab0_\u0ab6\u0aa8\u0abf\u0ab5\u0abe\u0ab0".split("_"),weekdaysShort:"\u0ab0\u0ab5\u0abf_\u0ab8\u0acb\u0aae_\u0aae\u0a82\u0a97\u0ab3_\u0aac\u0ac1\u0aa7\u0acd_\u0a97\u0ac1\u0ab0\u0ac1_\u0ab6\u0ac1\u0a95\u0acd\u0ab0_\u0ab6\u0aa8\u0abf".split("_"),weekdaysMin:"\u0ab0_\u0ab8\u0acb_\u0aae\u0a82_\u0aac\u0ac1_\u0a97\u0ac1_\u0ab6\u0ac1_\u0ab6".split("_"),longDateFormat:{LT:"A h:mm \u0ab5\u0abe\u0a97\u0acd\u0aaf\u0ac7",LTS:"A h:mm:ss \u0ab5\u0abe\u0a97\u0acd\u0aaf\u0ac7",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm \u0ab5\u0abe\u0a97\u0acd\u0aaf\u0ac7",LLLL:"dddd, D MMMM YYYY, A h:mm \u0ab5\u0abe\u0a97\u0acd\u0aaf\u0ac7"},calendar:{sameDay:"[\u0a86\u0a9c] LT",nextDay:"[\u0a95\u0abe\u0ab2\u0ac7] LT",nextWeek:"dddd, LT",lastDay:"[\u0a97\u0a87\u0a95\u0abe\u0ab2\u0ac7] LT",lastWeek:"[\u0aaa\u0abe\u0a9b\u0ab2\u0abe] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0aae\u0abe",past:"%s \u0aaa\u0ac7\u0ab9\u0ab2\u0abe",s:"\u0a85\u0aae\u0ac1\u0a95 \u0aaa\u0ab3\u0acb",ss:"%d \u0ab8\u0ac7\u0a95\u0a82\u0aa1",m:"\u0a8f\u0a95 \u0aae\u0abf\u0aa8\u0abf\u0a9f",mm:"%d \u0aae\u0abf\u0aa8\u0abf\u0a9f",h:"\u0a8f\u0a95 \u0a95\u0ab2\u0abe\u0a95",hh:"%d \u0a95\u0ab2\u0abe\u0a95",d:"\u0a8f\u0a95 \u0aa6\u0abf\u0ab5\u0ab8",dd:"%d \u0aa6\u0abf\u0ab5\u0ab8",M:"\u0a8f\u0a95 \u0aae\u0ab9\u0abf\u0aa8\u0acb",MM:"%d \u0aae\u0ab9\u0abf\u0aa8\u0acb",y:"\u0a8f\u0a95 \u0ab5\u0ab0\u0acd\u0ab7",yy:"%d \u0ab5\u0ab0\u0acd\u0ab7"},preparse:function(e){return e.replace(/[\u0ae7\u0ae8\u0ae9\u0aea\u0aeb\u0aec\u0aed\u0aee\u0aef\u0ae6]/g,function(e){return Zs[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return Ks[e]})},meridiemParse:/\u0ab0\u0abe\u0aa4|\u0aac\u0aaa\u0acb\u0ab0|\u0ab8\u0ab5\u0abe\u0ab0|\u0ab8\u0abe\u0a82\u0a9c/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0ab0\u0abe\u0aa4"===a?e<4?e:e+12:"\u0ab8\u0ab5\u0abe\u0ab0"===a?e:"\u0aac\u0aaa\u0acb\u0ab0"===a?10<=e?e:e+12:"\u0ab8\u0abe\u0a82\u0a9c"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0ab0\u0abe\u0aa4":e<10?"\u0ab8\u0ab5\u0abe\u0ab0":e<17?"\u0aac\u0aaa\u0acb\u0ab0":e<20?"\u0ab8\u0abe\u0a82\u0a9c":"\u0ab0\u0abe\u0aa4"},week:{dow:0,doy:6}}),l.defineLocale("he",{months:"\u05d9\u05e0\u05d5\u05d0\u05e8_\u05e4\u05d1\u05e8\u05d5\u05d0\u05e8_\u05de\u05e8\u05e5_\u05d0\u05e4\u05e8\u05d9\u05dc_\u05de\u05d0\u05d9_\u05d9\u05d5\u05e0\u05d9_\u05d9\u05d5\u05dc\u05d9_\u05d0\u05d5\u05d2\u05d5\u05e1\u05d8_\u05e1\u05e4\u05d8\u05de\u05d1\u05e8_\u05d0\u05d5\u05e7\u05d8\u05d5\u05d1\u05e8_\u05e0\u05d5\u05d1\u05de\u05d1\u05e8_\u05d3\u05e6\u05de\u05d1\u05e8".split("_"),monthsShort:"\u05d9\u05e0\u05d5\u05f3_\u05e4\u05d1\u05e8\u05f3_\u05de\u05e8\u05e5_\u05d0\u05e4\u05e8\u05f3_\u05de\u05d0\u05d9_\u05d9\u05d5\u05e0\u05d9_\u05d9\u05d5\u05dc\u05d9_\u05d0\u05d5\u05d2\u05f3_\u05e1\u05e4\u05d8\u05f3_\u05d0\u05d5\u05e7\u05f3_\u05e0\u05d5\u05d1\u05f3_\u05d3\u05e6\u05de\u05f3".split("_"),weekdays:"\u05e8\u05d0\u05e9\u05d5\u05df_\u05e9\u05e0\u05d9_\u05e9\u05dc\u05d9\u05e9\u05d9_\u05e8\u05d1\u05d9\u05e2\u05d9_\u05d7\u05de\u05d9\u05e9\u05d9_\u05e9\u05d9\u05e9\u05d9_\u05e9\u05d1\u05ea".split("_"),weekdaysShort:"\u05d0\u05f3_\u05d1\u05f3_\u05d2\u05f3_\u05d3\u05f3_\u05d4\u05f3_\u05d5\u05f3_\u05e9\u05f3".split("_"),weekdaysMin:"\u05d0_\u05d1_\u05d2_\u05d3_\u05d4_\u05d5_\u05e9".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D [\u05d1]MMMM YYYY",LLL:"D [\u05d1]MMMM YYYY HH:mm",LLLL:"dddd, D [\u05d1]MMMM YYYY HH:mm",l:"D/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[\u05d4\u05d9\u05d5\u05dd \u05d1\u05be]LT",nextDay:"[\u05de\u05d7\u05e8 \u05d1\u05be]LT",nextWeek:"dddd [\u05d1\u05e9\u05e2\u05d4] LT",lastDay:"[\u05d0\u05ea\u05de\u05d5\u05dc \u05d1\u05be]LT",lastWeek:"[\u05d1\u05d9\u05d5\u05dd] dddd [\u05d4\u05d0\u05d7\u05e8\u05d5\u05df \u05d1\u05e9\u05e2\u05d4] LT",sameElse:"L"},relativeTime:{future:"\u05d1\u05e2\u05d5\u05d3 %s",past:"\u05dc\u05e4\u05e0\u05d9 %s",s:"\u05de\u05e1\u05e4\u05e8 \u05e9\u05e0\u05d9\u05d5\u05ea",ss:"%d \u05e9\u05e0\u05d9\u05d5\u05ea",m:"\u05d3\u05e7\u05d4",mm:"%d \u05d3\u05e7\u05d5\u05ea",h:"\u05e9\u05e2\u05d4",hh:function(e){return 2===e?"\u05e9\u05e2\u05ea\u05d9\u05d9\u05dd":e+" \u05e9\u05e2\u05d5\u05ea"},d:"\u05d9\u05d5\u05dd",dd:function(e){return 2===e?"\u05d9\u05d5\u05de\u05d9\u05d9\u05dd":e+" \u05d9\u05de\u05d9\u05dd"},M:"\u05d7\u05d5\u05d3\u05e9",MM:function(e){return 2===e?"\u05d7\u05d5\u05d3\u05e9\u05d9\u05d9\u05dd":e+" \u05d7\u05d5\u05d3\u05e9\u05d9\u05dd"},y:"\u05e9\u05e0\u05d4",yy:function(e){return 2===e?"\u05e9\u05e0\u05ea\u05d9\u05d9\u05dd":e%10==0&&10!==e?e+" \u05e9\u05e0\u05d4":e+" \u05e9\u05e0\u05d9\u05dd"}},meridiemParse:/\u05d0\u05d7\u05d4"\u05e6|\u05dc\u05e4\u05e0\u05d4"\u05e6|\u05d0\u05d7\u05e8\u05d9 \u05d4\u05e6\u05d4\u05e8\u05d9\u05d9\u05dd|\u05dc\u05e4\u05e0\u05d9 \u05d4\u05e6\u05d4\u05e8\u05d9\u05d9\u05dd|\u05dc\u05e4\u05e0\u05d5\u05ea \u05d1\u05d5\u05e7\u05e8|\u05d1\u05d1\u05d5\u05e7\u05e8|\u05d1\u05e2\u05e8\u05d1/i,isPM:function(e){return/^(\u05d0\u05d7\u05d4"\u05e6|\u05d0\u05d7\u05e8\u05d9 \u05d4\u05e6\u05d4\u05e8\u05d9\u05d9\u05dd|\u05d1\u05e2\u05e8\u05d1)$/.test(e)},meridiem:function(e,a,t){return e<5?"\u05dc\u05e4\u05e0\u05d5\u05ea \u05d1\u05d5\u05e7\u05e8":e<10?"\u05d1\u05d1\u05d5\u05e7\u05e8":e<12?t?'\u05dc\u05e4\u05e0\u05d4"\u05e6':"\u05dc\u05e4\u05e0\u05d9 \u05d4\u05e6\u05d4\u05e8\u05d9\u05d9\u05dd":e<18?t?'\u05d0\u05d7\u05d4"\u05e6':"\u05d0\u05d7\u05e8\u05d9 \u05d4\u05e6\u05d4\u05e8\u05d9\u05d9\u05dd":"\u05d1\u05e2\u05e8\u05d1"}});var $s={1:"\u0967",2:"\u0968",3:"\u0969",4:"\u096a",5:"\u096b",6:"\u096c",7:"\u096d",8:"\u096e",9:"\u096f",0:"\u0966"},Bs={"\u0967":"1","\u0968":"2","\u0969":"3","\u096a":"4","\u096b":"5","\u096c":"6","\u096d":"7","\u096e":"8","\u096f":"9","\u0966":"0"};function qs(e,a,t){var s=e+" ";switch(t){case"ss":return s+=1===e?"sekunda":2===e||3===e||4===e?"sekunde":"sekundi";case"m":return a?"jedna minuta":"jedne minute";case"mm":return s+=1===e?"minuta":2===e||3===e||4===e?"minute":"minuta";case"h":return a?"jedan sat":"jednog sata";case"hh":return s+=1===e?"sat":2===e||3===e||4===e?"sata":"sati";case"dd":return s+=1===e?"dan":"dana";case"MM":return s+=1===e?"mjesec":2===e||3===e||4===e?"mjeseca":"mjeseci";case"yy":return s+=1===e?"godina":2===e||3===e||4===e?"godine":"godina"}}l.defineLocale("hi",{months:"\u091c\u0928\u0935\u0930\u0940_\u092b\u093c\u0930\u0935\u0930\u0940_\u092e\u093e\u0930\u094d\u091a_\u0905\u092a\u094d\u0930\u0948\u0932_\u092e\u0908_\u091c\u0942\u0928_\u091c\u0941\u0932\u093e\u0908_\u0905\u0917\u0938\u094d\u0924_\u0938\u093f\u0924\u092e\u094d\u092c\u0930_\u0905\u0915\u094d\u091f\u0942\u092c\u0930_\u0928\u0935\u092e\u094d\u092c\u0930_\u0926\u093f\u0938\u092e\u094d\u092c\u0930".split("_"),monthsShort:"\u091c\u0928._\u092b\u093c\u0930._\u092e\u093e\u0930\u094d\u091a_\u0905\u092a\u094d\u0930\u0948._\u092e\u0908_\u091c\u0942\u0928_\u091c\u0941\u0932._\u0905\u0917._\u0938\u093f\u0924._\u0905\u0915\u094d\u091f\u0942._\u0928\u0935._\u0926\u093f\u0938.".split("_"),monthsParseExact:!0,weekdays:"\u0930\u0935\u093f\u0935\u093e\u0930_\u0938\u094b\u092e\u0935\u093e\u0930_\u092e\u0902\u0917\u0932\u0935\u093e\u0930_\u092c\u0941\u0927\u0935\u093e\u0930_\u0917\u0941\u0930\u0942\u0935\u093e\u0930_\u0936\u0941\u0915\u094d\u0930\u0935\u093e\u0930_\u0936\u0928\u093f\u0935\u093e\u0930".split("_"),weekdaysShort:"\u0930\u0935\u093f_\u0938\u094b\u092e_\u092e\u0902\u0917\u0932_\u092c\u0941\u0927_\u0917\u0941\u0930\u0942_\u0936\u0941\u0915\u094d\u0930_\u0936\u0928\u093f".split("_"),weekdaysMin:"\u0930_\u0938\u094b_\u092e\u0902_\u092c\u0941_\u0917\u0941_\u0936\u0941_\u0936".split("_"),longDateFormat:{LT:"A h:mm \u092c\u091c\u0947",LTS:"A h:mm:ss \u092c\u091c\u0947",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm \u092c\u091c\u0947",LLLL:"dddd, D MMMM YYYY, A h:mm \u092c\u091c\u0947"},calendar:{sameDay:"[\u0906\u091c] LT",nextDay:"[\u0915\u0932] LT",nextWeek:"dddd, LT",lastDay:"[\u0915\u0932] LT",lastWeek:"[\u092a\u093f\u091b\u0932\u0947] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u092e\u0947\u0902",past:"%s \u092a\u0939\u0932\u0947",s:"\u0915\u0941\u091b \u0939\u0940 \u0915\u094d\u0937\u0923",ss:"%d \u0938\u0947\u0915\u0902\u0921",m:"\u090f\u0915 \u092e\u093f\u0928\u091f",mm:"%d \u092e\u093f\u0928\u091f",h:"\u090f\u0915 \u0918\u0902\u091f\u093e",hh:"%d \u0918\u0902\u091f\u0947",d:"\u090f\u0915 \u0926\u093f\u0928",dd:"%d \u0926\u093f\u0928",M:"\u090f\u0915 \u092e\u0939\u0940\u0928\u0947",MM:"%d \u092e\u0939\u0940\u0928\u0947",y:"\u090f\u0915 \u0935\u0930\u094d\u0937",yy:"%d \u0935\u0930\u094d\u0937"},preparse:function(e){return e.replace(/[\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e\u096f\u0966]/g,function(e){return Bs[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return $s[e]})},meridiemParse:/\u0930\u093e\u0924|\u0938\u0941\u092c\u0939|\u0926\u094b\u092a\u0939\u0930|\u0936\u093e\u092e/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0930\u093e\u0924"===a?e<4?e:e+12:"\u0938\u0941\u092c\u0939"===a?e:"\u0926\u094b\u092a\u0939\u0930"===a?10<=e?e:e+12:"\u0936\u093e\u092e"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0930\u093e\u0924":e<10?"\u0938\u0941\u092c\u0939":e<17?"\u0926\u094b\u092a\u0939\u0930":e<20?"\u0936\u093e\u092e":"\u0930\u093e\u0924"},week:{dow:0,doy:6}}),l.defineLocale("hr",{months:{format:"sije\u010dnja_velja\u010de_o\u017eujka_travnja_svibnja_lipnja_srpnja_kolovoza_rujna_listopada_studenoga_prosinca".split("_"),standalone:"sije\u010danj_velja\u010da_o\u017eujak_travanj_svibanj_lipanj_srpanj_kolovoz_rujan_listopad_studeni_prosinac".split("_")},monthsShort:"sij._velj._o\u017eu._tra._svi._lip._srp._kol._ruj._lis._stu._pro.".split("_"),monthsParseExact:!0,weekdays:"nedjelja_ponedjeljak_utorak_srijeda_\u010detvrtak_petak_subota".split("_"),weekdaysShort:"ned._pon._uto._sri._\u010det._pet._sub.".split("_"),weekdaysMin:"ne_po_ut_sr_\u010de_pe_su".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedjelju] [u] LT";case 3:return"[u] [srijedu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[ju\u010der u] LT",lastWeek:function(){switch(this.day()){case 0:case 3:return"[pro\u0161lu] dddd [u] LT";case 6:return"[pro\u0161le] [subote] [u] LT";case 1:case 2:case 4:case 5:return"[pro\u0161li] dddd [u] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"prije %s",s:"par sekundi",ss:qs,m:qs,mm:qs,h:qs,hh:qs,d:"dan",dd:qs,M:"mjesec",MM:qs,y:"godinu",yy:qs},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}});var Qs="vas\xe1rnap h\xe9tf\u0151n kedden szerd\xe1n cs\xfct\xf6rt\xf6k\xf6n p\xe9nteken szombaton".split(" ");function Xs(e,a,t,s){var n=e;switch(t){case"s":return s||a?"n\xe9h\xe1ny m\xe1sodperc":"n\xe9h\xe1ny m\xe1sodperce";case"ss":return n+(s||a)?" m\xe1sodperc":" m\xe1sodperce";case"m":return"egy"+(s||a?" perc":" perce");case"mm":return n+(s||a?" perc":" perce");case"h":return"egy"+(s||a?" \xf3ra":" \xf3r\xe1ja");case"hh":return n+(s||a?" \xf3ra":" \xf3r\xe1ja");case"d":return"egy"+(s||a?" nap":" napja");case"dd":return n+(s||a?" nap":" napja");case"M":return"egy"+(s||a?" h\xf3nap":" h\xf3napja");case"MM":return n+(s||a?" h\xf3nap":" h\xf3napja");case"y":return"egy"+(s||a?" \xe9v":" \xe9ve");case"yy":return n+(s||a?" \xe9v":" \xe9ve")}return""}function en(e){return(e?"":"[m\xfalt] ")+"["+Qs[this.day()]+"] LT[-kor]"}function an(e){return e%100==11||e%10!=1}function tn(e,a,t,s){var n=e+" ";switch(t){case"s":return a||s?"nokkrar sek\xfandur":"nokkrum sek\xfandum";case"ss":return an(e)?n+(a||s?"sek\xfandur":"sek\xfandum"):n+"sek\xfanda";case"m":return a?"m\xedn\xfata":"m\xedn\xfatu";case"mm":return an(e)?n+(a||s?"m\xedn\xfatur":"m\xedn\xfatum"):a?n+"m\xedn\xfata":n+"m\xedn\xfatu";case"hh":return an(e)?n+(a||s?"klukkustundir":"klukkustundum"):n+"klukkustund";case"d":return a?"dagur":s?"dag":"degi";case"dd":return an(e)?a?n+"dagar":n+(s?"daga":"d\xf6gum"):a?n+"dagur":n+(s?"dag":"degi");case"M":return a?"m\xe1nu\xf0ur":s?"m\xe1nu\xf0":"m\xe1nu\xf0i";case"MM":return an(e)?a?n+"m\xe1nu\xf0ir":n+(s?"m\xe1nu\xf0i":"m\xe1nu\xf0um"):a?n+"m\xe1nu\xf0ur":n+(s?"m\xe1nu\xf0":"m\xe1nu\xf0i");case"y":return a||s?"\xe1r":"\xe1ri";case"yy":return an(e)?n+(a||s?"\xe1r":"\xe1rum"):n+(a||s?"\xe1r":"\xe1ri")}}l.defineLocale("hu",{months:"janu\xe1r_febru\xe1r_m\xe1rcius_\xe1prilis_m\xe1jus_j\xfanius_j\xfalius_augusztus_szeptember_okt\xf3ber_november_december".split("_"),monthsShort:"jan_feb_m\xe1rc_\xe1pr_m\xe1j_j\xfan_j\xfal_aug_szept_okt_nov_dec".split("_"),weekdays:"vas\xe1rnap_h\xe9tf\u0151_kedd_szerda_cs\xfct\xf6rt\xf6k_p\xe9ntek_szombat".split("_"),weekdaysShort:"vas_h\xe9t_kedd_sze_cs\xfct_p\xe9n_szo".split("_"),weekdaysMin:"v_h_k_sze_cs_p_szo".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"YYYY.MM.DD.",LL:"YYYY. MMMM D.",LLL:"YYYY. MMMM D. H:mm",LLLL:"YYYY. MMMM D., dddd H:mm"},meridiemParse:/de|du/i,isPM:function(e){return"u"===e.charAt(1).toLowerCase()},meridiem:function(e,a,t){return e<12?!0===t?"de":"DE":!0===t?"du":"DU"},calendar:{sameDay:"[ma] LT[-kor]",nextDay:"[holnap] LT[-kor]",nextWeek:function(){return en.call(this,!0)},lastDay:"[tegnap] LT[-kor]",lastWeek:function(){return en.call(this,!1)},sameElse:"L"},relativeTime:{future:"%s m\xfalva",past:"%s",s:Xs,ss:Xs,m:Xs,mm:Xs,h:Xs,hh:Xs,d:Xs,dd:Xs,M:Xs,MM:Xs,y:Xs,yy:Xs},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("hy-am",{months:{format:"\u0570\u0578\u0582\u0576\u057e\u0561\u0580\u056b_\u0583\u0565\u057f\u0580\u057e\u0561\u0580\u056b_\u0574\u0561\u0580\u057f\u056b_\u0561\u057a\u0580\u056b\u056c\u056b_\u0574\u0561\u0575\u056b\u057d\u056b_\u0570\u0578\u0582\u0576\u056b\u057d\u056b_\u0570\u0578\u0582\u056c\u056b\u057d\u056b_\u0585\u0563\u0578\u057d\u057f\u0578\u057d\u056b_\u057d\u0565\u057a\u057f\u0565\u0574\u0562\u0565\u0580\u056b_\u0570\u0578\u056f\u057f\u0565\u0574\u0562\u0565\u0580\u056b_\u0576\u0578\u0575\u0565\u0574\u0562\u0565\u0580\u056b_\u0564\u0565\u056f\u057f\u0565\u0574\u0562\u0565\u0580\u056b".split("_"),standalone:"\u0570\u0578\u0582\u0576\u057e\u0561\u0580_\u0583\u0565\u057f\u0580\u057e\u0561\u0580_\u0574\u0561\u0580\u057f_\u0561\u057a\u0580\u056b\u056c_\u0574\u0561\u0575\u056b\u057d_\u0570\u0578\u0582\u0576\u056b\u057d_\u0570\u0578\u0582\u056c\u056b\u057d_\u0585\u0563\u0578\u057d\u057f\u0578\u057d_\u057d\u0565\u057a\u057f\u0565\u0574\u0562\u0565\u0580_\u0570\u0578\u056f\u057f\u0565\u0574\u0562\u0565\u0580_\u0576\u0578\u0575\u0565\u0574\u0562\u0565\u0580_\u0564\u0565\u056f\u057f\u0565\u0574\u0562\u0565\u0580".split("_")},monthsShort:"\u0570\u0576\u057e_\u0583\u057f\u0580_\u0574\u0580\u057f_\u0561\u057a\u0580_\u0574\u0575\u057d_\u0570\u0576\u057d_\u0570\u056c\u057d_\u0585\u0563\u057d_\u057d\u057a\u057f_\u0570\u056f\u057f_\u0576\u0574\u0562_\u0564\u056f\u057f".split("_"),weekdays:"\u056f\u056b\u0580\u0561\u056f\u056b_\u0565\u0580\u056f\u0578\u0582\u0577\u0561\u0562\u0569\u056b_\u0565\u0580\u0565\u0584\u0577\u0561\u0562\u0569\u056b_\u0579\u0578\u0580\u0565\u0584\u0577\u0561\u0562\u0569\u056b_\u0570\u056b\u0576\u0563\u0577\u0561\u0562\u0569\u056b_\u0578\u0582\u0580\u0562\u0561\u0569_\u0577\u0561\u0562\u0561\u0569".split("_"),weekdaysShort:"\u056f\u0580\u056f_\u0565\u0580\u056f_\u0565\u0580\u0584_\u0579\u0580\u0584_\u0570\u0576\u0563_\u0578\u0582\u0580\u0562_\u0577\u0562\u0569".split("_"),weekdaysMin:"\u056f\u0580\u056f_\u0565\u0580\u056f_\u0565\u0580\u0584_\u0579\u0580\u0584_\u0570\u0576\u0563_\u0578\u0582\u0580\u0562_\u0577\u0562\u0569".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY \u0569.",LLL:"D MMMM YYYY \u0569., HH:mm",LLLL:"dddd, D MMMM YYYY \u0569., HH:mm"},calendar:{sameDay:"[\u0561\u0575\u057d\u0585\u0580] LT",nextDay:"[\u057e\u0561\u0572\u0568] LT",lastDay:"[\u0565\u0580\u0565\u056f] LT",nextWeek:function(){return"dddd [\u0585\u0580\u0568 \u056a\u0561\u0574\u0568] LT"},lastWeek:function(){return"[\u0561\u0576\u0581\u0561\u056e] dddd [\u0585\u0580\u0568 \u056a\u0561\u0574\u0568] LT"},sameElse:"L"},relativeTime:{future:"%s \u0570\u0565\u057f\u0578",past:"%s \u0561\u057c\u0561\u057b",s:"\u0574\u056b \u0584\u0561\u0576\u056b \u057e\u0561\u0575\u0580\u056f\u0575\u0561\u0576",ss:"%d \u057e\u0561\u0575\u0580\u056f\u0575\u0561\u0576",m:"\u0580\u0578\u057a\u0565",mm:"%d \u0580\u0578\u057a\u0565",h:"\u056a\u0561\u0574",hh:"%d \u056a\u0561\u0574",d:"\u0585\u0580",dd:"%d \u0585\u0580",M:"\u0561\u0574\u056b\u057d",MM:"%d \u0561\u0574\u056b\u057d",y:"\u057f\u0561\u0580\u056b",yy:"%d \u057f\u0561\u0580\u056b"},meridiemParse:/\u0563\u056b\u0577\u0565\u0580\u057e\u0561|\u0561\u057c\u0561\u057e\u0578\u057f\u057e\u0561|\u0581\u0565\u0580\u0565\u056f\u057e\u0561|\u0565\u0580\u0565\u056f\u0578\u0575\u0561\u0576/,isPM:function(e){return/^(\u0581\u0565\u0580\u0565\u056f\u057e\u0561|\u0565\u0580\u0565\u056f\u0578\u0575\u0561\u0576)$/.test(e)},meridiem:function(e){return e<4?"\u0563\u056b\u0577\u0565\u0580\u057e\u0561":e<12?"\u0561\u057c\u0561\u057e\u0578\u057f\u057e\u0561":e<17?"\u0581\u0565\u0580\u0565\u056f\u057e\u0561":"\u0565\u0580\u0565\u056f\u0578\u0575\u0561\u0576"},dayOfMonthOrdinalParse:/\d{1,2}|\d{1,2}-(\u056b\u0576|\u0580\u0564)/,ordinal:function(e,a){switch(a){case"DDD":case"w":case"W":case"DDDo":return 1===e?e+"-\u056b\u0576":e+"-\u0580\u0564";default:return e}},week:{dow:1,doy:7}}),l.defineLocale("id",{months:"Januari_Februari_Maret_April_Mei_Juni_Juli_Agustus_September_Oktober_November_Desember".split("_"),monthsShort:"Jan_Feb_Mar_Apr_Mei_Jun_Jul_Agt_Sep_Okt_Nov_Des".split("_"),weekdays:"Minggu_Senin_Selasa_Rabu_Kamis_Jumat_Sabtu".split("_"),weekdaysShort:"Min_Sen_Sel_Rab_Kam_Jum_Sab".split("_"),weekdaysMin:"Mg_Sn_Sl_Rb_Km_Jm_Sb".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/pagi|siang|sore|malam/,meridiemHour:function(e,a){return 12===e&&(e=0),"pagi"===a?e:"siang"===a?11<=e?e:e+12:"sore"===a||"malam"===a?e+12:void 0},meridiem:function(e,a,t){return e<11?"pagi":e<15?"siang":e<19?"sore":"malam"},calendar:{sameDay:"[Hari ini pukul] LT",nextDay:"[Besok pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kemarin pukul] LT",lastWeek:"dddd [lalu pukul] LT",sameElse:"L"},relativeTime:{future:"dalam %s",past:"%s yang lalu",s:"beberapa detik",ss:"%d detik",m:"semenit",mm:"%d menit",h:"sejam",hh:"%d jam",d:"sehari",dd:"%d hari",M:"sebulan",MM:"%d bulan",y:"setahun",yy:"%d tahun"},week:{dow:1,doy:7}}),l.defineLocale("is",{months:"jan\xfaar_febr\xfaar_mars_apr\xedl_ma\xed_j\xfan\xed_j\xfal\xed_\xe1g\xfast_september_okt\xf3ber_n\xf3vember_desember".split("_"),monthsShort:"jan_feb_mar_apr_ma\xed_j\xfan_j\xfal_\xe1g\xfa_sep_okt_n\xf3v_des".split("_"),weekdays:"sunnudagur_m\xe1nudagur_\xferi\xf0judagur_mi\xf0vikudagur_fimmtudagur_f\xf6studagur_laugardagur".split("_"),weekdaysShort:"sun_m\xe1n_\xferi_mi\xf0_fim_f\xf6s_lau".split("_"),weekdaysMin:"Su_M\xe1_\xder_Mi_Fi_F\xf6_La".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY [kl.] H:mm",LLLL:"dddd, D. MMMM YYYY [kl.] H:mm"},calendar:{sameDay:"[\xed dag kl.] LT",nextDay:"[\xe1 morgun kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[\xed g\xe6r kl.] LT",lastWeek:"[s\xed\xf0asta] dddd [kl.] LT",sameElse:"L"},relativeTime:{future:"eftir %s",past:"fyrir %s s\xed\xf0an",s:tn,ss:tn,m:tn,mm:tn,h:"klukkustund",hh:tn,d:tn,dd:tn,M:tn,MM:tn,y:tn,yy:tn},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("it-ch",{months:"gennaio_febbraio_marzo_aprile_maggio_giugno_luglio_agosto_settembre_ottobre_novembre_dicembre".split("_"),monthsShort:"gen_feb_mar_apr_mag_giu_lug_ago_set_ott_nov_dic".split("_"),weekdays:"domenica_luned\xec_marted\xec_mercoled\xec_gioved\xec_venerd\xec_sabato".split("_"),weekdaysShort:"dom_lun_mar_mer_gio_ven_sab".split("_"),weekdaysMin:"do_lu_ma_me_gi_ve_sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Oggi alle] LT",nextDay:"[Domani alle] LT",nextWeek:"dddd [alle] LT",lastDay:"[Ieri alle] LT",lastWeek:function(){switch(this.day()){case 0:return"[la scorsa] dddd [alle] LT";default:return"[lo scorso] dddd [alle] LT"}},sameElse:"L"},relativeTime:{future:function(e){return(/^[0-9].+$/.test(e)?"tra":"in")+" "+e},past:"%s fa",s:"alcuni secondi",ss:"%d secondi",m:"un minuto",mm:"%d minuti",h:"un'ora",hh:"%d ore",d:"un giorno",dd:"%d giorni",M:"un mese",MM:"%d mesi",y:"un anno",yy:"%d anni"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}}),l.defineLocale("it",{months:"gennaio_febbraio_marzo_aprile_maggio_giugno_luglio_agosto_settembre_ottobre_novembre_dicembre".split("_"),monthsShort:"gen_feb_mar_apr_mag_giu_lug_ago_set_ott_nov_dic".split("_"),weekdays:"domenica_luned\xec_marted\xec_mercoled\xec_gioved\xec_venerd\xec_sabato".split("_"),weekdaysShort:"dom_lun_mar_mer_gio_ven_sab".split("_"),weekdaysMin:"do_lu_ma_me_gi_ve_sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[Oggi alle] LT",nextDay:"[Domani alle] LT",nextWeek:"dddd [alle] LT",lastDay:"[Ieri alle] LT",lastWeek:function(){switch(this.day()){case 0:return"[la scorsa] dddd [alle] LT";default:return"[lo scorso] dddd [alle] LT"}},sameElse:"L"},relativeTime:{future:function(e){return(/^[0-9].+$/.test(e)?"tra":"in")+" "+e},past:"%s fa",s:"alcuni secondi",ss:"%d secondi",m:"un minuto",mm:"%d minuti",h:"un'ora",hh:"%d ore",d:"un giorno",dd:"%d giorni",M:"un mese",MM:"%d mesi",y:"un anno",yy:"%d anni"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}}),l.defineLocale("ja",{months:"\u4e00\u6708_\u4e8c\u6708_\u4e09\u6708_\u56db\u6708_\u4e94\u6708_\u516d\u6708_\u4e03\u6708_\u516b\u6708_\u4e5d\u6708_\u5341\u6708_\u5341\u4e00\u6708_\u5341\u4e8c\u6708".split("_"),monthsShort:"1\u6708_2\u6708_3\u6708_4\u6708_5\u6708_6\u6708_7\u6708_8\u6708_9\u6708_10\u6708_11\u6708_12\u6708".split("_"),weekdays:"\u65e5\u66dc\u65e5_\u6708\u66dc\u65e5_\u706b\u66dc\u65e5_\u6c34\u66dc\u65e5_\u6728\u66dc\u65e5_\u91d1\u66dc\u65e5_\u571f\u66dc\u65e5".split("_"),weekdaysShort:"\u65e5_\u6708_\u706b_\u6c34_\u6728_\u91d1_\u571f".split("_"),weekdaysMin:"\u65e5_\u6708_\u706b_\u6c34_\u6728_\u91d1_\u571f".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY/MM/DD",LL:"YYYY\u5e74M\u6708D\u65e5",LLL:"YYYY\u5e74M\u6708D\u65e5 HH:mm",LLLL:"YYYY\u5e74M\u6708D\u65e5 dddd HH:mm",l:"YYYY/MM/DD",ll:"YYYY\u5e74M\u6708D\u65e5",lll:"YYYY\u5e74M\u6708D\u65e5 HH:mm",llll:"YYYY\u5e74M\u6708D\u65e5(ddd) HH:mm"},meridiemParse:/\u5348\u524d|\u5348\u5f8c/i,isPM:function(e){return"\u5348\u5f8c"===e},meridiem:function(e,a,t){return e<12?"\u5348\u524d":"\u5348\u5f8c"},calendar:{sameDay:"[\u4eca\u65e5] LT",nextDay:"[\u660e\u65e5] LT",nextWeek:function(e){return e.week()<this.week()?"[\u6765\u9031]dddd LT":"dddd LT"},lastDay:"[\u6628\u65e5] LT",lastWeek:function(e){return this.week()<e.week()?"[\u5148\u9031]dddd LT":"dddd LT"},sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}\u65e5/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+"\u65e5";default:return e}},relativeTime:{future:"%s\u5f8c",past:"%s\u524d",s:"\u6570\u79d2",ss:"%d\u79d2",m:"1\u5206",mm:"%d\u5206",h:"1\u6642\u9593",hh:"%d\u6642\u9593",d:"1\u65e5",dd:"%d\u65e5",M:"1\u30f6\u6708",MM:"%d\u30f6\u6708",y:"1\u5e74",yy:"%d\u5e74"}}),l.defineLocale("jv",{months:"Januari_Februari_Maret_April_Mei_Juni_Juli_Agustus_September_Oktober_Nopember_Desember".split("_"),monthsShort:"Jan_Feb_Mar_Apr_Mei_Jun_Jul_Ags_Sep_Okt_Nop_Des".split("_"),weekdays:"Minggu_Senen_Seloso_Rebu_Kemis_Jemuwah_Septu".split("_"),weekdaysShort:"Min_Sen_Sel_Reb_Kem_Jem_Sep".split("_"),weekdaysMin:"Mg_Sn_Sl_Rb_Km_Jm_Sp".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/enjing|siyang|sonten|ndalu/,meridiemHour:function(e,a){return 12===e&&(e=0),"enjing"===a?e:"siyang"===a?11<=e?e:e+12:"sonten"===a||"ndalu"===a?e+12:void 0},meridiem:function(e,a,t){return e<11?"enjing":e<15?"siyang":e<19?"sonten":"ndalu"},calendar:{sameDay:"[Dinten puniko pukul] LT",nextDay:"[Mbenjang pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kala wingi pukul] LT",lastWeek:"dddd [kepengker pukul] LT",sameElse:"L"},relativeTime:{future:"wonten ing %s",past:"%s ingkang kepengker",s:"sawetawis detik",ss:"%d detik",m:"setunggal menit",mm:"%d menit",h:"setunggal jam",hh:"%d jam",d:"sedinten",dd:"%d dinten",M:"sewulan",MM:"%d wulan",y:"setaun",yy:"%d taun"},week:{dow:1,doy:7}}),l.defineLocale("ka",{months:{standalone:"\u10d8\u10d0\u10dc\u10d5\u10d0\u10e0\u10d8_\u10d7\u10d4\u10d1\u10d4\u10e0\u10d5\u10d0\u10da\u10d8_\u10db\u10d0\u10e0\u10e2\u10d8_\u10d0\u10de\u10e0\u10d8\u10da\u10d8_\u10db\u10d0\u10d8\u10e1\u10d8_\u10d8\u10d5\u10dc\u10d8\u10e1\u10d8_\u10d8\u10d5\u10da\u10d8\u10e1\u10d8_\u10d0\u10d2\u10d5\u10d8\u10e1\u10e2\u10dd_\u10e1\u10d4\u10e5\u10e2\u10d4\u10db\u10d1\u10d4\u10e0\u10d8_\u10dd\u10e5\u10e2\u10dd\u10db\u10d1\u10d4\u10e0\u10d8_\u10dc\u10dd\u10d4\u10db\u10d1\u10d4\u10e0\u10d8_\u10d3\u10d4\u10d9\u10d4\u10db\u10d1\u10d4\u10e0\u10d8".split("_"),format:"\u10d8\u10d0\u10dc\u10d5\u10d0\u10e0\u10e1_\u10d7\u10d4\u10d1\u10d4\u10e0\u10d5\u10d0\u10da\u10e1_\u10db\u10d0\u10e0\u10e2\u10e1_\u10d0\u10de\u10e0\u10d8\u10da\u10d8\u10e1_\u10db\u10d0\u10d8\u10e1\u10e1_\u10d8\u10d5\u10dc\u10d8\u10e1\u10e1_\u10d8\u10d5\u10da\u10d8\u10e1\u10e1_\u10d0\u10d2\u10d5\u10d8\u10e1\u10e2\u10e1_\u10e1\u10d4\u10e5\u10e2\u10d4\u10db\u10d1\u10d4\u10e0\u10e1_\u10dd\u10e5\u10e2\u10dd\u10db\u10d1\u10d4\u10e0\u10e1_\u10dc\u10dd\u10d4\u10db\u10d1\u10d4\u10e0\u10e1_\u10d3\u10d4\u10d9\u10d4\u10db\u10d1\u10d4\u10e0\u10e1".split("_")},monthsShort:"\u10d8\u10d0\u10dc_\u10d7\u10d4\u10d1_\u10db\u10d0\u10e0_\u10d0\u10de\u10e0_\u10db\u10d0\u10d8_\u10d8\u10d5\u10dc_\u10d8\u10d5\u10da_\u10d0\u10d2\u10d5_\u10e1\u10d4\u10e5_\u10dd\u10e5\u10e2_\u10dc\u10dd\u10d4_\u10d3\u10d4\u10d9".split("_"),weekdays:{standalone:"\u10d9\u10d5\u10d8\u10e0\u10d0_\u10dd\u10e0\u10e8\u10d0\u10d1\u10d0\u10d7\u10d8_\u10e1\u10d0\u10db\u10e8\u10d0\u10d1\u10d0\u10d7\u10d8_\u10dd\u10d7\u10ee\u10e8\u10d0\u10d1\u10d0\u10d7\u10d8_\u10ee\u10e3\u10d7\u10e8\u10d0\u10d1\u10d0\u10d7\u10d8_\u10de\u10d0\u10e0\u10d0\u10e1\u10d9\u10d4\u10d5\u10d8_\u10e8\u10d0\u10d1\u10d0\u10d7\u10d8".split("_"),format:"\u10d9\u10d5\u10d8\u10e0\u10d0\u10e1_\u10dd\u10e0\u10e8\u10d0\u10d1\u10d0\u10d7\u10e1_\u10e1\u10d0\u10db\u10e8\u10d0\u10d1\u10d0\u10d7\u10e1_\u10dd\u10d7\u10ee\u10e8\u10d0\u10d1\u10d0\u10d7\u10e1_\u10ee\u10e3\u10d7\u10e8\u10d0\u10d1\u10d0\u10d7\u10e1_\u10de\u10d0\u10e0\u10d0\u10e1\u10d9\u10d4\u10d5\u10e1_\u10e8\u10d0\u10d1\u10d0\u10d7\u10e1".split("_"),isFormat:/(\u10ec\u10d8\u10dc\u10d0|\u10e8\u10d4\u10db\u10d3\u10d4\u10d2)/},weekdaysShort:"\u10d9\u10d5\u10d8_\u10dd\u10e0\u10e8_\u10e1\u10d0\u10db_\u10dd\u10d7\u10ee_\u10ee\u10e3\u10d7_\u10de\u10d0\u10e0_\u10e8\u10d0\u10d1".split("_"),weekdaysMin:"\u10d9\u10d5_\u10dd\u10e0_\u10e1\u10d0_\u10dd\u10d7_\u10ee\u10e3_\u10de\u10d0_\u10e8\u10d0".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[\u10d3\u10e6\u10d4\u10e1] LT[-\u10d6\u10d4]",nextDay:"[\u10ee\u10d5\u10d0\u10da] LT[-\u10d6\u10d4]",lastDay:"[\u10d2\u10e3\u10e8\u10d8\u10dc] LT[-\u10d6\u10d4]",nextWeek:"[\u10e8\u10d4\u10db\u10d3\u10d4\u10d2] dddd LT[-\u10d6\u10d4]",lastWeek:"[\u10ec\u10d8\u10dc\u10d0] dddd LT-\u10d6\u10d4",sameElse:"L"},relativeTime:{future:function(e){return/(\u10ec\u10d0\u10db\u10d8|\u10ec\u10e3\u10d7\u10d8|\u10e1\u10d0\u10d0\u10d7\u10d8|\u10ec\u10d4\u10da\u10d8)/.test(e)?e.replace(/\u10d8$/,"\u10e8\u10d8"):e+"\u10e8\u10d8"},past:function(e){return/(\u10ec\u10d0\u10db\u10d8|\u10ec\u10e3\u10d7\u10d8|\u10e1\u10d0\u10d0\u10d7\u10d8|\u10d3\u10e6\u10d4|\u10d7\u10d5\u10d4)/.test(e)?e.replace(/(\u10d8|\u10d4)$/,"\u10d8\u10e1 \u10ec\u10d8\u10dc"):/\u10ec\u10d4\u10da\u10d8/.test(e)?e.replace(/\u10ec\u10d4\u10da\u10d8$/,"\u10ec\u10da\u10d8\u10e1 \u10ec\u10d8\u10dc"):void 0},s:"\u10e0\u10d0\u10db\u10d3\u10d4\u10dc\u10d8\u10db\u10d4 \u10ec\u10d0\u10db\u10d8",ss:"%d \u10ec\u10d0\u10db\u10d8",m:"\u10ec\u10e3\u10d7\u10d8",mm:"%d \u10ec\u10e3\u10d7\u10d8",h:"\u10e1\u10d0\u10d0\u10d7\u10d8",hh:"%d \u10e1\u10d0\u10d0\u10d7\u10d8",d:"\u10d3\u10e6\u10d4",dd:"%d \u10d3\u10e6\u10d4",M:"\u10d7\u10d5\u10d4",MM:"%d \u10d7\u10d5\u10d4",y:"\u10ec\u10d4\u10da\u10d8",yy:"%d \u10ec\u10d4\u10da\u10d8"},dayOfMonthOrdinalParse:/0|1-\u10da\u10d8|\u10db\u10d4-\d{1,2}|\d{1,2}-\u10d4/,ordinal:function(e){return 0===e?e:1===e?e+"-\u10da\u10d8":e<20||e<=100&&e%20==0||e%100==0?"\u10db\u10d4-"+e:e+"-\u10d4"},week:{dow:1,doy:7}});var sn={0:"-\u0448\u0456",1:"-\u0448\u0456",2:"-\u0448\u0456",3:"-\u0448\u0456",4:"-\u0448\u0456",5:"-\u0448\u0456",6:"-\u0448\u044b",7:"-\u0448\u0456",8:"-\u0448\u0456",9:"-\u0448\u044b",10:"-\u0448\u044b",20:"-\u0448\u044b",30:"-\u0448\u044b",40:"-\u0448\u044b",50:"-\u0448\u0456",60:"-\u0448\u044b",70:"-\u0448\u0456",80:"-\u0448\u0456",90:"-\u0448\u044b",100:"-\u0448\u0456"};l.defineLocale("kk",{months:"\u049b\u0430\u04a3\u0442\u0430\u0440_\u0430\u049b\u043f\u0430\u043d_\u043d\u0430\u0443\u0440\u044b\u0437_\u0441\u04d9\u0443\u0456\u0440_\u043c\u0430\u043c\u044b\u0440_\u043c\u0430\u0443\u0441\u044b\u043c_\u0448\u0456\u043b\u0434\u0435_\u0442\u0430\u043c\u044b\u0437_\u049b\u044b\u0440\u043a\u04af\u0439\u0435\u043a_\u049b\u0430\u0437\u0430\u043d_\u049b\u0430\u0440\u0430\u0448\u0430_\u0436\u0435\u043b\u0442\u043e\u049b\u0441\u0430\u043d".split("_"),monthsShort:"\u049b\u0430\u04a3_\u0430\u049b\u043f_\u043d\u0430\u0443_\u0441\u04d9\u0443_\u043c\u0430\u043c_\u043c\u0430\u0443_\u0448\u0456\u043b_\u0442\u0430\u043c_\u049b\u044b\u0440_\u049b\u0430\u0437_\u049b\u0430\u0440_\u0436\u0435\u043b".split("_"),weekdays:"\u0436\u0435\u043a\u0441\u0435\u043d\u0431\u0456_\u0434\u04af\u0439\u0441\u0435\u043d\u0431\u0456_\u0441\u0435\u0439\u0441\u0435\u043d\u0431\u0456_\u0441\u04d9\u0440\u0441\u0435\u043d\u0431\u0456_\u0431\u0435\u0439\u0441\u0435\u043d\u0431\u0456_\u0436\u04b1\u043c\u0430_\u0441\u0435\u043d\u0431\u0456".split("_"),weekdaysShort:"\u0436\u0435\u043a_\u0434\u04af\u0439_\u0441\u0435\u0439_\u0441\u04d9\u0440_\u0431\u0435\u0439_\u0436\u04b1\u043c_\u0441\u0435\u043d".split("_"),weekdaysMin:"\u0436\u043a_\u0434\u0439_\u0441\u0439_\u0441\u0440_\u0431\u0439_\u0436\u043c_\u0441\u043d".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0411\u04af\u0433\u0456\u043d \u0441\u0430\u0493\u0430\u0442] LT",nextDay:"[\u0415\u0440\u0442\u0435\u04a3 \u0441\u0430\u0493\u0430\u0442] LT",nextWeek:"dddd [\u0441\u0430\u0493\u0430\u0442] LT",lastDay:"[\u041a\u0435\u0448\u0435 \u0441\u0430\u0493\u0430\u0442] LT",lastWeek:"[\u04e8\u0442\u043a\u0435\u043d \u0430\u043f\u0442\u0430\u043d\u044b\u04a3] dddd [\u0441\u0430\u0493\u0430\u0442] LT",sameElse:"L"},relativeTime:{future:"%s \u0456\u0448\u0456\u043d\u0434\u0435",past:"%s \u0431\u04b1\u0440\u044b\u043d",s:"\u0431\u0456\u0440\u043d\u0435\u0448\u0435 \u0441\u0435\u043a\u0443\u043d\u0434",ss:"%d \u0441\u0435\u043a\u0443\u043d\u0434",m:"\u0431\u0456\u0440 \u043c\u0438\u043d\u0443\u0442",mm:"%d \u043c\u0438\u043d\u0443\u0442",h:"\u0431\u0456\u0440 \u0441\u0430\u0493\u0430\u0442",hh:"%d \u0441\u0430\u0493\u0430\u0442",d:"\u0431\u0456\u0440 \u043a\u04af\u043d",dd:"%d \u043a\u04af\u043d",M:"\u0431\u0456\u0440 \u0430\u0439",MM:"%d \u0430\u0439",y:"\u0431\u0456\u0440 \u0436\u044b\u043b",yy:"%d \u0436\u044b\u043b"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0448\u0456|\u0448\u044b)/,ordinal:function(e){return e+(sn[e]||sn[e%10]||sn[100<=e?100:null])},week:{dow:1,doy:7}});var nn={1:"\u17e1",2:"\u17e2",3:"\u17e3",4:"\u17e4",5:"\u17e5",6:"\u17e6",7:"\u17e7",8:"\u17e8",9:"\u17e9",0:"\u17e0"},dn={"\u17e1":"1","\u17e2":"2","\u17e3":"3","\u17e4":"4","\u17e5":"5","\u17e6":"6","\u17e7":"7","\u17e8":"8","\u17e9":"9","\u17e0":"0"};l.defineLocale("km",{months:"\u1798\u1780\u179a\u17b6_\u1780\u17bb\u1798\u17d2\u1797\u17c8_\u1798\u17b8\u1793\u17b6_\u1798\u17c1\u179f\u17b6_\u17a7\u179f\u1797\u17b6_\u1798\u17b7\u1790\u17bb\u1793\u17b6_\u1780\u1780\u17d2\u1780\u178a\u17b6_\u179f\u17b8\u17a0\u17b6_\u1780\u1789\u17d2\u1789\u17b6_\u178f\u17bb\u179b\u17b6_\u179c\u17b7\u1785\u17d2\u1786\u17b7\u1780\u17b6_\u1792\u17d2\u1793\u17bc".split("_"),monthsShort:"\u1798\u1780\u179a\u17b6_\u1780\u17bb\u1798\u17d2\u1797\u17c8_\u1798\u17b8\u1793\u17b6_\u1798\u17c1\u179f\u17b6_\u17a7\u179f\u1797\u17b6_\u1798\u17b7\u1790\u17bb\u1793\u17b6_\u1780\u1780\u17d2\u1780\u178a\u17b6_\u179f\u17b8\u17a0\u17b6_\u1780\u1789\u17d2\u1789\u17b6_\u178f\u17bb\u179b\u17b6_\u179c\u17b7\u1785\u17d2\u1786\u17b7\u1780\u17b6_\u1792\u17d2\u1793\u17bc".split("_"),weekdays:"\u17a2\u17b6\u1791\u17b7\u178f\u17d2\u1799_\u1785\u17d0\u1793\u17d2\u1791_\u17a2\u1784\u17d2\u1782\u17b6\u179a_\u1796\u17bb\u1792_\u1796\u17d2\u179a\u17a0\u179f\u17d2\u1794\u178f\u17b7\u17cd_\u179f\u17bb\u1780\u17d2\u179a_\u179f\u17c5\u179a\u17cd".split("_"),weekdaysShort:"\u17a2\u17b6_\u1785_\u17a2_\u1796_\u1796\u17d2\u179a_\u179f\u17bb_\u179f".split("_"),weekdaysMin:"\u17a2\u17b6_\u1785_\u17a2_\u1796_\u1796\u17d2\u179a_\u179f\u17bb_\u179f".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},meridiemParse:/\u1796\u17d2\u179a\u17b9\u1780|\u179b\u17d2\u1784\u17b6\u1785/,isPM:function(e){return"\u179b\u17d2\u1784\u17b6\u1785"===e},meridiem:function(e,a,t){return e<12?"\u1796\u17d2\u179a\u17b9\u1780":"\u179b\u17d2\u1784\u17b6\u1785"},calendar:{sameDay:"[\u1790\u17d2\u1784\u17c3\u1793\u17c1\u17c7 \u1798\u17c9\u17c4\u1784] LT",nextDay:"[\u179f\u17d2\u17a2\u17c2\u1780 \u1798\u17c9\u17c4\u1784] LT",nextWeek:"dddd [\u1798\u17c9\u17c4\u1784] LT",lastDay:"[\u1798\u17d2\u179f\u17b7\u179b\u1798\u17b7\u1789 \u1798\u17c9\u17c4\u1784] LT",lastWeek:"dddd [\u179f\u1794\u17d2\u178f\u17b6\u17a0\u17cd\u1798\u17bb\u1793] [\u1798\u17c9\u17c4\u1784] LT",sameElse:"L"},relativeTime:{future:"%s\u1791\u17c0\u178f",past:"%s\u1798\u17bb\u1793",s:"\u1794\u17c9\u17bb\u1793\u17d2\u1798\u17b6\u1793\u179c\u17b7\u1793\u17b6\u1791\u17b8",ss:"%d \u179c\u17b7\u1793\u17b6\u1791\u17b8",m:"\u1798\u17bd\u1799\u1793\u17b6\u1791\u17b8",mm:"%d \u1793\u17b6\u1791\u17b8",h:"\u1798\u17bd\u1799\u1798\u17c9\u17c4\u1784",hh:"%d \u1798\u17c9\u17c4\u1784",d:"\u1798\u17bd\u1799\u1790\u17d2\u1784\u17c3",dd:"%d \u1790\u17d2\u1784\u17c3",M:"\u1798\u17bd\u1799\u1781\u17c2",MM:"%d \u1781\u17c2",y:"\u1798\u17bd\u1799\u1786\u17d2\u1793\u17b6\u17c6",yy:"%d \u1786\u17d2\u1793\u17b6\u17c6"},dayOfMonthOrdinalParse:/\u1791\u17b8\d{1,2}/,ordinal:"\u1791\u17b8%d",preparse:function(e){return e.replace(/[\u17e1\u17e2\u17e3\u17e4\u17e5\u17e6\u17e7\u17e8\u17e9\u17e0]/g,function(e){return dn[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return nn[e]})},week:{dow:1,doy:4}});var rn={1:"\u0ce7",2:"\u0ce8",3:"\u0ce9",4:"\u0cea",5:"\u0ceb",6:"\u0cec",7:"\u0ced",8:"\u0cee",9:"\u0cef",0:"\u0ce6"},_n={"\u0ce7":"1","\u0ce8":"2","\u0ce9":"3","\u0cea":"4","\u0ceb":"5","\u0cec":"6","\u0ced":"7","\u0cee":"8","\u0cef":"9","\u0ce6":"0"};l.defineLocale("kn",{months:"\u0c9c\u0ca8\u0cb5\u0cb0\u0cbf_\u0cab\u0cc6\u0cac\u0ccd\u0cb0\u0cb5\u0cb0\u0cbf_\u0cae\u0cbe\u0cb0\u0ccd\u0c9a\u0ccd_\u0c8f\u0caa\u0ccd\u0cb0\u0cbf\u0cb2\u0ccd_\u0cae\u0cc6\u0cd5_\u0c9c\u0cc2\u0ca8\u0ccd_\u0c9c\u0cc1\u0cb2\u0cc6\u0cd6_\u0c86\u0c97\u0cb8\u0ccd\u0c9f\u0ccd_\u0cb8\u0cc6\u0caa\u0ccd\u0c9f\u0cc6\u0c82\u0cac\u0cb0\u0ccd_\u0c85\u0c95\u0ccd\u0c9f\u0cc6\u0cc2\u0cd5\u0cac\u0cb0\u0ccd_\u0ca8\u0cb5\u0cc6\u0c82\u0cac\u0cb0\u0ccd_\u0ca1\u0cbf\u0cb8\u0cc6\u0c82\u0cac\u0cb0\u0ccd".split("_"),monthsShort:"\u0c9c\u0ca8_\u0cab\u0cc6\u0cac\u0ccd\u0cb0_\u0cae\u0cbe\u0cb0\u0ccd\u0c9a\u0ccd_\u0c8f\u0caa\u0ccd\u0cb0\u0cbf\u0cb2\u0ccd_\u0cae\u0cc6\u0cd5_\u0c9c\u0cc2\u0ca8\u0ccd_\u0c9c\u0cc1\u0cb2\u0cc6\u0cd6_\u0c86\u0c97\u0cb8\u0ccd\u0c9f\u0ccd_\u0cb8\u0cc6\u0caa\u0ccd\u0c9f\u0cc6\u0c82_\u0c85\u0c95\u0ccd\u0c9f\u0cc6\u0cc2\u0cd5_\u0ca8\u0cb5\u0cc6\u0c82_\u0ca1\u0cbf\u0cb8\u0cc6\u0c82".split("_"),monthsParseExact:!0,weekdays:"\u0cad\u0cbe\u0ca8\u0cc1\u0cb5\u0cbe\u0cb0_\u0cb8\u0cc6\u0cc2\u0cd5\u0cae\u0cb5\u0cbe\u0cb0_\u0cae\u0c82\u0c97\u0cb3\u0cb5\u0cbe\u0cb0_\u0cac\u0cc1\u0ca7\u0cb5\u0cbe\u0cb0_\u0c97\u0cc1\u0cb0\u0cc1\u0cb5\u0cbe\u0cb0_\u0cb6\u0cc1\u0c95\u0ccd\u0cb0\u0cb5\u0cbe\u0cb0_\u0cb6\u0ca8\u0cbf\u0cb5\u0cbe\u0cb0".split("_"),weekdaysShort:"\u0cad\u0cbe\u0ca8\u0cc1_\u0cb8\u0cc6\u0cc2\u0cd5\u0cae_\u0cae\u0c82\u0c97\u0cb3_\u0cac\u0cc1\u0ca7_\u0c97\u0cc1\u0cb0\u0cc1_\u0cb6\u0cc1\u0c95\u0ccd\u0cb0_\u0cb6\u0ca8\u0cbf".split("_"),weekdaysMin:"\u0cad\u0cbe_\u0cb8\u0cc6\u0cc2\u0cd5_\u0cae\u0c82_\u0cac\u0cc1_\u0c97\u0cc1_\u0cb6\u0cc1_\u0cb6".split("_"),longDateFormat:{LT:"A h:mm",LTS:"A h:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm",LLLL:"dddd, D MMMM YYYY, A h:mm"},calendar:{sameDay:"[\u0c87\u0c82\u0ca6\u0cc1] LT",nextDay:"[\u0ca8\u0cbe\u0cb3\u0cc6] LT",nextWeek:"dddd, LT",lastDay:"[\u0ca8\u0cbf\u0ca8\u0ccd\u0ca8\u0cc6] LT",lastWeek:"[\u0c95\u0cc6\u0cc2\u0ca8\u0cc6\u0caf] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0ca8\u0c82\u0ca4\u0cb0",past:"%s \u0cb9\u0cbf\u0c82\u0ca6\u0cc6",s:"\u0c95\u0cc6\u0cb2\u0cb5\u0cc1 \u0c95\u0ccd\u0cb7\u0ca3\u0c97\u0cb3\u0cc1",ss:"%d \u0cb8\u0cc6\u0c95\u0cc6\u0c82\u0ca1\u0cc1\u0c97\u0cb3\u0cc1",m:"\u0c92\u0c82\u0ca6\u0cc1 \u0ca8\u0cbf\u0cae\u0cbf\u0cb7",mm:"%d \u0ca8\u0cbf\u0cae\u0cbf\u0cb7",h:"\u0c92\u0c82\u0ca6\u0cc1 \u0c97\u0c82\u0c9f\u0cc6",hh:"%d \u0c97\u0c82\u0c9f\u0cc6",d:"\u0c92\u0c82\u0ca6\u0cc1 \u0ca6\u0cbf\u0ca8",dd:"%d \u0ca6\u0cbf\u0ca8",M:"\u0c92\u0c82\u0ca6\u0cc1 \u0ca4\u0cbf\u0c82\u0c97\u0cb3\u0cc1",MM:"%d \u0ca4\u0cbf\u0c82\u0c97\u0cb3\u0cc1",y:"\u0c92\u0c82\u0ca6\u0cc1 \u0cb5\u0cb0\u0ccd\u0cb7",yy:"%d \u0cb5\u0cb0\u0ccd\u0cb7"},preparse:function(e){return e.replace(/[\u0ce7\u0ce8\u0ce9\u0cea\u0ceb\u0cec\u0ced\u0cee\u0cef\u0ce6]/g,function(e){return _n[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return rn[e]})},meridiemParse:/\u0cb0\u0cbe\u0ca4\u0ccd\u0cb0\u0cbf|\u0cac\u0cc6\u0cb3\u0cbf\u0c97\u0ccd\u0c97\u0cc6|\u0cae\u0ca7\u0ccd\u0caf\u0cbe\u0cb9\u0ccd\u0ca8|\u0cb8\u0c82\u0c9c\u0cc6/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0cb0\u0cbe\u0ca4\u0ccd\u0cb0\u0cbf"===a?e<4?e:e+12:"\u0cac\u0cc6\u0cb3\u0cbf\u0c97\u0ccd\u0c97\u0cc6"===a?e:"\u0cae\u0ca7\u0ccd\u0caf\u0cbe\u0cb9\u0ccd\u0ca8"===a?10<=e?e:e+12:"\u0cb8\u0c82\u0c9c\u0cc6"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0cb0\u0cbe\u0ca4\u0ccd\u0cb0\u0cbf":e<10?"\u0cac\u0cc6\u0cb3\u0cbf\u0c97\u0ccd\u0c97\u0cc6":e<17?"\u0cae\u0ca7\u0ccd\u0caf\u0cbe\u0cb9\u0ccd\u0ca8":e<20?"\u0cb8\u0c82\u0c9c\u0cc6":"\u0cb0\u0cbe\u0ca4\u0ccd\u0cb0\u0cbf"},dayOfMonthOrdinalParse:/\d{1,2}(\u0ca8\u0cc6\u0cd5)/,ordinal:function(e){return e+"\u0ca8\u0cc6\u0cd5"},week:{dow:0,doy:6}}),l.defineLocale("ko",{months:"1\uc6d4_2\uc6d4_3\uc6d4_4\uc6d4_5\uc6d4_6\uc6d4_7\uc6d4_8\uc6d4_9\uc6d4_10\uc6d4_11\uc6d4_12\uc6d4".split("_"),monthsShort:"1\uc6d4_2\uc6d4_3\uc6d4_4\uc6d4_5\uc6d4_6\uc6d4_7\uc6d4_8\uc6d4_9\uc6d4_10\uc6d4_11\uc6d4_12\uc6d4".split("_"),weekdays:"\uc77c\uc694\uc77c_\uc6d4\uc694\uc77c_\ud654\uc694\uc77c_\uc218\uc694\uc77c_\ubaa9\uc694\uc77c_\uae08\uc694\uc77c_\ud1a0\uc694\uc77c".split("_"),weekdaysShort:"\uc77c_\uc6d4_\ud654_\uc218_\ubaa9_\uae08_\ud1a0".split("_"),weekdaysMin:"\uc77c_\uc6d4_\ud654_\uc218_\ubaa9_\uae08_\ud1a0".split("_"),longDateFormat:{LT:"A h:mm",LTS:"A h:mm:ss",L:"YYYY.MM.DD.",LL:"YYYY\ub144 MMMM D\uc77c",LLL:"YYYY\ub144 MMMM D\uc77c A h:mm",LLLL:"YYYY\ub144 MMMM D\uc77c dddd A h:mm",l:"YYYY.MM.DD.",ll:"YYYY\ub144 MMMM D\uc77c",lll:"YYYY\ub144 MMMM D\uc77c A h:mm",llll:"YYYY\ub144 MMMM D\uc77c dddd A h:mm"},calendar:{sameDay:"\uc624\ub298 LT",nextDay:"\ub0b4\uc77c LT",nextWeek:"dddd LT",lastDay:"\uc5b4\uc81c LT",lastWeek:"\uc9c0\ub09c\uc8fc dddd LT",sameElse:"L"},relativeTime:{future:"%s \ud6c4",past:"%s \uc804",s:"\uba87 \ucd08",ss:"%d\ucd08",m:"1\ubd84",mm:"%d\ubd84",h:"\ud55c \uc2dc\uac04",hh:"%d\uc2dc\uac04",d:"\ud558\ub8e8",dd:"%d\uc77c",M:"\ud55c \ub2ec",MM:"%d\ub2ec",y:"\uc77c \ub144",yy:"%d\ub144"},dayOfMonthOrdinalParse:/\d{1,2}(\uc77c|\uc6d4|\uc8fc)/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+"\uc77c";case"M":return e+"\uc6d4";case"w":case"W":return e+"\uc8fc";default:return e}},meridiemParse:/\uc624\uc804|\uc624\ud6c4/,isPM:function(e){return"\uc624\ud6c4"===e},meridiem:function(e,a,t){return e<12?"\uc624\uc804":"\uc624\ud6c4"}});var on={1:"\u0661",2:"\u0662",3:"\u0663",4:"\u0664",5:"\u0665",6:"\u0666",7:"\u0667",8:"\u0668",9:"\u0669",0:"\u0660"},mn={"\u0661":"1","\u0662":"2","\u0663":"3","\u0664":"4","\u0665":"5","\u0666":"6","\u0667":"7","\u0668":"8","\u0669":"9","\u0660":"0"},un=["\u06a9\u0627\u0646\u0648\u0646\u06cc \u062f\u0648\u0648\u06d5\u0645","\u0634\u0648\u0628\u0627\u062a","\u0626\u0627\u0632\u0627\u0631","\u0646\u06cc\u0633\u0627\u0646","\u0626\u0627\u06cc\u0627\u0631","\u062d\u0648\u0632\u06d5\u06cc\u0631\u0627\u0646","\u062a\u06d5\u0645\u0645\u0648\u0632","\u0626\u0627\u0628","\u0626\u06d5\u06cc\u0644\u0648\u0648\u0644","\u062a\u0634\u0631\u06cc\u0646\u06cc \u06cc\u06d5\u0643\u06d5\u0645","\u062a\u0634\u0631\u06cc\u0646\u06cc \u062f\u0648\u0648\u06d5\u0645","\u0643\u0627\u0646\u0648\u0646\u06cc \u06cc\u06d5\u06a9\u06d5\u0645"];l.defineLocale("ku",{months:un,monthsShort:un,weekdays:"\u06cc\u0647\u200c\u0643\u0634\u0647\u200c\u0645\u0645\u0647\u200c_\u062f\u0648\u0648\u0634\u0647\u200c\u0645\u0645\u0647\u200c_\u0633\u06ce\u0634\u0647\u200c\u0645\u0645\u0647\u200c_\u0686\u0648\u0627\u0631\u0634\u0647\u200c\u0645\u0645\u0647\u200c_\u067e\u06ce\u0646\u062c\u0634\u0647\u200c\u0645\u0645\u0647\u200c_\u0647\u0647\u200c\u06cc\u0646\u06cc_\u0634\u0647\u200c\u0645\u0645\u0647\u200c".split("_"),weekdaysShort:"\u06cc\u0647\u200c\u0643\u0634\u0647\u200c\u0645_\u062f\u0648\u0648\u0634\u0647\u200c\u0645_\u0633\u06ce\u0634\u0647\u200c\u0645_\u0686\u0648\u0627\u0631\u0634\u0647\u200c\u0645_\u067e\u06ce\u0646\u062c\u0634\u0647\u200c\u0645_\u0647\u0647\u200c\u06cc\u0646\u06cc_\u0634\u0647\u200c\u0645\u0645\u0647\u200c".split("_"),weekdaysMin:"\u06cc_\u062f_\u0633_\u0686_\u067e_\u0647_\u0634".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},meridiemParse:/\u0626\u06ce\u0648\u0627\u0631\u0647\u200c|\u0628\u0647\u200c\u06cc\u0627\u0646\u06cc/,isPM:function(e){return/\u0626\u06ce\u0648\u0627\u0631\u0647\u200c/.test(e)},meridiem:function(e,a,t){return e<12?"\u0628\u0647\u200c\u06cc\u0627\u0646\u06cc":"\u0626\u06ce\u0648\u0627\u0631\u0647\u200c"},calendar:{sameDay:"[\u0626\u0647\u200c\u0645\u0631\u06c6 \u0643\u0627\u062a\u0698\u0645\u06ce\u0631] LT",nextDay:"[\u0628\u0647\u200c\u06cc\u0627\u0646\u06cc \u0643\u0627\u062a\u0698\u0645\u06ce\u0631] LT",nextWeek:"dddd [\u0643\u0627\u062a\u0698\u0645\u06ce\u0631] LT",lastDay:"[\u062f\u0648\u06ce\u0646\u06ce \u0643\u0627\u062a\u0698\u0645\u06ce\u0631] LT",lastWeek:"dddd [\u0643\u0627\u062a\u0698\u0645\u06ce\u0631] LT",sameElse:"L"},relativeTime:{future:"\u0644\u0647\u200c %s",past:"%s",s:"\u0686\u0647\u200c\u0646\u062f \u0686\u0631\u0643\u0647\u200c\u06cc\u0647\u200c\u0643",ss:"\u0686\u0631\u0643\u0647\u200c %d",m:"\u06cc\u0647\u200c\u0643 \u062e\u0648\u0644\u0647\u200c\u0643",mm:"%d \u062e\u0648\u0644\u0647\u200c\u0643",h:"\u06cc\u0647\u200c\u0643 \u0643\u0627\u062a\u0698\u0645\u06ce\u0631",hh:"%d \u0643\u0627\u062a\u0698\u0645\u06ce\u0631",d:"\u06cc\u0647\u200c\u0643 \u0695\u06c6\u0698",dd:"%d \u0695\u06c6\u0698",M:"\u06cc\u0647\u200c\u0643 \u0645\u0627\u0646\u06af",MM:"%d \u0645\u0627\u0646\u06af",y:"\u06cc\u0647\u200c\u0643 \u0633\u0627\u06b5",yy:"%d \u0633\u0627\u06b5"},preparse:function(e){return e.replace(/[\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669\u0660]/g,function(e){return mn[e]}).replace(/\u060c/g,",")},postformat:function(e){return e.replace(/\d/g,function(e){return on[e]}).replace(/,/g,"\u060c")},week:{dow:6,doy:12}});var ln={0:"-\u0447\u04af",1:"-\u0447\u0438",2:"-\u0447\u0438",3:"-\u0447\u04af",4:"-\u0447\u04af",5:"-\u0447\u0438",6:"-\u0447\u044b",7:"-\u0447\u0438",8:"-\u0447\u0438",9:"-\u0447\u0443",10:"-\u0447\u0443",20:"-\u0447\u044b",30:"-\u0447\u0443",40:"-\u0447\u044b",50:"-\u0447\u04af",60:"-\u0447\u044b",70:"-\u0447\u0438",80:"-\u0447\u0438",90:"-\u0447\u0443",100:"-\u0447\u04af"};function Mn(e,a,t,s){var n={m:["eng Minutt","enger Minutt"],h:["eng Stonn","enger Stonn"],d:["een Dag","engem Dag"],M:["ee Mount","engem Mount"],y:["ee Joer","engem Joer"]};return a?n[t][0]:n[t][1]}function hn(e){if(e=parseInt(e,10),isNaN(e))return!1;if(e<0)return!0;if(e<10)return 4<=e&&e<=7;if(e<100){var a=e%10;return hn(0===a?e/10:a)}if(e<1e4){for(;10<=e;)e/=10;return hn(e)}return hn(e/=1e3)}l.defineLocale("ky",{months:"\u044f\u043d\u0432\u0430\u0440\u044c_\u0444\u0435\u0432\u0440\u0430\u043b\u044c_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0435\u043b\u044c_\u043c\u0430\u0439_\u0438\u044e\u043d\u044c_\u0438\u044e\u043b\u044c_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043d\u0442\u044f\u0431\u0440\u044c_\u043e\u043a\u0442\u044f\u0431\u0440\u044c_\u043d\u043e\u044f\u0431\u0440\u044c_\u0434\u0435\u043a\u0430\u0431\u0440\u044c".split("_"),monthsShort:"\u044f\u043d\u0432_\u0444\u0435\u0432_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440_\u043c\u0430\u0439_\u0438\u044e\u043d\u044c_\u0438\u044e\u043b\u044c_\u0430\u0432\u0433_\u0441\u0435\u043d_\u043e\u043a\u0442_\u043d\u043e\u044f_\u0434\u0435\u043a".split("_"),weekdays:"\u0416\u0435\u043a\u0448\u0435\u043c\u0431\u0438_\u0414\u04af\u0439\u0448\u04e9\u043c\u0431\u04af_\u0428\u0435\u0439\u0448\u0435\u043c\u0431\u0438_\u0428\u0430\u0440\u0448\u0435\u043c\u0431\u0438_\u0411\u0435\u0439\u0448\u0435\u043c\u0431\u0438_\u0416\u0443\u043c\u0430_\u0418\u0448\u0435\u043c\u0431\u0438".split("_"),weekdaysShort:"\u0416\u0435\u043a_\u0414\u04af\u0439_\u0428\u0435\u0439_\u0428\u0430\u0440_\u0411\u0435\u0439_\u0416\u0443\u043c_\u0418\u0448\u0435".split("_"),weekdaysMin:"\u0416\u043a_\u0414\u0439_\u0428\u0439_\u0428\u0440_\u0411\u0439_\u0416\u043c_\u0418\u0448".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0411\u04af\u0433\u04af\u043d \u0441\u0430\u0430\u0442] LT",nextDay:"[\u042d\u0440\u0442\u0435\u04a3 \u0441\u0430\u0430\u0442] LT",nextWeek:"dddd [\u0441\u0430\u0430\u0442] LT",lastDay:"[\u041a\u0435\u0447\u044d\u044d \u0441\u0430\u0430\u0442] LT",lastWeek:"[\u04e8\u0442\u043a\u04e9\u043d \u0430\u043f\u0442\u0430\u043d\u044b\u043d] dddd [\u043a\u04af\u043d\u04af] [\u0441\u0430\u0430\u0442] LT",sameElse:"L"},relativeTime:{future:"%s \u0438\u0447\u0438\u043d\u0434\u0435",past:"%s \u043c\u0443\u0440\u0443\u043d",s:"\u0431\u0438\u0440\u043d\u0435\u0447\u0435 \u0441\u0435\u043a\u0443\u043d\u0434",ss:"%d \u0441\u0435\u043a\u0443\u043d\u0434",m:"\u0431\u0438\u0440 \u043c\u04af\u043d\u04e9\u0442",mm:"%d \u043c\u04af\u043d\u04e9\u0442",h:"\u0431\u0438\u0440 \u0441\u0430\u0430\u0442",hh:"%d \u0441\u0430\u0430\u0442",d:"\u0431\u0438\u0440 \u043a\u04af\u043d",dd:"%d \u043a\u04af\u043d",M:"\u0431\u0438\u0440 \u0430\u0439",MM:"%d \u0430\u0439",y:"\u0431\u0438\u0440 \u0436\u044b\u043b",yy:"%d \u0436\u044b\u043b"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0447\u0438|\u0447\u044b|\u0447\u04af|\u0447\u0443)/,ordinal:function(e){return e+(ln[e]||ln[e%10]||ln[100<=e?100:null])},week:{dow:1,doy:7}}),l.defineLocale("lb",{months:"Januar_Februar_M\xe4erz_Abr\xebll_Mee_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),monthsShort:"Jan._Febr._Mrz._Abr._Mee_Jun._Jul._Aug._Sept._Okt._Nov._Dez.".split("_"),monthsParseExact:!0,weekdays:"Sonndeg_M\xe9indeg_D\xebnschdeg_M\xebttwoch_Donneschdeg_Freideg_Samschdeg".split("_"),weekdaysShort:"So._M\xe9._D\xeb._M\xeb._Do._Fr._Sa.".split("_"),weekdaysMin:"So_M\xe9_D\xeb_M\xeb_Do_Fr_Sa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm [Auer]",LTS:"H:mm:ss [Auer]",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm [Auer]",LLLL:"dddd, D. MMMM YYYY H:mm [Auer]"},calendar:{sameDay:"[Haut um] LT",sameElse:"L",nextDay:"[Muer um] LT",nextWeek:"dddd [um] LT",lastDay:"[G\xebschter um] LT",lastWeek:function(){switch(this.day()){case 2:case 4:return"[Leschten] dddd [um] LT";default:return"[Leschte] dddd [um] LT"}}},relativeTime:{future:function(e){return hn(e.substr(0,e.indexOf(" ")))?"a "+e:"an "+e},past:function(e){return hn(e.substr(0,e.indexOf(" ")))?"viru "+e:"virun "+e},s:"e puer Sekonnen",ss:"%d Sekonnen",m:Mn,mm:"%d Minutten",h:Mn,hh:"%d Stonnen",d:Mn,dd:"%d Deeg",M:Mn,MM:"%d M\xe9int",y:Mn,yy:"%d Joer"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("lo",{months:"\u0ea1\u0eb1\u0e87\u0e81\u0ead\u0e99_\u0e81\u0eb8\u0ea1\u0e9e\u0eb2_\u0ea1\u0eb5\u0e99\u0eb2_\u0ec0\u0ea1\u0eaa\u0eb2_\u0e9e\u0eb6\u0e94\u0eaa\u0eb0\u0e9e\u0eb2_\u0ea1\u0eb4\u0e96\u0eb8\u0e99\u0eb2_\u0e81\u0ecd\u0ea5\u0eb0\u0e81\u0ebb\u0e94_\u0eaa\u0eb4\u0e87\u0eab\u0eb2_\u0e81\u0eb1\u0e99\u0e8d\u0eb2_\u0e95\u0eb8\u0ea5\u0eb2_\u0e9e\u0eb0\u0e88\u0eb4\u0e81_\u0e97\u0eb1\u0e99\u0ea7\u0eb2".split("_"),monthsShort:"\u0ea1\u0eb1\u0e87\u0e81\u0ead\u0e99_\u0e81\u0eb8\u0ea1\u0e9e\u0eb2_\u0ea1\u0eb5\u0e99\u0eb2_\u0ec0\u0ea1\u0eaa\u0eb2_\u0e9e\u0eb6\u0e94\u0eaa\u0eb0\u0e9e\u0eb2_\u0ea1\u0eb4\u0e96\u0eb8\u0e99\u0eb2_\u0e81\u0ecd\u0ea5\u0eb0\u0e81\u0ebb\u0e94_\u0eaa\u0eb4\u0e87\u0eab\u0eb2_\u0e81\u0eb1\u0e99\u0e8d\u0eb2_\u0e95\u0eb8\u0ea5\u0eb2_\u0e9e\u0eb0\u0e88\u0eb4\u0e81_\u0e97\u0eb1\u0e99\u0ea7\u0eb2".split("_"),weekdays:"\u0ead\u0eb2\u0e97\u0eb4\u0e94_\u0e88\u0eb1\u0e99_\u0ead\u0eb1\u0e87\u0e84\u0eb2\u0e99_\u0e9e\u0eb8\u0e94_\u0e9e\u0eb0\u0eab\u0eb1\u0e94_\u0eaa\u0eb8\u0e81_\u0ec0\u0eaa\u0ebb\u0eb2".split("_"),weekdaysShort:"\u0e97\u0eb4\u0e94_\u0e88\u0eb1\u0e99_\u0ead\u0eb1\u0e87\u0e84\u0eb2\u0e99_\u0e9e\u0eb8\u0e94_\u0e9e\u0eb0\u0eab\u0eb1\u0e94_\u0eaa\u0eb8\u0e81_\u0ec0\u0eaa\u0ebb\u0eb2".split("_"),weekdaysMin:"\u0e97_\u0e88_\u0ead\u0e84_\u0e9e_\u0e9e\u0eab_\u0eaa\u0e81_\u0eaa".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"\u0ea7\u0eb1\u0e99dddd D MMMM YYYY HH:mm"},meridiemParse:/\u0e95\u0ead\u0e99\u0ec0\u0e8a\u0ebb\u0ec9\u0eb2|\u0e95\u0ead\u0e99\u0ec1\u0ea5\u0e87/,isPM:function(e){return"\u0e95\u0ead\u0e99\u0ec1\u0ea5\u0e87"===e},meridiem:function(e,a,t){return e<12?"\u0e95\u0ead\u0e99\u0ec0\u0e8a\u0ebb\u0ec9\u0eb2":"\u0e95\u0ead\u0e99\u0ec1\u0ea5\u0e87"},calendar:{sameDay:"[\u0ea1\u0eb7\u0ec9\u0e99\u0eb5\u0ec9\u0ec0\u0ea7\u0ea5\u0eb2] LT",nextDay:"[\u0ea1\u0eb7\u0ec9\u0ead\u0eb7\u0ec8\u0e99\u0ec0\u0ea7\u0ea5\u0eb2] LT",nextWeek:"[\u0ea7\u0eb1\u0e99]dddd[\u0edc\u0ec9\u0eb2\u0ec0\u0ea7\u0ea5\u0eb2] LT",lastDay:"[\u0ea1\u0eb7\u0ec9\u0ea7\u0eb2\u0e99\u0e99\u0eb5\u0ec9\u0ec0\u0ea7\u0ea5\u0eb2] LT",lastWeek:"[\u0ea7\u0eb1\u0e99]dddd[\u0ec1\u0ea5\u0ec9\u0ea7\u0e99\u0eb5\u0ec9\u0ec0\u0ea7\u0ea5\u0eb2] LT",sameElse:"L"},relativeTime:{future:"\u0ead\u0eb5\u0e81 %s",past:"%s\u0e9c\u0ec8\u0eb2\u0e99\u0ea1\u0eb2",s:"\u0e9a\u0ecd\u0ec8\u0ec0\u0e97\u0ebb\u0ec8\u0eb2\u0ec3\u0e94\u0ea7\u0eb4\u0e99\u0eb2\u0e97\u0eb5",ss:"%d \u0ea7\u0eb4\u0e99\u0eb2\u0e97\u0eb5",m:"1 \u0e99\u0eb2\u0e97\u0eb5",mm:"%d \u0e99\u0eb2\u0e97\u0eb5",h:"1 \u0e8a\u0ebb\u0ec8\u0ea7\u0ec2\u0ea1\u0e87",hh:"%d \u0e8a\u0ebb\u0ec8\u0ea7\u0ec2\u0ea1\u0e87",d:"1 \u0ea1\u0eb7\u0ec9",dd:"%d \u0ea1\u0eb7\u0ec9",M:"1 \u0ec0\u0e94\u0eb7\u0ead\u0e99",MM:"%d \u0ec0\u0e94\u0eb7\u0ead\u0e99",y:"1 \u0e9b\u0eb5",yy:"%d \u0e9b\u0eb5"},dayOfMonthOrdinalParse:/(\u0e97\u0eb5\u0ec8)\d{1,2}/,ordinal:function(e){return"\u0e97\u0eb5\u0ec8"+e}});var Ln={ss:"sekund\u0117_sekund\u017ei\u0173_sekundes",m:"minut\u0117_minut\u0117s_minut\u0119",mm:"minut\u0117s_minu\u010di\u0173_minutes",h:"valanda_valandos_valand\u0105",hh:"valandos_valand\u0173_valandas",d:"diena_dienos_dien\u0105",dd:"dienos_dien\u0173_dienas",M:"m\u0117nuo_m\u0117nesio_m\u0117nes\u012f",MM:"m\u0117nesiai_m\u0117nesi\u0173_m\u0117nesius",y:"metai_met\u0173_metus",yy:"metai_met\u0173_metus"};function cn(e,a,t,s){return a?yn(t)[0]:s?yn(t)[1]:yn(t)[2]}function Yn(e){return e%10==0||10<e&&e<20}function yn(e){return Ln[e].split("_")}function fn(e,a,t,s){var n=e+" ";return 1===e?n+cn(0,a,t[0],s):a?n+(Yn(e)?yn(t)[1]:yn(t)[0]):s?n+yn(t)[1]:n+(Yn(e)?yn(t)[1]:yn(t)[2])}l.defineLocale("lt",{months:{format:"sausio_vasario_kovo_baland\u017eio_gegu\u017e\u0117s_bir\u017eelio_liepos_rugpj\u016b\u010dio_rugs\u0117jo_spalio_lapkri\u010dio_gruod\u017eio".split("_"),standalone:"sausis_vasaris_kovas_balandis_gegu\u017e\u0117_bir\u017eelis_liepa_rugpj\u016btis_rugs\u0117jis_spalis_lapkritis_gruodis".split("_"),isFormat:/D[oD]?(\[[^\[\]]*\]|\s)+MMMM?|MMMM?(\[[^\[\]]*\]|\s)+D[oD]?/},monthsShort:"sau_vas_kov_bal_geg_bir_lie_rgp_rgs_spa_lap_grd".split("_"),weekdays:{format:"sekmadien\u012f_pirmadien\u012f_antradien\u012f_tre\u010diadien\u012f_ketvirtadien\u012f_penktadien\u012f_\u0161e\u0161tadien\u012f".split("_"),standalone:"sekmadienis_pirmadienis_antradienis_tre\u010diadienis_ketvirtadienis_penktadienis_\u0161e\u0161tadienis".split("_"),isFormat:/dddd HH:mm/},weekdaysShort:"Sek_Pir_Ant_Tre_Ket_Pen_\u0160e\u0161".split("_"),weekdaysMin:"S_P_A_T_K_Pn_\u0160".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"YYYY [m.] MMMM D [d.]",LLL:"YYYY [m.] MMMM D [d.], HH:mm [val.]",LLLL:"YYYY [m.] MMMM D [d.], dddd, HH:mm [val.]",l:"YYYY-MM-DD",ll:"YYYY [m.] MMMM D [d.]",lll:"YYYY [m.] MMMM D [d.], HH:mm [val.]",llll:"YYYY [m.] MMMM D [d.], ddd, HH:mm [val.]"},calendar:{sameDay:"[\u0160iandien] LT",nextDay:"[Rytoj] LT",nextWeek:"dddd LT",lastDay:"[Vakar] LT",lastWeek:"[Pra\u0117jus\u012f] dddd LT",sameElse:"L"},relativeTime:{future:"po %s",past:"prie\u0161 %s",s:function(e,a,t,s){return a?"kelios sekund\u0117s":s?"keli\u0173 sekund\u017ei\u0173":"kelias sekundes"},ss:fn,m:cn,mm:fn,h:cn,hh:fn,d:cn,dd:fn,M:cn,MM:fn,y:cn,yy:fn},dayOfMonthOrdinalParse:/\d{1,2}-oji/,ordinal:function(e){return e+"-oji"},week:{dow:1,doy:4}});var kn={ss:"sekundes_sekund\u0113m_sekunde_sekundes".split("_"),m:"min\u016btes_min\u016bt\u0113m_min\u016bte_min\u016btes".split("_"),mm:"min\u016btes_min\u016bt\u0113m_min\u016bte_min\u016btes".split("_"),h:"stundas_stund\u0101m_stunda_stundas".split("_"),hh:"stundas_stund\u0101m_stunda_stundas".split("_"),d:"dienas_dien\u0101m_diena_dienas".split("_"),dd:"dienas_dien\u0101m_diena_dienas".split("_"),M:"m\u0113ne\u0161a_m\u0113ne\u0161iem_m\u0113nesis_m\u0113ne\u0161i".split("_"),MM:"m\u0113ne\u0161a_m\u0113ne\u0161iem_m\u0113nesis_m\u0113ne\u0161i".split("_"),y:"gada_gadiem_gads_gadi".split("_"),yy:"gada_gadiem_gads_gadi".split("_")};function pn(e,a,t){return t?a%10==1&&a%100!=11?e[2]:e[3]:a%10==1&&a%100!=11?e[0]:e[1]}function Dn(e,a,t){return e+" "+pn(kn[t],e,a)}function Tn(e,a,t){return pn(kn[t],e,a)}l.defineLocale("lv",{months:"janv\u0101ris_febru\u0101ris_marts_apr\u012blis_maijs_j\u016bnijs_j\u016blijs_augusts_septembris_oktobris_novembris_decembris".split("_"),monthsShort:"jan_feb_mar_apr_mai_j\u016bn_j\u016bl_aug_sep_okt_nov_dec".split("_"),weekdays:"sv\u0113tdiena_pirmdiena_otrdiena_tre\u0161diena_ceturtdiena_piektdiena_sestdiena".split("_"),weekdaysShort:"Sv_P_O_T_C_Pk_S".split("_"),weekdaysMin:"Sv_P_O_T_C_Pk_S".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY.",LL:"YYYY. [gada] D. MMMM",LLL:"YYYY. [gada] D. MMMM, HH:mm",LLLL:"YYYY. [gada] D. MMMM, dddd, HH:mm"},calendar:{sameDay:"[\u0160odien pulksten] LT",nextDay:"[R\u012bt pulksten] LT",nextWeek:"dddd [pulksten] LT",lastDay:"[Vakar pulksten] LT",lastWeek:"[Pag\u0101ju\u0161\u0101] dddd [pulksten] LT",sameElse:"L"},relativeTime:{future:"p\u0113c %s",past:"pirms %s",s:function(e,a){return a?"da\u017eas sekundes":"da\u017e\u0101m sekund\u0113m"},ss:Dn,m:Tn,mm:Dn,h:Tn,hh:Dn,d:Tn,dd:Dn,M:Tn,MM:Dn,y:Tn,yy:Dn},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}});var gn={words:{ss:["sekund","sekunda","sekundi"],m:["jedan minut","jednog minuta"],mm:["minut","minuta","minuta"],h:["jedan sat","jednog sata"],hh:["sat","sata","sati"],dd:["dan","dana","dana"],MM:["mjesec","mjeseca","mjeseci"],yy:["godina","godine","godina"]},correctGrammaticalCase:function(e,a){return 1===e?a[0]:2<=e&&e<=4?a[1]:a[2]},translate:function(e,a,t){var s=gn.words[t];return 1===t.length?a?s[0]:s[1]:e+" "+gn.correctGrammaticalCase(e,s)}};function wn(e,a,t,s){switch(t){case"s":return a?"\u0445\u044d\u0434\u0445\u044d\u043d \u0441\u0435\u043a\u0443\u043d\u0434":"\u0445\u044d\u0434\u0445\u044d\u043d \u0441\u0435\u043a\u0443\u043d\u0434\u044b\u043d";case"ss":return e+(a?" \u0441\u0435\u043a\u0443\u043d\u0434":" \u0441\u0435\u043a\u0443\u043d\u0434\u044b\u043d");case"m":case"mm":return e+(a?" \u043c\u0438\u043d\u0443\u0442":" \u043c\u0438\u043d\u0443\u0442\u044b\u043d");case"h":case"hh":return e+(a?" \u0446\u0430\u0433":" \u0446\u0430\u0433\u0438\u0439\u043d");case"d":case"dd":return e+(a?" \u04e9\u0434\u04e9\u0440":" \u04e9\u0434\u0440\u0438\u0439\u043d");case"M":case"MM":return e+(a?" \u0441\u0430\u0440":" \u0441\u0430\u0440\u044b\u043d");case"y":case"yy":return e+(a?" \u0436\u0438\u043b":" \u0436\u0438\u043b\u0438\u0439\u043d");default:return e}}l.defineLocale("me",{months:"januar_februar_mart_april_maj_jun_jul_avgust_septembar_oktobar_novembar_decembar".split("_"),monthsShort:"jan._feb._mar._apr._maj_jun_jul_avg._sep._okt._nov._dec.".split("_"),monthsParseExact:!0,weekdays:"nedjelja_ponedjeljak_utorak_srijeda_\u010detvrtak_petak_subota".split("_"),weekdaysShort:"ned._pon._uto._sri._\u010det._pet._sub.".split("_"),weekdaysMin:"ne_po_ut_sr_\u010de_pe_su".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sjutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedjelju] [u] LT";case 3:return"[u] [srijedu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[ju\u010de u] LT",lastWeek:function(){return["[pro\u0161le] [nedjelje] [u] LT","[pro\u0161log] [ponedjeljka] [u] LT","[pro\u0161log] [utorka] [u] LT","[pro\u0161le] [srijede] [u] LT","[pro\u0161log] [\u010detvrtka] [u] LT","[pro\u0161log] [petka] [u] LT","[pro\u0161le] [subote] [u] LT"][this.day()]},sameElse:"L"},relativeTime:{future:"za %s",past:"prije %s",s:"nekoliko sekundi",ss:gn.translate,m:gn.translate,mm:gn.translate,h:gn.translate,hh:gn.translate,d:"dan",dd:gn.translate,M:"mjesec",MM:gn.translate,y:"godinu",yy:gn.translate},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),l.defineLocale("mi",{months:"Kohi-t\u0101te_Hui-tanguru_Pout\u016b-te-rangi_Paenga-wh\u0101wh\u0101_Haratua_Pipiri_H\u014dngoingoi_Here-turi-k\u014dk\u0101_Mahuru_Whiringa-\u0101-nuku_Whiringa-\u0101-rangi_Hakihea".split("_"),monthsShort:"Kohi_Hui_Pou_Pae_Hara_Pipi_H\u014dngoi_Here_Mahu_Whi-nu_Whi-ra_Haki".split("_"),monthsRegex:/(?:['a-z\u0101\u014D\u016B]+\-?){1,3}/i,monthsStrictRegex:/(?:['a-z\u0101\u014D\u016B]+\-?){1,3}/i,monthsShortRegex:/(?:['a-z\u0101\u014D\u016B]+\-?){1,3}/i,monthsShortStrictRegex:/(?:['a-z\u0101\u014D\u016B]+\-?){1,2}/i,weekdays:"R\u0101tapu_Mane_T\u016brei_Wenerei_T\u0101ite_Paraire_H\u0101tarei".split("_"),weekdaysShort:"Ta_Ma_T\u016b_We_T\u0101i_Pa_H\u0101".split("_"),weekdaysMin:"Ta_Ma_T\u016b_We_T\u0101i_Pa_H\u0101".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [i] HH:mm",LLLL:"dddd, D MMMM YYYY [i] HH:mm"},calendar:{sameDay:"[i teie mahana, i] LT",nextDay:"[apopo i] LT",nextWeek:"dddd [i] LT",lastDay:"[inanahi i] LT",lastWeek:"dddd [whakamutunga i] LT",sameElse:"L"},relativeTime:{future:"i roto i %s",past:"%s i mua",s:"te h\u0113kona ruarua",ss:"%d h\u0113kona",m:"he meneti",mm:"%d meneti",h:"te haora",hh:"%d haora",d:"he ra",dd:"%d ra",M:"he marama",MM:"%d marama",y:"he tau",yy:"%d tau"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}}),l.defineLocale("mk",{months:"\u0458\u0430\u043d\u0443\u0430\u0440\u0438_\u0444\u0435\u0432\u0440\u0443\u0430\u0440\u0438_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0438\u043b_\u043c\u0430\u0458_\u0458\u0443\u043d\u0438_\u0458\u0443\u043b\u0438_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043f\u0442\u0435\u043c\u0432\u0440\u0438_\u043e\u043a\u0442\u043e\u043c\u0432\u0440\u0438_\u043d\u043e\u0435\u043c\u0432\u0440\u0438_\u0434\u0435\u043a\u0435\u043c\u0432\u0440\u0438".split("_"),monthsShort:"\u0458\u0430\u043d_\u0444\u0435\u0432_\u043c\u0430\u0440_\u0430\u043f\u0440_\u043c\u0430\u0458_\u0458\u0443\u043d_\u0458\u0443\u043b_\u0430\u0432\u0433_\u0441\u0435\u043f_\u043e\u043a\u0442_\u043d\u043e\u0435_\u0434\u0435\u043a".split("_"),weekdays:"\u043d\u0435\u0434\u0435\u043b\u0430_\u043f\u043e\u043d\u0435\u0434\u0435\u043b\u043d\u0438\u043a_\u0432\u0442\u043e\u0440\u043d\u0438\u043a_\u0441\u0440\u0435\u0434\u0430_\u0447\u0435\u0442\u0432\u0440\u0442\u043e\u043a_\u043f\u0435\u0442\u043e\u043a_\u0441\u0430\u0431\u043e\u0442\u0430".split("_"),weekdaysShort:"\u043d\u0435\u0434_\u043f\u043e\u043d_\u0432\u0442\u043e_\u0441\u0440\u0435_\u0447\u0435\u0442_\u043f\u0435\u0442_\u0441\u0430\u0431".split("_"),weekdaysMin:"\u043de_\u043fo_\u0432\u0442_\u0441\u0440_\u0447\u0435_\u043f\u0435_\u0441a".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"D.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd, D MMMM YYYY H:mm"},calendar:{sameDay:"[\u0414\u0435\u043d\u0435\u0441 \u0432\u043e] LT",nextDay:"[\u0423\u0442\u0440\u0435 \u0432\u043e] LT",nextWeek:"[\u0412\u043e] dddd [\u0432\u043e] LT",lastDay:"[\u0412\u0447\u0435\u0440\u0430 \u0432\u043e] LT",lastWeek:function(){switch(this.day()){case 0:case 3:case 6:return"[\u0418\u0437\u043c\u0438\u043d\u0430\u0442\u0430\u0442\u0430] dddd [\u0432\u043e] LT";case 1:case 2:case 4:case 5:return"[\u0418\u0437\u043c\u0438\u043d\u0430\u0442\u0438\u043e\u0442] dddd [\u0432\u043e] LT"}},sameElse:"L"},relativeTime:{future:"\u043f\u043e\u0441\u043b\u0435 %s",past:"\u043f\u0440\u0435\u0434 %s",s:"\u043d\u0435\u043a\u043e\u043b\u043a\u0443 \u0441\u0435\u043a\u0443\u043d\u0434\u0438",ss:"%d \u0441\u0435\u043a\u0443\u043d\u0434\u0438",m:"\u043c\u0438\u043d\u0443\u0442\u0430",mm:"%d \u043c\u0438\u043d\u0443\u0442\u0438",h:"\u0447\u0430\u0441",hh:"%d \u0447\u0430\u0441\u0430",d:"\u0434\u0435\u043d",dd:"%d \u0434\u0435\u043d\u0430",M:"\u043c\u0435\u0441\u0435\u0446",MM:"%d \u043c\u0435\u0441\u0435\u0446\u0438",y:"\u0433\u043e\u0434\u0438\u043d\u0430",yy:"%d \u0433\u043e\u0434\u0438\u043d\u0438"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0435\u0432|\u0435\u043d|\u0442\u0438|\u0432\u0438|\u0440\u0438|\u043c\u0438)/,ordinal:function(e){var a=e%10,t=e%100;return 0===e?e+"-\u0435\u0432":0===t?e+"-\u0435\u043d":10<t&&t<20?e+"-\u0442\u0438":1===a?e+"-\u0432\u0438":2===a?e+"-\u0440\u0438":7===a||8===a?e+"-\u043c\u0438":e+"-\u0442\u0438"},week:{dow:1,doy:7}}),l.defineLocale("ml",{months:"\u0d1c\u0d28\u0d41\u0d35\u0d30\u0d3f_\u0d2b\u0d46\u0d2c\u0d4d\u0d30\u0d41\u0d35\u0d30\u0d3f_\u0d2e\u0d3e\u0d7c\u0d1a\u0d4d\u0d1a\u0d4d_\u0d0f\u0d2a\u0d4d\u0d30\u0d3f\u0d7d_\u0d2e\u0d47\u0d2f\u0d4d_\u0d1c\u0d42\u0d7a_\u0d1c\u0d42\u0d32\u0d48_\u0d13\u0d17\u0d38\u0d4d\u0d31\u0d4d\u0d31\u0d4d_\u0d38\u0d46\u0d2a\u0d4d\u0d31\u0d4d\u0d31\u0d02\u0d2c\u0d7c_\u0d12\u0d15\u0d4d\u0d1f\u0d4b\u0d2c\u0d7c_\u0d28\u0d35\u0d02\u0d2c\u0d7c_\u0d21\u0d3f\u0d38\u0d02\u0d2c\u0d7c".split("_"),monthsShort:"\u0d1c\u0d28\u0d41._\u0d2b\u0d46\u0d2c\u0d4d\u0d30\u0d41._\u0d2e\u0d3e\u0d7c._\u0d0f\u0d2a\u0d4d\u0d30\u0d3f._\u0d2e\u0d47\u0d2f\u0d4d_\u0d1c\u0d42\u0d7a_\u0d1c\u0d42\u0d32\u0d48._\u0d13\u0d17._\u0d38\u0d46\u0d2a\u0d4d\u0d31\u0d4d\u0d31._\u0d12\u0d15\u0d4d\u0d1f\u0d4b._\u0d28\u0d35\u0d02._\u0d21\u0d3f\u0d38\u0d02.".split("_"),monthsParseExact:!0,weekdays:"\u0d1e\u0d3e\u0d2f\u0d31\u0d3e\u0d34\u0d4d\u0d1a_\u0d24\u0d3f\u0d19\u0d4d\u0d15\u0d33\u0d3e\u0d34\u0d4d\u0d1a_\u0d1a\u0d4a\u0d35\u0d4d\u0d35\u0d3e\u0d34\u0d4d\u0d1a_\u0d2c\u0d41\u0d27\u0d28\u0d3e\u0d34\u0d4d\u0d1a_\u0d35\u0d4d\u0d2f\u0d3e\u0d34\u0d3e\u0d34\u0d4d\u0d1a_\u0d35\u0d46\u0d33\u0d4d\u0d33\u0d3f\u0d2f\u0d3e\u0d34\u0d4d\u0d1a_\u0d36\u0d28\u0d3f\u0d2f\u0d3e\u0d34\u0d4d\u0d1a".split("_"),weekdaysShort:"\u0d1e\u0d3e\u0d2f\u0d7c_\u0d24\u0d3f\u0d19\u0d4d\u0d15\u0d7e_\u0d1a\u0d4a\u0d35\u0d4d\u0d35_\u0d2c\u0d41\u0d27\u0d7b_\u0d35\u0d4d\u0d2f\u0d3e\u0d34\u0d02_\u0d35\u0d46\u0d33\u0d4d\u0d33\u0d3f_\u0d36\u0d28\u0d3f".split("_"),weekdaysMin:"\u0d1e\u0d3e_\u0d24\u0d3f_\u0d1a\u0d4a_\u0d2c\u0d41_\u0d35\u0d4d\u0d2f\u0d3e_\u0d35\u0d46_\u0d36".split("_"),longDateFormat:{LT:"A h:mm -\u0d28\u0d41",LTS:"A h:mm:ss -\u0d28\u0d41",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm -\u0d28\u0d41",LLLL:"dddd, D MMMM YYYY, A h:mm -\u0d28\u0d41"},calendar:{sameDay:"[\u0d07\u0d28\u0d4d\u0d28\u0d4d] LT",nextDay:"[\u0d28\u0d3e\u0d33\u0d46] LT",nextWeek:"dddd, LT",lastDay:"[\u0d07\u0d28\u0d4d\u0d28\u0d32\u0d46] LT",lastWeek:"[\u0d15\u0d34\u0d3f\u0d1e\u0d4d\u0d1e] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0d15\u0d34\u0d3f\u0d1e\u0d4d\u0d1e\u0d4d",past:"%s \u0d2e\u0d41\u0d7b\u0d2a\u0d4d",s:"\u0d05\u0d7d\u0d2a \u0d28\u0d3f\u0d2e\u0d3f\u0d37\u0d19\u0d4d\u0d19\u0d7e",ss:"%d \u0d38\u0d46\u0d15\u0d4d\u0d15\u0d7b\u0d21\u0d4d",m:"\u0d12\u0d30\u0d41 \u0d2e\u0d3f\u0d28\u0d3f\u0d31\u0d4d\u0d31\u0d4d",mm:"%d \u0d2e\u0d3f\u0d28\u0d3f\u0d31\u0d4d\u0d31\u0d4d",h:"\u0d12\u0d30\u0d41 \u0d2e\u0d23\u0d3f\u0d15\u0d4d\u0d15\u0d42\u0d7c",hh:"%d \u0d2e\u0d23\u0d3f\u0d15\u0d4d\u0d15\u0d42\u0d7c",d:"\u0d12\u0d30\u0d41 \u0d26\u0d3f\u0d35\u0d38\u0d02",dd:"%d \u0d26\u0d3f\u0d35\u0d38\u0d02",M:"\u0d12\u0d30\u0d41 \u0d2e\u0d3e\u0d38\u0d02",MM:"%d \u0d2e\u0d3e\u0d38\u0d02",y:"\u0d12\u0d30\u0d41 \u0d35\u0d7c\u0d37\u0d02",yy:"%d \u0d35\u0d7c\u0d37\u0d02"},meridiemParse:/\u0d30\u0d3e\u0d24\u0d4d\u0d30\u0d3f|\u0d30\u0d3e\u0d35\u0d3f\u0d32\u0d46|\u0d09\u0d1a\u0d4d\u0d1a \u0d15\u0d34\u0d3f\u0d1e\u0d4d\u0d1e\u0d4d|\u0d35\u0d48\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d47\u0d30\u0d02|\u0d30\u0d3e\u0d24\u0d4d\u0d30\u0d3f/i,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0d30\u0d3e\u0d24\u0d4d\u0d30\u0d3f"===a&&4<=e||"\u0d09\u0d1a\u0d4d\u0d1a \u0d15\u0d34\u0d3f\u0d1e\u0d4d\u0d1e\u0d4d"===a||"\u0d35\u0d48\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d47\u0d30\u0d02"===a?e+12:e},meridiem:function(e,a,t){return e<4?"\u0d30\u0d3e\u0d24\u0d4d\u0d30\u0d3f":e<12?"\u0d30\u0d3e\u0d35\u0d3f\u0d32\u0d46":e<17?"\u0d09\u0d1a\u0d4d\u0d1a \u0d15\u0d34\u0d3f\u0d1e\u0d4d\u0d1e\u0d4d":e<20?"\u0d35\u0d48\u0d15\u0d41\u0d28\u0d4d\u0d28\u0d47\u0d30\u0d02":"\u0d30\u0d3e\u0d24\u0d4d\u0d30\u0d3f"}}),l.defineLocale("mn",{months:"\u041d\u044d\u0433\u0434\u04af\u0433\u044d\u044d\u0440 \u0441\u0430\u0440_\u0425\u043e\u0451\u0440\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u0413\u0443\u0440\u0430\u0432\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u0414\u04e9\u0440\u04e9\u0432\u0434\u04af\u0433\u044d\u044d\u0440 \u0441\u0430\u0440_\u0422\u0430\u0432\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u0417\u0443\u0440\u0433\u0430\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u0414\u043e\u043b\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u041d\u0430\u0439\u043c\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u0415\u0441\u0434\u04af\u0433\u044d\u044d\u0440 \u0441\u0430\u0440_\u0410\u0440\u0430\u0432\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440_\u0410\u0440\u0432\u0430\u043d \u043d\u044d\u0433\u0434\u04af\u0433\u044d\u044d\u0440 \u0441\u0430\u0440_\u0410\u0440\u0432\u0430\u043d \u0445\u043e\u0451\u0440\u0434\u0443\u0433\u0430\u0430\u0440 \u0441\u0430\u0440".split("_"),monthsShort:"1 \u0441\u0430\u0440_2 \u0441\u0430\u0440_3 \u0441\u0430\u0440_4 \u0441\u0430\u0440_5 \u0441\u0430\u0440_6 \u0441\u0430\u0440_7 \u0441\u0430\u0440_8 \u0441\u0430\u0440_9 \u0441\u0430\u0440_10 \u0441\u0430\u0440_11 \u0441\u0430\u0440_12 \u0441\u0430\u0440".split("_"),monthsParseExact:!0,weekdays:"\u041d\u044f\u043c_\u0414\u0430\u0432\u0430\u0430_\u041c\u044f\u0433\u043c\u0430\u0440_\u041b\u0445\u0430\u0433\u0432\u0430_\u041f\u04af\u0440\u044d\u0432_\u0411\u0430\u0430\u0441\u0430\u043d_\u0411\u044f\u043c\u0431\u0430".split("_"),weekdaysShort:"\u041d\u044f\u043c_\u0414\u0430\u0432_\u041c\u044f\u0433_\u041b\u0445\u0430_\u041f\u04af\u0440_\u0411\u0430\u0430_\u0411\u044f\u043c".split("_"),weekdaysMin:"\u041d\u044f_\u0414\u0430_\u041c\u044f_\u041b\u0445_\u041f\u04af_\u0411\u0430_\u0411\u044f".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"YYYY \u043e\u043d\u044b MMMM\u044b\u043d D",LLL:"YYYY \u043e\u043d\u044b MMMM\u044b\u043d D HH:mm",LLLL:"dddd, YYYY \u043e\u043d\u044b MMMM\u044b\u043d D HH:mm"},meridiemParse:/\u04ae\u04e8|\u04ae\u0425/i,isPM:function(e){return"\u04ae\u0425"===e},meridiem:function(e,a,t){return e<12?"\u04ae\u04e8":"\u04ae\u0425"},calendar:{sameDay:"[\u04e8\u043d\u04e9\u04e9\u0434\u04e9\u0440] LT",nextDay:"[\u041c\u0430\u0440\u0433\u0430\u0430\u0448] LT",nextWeek:"[\u0418\u0440\u044d\u0445] dddd LT",lastDay:"[\u04e8\u0447\u0438\u0433\u0434\u04e9\u0440] LT",lastWeek:"[\u04e8\u043d\u0433\u04e9\u0440\u0441\u04e9\u043d] dddd LT",sameElse:"L"},relativeTime:{future:"%s \u0434\u0430\u0440\u0430\u0430",past:"%s \u04e9\u043c\u043d\u04e9",s:wn,ss:wn,m:wn,mm:wn,h:wn,hh:wn,d:wn,dd:wn,M:wn,MM:wn,y:wn,yy:wn},dayOfMonthOrdinalParse:/\d{1,2} \u04e9\u0434\u04e9\u0440/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+" \u04e9\u0434\u04e9\u0440";default:return e}}});var vn={1:"\u0967",2:"\u0968",3:"\u0969",4:"\u096a",5:"\u096b",6:"\u096c",7:"\u096d",8:"\u096e",9:"\u096f",0:"\u0966"},Sn={"\u0967":"1","\u0968":"2","\u0969":"3","\u096a":"4","\u096b":"5","\u096c":"6","\u096d":"7","\u096e":"8","\u096f":"9","\u0966":"0"};function Hn(e,a,t,s){var n="";if(a)switch(t){case"s":n="\u0915\u093e\u0939\u0940 \u0938\u0947\u0915\u0902\u0926";break;case"ss":n="%d \u0938\u0947\u0915\u0902\u0926";break;case"m":n="\u090f\u0915 \u092e\u093f\u0928\u093f\u091f";break;case"mm":n="%d \u092e\u093f\u0928\u093f\u091f\u0947";break;case"h":n="\u090f\u0915 \u0924\u093e\u0938";break;case"hh":n="%d \u0924\u093e\u0938";break;case"d":n="\u090f\u0915 \u0926\u093f\u0935\u0938";break;case"dd":n="%d \u0926\u093f\u0935\u0938";break;case"M":n="\u090f\u0915 \u092e\u0939\u093f\u0928\u093e";break;case"MM":n="%d \u092e\u0939\u093f\u0928\u0947";break;case"y":n="\u090f\u0915 \u0935\u0930\u094d\u0937";break;case"yy":n="%d \u0935\u0930\u094d\u0937\u0947";break}else switch(t){case"s":n="\u0915\u093e\u0939\u0940 \u0938\u0947\u0915\u0902\u0926\u093e\u0902";break;case"ss":n="%d \u0938\u0947\u0915\u0902\u0926\u093e\u0902";break;case"m":n="\u090f\u0915\u093e \u092e\u093f\u0928\u093f\u091f\u093e";break;case"mm":n="%d \u092e\u093f\u0928\u093f\u091f\u093e\u0902";break;case"h":n="\u090f\u0915\u093e \u0924\u093e\u0938\u093e";break;case"hh":n="%d \u0924\u093e\u0938\u093e\u0902";break;case"d":n="\u090f\u0915\u093e \u0926\u093f\u0935\u0938\u093e";break;case"dd":n="%d \u0926\u093f\u0935\u0938\u093e\u0902";break;case"M":n="\u090f\u0915\u093e \u092e\u0939\u093f\u0928\u094d\u092f\u093e";break;case"MM":n="%d \u092e\u0939\u093f\u0928\u094d\u092f\u093e\u0902";break;case"y":n="\u090f\u0915\u093e \u0935\u0930\u094d\u0937\u093e";break;case"yy":n="%d \u0935\u0930\u094d\u0937\u093e\u0902";break}return n.replace(/%d/i,e)}l.defineLocale("mr",{months:"\u091c\u093e\u0928\u0947\u0935\u093e\u0930\u0940_\u092b\u0947\u092c\u094d\u0930\u0941\u0935\u093e\u0930\u0940_\u092e\u093e\u0930\u094d\u091a_\u090f\u092a\u094d\u0930\u093f\u0932_\u092e\u0947_\u091c\u0942\u0928_\u091c\u0941\u0932\u0948_\u0911\u0917\u0938\u094d\u091f_\u0938\u092a\u094d\u091f\u0947\u0902\u092c\u0930_\u0911\u0915\u094d\u091f\u094b\u092c\u0930_\u0928\u094b\u0935\u094d\u0939\u0947\u0902\u092c\u0930_\u0921\u093f\u0938\u0947\u0902\u092c\u0930".split("_"),monthsShort:"\u091c\u093e\u0928\u0947._\u092b\u0947\u092c\u094d\u0930\u0941._\u092e\u093e\u0930\u094d\u091a._\u090f\u092a\u094d\u0930\u093f._\u092e\u0947._\u091c\u0942\u0928._\u091c\u0941\u0932\u0948._\u0911\u0917._\u0938\u092a\u094d\u091f\u0947\u0902._\u0911\u0915\u094d\u091f\u094b._\u0928\u094b\u0935\u094d\u0939\u0947\u0902._\u0921\u093f\u0938\u0947\u0902.".split("_"),monthsParseExact:!0,weekdays:"\u0930\u0935\u093f\u0935\u093e\u0930_\u0938\u094b\u092e\u0935\u093e\u0930_\u092e\u0902\u0917\u0933\u0935\u093e\u0930_\u092c\u0941\u0927\u0935\u093e\u0930_\u0917\u0941\u0930\u0942\u0935\u093e\u0930_\u0936\u0941\u0915\u094d\u0930\u0935\u093e\u0930_\u0936\u0928\u093f\u0935\u093e\u0930".split("_"),weekdaysShort:"\u0930\u0935\u093f_\u0938\u094b\u092e_\u092e\u0902\u0917\u0933_\u092c\u0941\u0927_\u0917\u0941\u0930\u0942_\u0936\u0941\u0915\u094d\u0930_\u0936\u0928\u093f".split("_"),weekdaysMin:"\u0930_\u0938\u094b_\u092e\u0902_\u092c\u0941_\u0917\u0941_\u0936\u0941_\u0936".split("_"),longDateFormat:{LT:"A h:mm \u0935\u093e\u091c\u0924\u093e",LTS:"A h:mm:ss \u0935\u093e\u091c\u0924\u093e",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm \u0935\u093e\u091c\u0924\u093e",LLLL:"dddd, D MMMM YYYY, A h:mm \u0935\u093e\u091c\u0924\u093e"},calendar:{sameDay:"[\u0906\u091c] LT",nextDay:"[\u0909\u0926\u094d\u092f\u093e] LT",nextWeek:"dddd, LT",lastDay:"[\u0915\u093e\u0932] LT",lastWeek:"[\u092e\u093e\u0917\u0940\u0932] dddd, LT",sameElse:"L"},relativeTime:{future:"%s\u092e\u0927\u094d\u092f\u0947",past:"%s\u092a\u0942\u0930\u094d\u0935\u0940",s:Hn,ss:Hn,m:Hn,mm:Hn,h:Hn,hh:Hn,d:Hn,dd:Hn,M:Hn,MM:Hn,y:Hn,yy:Hn},preparse:function(e){return e.replace(/[\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e\u096f\u0966]/g,function(e){return Sn[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return vn[e]})},meridiemParse:/\u0930\u093e\u0924\u094d\u0930\u0940|\u0938\u0915\u093e\u0933\u0940|\u0926\u0941\u092a\u093e\u0930\u0940|\u0938\u093e\u092f\u0902\u0915\u093e\u0933\u0940/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0930\u093e\u0924\u094d\u0930\u0940"===a?e<4?e:e+12:"\u0938\u0915\u093e\u0933\u0940"===a?e:"\u0926\u0941\u092a\u093e\u0930\u0940"===a?10<=e?e:e+12:"\u0938\u093e\u092f\u0902\u0915\u093e\u0933\u0940"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0930\u093e\u0924\u094d\u0930\u0940":e<10?"\u0938\u0915\u093e\u0933\u0940":e<17?"\u0926\u0941\u092a\u093e\u0930\u0940":e<20?"\u0938\u093e\u092f\u0902\u0915\u093e\u0933\u0940":"\u0930\u093e\u0924\u094d\u0930\u0940"},week:{dow:0,doy:6}}),l.defineLocale("ms-my",{months:"Januari_Februari_Mac_April_Mei_Jun_Julai_Ogos_September_Oktober_November_Disember".split("_"),monthsShort:"Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ogs_Sep_Okt_Nov_Dis".split("_"),weekdays:"Ahad_Isnin_Selasa_Rabu_Khamis_Jumaat_Sabtu".split("_"),weekdaysShort:"Ahd_Isn_Sel_Rab_Kha_Jum_Sab".split("_"),weekdaysMin:"Ah_Is_Sl_Rb_Km_Jm_Sb".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/pagi|tengahari|petang|malam/,meridiemHour:function(e,a){return 12===e&&(e=0),"pagi"===a?e:"tengahari"===a?11<=e?e:e+12:"petang"===a||"malam"===a?e+12:void 0},meridiem:function(e,a,t){return e<11?"pagi":e<15?"tengahari":e<19?"petang":"malam"},calendar:{sameDay:"[Hari ini pukul] LT",nextDay:"[Esok pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kelmarin pukul] LT",lastWeek:"dddd [lepas pukul] LT",sameElse:"L"},relativeTime:{future:"dalam %s",past:"%s yang lepas",s:"beberapa saat",ss:"%d saat",m:"seminit",mm:"%d minit",h:"sejam",hh:"%d jam",d:"sehari",dd:"%d hari",M:"sebulan",MM:"%d bulan",y:"setahun",yy:"%d tahun"},week:{dow:1,doy:7}}),l.defineLocale("ms",{months:"Januari_Februari_Mac_April_Mei_Jun_Julai_Ogos_September_Oktober_November_Disember".split("_"),monthsShort:"Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ogs_Sep_Okt_Nov_Dis".split("_"),weekdays:"Ahad_Isnin_Selasa_Rabu_Khamis_Jumaat_Sabtu".split("_"),weekdaysShort:"Ahd_Isn_Sel_Rab_Kha_Jum_Sab".split("_"),weekdaysMin:"Ah_Is_Sl_Rb_Km_Jm_Sb".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [pukul] HH.mm",LLLL:"dddd, D MMMM YYYY [pukul] HH.mm"},meridiemParse:/pagi|tengahari|petang|malam/,meridiemHour:function(e,a){return 12===e&&(e=0),"pagi"===a?e:"tengahari"===a?11<=e?e:e+12:"petang"===a||"malam"===a?e+12:void 0},meridiem:function(e,a,t){return e<11?"pagi":e<15?"tengahari":e<19?"petang":"malam"},calendar:{sameDay:"[Hari ini pukul] LT",nextDay:"[Esok pukul] LT",nextWeek:"dddd [pukul] LT",lastDay:"[Kelmarin pukul] LT",lastWeek:"dddd [lepas pukul] LT",sameElse:"L"},relativeTime:{future:"dalam %s",past:"%s yang lepas",s:"beberapa saat",ss:"%d saat",m:"seminit",mm:"%d minit",h:"sejam",hh:"%d jam",d:"sehari",dd:"%d hari",M:"sebulan",MM:"%d bulan",y:"setahun",yy:"%d tahun"},week:{dow:1,doy:7}}),l.defineLocale("mt",{months:"Jannar_Frar_Marzu_April_Mejju_\u0120unju_Lulju_Awwissu_Settembru_Ottubru_Novembru_Di\u010bembru".split("_"),monthsShort:"Jan_Fra_Mar_Apr_Mej_\u0120un_Lul_Aww_Set_Ott_Nov_Di\u010b".split("_"),weekdays:"Il-\u0126add_It-Tnejn_It-Tlieta_L-Erbg\u0127a_Il-\u0126amis_Il-\u0120img\u0127a_Is-Sibt".split("_"),weekdaysShort:"\u0126ad_Tne_Tli_Erb_\u0126am_\u0120im_Sib".split("_"),weekdaysMin:"\u0126a_Tn_Tl_Er_\u0126a_\u0120i_Si".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Illum fil-]LT",nextDay:"[G\u0127ada fil-]LT",nextWeek:"dddd [fil-]LT",lastDay:"[Il-biera\u0127 fil-]LT",lastWeek:"dddd [li g\u0127adda] [fil-]LT",sameElse:"L"},relativeTime:{future:"f\u2019 %s",past:"%s ilu",s:"ftit sekondi",ss:"%d sekondi",m:"minuta",mm:"%d minuti",h:"sieg\u0127a",hh:"%d sieg\u0127at",d:"\u0121urnata",dd:"%d \u0121ranet",M:"xahar",MM:"%d xhur",y:"sena",yy:"%d sni"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}});var bn={1:"\u1041",2:"\u1042",3:"\u1043",4:"\u1044",5:"\u1045",6:"\u1046",7:"\u1047",8:"\u1048",9:"\u1049",0:"\u1040"},jn={"\u1041":"1","\u1042":"2","\u1043":"3","\u1044":"4","\u1045":"5","\u1046":"6","\u1047":"7","\u1048":"8","\u1049":"9","\u1040":"0"};l.defineLocale("my",{months:"\u1007\u1014\u103a\u1014\u101d\u102b\u101b\u102e_\u1016\u1031\u1016\u1031\u102c\u103a\u101d\u102b\u101b\u102e_\u1019\u1010\u103a_\u1027\u1015\u103c\u102e_\u1019\u1031_\u1007\u103d\u1014\u103a_\u1007\u1030\u101c\u102d\u102f\u1004\u103a_\u101e\u103c\u1002\u102f\u1010\u103a_\u1005\u1000\u103a\u1010\u1004\u103a\u1018\u102c_\u1021\u1031\u102c\u1000\u103a\u1010\u102d\u102f\u1018\u102c_\u1014\u102d\u102f\u101d\u1004\u103a\u1018\u102c_\u1012\u102e\u1007\u1004\u103a\u1018\u102c".split("_"),monthsShort:"\u1007\u1014\u103a_\u1016\u1031_\u1019\u1010\u103a_\u1015\u103c\u102e_\u1019\u1031_\u1007\u103d\u1014\u103a_\u101c\u102d\u102f\u1004\u103a_\u101e\u103c_\u1005\u1000\u103a_\u1021\u1031\u102c\u1000\u103a_\u1014\u102d\u102f_\u1012\u102e".split("_"),weekdays:"\u1010\u1014\u1004\u103a\u1039\u1002\u1014\u103d\u1031_\u1010\u1014\u1004\u103a\u1039\u101c\u102c_\u1021\u1004\u103a\u1039\u1002\u102b_\u1017\u102f\u1012\u1039\u1013\u101f\u1030\u1038_\u1000\u103c\u102c\u101e\u1015\u1010\u1031\u1038_\u101e\u1031\u102c\u1000\u103c\u102c_\u1005\u1014\u1031".split("_"),weekdaysShort:"\u1014\u103d\u1031_\u101c\u102c_\u1002\u102b_\u101f\u1030\u1038_\u1000\u103c\u102c_\u101e\u1031\u102c_\u1014\u1031".split("_"),weekdaysMin:"\u1014\u103d\u1031_\u101c\u102c_\u1002\u102b_\u101f\u1030\u1038_\u1000\u103c\u102c_\u101e\u1031\u102c_\u1014\u1031".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u101a\u1014\u1031.] LT [\u1019\u103e\u102c]",nextDay:"[\u1019\u1014\u1000\u103a\u1016\u103c\u1014\u103a] LT [\u1019\u103e\u102c]",nextWeek:"dddd LT [\u1019\u103e\u102c]",lastDay:"[\u1019\u1014\u1031.\u1000] LT [\u1019\u103e\u102c]",lastWeek:"[\u1015\u103c\u102e\u1038\u1001\u1032\u1037\u101e\u1031\u102c] dddd LT [\u1019\u103e\u102c]",sameElse:"L"},relativeTime:{future:"\u101c\u102c\u1019\u100a\u103a\u1037 %s \u1019\u103e\u102c",past:"\u101c\u103d\u1014\u103a\u1001\u1032\u1037\u101e\u1031\u102c %s \u1000",s:"\u1005\u1000\u1039\u1000\u1014\u103a.\u1021\u1014\u100a\u103a\u1038\u1004\u101a\u103a",ss:"%d \u1005\u1000\u1039\u1000\u1014\u1037\u103a",m:"\u1010\u1005\u103a\u1019\u102d\u1014\u1005\u103a",mm:"%d \u1019\u102d\u1014\u1005\u103a",h:"\u1010\u1005\u103a\u1014\u102c\u101b\u102e",hh:"%d \u1014\u102c\u101b\u102e",d:"\u1010\u1005\u103a\u101b\u1000\u103a",dd:"%d \u101b\u1000\u103a",M:"\u1010\u1005\u103a\u101c",MM:"%d \u101c",y:"\u1010\u1005\u103a\u1014\u103e\u1005\u103a",yy:"%d \u1014\u103e\u1005\u103a"},preparse:function(e){return e.replace(/[\u1041\u1042\u1043\u1044\u1045\u1046\u1047\u1048\u1049\u1040]/g,function(e){return jn[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return bn[e]})},week:{dow:1,doy:4}}),l.defineLocale("nb",{months:"januar_februar_mars_april_mai_juni_juli_august_september_oktober_november_desember".split("_"),monthsShort:"jan._feb._mars_april_mai_juni_juli_aug._sep._okt._nov._des.".split("_"),monthsParseExact:!0,weekdays:"s\xf8ndag_mandag_tirsdag_onsdag_torsdag_fredag_l\xf8rdag".split("_"),weekdaysShort:"s\xf8._ma._ti._on._to._fr._l\xf8.".split("_"),weekdaysMin:"s\xf8_ma_ti_on_to_fr_l\xf8".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY [kl.] HH:mm",LLLL:"dddd D. MMMM YYYY [kl.] HH:mm"},calendar:{sameDay:"[i dag kl.] LT",nextDay:"[i morgen kl.] LT",nextWeek:"dddd [kl.] LT",lastDay:"[i g\xe5r kl.] LT",lastWeek:"[forrige] dddd [kl.] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"%s siden",s:"noen sekunder",ss:"%d sekunder",m:"ett minutt",mm:"%d minutter",h:"en time",hh:"%d timer",d:"en dag",dd:"%d dager",M:"en m\xe5ned",MM:"%d m\xe5neder",y:"ett \xe5r",yy:"%d \xe5r"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}});var xn={1:"\u0967",2:"\u0968",3:"\u0969",4:"\u096a",5:"\u096b",6:"\u096c",7:"\u096d",8:"\u096e",9:"\u096f",0:"\u0966"},On={"\u0967":"1","\u0968":"2","\u0969":"3","\u096a":"4","\u096b":"5","\u096c":"6","\u096d":"7","\u096e":"8","\u096f":"9","\u0966":"0"};l.defineLocale("ne",{months:"\u091c\u0928\u0935\u0930\u0940_\u092b\u0947\u092c\u094d\u0930\u0941\u0935\u0930\u0940_\u092e\u093e\u0930\u094d\u091a_\u0905\u092a\u094d\u0930\u093f\u0932_\u092e\u0908_\u091c\u0941\u0928_\u091c\u0941\u0932\u093e\u0908_\u0905\u0917\u0937\u094d\u091f_\u0938\u0947\u092a\u094d\u091f\u0947\u092e\u094d\u092c\u0930_\u0905\u0915\u094d\u091f\u094b\u092c\u0930_\u0928\u094b\u092d\u0947\u092e\u094d\u092c\u0930_\u0921\u093f\u0938\u0947\u092e\u094d\u092c\u0930".split("_"),monthsShort:"\u091c\u0928._\u092b\u0947\u092c\u094d\u0930\u0941._\u092e\u093e\u0930\u094d\u091a_\u0905\u092a\u094d\u0930\u093f._\u092e\u0908_\u091c\u0941\u0928_\u091c\u0941\u0932\u093e\u0908._\u0905\u0917._\u0938\u0947\u092a\u094d\u091f._\u0905\u0915\u094d\u091f\u094b._\u0928\u094b\u092d\u0947._\u0921\u093f\u0938\u0947.".split("_"),monthsParseExact:!0,weekdays:"\u0906\u0907\u0924\u092c\u093e\u0930_\u0938\u094b\u092e\u092c\u093e\u0930_\u092e\u0919\u094d\u0917\u0932\u092c\u093e\u0930_\u092c\u0941\u0927\u092c\u093e\u0930_\u092c\u093f\u0939\u093f\u092c\u093e\u0930_\u0936\u0941\u0915\u094d\u0930\u092c\u093e\u0930_\u0936\u0928\u093f\u092c\u093e\u0930".split("_"),weekdaysShort:"\u0906\u0907\u0924._\u0938\u094b\u092e._\u092e\u0919\u094d\u0917\u0932._\u092c\u0941\u0927._\u092c\u093f\u0939\u093f._\u0936\u0941\u0915\u094d\u0930._\u0936\u0928\u093f.".split("_"),weekdaysMin:"\u0906._\u0938\u094b._\u092e\u0902._\u092c\u0941._\u092c\u093f._\u0936\u0941._\u0936.".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"A\u0915\u094b h:mm \u092c\u091c\u0947",LTS:"A\u0915\u094b h:mm:ss \u092c\u091c\u0947",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A\u0915\u094b h:mm \u092c\u091c\u0947",LLLL:"dddd, D MMMM YYYY, A\u0915\u094b h:mm \u092c\u091c\u0947"},preparse:function(e){return e.replace(/[\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e\u096f\u0966]/g,function(e){return On[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return xn[e]})},meridiemParse:/\u0930\u093e\u0924\u093f|\u092c\u093f\u0939\u093e\u0928|\u0926\u093f\u0909\u0901\u0938\u094b|\u0938\u093e\u0901\u091d/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0930\u093e\u0924\u093f"===a?e<4?e:e+12:"\u092c\u093f\u0939\u093e\u0928"===a?e:"\u0926\u093f\u0909\u0901\u0938\u094b"===a?10<=e?e:e+12:"\u0938\u093e\u0901\u091d"===a?e+12:void 0},meridiem:function(e,a,t){return e<3?"\u0930\u093e\u0924\u093f":e<12?"\u092c\u093f\u0939\u093e\u0928":e<16?"\u0926\u093f\u0909\u0901\u0938\u094b":e<20?"\u0938\u093e\u0901\u091d":"\u0930\u093e\u0924\u093f"},calendar:{sameDay:"[\u0906\u091c] LT",nextDay:"[\u092d\u094b\u0932\u093f] LT",nextWeek:"[\u0906\u0909\u0901\u0926\u094b] dddd[,] LT",lastDay:"[\u0939\u093f\u091c\u094b] LT",lastWeek:"[\u0917\u090f\u0915\u094b] dddd[,] LT",sameElse:"L"},relativeTime:{future:"%s\u092e\u093e",past:"%s \u0905\u0917\u093e\u0921\u093f",s:"\u0915\u0947\u0939\u0940 \u0915\u094d\u0937\u0923",ss:"%d \u0938\u0947\u0915\u0947\u0923\u094d\u0921",m:"\u090f\u0915 \u092e\u093f\u0928\u0947\u091f",mm:"%d \u092e\u093f\u0928\u0947\u091f",h:"\u090f\u0915 \u0918\u0923\u094d\u091f\u093e",hh:"%d \u0918\u0923\u094d\u091f\u093e",d:"\u090f\u0915 \u0926\u093f\u0928",dd:"%d \u0926\u093f\u0928",M:"\u090f\u0915 \u092e\u0939\u093f\u0928\u093e",MM:"%d \u092e\u0939\u093f\u0928\u093e",y:"\u090f\u0915 \u092c\u0930\u094d\u0937",yy:"%d \u092c\u0930\u094d\u0937"},week:{dow:0,doy:6}});var Pn="jan._feb._mrt._apr._mei_jun._jul._aug._sep._okt._nov._dec.".split("_"),Wn="jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec".split("_"),An=[/^jan/i,/^feb/i,/^maart|mrt.?$/i,/^apr/i,/^mei$/i,/^jun[i.]?$/i,/^jul[i.]?$/i,/^aug/i,/^sep/i,/^okt/i,/^nov/i,/^dec/i],En=/^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;l.defineLocale("nl-be",{months:"januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december".split("_"),monthsShort:function(e,a){return e?/-MMM-/.test(a)?Wn[e.month()]:Pn[e.month()]:Pn},monthsRegex:En,monthsShortRegex:En,monthsStrictRegex:/^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,monthsShortStrictRegex:/^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,monthsParse:An,longMonthsParse:An,shortMonthsParse:An,weekdays:"zondag_maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag".split("_"),weekdaysShort:"zo._ma._di._wo._do._vr._za.".split("_"),weekdaysMin:"zo_ma_di_wo_do_vr_za".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[vandaag om] LT",nextDay:"[morgen om] LT",nextWeek:"dddd [om] LT",lastDay:"[gisteren om] LT",lastWeek:"[afgelopen] dddd [om] LT",sameElse:"L"},relativeTime:{future:"over %s",past:"%s geleden",s:"een paar seconden",ss:"%d seconden",m:"\xe9\xe9n minuut",mm:"%d minuten",h:"\xe9\xe9n uur",hh:"%d uur",d:"\xe9\xe9n dag",dd:"%d dagen",M:"\xe9\xe9n maand",MM:"%d maanden",y:"\xe9\xe9n jaar",yy:"%d jaar"},dayOfMonthOrdinalParse:/\d{1,2}(ste|de)/,ordinal:function(e){return e+(1===e||8===e||20<=e?"ste":"de")},week:{dow:1,doy:4}});var Fn="jan._feb._mrt._apr._mei_jun._jul._aug._sep._okt._nov._dec.".split("_"),zn="jan_feb_mrt_apr_mei_jun_jul_aug_sep_okt_nov_dec".split("_"),Jn=[/^jan/i,/^feb/i,/^maart|mrt.?$/i,/^apr/i,/^mei$/i,/^jun[i.]?$/i,/^jul[i.]?$/i,/^aug/i,/^sep/i,/^okt/i,/^nov/i,/^dec/i],Nn=/^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december|jan\.?|feb\.?|mrt\.?|apr\.?|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i;l.defineLocale("nl",{months:"januari_februari_maart_april_mei_juni_juli_augustus_september_oktober_november_december".split("_"),monthsShort:function(e,a){return e?/-MMM-/.test(a)?zn[e.month()]:Fn[e.month()]:Fn},monthsRegex:Nn,monthsShortRegex:Nn,monthsStrictRegex:/^(januari|februari|maart|april|mei|ju[nl]i|augustus|september|oktober|november|december)/i,monthsShortStrictRegex:/^(jan\.?|feb\.?|mrt\.?|apr\.?|mei|ju[nl]\.?|aug\.?|sep\.?|okt\.?|nov\.?|dec\.?)/i,monthsParse:Jn,longMonthsParse:Jn,shortMonthsParse:Jn,weekdays:"zondag_maandag_dinsdag_woensdag_donderdag_vrijdag_zaterdag".split("_"),weekdaysShort:"zo._ma._di._wo._do._vr._za.".split("_"),weekdaysMin:"zo_ma_di_wo_do_vr_za".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD-MM-YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[vandaag om] LT",nextDay:"[morgen om] LT",nextWeek:"dddd [om] LT",lastDay:"[gisteren om] LT",lastWeek:"[afgelopen] dddd [om] LT",sameElse:"L"},relativeTime:{future:"over %s",past:"%s geleden",s:"een paar seconden",ss:"%d seconden",m:"\xe9\xe9n minuut",mm:"%d minuten",h:"\xe9\xe9n uur",hh:"%d uur",d:"\xe9\xe9n dag",dd:"%d dagen",M:"\xe9\xe9n maand",MM:"%d maanden",y:"\xe9\xe9n jaar",yy:"%d jaar"},dayOfMonthOrdinalParse:/\d{1,2}(ste|de)/,ordinal:function(e){return e+(1===e||8===e||20<=e?"ste":"de")},week:{dow:1,doy:4}}),l.defineLocale("nn",{months:"januar_februar_mars_april_mai_juni_juli_august_september_oktober_november_desember".split("_"),monthsShort:"jan_feb_mar_apr_mai_jun_jul_aug_sep_okt_nov_des".split("_"),weekdays:"sundag_m\xe5ndag_tysdag_onsdag_torsdag_fredag_laurdag".split("_"),weekdaysShort:"sun_m\xe5n_tys_ons_tor_fre_lau".split("_"),weekdaysMin:"su_m\xe5_ty_on_to_fr_l\xf8".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY [kl.] H:mm",LLLL:"dddd D. MMMM YYYY [kl.] HH:mm"},calendar:{sameDay:"[I dag klokka] LT",nextDay:"[I morgon klokka] LT",nextWeek:"dddd [klokka] LT",lastDay:"[I g\xe5r klokka] LT",lastWeek:"[F\xf8reg\xe5ande] dddd [klokka] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"%s sidan",s:"nokre sekund",ss:"%d sekund",m:"eit minutt",mm:"%d minutt",h:"ein time",hh:"%d timar",d:"ein dag",dd:"%d dagar",M:"ein m\xe5nad",MM:"%d m\xe5nader",y:"eit \xe5r",yy:"%d \xe5r"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}});var Rn={1:"\u0a67",2:"\u0a68",3:"\u0a69",4:"\u0a6a",5:"\u0a6b",6:"\u0a6c",7:"\u0a6d",8:"\u0a6e",9:"\u0a6f",0:"\u0a66"},Cn={"\u0a67":"1","\u0a68":"2","\u0a69":"3","\u0a6a":"4","\u0a6b":"5","\u0a6c":"6","\u0a6d":"7","\u0a6e":"8","\u0a6f":"9","\u0a66":"0"};l.defineLocale("pa-in",{months:"\u0a1c\u0a28\u0a35\u0a30\u0a40_\u0a2b\u0a3c\u0a30\u0a35\u0a30\u0a40_\u0a2e\u0a3e\u0a30\u0a1a_\u0a05\u0a2a\u0a4d\u0a30\u0a48\u0a32_\u0a2e\u0a08_\u0a1c\u0a42\u0a28_\u0a1c\u0a41\u0a32\u0a3e\u0a08_\u0a05\u0a17\u0a38\u0a24_\u0a38\u0a24\u0a70\u0a2c\u0a30_\u0a05\u0a15\u0a24\u0a42\u0a2c\u0a30_\u0a28\u0a35\u0a70\u0a2c\u0a30_\u0a26\u0a38\u0a70\u0a2c\u0a30".split("_"),monthsShort:"\u0a1c\u0a28\u0a35\u0a30\u0a40_\u0a2b\u0a3c\u0a30\u0a35\u0a30\u0a40_\u0a2e\u0a3e\u0a30\u0a1a_\u0a05\u0a2a\u0a4d\u0a30\u0a48\u0a32_\u0a2e\u0a08_\u0a1c\u0a42\u0a28_\u0a1c\u0a41\u0a32\u0a3e\u0a08_\u0a05\u0a17\u0a38\u0a24_\u0a38\u0a24\u0a70\u0a2c\u0a30_\u0a05\u0a15\u0a24\u0a42\u0a2c\u0a30_\u0a28\u0a35\u0a70\u0a2c\u0a30_\u0a26\u0a38\u0a70\u0a2c\u0a30".split("_"),weekdays:"\u0a10\u0a24\u0a35\u0a3e\u0a30_\u0a38\u0a4b\u0a2e\u0a35\u0a3e\u0a30_\u0a2e\u0a70\u0a17\u0a32\u0a35\u0a3e\u0a30_\u0a2c\u0a41\u0a27\u0a35\u0a3e\u0a30_\u0a35\u0a40\u0a30\u0a35\u0a3e\u0a30_\u0a38\u0a3c\u0a41\u0a71\u0a15\u0a30\u0a35\u0a3e\u0a30_\u0a38\u0a3c\u0a28\u0a40\u0a1a\u0a30\u0a35\u0a3e\u0a30".split("_"),weekdaysShort:"\u0a10\u0a24_\u0a38\u0a4b\u0a2e_\u0a2e\u0a70\u0a17\u0a32_\u0a2c\u0a41\u0a27_\u0a35\u0a40\u0a30_\u0a38\u0a3c\u0a41\u0a15\u0a30_\u0a38\u0a3c\u0a28\u0a40".split("_"),weekdaysMin:"\u0a10\u0a24_\u0a38\u0a4b\u0a2e_\u0a2e\u0a70\u0a17\u0a32_\u0a2c\u0a41\u0a27_\u0a35\u0a40\u0a30_\u0a38\u0a3c\u0a41\u0a15\u0a30_\u0a38\u0a3c\u0a28\u0a40".split("_"),longDateFormat:{LT:"A h:mm \u0a35\u0a1c\u0a47",LTS:"A h:mm:ss \u0a35\u0a1c\u0a47",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm \u0a35\u0a1c\u0a47",LLLL:"dddd, D MMMM YYYY, A h:mm \u0a35\u0a1c\u0a47"},calendar:{sameDay:"[\u0a05\u0a1c] LT",nextDay:"[\u0a15\u0a32] LT",nextWeek:"[\u0a05\u0a17\u0a32\u0a3e] dddd, LT",lastDay:"[\u0a15\u0a32] LT",lastWeek:"[\u0a2a\u0a3f\u0a1b\u0a32\u0a47] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0a35\u0a3f\u0a71\u0a1a",past:"%s \u0a2a\u0a3f\u0a1b\u0a32\u0a47",s:"\u0a15\u0a41\u0a1d \u0a38\u0a15\u0a3f\u0a70\u0a1f",ss:"%d \u0a38\u0a15\u0a3f\u0a70\u0a1f",m:"\u0a07\u0a15 \u0a2e\u0a3f\u0a70\u0a1f",mm:"%d \u0a2e\u0a3f\u0a70\u0a1f",h:"\u0a07\u0a71\u0a15 \u0a18\u0a70\u0a1f\u0a3e",hh:"%d \u0a18\u0a70\u0a1f\u0a47",d:"\u0a07\u0a71\u0a15 \u0a26\u0a3f\u0a28",dd:"%d \u0a26\u0a3f\u0a28",M:"\u0a07\u0a71\u0a15 \u0a2e\u0a39\u0a40\u0a28\u0a3e",MM:"%d \u0a2e\u0a39\u0a40\u0a28\u0a47",y:"\u0a07\u0a71\u0a15 \u0a38\u0a3e\u0a32",yy:"%d \u0a38\u0a3e\u0a32"},preparse:function(e){return e.replace(/[\u0a67\u0a68\u0a69\u0a6a\u0a6b\u0a6c\u0a6d\u0a6e\u0a6f\u0a66]/g,function(e){return Cn[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return Rn[e]})},meridiemParse:/\u0a30\u0a3e\u0a24|\u0a38\u0a35\u0a47\u0a30|\u0a26\u0a41\u0a2a\u0a39\u0a3f\u0a30|\u0a38\u0a3c\u0a3e\u0a2e/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0a30\u0a3e\u0a24"===a?e<4?e:e+12:"\u0a38\u0a35\u0a47\u0a30"===a?e:"\u0a26\u0a41\u0a2a\u0a39\u0a3f\u0a30"===a?10<=e?e:e+12:"\u0a38\u0a3c\u0a3e\u0a2e"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0a30\u0a3e\u0a24":e<10?"\u0a38\u0a35\u0a47\u0a30":e<17?"\u0a26\u0a41\u0a2a\u0a39\u0a3f\u0a30":e<20?"\u0a38\u0a3c\u0a3e\u0a2e":"\u0a30\u0a3e\u0a24"},week:{dow:0,doy:6}});var In="stycze\u0144_luty_marzec_kwiecie\u0144_maj_czerwiec_lipiec_sierpie\u0144_wrzesie\u0144_pa\u017adziernik_listopad_grudzie\u0144".split("_"),Un="stycznia_lutego_marca_kwietnia_maja_czerwca_lipca_sierpnia_wrze\u015bnia_pa\u017adziernika_listopada_grudnia".split("_");function Gn(e){return e%10<5&&1<e%10&&~~(e/10)%10!=1}function Vn(e,a,t){var s=e+" ";switch(t){case"ss":return s+(Gn(e)?"sekundy":"sekund");case"m":return a?"minuta":"minut\u0119";case"mm":return s+(Gn(e)?"minuty":"minut");case"h":return a?"godzina":"godzin\u0119";case"hh":return s+(Gn(e)?"godziny":"godzin");case"MM":return s+(Gn(e)?"miesi\u0105ce":"miesi\u0119cy");case"yy":return s+(Gn(e)?"lata":"lat")}}function Kn(e,a,t){var s=" ";return(20<=e%100||100<=e&&e%100==0)&&(s=" de "),e+s+{ss:"secunde",mm:"minute",hh:"ore",dd:"zile",MM:"luni",yy:"ani"}[t]}function Zn(e,a,t){var s,n;return"m"===t?a?"\u043c\u0438\u043d\u0443\u0442\u0430":"\u043c\u0438\u043d\u0443\u0442\u0443":e+" "+(s=+e,n={ss:a?"\u0441\u0435\u043a\u0443\u043d\u0434\u0430_\u0441\u0435\u043a\u0443\u043d\u0434\u044b_\u0441\u0435\u043a\u0443\u043d\u0434":"\u0441\u0435\u043a\u0443\u043d\u0434\u0443_\u0441\u0435\u043a\u0443\u043d\u0434\u044b_\u0441\u0435\u043a\u0443\u043d\u0434",mm:a?"\u043c\u0438\u043d\u0443\u0442\u0430_\u043c\u0438\u043d\u0443\u0442\u044b_\u043c\u0438\u043d\u0443\u0442":"\u043c\u0438\u043d\u0443\u0442\u0443_\u043c\u0438\u043d\u0443\u0442\u044b_\u043c\u0438\u043d\u0443\u0442",hh:"\u0447\u0430\u0441_\u0447\u0430\u0441\u0430_\u0447\u0430\u0441\u043e\u0432",dd:"\u0434\u0435\u043d\u044c_\u0434\u043d\u044f_\u0434\u043d\u0435\u0439",MM:"\u043c\u0435\u0441\u044f\u0446_\u043c\u0435\u0441\u044f\u0446\u0430_\u043c\u0435\u0441\u044f\u0446\u0435\u0432",yy:"\u0433\u043e\u0434_\u0433\u043e\u0434\u0430_\u043b\u0435\u0442"}[t].split("_"),s%10==1&&s%100!=11?n[0]:2<=s%10&&s%10<=4&&(s%100<10||20<=s%100)?n[1]:n[2])}l.defineLocale("pl",{months:function(e,a){return e?""===a?"("+Un[e.month()]+"|"+In[e.month()]+")":/D MMMM/.test(a)?Un[e.month()]:In[e.month()]:In},monthsShort:"sty_lut_mar_kwi_maj_cze_lip_sie_wrz_pa\u017a_lis_gru".split("_"),weekdays:"niedziela_poniedzia\u0142ek_wtorek_\u015broda_czwartek_pi\u0105tek_sobota".split("_"),weekdaysShort:"ndz_pon_wt_\u015br_czw_pt_sob".split("_"),weekdaysMin:"Nd_Pn_Wt_\u015ar_Cz_Pt_So".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Dzi\u015b o] LT",nextDay:"[Jutro o] LT",nextWeek:function(){switch(this.day()){case 0:return"[W niedziel\u0119 o] LT";case 2:return"[We wtorek o] LT";case 3:return"[W \u015brod\u0119 o] LT";case 6:return"[W sobot\u0119 o] LT";default:return"[W] dddd [o] LT"}},lastDay:"[Wczoraj o] LT",lastWeek:function(){switch(this.day()){case 0:return"[W zesz\u0142\u0105 niedziel\u0119 o] LT";case 3:return"[W zesz\u0142\u0105 \u015brod\u0119 o] LT";case 6:return"[W zesz\u0142\u0105 sobot\u0119 o] LT";default:return"[W zesz\u0142y] dddd [o] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"%s temu",s:"kilka sekund",ss:Vn,m:Vn,mm:Vn,h:Vn,hh:Vn,d:"1 dzie\u0144",dd:"%d dni",M:"miesi\u0105c",MM:Vn,y:"rok",yy:Vn},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("pt-br",{months:"Janeiro_Fevereiro_Mar\xe7o_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro".split("_"),monthsShort:"Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez".split("_"),weekdays:"Domingo_Segunda-feira_Ter\xe7a-feira_Quarta-feira_Quinta-feira_Sexta-feira_S\xe1bado".split("_"),weekdaysShort:"Dom_Seg_Ter_Qua_Qui_Sex_S\xe1b".split("_"),weekdaysMin:"Do_2\xaa_3\xaa_4\xaa_5\xaa_6\xaa_S\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY [\xe0s] HH:mm",LLLL:"dddd, D [de] MMMM [de] YYYY [\xe0s] HH:mm"},calendar:{sameDay:"[Hoje \xe0s] LT",nextDay:"[Amanh\xe3 \xe0s] LT",nextWeek:"dddd [\xe0s] LT",lastDay:"[Ontem \xe0s] LT",lastWeek:function(){return 0===this.day()||6===this.day()?"[\xdaltimo] dddd [\xe0s] LT":"[\xdaltima] dddd [\xe0s] LT"},sameElse:"L"},relativeTime:{future:"em %s",past:"h\xe1 %s",s:"poucos segundos",ss:"%d segundos",m:"um minuto",mm:"%d minutos",h:"uma hora",hh:"%d horas",d:"um dia",dd:"%d dias",M:"um m\xeas",MM:"%d meses",y:"um ano",yy:"%d anos"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba"}),l.defineLocale("pt",{months:"Janeiro_Fevereiro_Mar\xe7o_Abril_Maio_Junho_Julho_Agosto_Setembro_Outubro_Novembro_Dezembro".split("_"),monthsShort:"Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez".split("_"),weekdays:"Domingo_Segunda-feira_Ter\xe7a-feira_Quarta-feira_Quinta-feira_Sexta-feira_S\xe1bado".split("_"),weekdaysShort:"Dom_Seg_Ter_Qua_Qui_Sex_S\xe1b".split("_"),weekdaysMin:"Do_2\xaa_3\xaa_4\xaa_5\xaa_6\xaa_S\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY HH:mm",LLLL:"dddd, D [de] MMMM [de] YYYY HH:mm"},calendar:{sameDay:"[Hoje \xe0s] LT",nextDay:"[Amanh\xe3 \xe0s] LT",nextWeek:"dddd [\xe0s] LT",lastDay:"[Ontem \xe0s] LT",lastWeek:function(){return 0===this.day()||6===this.day()?"[\xdaltimo] dddd [\xe0s] LT":"[\xdaltima] dddd [\xe0s] LT"},sameElse:"L"},relativeTime:{future:"em %s",past:"h\xe1 %s",s:"segundos",ss:"%d segundos",m:"um minuto",mm:"%d minutos",h:"uma hora",hh:"%d horas",d:"um dia",dd:"%d dias",M:"um m\xeas",MM:"%d meses",y:"um ano",yy:"%d anos"},dayOfMonthOrdinalParse:/\d{1,2}\xba/,ordinal:"%d\xba",week:{dow:1,doy:4}}),l.defineLocale("ro",{months:"ianuarie_februarie_martie_aprilie_mai_iunie_iulie_august_septembrie_octombrie_noiembrie_decembrie".split("_"),monthsShort:"ian._febr._mart._apr._mai_iun._iul._aug._sept._oct._nov._dec.".split("_"),monthsParseExact:!0,weekdays:"duminic\u0103_luni_mar\u021bi_miercuri_joi_vineri_s\xe2mb\u0103t\u0103".split("_"),weekdaysShort:"Dum_Lun_Mar_Mie_Joi_Vin_S\xe2m".split("_"),weekdaysMin:"Du_Lu_Ma_Mi_Jo_Vi_S\xe2".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY H:mm",LLLL:"dddd, D MMMM YYYY H:mm"},calendar:{sameDay:"[azi la] LT",nextDay:"[m\xe2ine la] LT",nextWeek:"dddd [la] LT",lastDay:"[ieri la] LT",lastWeek:"[fosta] dddd [la] LT",sameElse:"L"},relativeTime:{future:"peste %s",past:"%s \xeen urm\u0103",s:"c\xe2teva secunde",ss:Kn,m:"un minut",mm:Kn,h:"o or\u0103",hh:Kn,d:"o zi",dd:Kn,M:"o lun\u0103",MM:Kn,y:"un an",yy:Kn},week:{dow:1,doy:7}});var $n=[/^\u044f\u043d\u0432/i,/^\u0444\u0435\u0432/i,/^\u043c\u0430\u0440/i,/^\u0430\u043f\u0440/i,/^\u043c\u0430[\u0439\u044f]/i,/^\u0438\u044e\u043d/i,/^\u0438\u044e\u043b/i,/^\u0430\u0432\u0433/i,/^\u0441\u0435\u043d/i,/^\u043e\u043a\u0442/i,/^\u043d\u043e\u044f/i,/^\u0434\u0435\u043a/i];l.defineLocale("ru",{months:{format:"\u044f\u043d\u0432\u0430\u0440\u044f_\u0444\u0435\u0432\u0440\u0430\u043b\u044f_\u043c\u0430\u0440\u0442\u0430_\u0430\u043f\u0440\u0435\u043b\u044f_\u043c\u0430\u044f_\u0438\u044e\u043d\u044f_\u0438\u044e\u043b\u044f_\u0430\u0432\u0433\u0443\u0441\u0442\u0430_\u0441\u0435\u043d\u0442\u044f\u0431\u0440\u044f_\u043e\u043a\u0442\u044f\u0431\u0440\u044f_\u043d\u043e\u044f\u0431\u0440\u044f_\u0434\u0435\u043a\u0430\u0431\u0440\u044f".split("_"),standalone:"\u044f\u043d\u0432\u0430\u0440\u044c_\u0444\u0435\u0432\u0440\u0430\u043b\u044c_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0435\u043b\u044c_\u043c\u0430\u0439_\u0438\u044e\u043d\u044c_\u0438\u044e\u043b\u044c_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043d\u0442\u044f\u0431\u0440\u044c_\u043e\u043a\u0442\u044f\u0431\u0440\u044c_\u043d\u043e\u044f\u0431\u0440\u044c_\u0434\u0435\u043a\u0430\u0431\u0440\u044c".split("_")},monthsShort:{format:"\u044f\u043d\u0432._\u0444\u0435\u0432\u0440._\u043c\u0430\u0440._\u0430\u043f\u0440._\u043c\u0430\u044f_\u0438\u044e\u043d\u044f_\u0438\u044e\u043b\u044f_\u0430\u0432\u0433._\u0441\u0435\u043d\u0442._\u043e\u043a\u0442._\u043d\u043e\u044f\u0431._\u0434\u0435\u043a.".split("_"),standalone:"\u044f\u043d\u0432._\u0444\u0435\u0432\u0440._\u043c\u0430\u0440\u0442_\u0430\u043f\u0440._\u043c\u0430\u0439_\u0438\u044e\u043d\u044c_\u0438\u044e\u043b\u044c_\u0430\u0432\u0433._\u0441\u0435\u043d\u0442._\u043e\u043a\u0442._\u043d\u043e\u044f\u0431._\u0434\u0435\u043a.".split("_")},weekdays:{standalone:"\u0432\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u044c\u0435_\u043f\u043e\u043d\u0435\u0434\u0435\u043b\u044c\u043d\u0438\u043a_\u0432\u0442\u043e\u0440\u043d\u0438\u043a_\u0441\u0440\u0435\u0434\u0430_\u0447\u0435\u0442\u0432\u0435\u0440\u0433_\u043f\u044f\u0442\u043d\u0438\u0446\u0430_\u0441\u0443\u0431\u0431\u043e\u0442\u0430".split("_"),format:"\u0432\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u044c\u0435_\u043f\u043e\u043d\u0435\u0434\u0435\u043b\u044c\u043d\u0438\u043a_\u0432\u0442\u043e\u0440\u043d\u0438\u043a_\u0441\u0440\u0435\u0434\u0443_\u0447\u0435\u0442\u0432\u0435\u0440\u0433_\u043f\u044f\u0442\u043d\u0438\u0446\u0443_\u0441\u0443\u0431\u0431\u043e\u0442\u0443".split("_"),isFormat:/\[ ?[\u0412\u0432] ?(?:\u043f\u0440\u043e\u0448\u043b\u0443\u044e|\u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0443\u044e|\u044d\u0442\u0443)? ?\] ?dddd/},weekdaysShort:"\u0432\u0441_\u043f\u043d_\u0432\u0442_\u0441\u0440_\u0447\u0442_\u043f\u0442_\u0441\u0431".split("_"),weekdaysMin:"\u0432\u0441_\u043f\u043d_\u0432\u0442_\u0441\u0440_\u0447\u0442_\u043f\u0442_\u0441\u0431".split("_"),monthsParse:$n,longMonthsParse:$n,shortMonthsParse:$n,monthsRegex:/^(\u044f\u043d\u0432\u0430\u0440[\u044c\u044f]|\u044f\u043d\u0432\.?|\u0444\u0435\u0432\u0440\u0430\u043b[\u044c\u044f]|\u0444\u0435\u0432\u0440?\.?|\u043c\u0430\u0440\u0442\u0430?|\u043c\u0430\u0440\.?|\u0430\u043f\u0440\u0435\u043b[\u044c\u044f]|\u0430\u043f\u0440\.?|\u043c\u0430[\u0439\u044f]|\u0438\u044e\u043d[\u044c\u044f]|\u0438\u044e\u043d\.?|\u0438\u044e\u043b[\u044c\u044f]|\u0438\u044e\u043b\.?|\u0430\u0432\u0433\u0443\u0441\u0442\u0430?|\u0430\u0432\u0433\.?|\u0441\u0435\u043d\u0442\u044f\u0431\u0440[\u044c\u044f]|\u0441\u0435\u043d\u0442?\.?|\u043e\u043a\u0442\u044f\u0431\u0440[\u044c\u044f]|\u043e\u043a\u0442\.?|\u043d\u043e\u044f\u0431\u0440[\u044c\u044f]|\u043d\u043e\u044f\u0431?\.?|\u0434\u0435\u043a\u0430\u0431\u0440[\u044c\u044f]|\u0434\u0435\u043a\.?)/i,monthsShortRegex:/^(\u044f\u043d\u0432\u0430\u0440[\u044c\u044f]|\u044f\u043d\u0432\.?|\u0444\u0435\u0432\u0440\u0430\u043b[\u044c\u044f]|\u0444\u0435\u0432\u0440?\.?|\u043c\u0430\u0440\u0442\u0430?|\u043c\u0430\u0440\.?|\u0430\u043f\u0440\u0435\u043b[\u044c\u044f]|\u0430\u043f\u0440\.?|\u043c\u0430[\u0439\u044f]|\u0438\u044e\u043d[\u044c\u044f]|\u0438\u044e\u043d\.?|\u0438\u044e\u043b[\u044c\u044f]|\u0438\u044e\u043b\.?|\u0430\u0432\u0433\u0443\u0441\u0442\u0430?|\u0430\u0432\u0433\.?|\u0441\u0435\u043d\u0442\u044f\u0431\u0440[\u044c\u044f]|\u0441\u0435\u043d\u0442?\.?|\u043e\u043a\u0442\u044f\u0431\u0440[\u044c\u044f]|\u043e\u043a\u0442\.?|\u043d\u043e\u044f\u0431\u0440[\u044c\u044f]|\u043d\u043e\u044f\u0431?\.?|\u0434\u0435\u043a\u0430\u0431\u0440[\u044c\u044f]|\u0434\u0435\u043a\.?)/i,monthsStrictRegex:/^(\u044f\u043d\u0432\u0430\u0440[\u044f\u044c]|\u0444\u0435\u0432\u0440\u0430\u043b[\u044f\u044c]|\u043c\u0430\u0440\u0442\u0430?|\u0430\u043f\u0440\u0435\u043b[\u044f\u044c]|\u043c\u0430[\u044f\u0439]|\u0438\u044e\u043d[\u044f\u044c]|\u0438\u044e\u043b[\u044f\u044c]|\u0430\u0432\u0433\u0443\u0441\u0442\u0430?|\u0441\u0435\u043d\u0442\u044f\u0431\u0440[\u044f\u044c]|\u043e\u043a\u0442\u044f\u0431\u0440[\u044f\u044c]|\u043d\u043e\u044f\u0431\u0440[\u044f\u044c]|\u0434\u0435\u043a\u0430\u0431\u0440[\u044f\u044c])/i,monthsShortStrictRegex:/^(\u044f\u043d\u0432\.|\u0444\u0435\u0432\u0440?\.|\u043c\u0430\u0440[\u0442.]|\u0430\u043f\u0440\.|\u043c\u0430[\u044f\u0439]|\u0438\u044e\u043d[\u044c\u044f.]|\u0438\u044e\u043b[\u044c\u044f.]|\u0430\u0432\u0433\.|\u0441\u0435\u043d\u0442?\.|\u043e\u043a\u0442\.|\u043d\u043e\u044f\u0431?\.|\u0434\u0435\u043a\.)/i,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY \u0433.",LLL:"D MMMM YYYY \u0433., H:mm",LLLL:"dddd, D MMMM YYYY \u0433., H:mm"},calendar:{sameDay:"[\u0421\u0435\u0433\u043e\u0434\u043d\u044f, \u0432] LT",nextDay:"[\u0417\u0430\u0432\u0442\u0440\u0430, \u0432] LT",lastDay:"[\u0412\u0447\u0435\u0440\u0430, \u0432] LT",nextWeek:function(e){if(e.week()===this.week())return 2===this.day()?"[\u0412\u043e] dddd, [\u0432] LT":"[\u0412] dddd, [\u0432] LT";switch(this.day()){case 0:return"[\u0412 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0435] dddd, [\u0432] LT";case 1:case 2:case 4:return"[\u0412 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439] dddd, [\u0432] LT";case 3:case 5:case 6:return"[\u0412 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0443\u044e] dddd, [\u0432] LT"}},lastWeek:function(e){if(e.week()===this.week())return 2===this.day()?"[\u0412\u043e] dddd, [\u0432] LT":"[\u0412] dddd, [\u0432] LT";switch(this.day()){case 0:return"[\u0412 \u043f\u0440\u043e\u0448\u043b\u043e\u0435] dddd, [\u0432] LT";case 1:case 2:case 4:return"[\u0412 \u043f\u0440\u043e\u0448\u043b\u044b\u0439] dddd, [\u0432] LT";case 3:case 5:case 6:return"[\u0412 \u043f\u0440\u043e\u0448\u043b\u0443\u044e] dddd, [\u0432] LT"}},sameElse:"L"},relativeTime:{future:"\u0447\u0435\u0440\u0435\u0437 %s",past:"%s \u043d\u0430\u0437\u0430\u0434",s:"\u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0441\u0435\u043a\u0443\u043d\u0434",ss:Zn,m:Zn,mm:Zn,h:"\u0447\u0430\u0441",hh:Zn,d:"\u0434\u0435\u043d\u044c",dd:Zn,M:"\u043c\u0435\u0441\u044f\u0446",MM:Zn,y:"\u0433\u043e\u0434",yy:Zn},meridiemParse:/\u043d\u043e\u0447\u0438|\u0443\u0442\u0440\u0430|\u0434\u043d\u044f|\u0432\u0435\u0447\u0435\u0440\u0430/i,isPM:function(e){return/^(\u0434\u043d\u044f|\u0432\u0435\u0447\u0435\u0440\u0430)$/.test(e)},meridiem:function(e,a,t){return e<4?"\u043d\u043e\u0447\u0438":e<12?"\u0443\u0442\u0440\u0430":e<17?"\u0434\u043d\u044f":"\u0432\u0435\u0447\u0435\u0440\u0430"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0439|\u0433\u043e|\u044f)/,ordinal:function(e,a){switch(a){case"M":case"d":case"DDD":return e+"-\u0439";case"D":return e+"-\u0433\u043e";case"w":case"W":return e+"-\u044f";default:return e}},week:{dow:1,doy:4}});var Bn=["\u062c\u0646\u0648\u0631\u064a","\u0641\u064a\u0628\u0631\u0648\u0631\u064a","\u0645\u0627\u0631\u0686","\u0627\u067e\u0631\u064a\u0644","\u0645\u0626\u064a","\u062c\u0648\u0646","\u062c\u0648\u0644\u0627\u0621\u0650","\u0622\u06af\u0633\u067d","\u0633\u064a\u067e\u067d\u0645\u0628\u0631","\u0622\u06aa\u067d\u0648\u0628\u0631","\u0646\u0648\u0645\u0628\u0631","\u068a\u0633\u0645\u0628\u0631"],qn=["\u0622\u0686\u0631","\u0633\u0648\u0645\u0631","\u0627\u06b1\u0627\u0631\u0648","\u0627\u0631\u0628\u0639","\u062e\u0645\u064a\u0633","\u062c\u0645\u0639","\u0687\u0646\u0687\u0631"];l.defineLocale("sd",{months:Bn,monthsShort:Bn,weekdays:qn,weekdaysShort:qn,weekdaysMin:qn,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd\u060c D MMMM YYYY HH:mm"},meridiemParse:/\u0635\u0628\u062d|\u0634\u0627\u0645/,isPM:function(e){return"\u0634\u0627\u0645"===e},meridiem:function(e,a,t){return e<12?"\u0635\u0628\u062d":"\u0634\u0627\u0645"},calendar:{sameDay:"[\u0627\u0684] LT",nextDay:"[\u0633\u0680\u0627\u06bb\u064a] LT",nextWeek:"dddd [\u0627\u06b3\u064a\u0646 \u0647\u0641\u062a\u064a \u062a\u064a] LT",lastDay:"[\u06aa\u0627\u0644\u0647\u0647] LT",lastWeek:"[\u06af\u0632\u0631\u064a\u0644 \u0647\u0641\u062a\u064a] dddd [\u062a\u064a] LT",sameElse:"L"},relativeTime:{future:"%s \u067e\u0648\u0621",past:"%s \u0627\u06b3",s:"\u0686\u0646\u062f \u0633\u064a\u06aa\u0646\u068a",ss:"%d \u0633\u064a\u06aa\u0646\u068a",m:"\u0647\u06aa \u0645\u0646\u067d",mm:"%d \u0645\u0646\u067d",h:"\u0647\u06aa \u06aa\u0644\u0627\u06aa",hh:"%d \u06aa\u0644\u0627\u06aa",d:"\u0647\u06aa \u068f\u064a\u0646\u0647\u0646",dd:"%d \u068f\u064a\u0646\u0647\u0646",M:"\u0647\u06aa \u0645\u0647\u064a\u0646\u0648",MM:"%d \u0645\u0647\u064a\u0646\u0627",y:"\u0647\u06aa \u0633\u0627\u0644",yy:"%d \u0633\u0627\u0644"},preparse:function(e){return e.replace(/\u060c/g,",")},postformat:function(e){return e.replace(/,/g,"\u060c")},week:{dow:1,doy:4}}),l.defineLocale("se",{months:"o\u0111\u0111ajagem\xe1nnu_guovvam\xe1nnu_njuk\u010dam\xe1nnu_cuo\u014bom\xe1nnu_miessem\xe1nnu_geassem\xe1nnu_suoidnem\xe1nnu_borgem\xe1nnu_\u010dak\u010dam\xe1nnu_golggotm\xe1nnu_sk\xe1bmam\xe1nnu_juovlam\xe1nnu".split("_"),monthsShort:"o\u0111\u0111j_guov_njuk_cuo_mies_geas_suoi_borg_\u010dak\u010d_golg_sk\xe1b_juov".split("_"),weekdays:"sotnabeaivi_vuoss\xe1rga_ma\u014b\u014beb\xe1rga_gaskavahkku_duorastat_bearjadat_l\xe1vvardat".split("_"),weekdaysShort:"sotn_vuos_ma\u014b_gask_duor_bear_l\xe1v".split("_"),weekdaysMin:"s_v_m_g_d_b_L".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"MMMM D. [b.] YYYY",LLL:"MMMM D. [b.] YYYY [ti.] HH:mm",LLLL:"dddd, MMMM D. [b.] YYYY [ti.] HH:mm"},calendar:{sameDay:"[otne ti] LT",nextDay:"[ihttin ti] LT",nextWeek:"dddd [ti] LT",lastDay:"[ikte ti] LT",lastWeek:"[ovddit] dddd [ti] LT",sameElse:"L"},relativeTime:{future:"%s gea\u017ees",past:"ma\u014bit %s",s:"moadde sekunddat",ss:"%d sekunddat",m:"okta minuhta",mm:"%d minuhtat",h:"okta diimmu",hh:"%d diimmut",d:"okta beaivi",dd:"%d beaivvit",M:"okta m\xe1nnu",MM:"%d m\xe1nut",y:"okta jahki",yy:"%d jagit"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("si",{months:"\u0da2\u0db1\u0dc0\u0dcf\u0dbb\u0dd2_\u0db4\u0dd9\u0db6\u0dbb\u0dc0\u0dcf\u0dbb\u0dd2_\u0db8\u0dcf\u0dbb\u0dca\u0dad\u0dd4_\u0d85\u0db4\u0dca\u200d\u0dbb\u0dda\u0dbd\u0dca_\u0db8\u0dd0\u0dba\u0dd2_\u0da2\u0dd6\u0db1\u0dd2_\u0da2\u0dd6\u0dbd\u0dd2_\u0d85\u0d9c\u0ddd\u0dc3\u0dca\u0dad\u0dd4_\u0dc3\u0dd0\u0db4\u0dca\u0dad\u0dd0\u0db8\u0dca\u0db6\u0dbb\u0dca_\u0d94\u0d9a\u0dca\u0dad\u0ddd\u0db6\u0dbb\u0dca_\u0db1\u0ddc\u0dc0\u0dd0\u0db8\u0dca\u0db6\u0dbb\u0dca_\u0daf\u0dd9\u0dc3\u0dd0\u0db8\u0dca\u0db6\u0dbb\u0dca".split("_"),monthsShort:"\u0da2\u0db1_\u0db4\u0dd9\u0db6_\u0db8\u0dcf\u0dbb\u0dca_\u0d85\u0db4\u0dca_\u0db8\u0dd0\u0dba\u0dd2_\u0da2\u0dd6\u0db1\u0dd2_\u0da2\u0dd6\u0dbd\u0dd2_\u0d85\u0d9c\u0ddd_\u0dc3\u0dd0\u0db4\u0dca_\u0d94\u0d9a\u0dca_\u0db1\u0ddc\u0dc0\u0dd0_\u0daf\u0dd9\u0dc3\u0dd0".split("_"),weekdays:"\u0d89\u0dbb\u0dd2\u0daf\u0dcf_\u0dc3\u0db3\u0dd4\u0daf\u0dcf_\u0d85\u0d9f\u0dc4\u0dbb\u0dd4\u0dc0\u0dcf\u0daf\u0dcf_\u0db6\u0daf\u0dcf\u0daf\u0dcf_\u0db6\u0dca\u200d\u0dbb\u0dc4\u0dc3\u0dca\u0db4\u0dad\u0dd2\u0db1\u0dca\u0daf\u0dcf_\u0dc3\u0dd2\u0d9a\u0dd4\u0dbb\u0dcf\u0daf\u0dcf_\u0dc3\u0dd9\u0db1\u0dc3\u0dd4\u0dbb\u0dcf\u0daf\u0dcf".split("_"),weekdaysShort:"\u0d89\u0dbb\u0dd2_\u0dc3\u0db3\u0dd4_\u0d85\u0d9f_\u0db6\u0daf\u0dcf_\u0db6\u0dca\u200d\u0dbb\u0dc4_\u0dc3\u0dd2\u0d9a\u0dd4_\u0dc3\u0dd9\u0db1".split("_"),weekdaysMin:"\u0d89_\u0dc3_\u0d85_\u0db6_\u0db6\u0dca\u200d\u0dbb_\u0dc3\u0dd2_\u0dc3\u0dd9".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"a h:mm",LTS:"a h:mm:ss",L:"YYYY/MM/DD",LL:"YYYY MMMM D",LLL:"YYYY MMMM D, a h:mm",LLLL:"YYYY MMMM D [\u0dc0\u0dd0\u0db1\u0dd2] dddd, a h:mm:ss"},calendar:{sameDay:"[\u0d85\u0daf] LT[\u0da7]",nextDay:"[\u0dc4\u0dd9\u0da7] LT[\u0da7]",nextWeek:"dddd LT[\u0da7]",lastDay:"[\u0d8a\u0dba\u0dda] LT[\u0da7]",lastWeek:"[\u0db4\u0dc3\u0dd4\u0d9c\u0dd2\u0dba] dddd LT[\u0da7]",sameElse:"L"},relativeTime:{future:"%s\u0d9a\u0dd2\u0db1\u0dca",past:"%s\u0d9a\u0da7 \u0db4\u0dd9\u0dbb",s:"\u0dad\u0dad\u0dca\u0db4\u0dbb \u0d9a\u0dd2\u0dc4\u0dd2\u0db4\u0dba",ss:"\u0dad\u0dad\u0dca\u0db4\u0dbb %d",m:"\u0db8\u0dd2\u0db1\u0dd2\u0dad\u0dca\u0dad\u0dd4\u0dc0",mm:"\u0db8\u0dd2\u0db1\u0dd2\u0dad\u0dca\u0dad\u0dd4 %d",h:"\u0db4\u0dd0\u0dba",hh:"\u0db4\u0dd0\u0dba %d",d:"\u0daf\u0dd2\u0db1\u0dba",dd:"\u0daf\u0dd2\u0db1 %d",M:"\u0db8\u0dcf\u0dc3\u0dba",MM:"\u0db8\u0dcf\u0dc3 %d",y:"\u0dc0\u0dc3\u0dbb",yy:"\u0dc0\u0dc3\u0dbb %d"},dayOfMonthOrdinalParse:/\d{1,2} \u0dc0\u0dd0\u0db1\u0dd2/,ordinal:function(e){return e+" \u0dc0\u0dd0\u0db1\u0dd2"},meridiemParse:/\u0db4\u0dd9\u0dbb \u0dc0\u0dbb\u0dd4|\u0db4\u0dc3\u0dca \u0dc0\u0dbb\u0dd4|\u0db4\u0dd9.\u0dc0|\u0db4.\u0dc0./,isPM:function(e){return"\u0db4.\u0dc0."===e||"\u0db4\u0dc3\u0dca \u0dc0\u0dbb\u0dd4"===e},meridiem:function(e,a,t){return 11<e?t?"\u0db4.\u0dc0.":"\u0db4\u0dc3\u0dca \u0dc0\u0dbb\u0dd4":t?"\u0db4\u0dd9.\u0dc0.":"\u0db4\u0dd9\u0dbb \u0dc0\u0dbb\u0dd4"}});var Qn="janu\xe1r_febru\xe1r_marec_apr\xedl_m\xe1j_j\xfan_j\xfal_august_september_okt\xf3ber_november_december".split("_"),Xn="jan_feb_mar_apr_m\xe1j_j\xfan_j\xfal_aug_sep_okt_nov_dec".split("_");function ed(e){return 1<e&&e<5}function ad(e,a,t,s){var n=e+" ";switch(t){case"s":return a||s?"p\xe1r sek\xfand":"p\xe1r sekundami";case"ss":return a||s?n+(ed(e)?"sekundy":"sek\xfand"):n+"sekundami";break;case"m":return a?"min\xfata":s?"min\xfatu":"min\xfatou";case"mm":return a||s?n+(ed(e)?"min\xfaty":"min\xfat"):n+"min\xfatami";break;case"h":return a?"hodina":s?"hodinu":"hodinou";case"hh":return a||s?n+(ed(e)?"hodiny":"hod\xedn"):n+"hodinami";break;case"d":return a||s?"de\u0148":"d\u0148om";case"dd":return a||s?n+(ed(e)?"dni":"dn\xed"):n+"d\u0148ami";break;case"M":return a||s?"mesiac":"mesiacom";case"MM":return a||s?n+(ed(e)?"mesiace":"mesiacov"):n+"mesiacmi";break;case"y":return a||s?"rok":"rokom";case"yy":return a||s?n+(ed(e)?"roky":"rokov"):n+"rokmi";break}}function td(e,a,t,s){var n=e+" ";switch(t){case"s":return a||s?"nekaj sekund":"nekaj sekundami";case"ss":return n+=1===e?a?"sekundo":"sekundi":2===e?a||s?"sekundi":"sekundah":e<5?a||s?"sekunde":"sekundah":"sekund";case"m":return a?"ena minuta":"eno minuto";case"mm":return n+=1===e?a?"minuta":"minuto":2===e?a||s?"minuti":"minutama":e<5?a||s?"minute":"minutami":a||s?"minut":"minutami";case"h":return a?"ena ura":"eno uro";case"hh":return n+=1===e?a?"ura":"uro":2===e?a||s?"uri":"urama":e<5?a||s?"ure":"urami":a||s?"ur":"urami";case"d":return a||s?"en dan":"enim dnem";case"dd":return n+=1===e?a||s?"dan":"dnem":2===e?a||s?"dni":"dnevoma":a||s?"dni":"dnevi";case"M":return a||s?"en mesec":"enim mesecem";case"MM":return n+=1===e?a||s?"mesec":"mesecem":2===e?a||s?"meseca":"mesecema":e<5?a||s?"mesece":"meseci":a||s?"mesecev":"meseci";case"y":return a||s?"eno leto":"enim letom";case"yy":return n+=1===e?a||s?"leto":"letom":2===e?a||s?"leti":"letoma":e<5?a||s?"leta":"leti":a||s?"let":"leti"}}l.defineLocale("sk",{months:Qn,monthsShort:Xn,weekdays:"nede\u013ea_pondelok_utorok_streda_\u0161tvrtok_piatok_sobota".split("_"),weekdaysShort:"ne_po_ut_st_\u0161t_pi_so".split("_"),weekdaysMin:"ne_po_ut_st_\u0161t_pi_so".split("_"),longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd D. MMMM YYYY H:mm"},calendar:{sameDay:"[dnes o] LT",nextDay:"[zajtra o] LT",nextWeek:function(){switch(this.day()){case 0:return"[v nede\u013eu o] LT";case 1:case 2:return"[v] dddd [o] LT";case 3:return"[v stredu o] LT";case 4:return"[vo \u0161tvrtok o] LT";case 5:return"[v piatok o] LT";case 6:return"[v sobotu o] LT"}},lastDay:"[v\u010dera o] LT",lastWeek:function(){switch(this.day()){case 0:return"[minul\xfa nede\u013eu o] LT";case 1:case 2:return"[minul\xfd] dddd [o] LT";case 3:return"[minul\xfa stredu o] LT";case 4:case 5:return"[minul\xfd] dddd [o] LT";case 6:return"[minul\xfa sobotu o] LT"}},sameElse:"L"},relativeTime:{future:"za %s",past:"pred %s",s:ad,ss:ad,m:ad,mm:ad,h:ad,hh:ad,d:ad,dd:ad,M:ad,MM:ad,y:ad,yy:ad},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("sl",{months:"januar_februar_marec_april_maj_junij_julij_avgust_september_oktober_november_december".split("_"),monthsShort:"jan._feb._mar._apr._maj._jun._jul._avg._sep._okt._nov._dec.".split("_"),monthsParseExact:!0,weekdays:"nedelja_ponedeljek_torek_sreda_\u010detrtek_petek_sobota".split("_"),weekdaysShort:"ned._pon._tor._sre._\u010det._pet._sob.".split("_"),weekdaysMin:"ne_po_to_sr_\u010de_pe_so".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danes ob] LT",nextDay:"[jutri ob] LT",nextWeek:function(){switch(this.day()){case 0:return"[v] [nedeljo] [ob] LT";case 3:return"[v] [sredo] [ob] LT";case 6:return"[v] [soboto] [ob] LT";case 1:case 2:case 4:case 5:return"[v] dddd [ob] LT"}},lastDay:"[v\u010deraj ob] LT",lastWeek:function(){switch(this.day()){case 0:return"[prej\u0161njo] [nedeljo] [ob] LT";case 3:return"[prej\u0161njo] [sredo] [ob] LT";case 6:return"[prej\u0161njo] [soboto] [ob] LT";case 1:case 2:case 4:case 5:return"[prej\u0161nji] dddd [ob] LT"}},sameElse:"L"},relativeTime:{future:"\u010dez %s",past:"pred %s",s:td,ss:td,m:td,mm:td,h:td,hh:td,d:td,dd:td,M:td,MM:td,y:td,yy:td},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),l.defineLocale("sq",{months:"Janar_Shkurt_Mars_Prill_Maj_Qershor_Korrik_Gusht_Shtator_Tetor_N\xebntor_Dhjetor".split("_"),monthsShort:"Jan_Shk_Mar_Pri_Maj_Qer_Kor_Gus_Sht_Tet_N\xebn_Dhj".split("_"),weekdays:"E Diel_E H\xebn\xeb_E Mart\xeb_E M\xebrkur\xeb_E Enjte_E Premte_E Shtun\xeb".split("_"),weekdaysShort:"Die_H\xebn_Mar_M\xebr_Enj_Pre_Sht".split("_"),weekdaysMin:"D_H_Ma_M\xeb_E_P_Sh".split("_"),weekdaysParseExact:!0,meridiemParse:/PD|MD/,isPM:function(e){return"M"===e.charAt(0)},meridiem:function(e,a,t){return e<12?"PD":"MD"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Sot n\xeb] LT",nextDay:"[Nes\xebr n\xeb] LT",nextWeek:"dddd [n\xeb] LT",lastDay:"[Dje n\xeb] LT",lastWeek:"dddd [e kaluar n\xeb] LT",sameElse:"L"},relativeTime:{future:"n\xeb %s",past:"%s m\xeb par\xeb",s:"disa sekonda",ss:"%d sekonda",m:"nj\xeb minut\xeb",mm:"%d minuta",h:"nj\xeb or\xeb",hh:"%d or\xeb",d:"nj\xeb dit\xeb",dd:"%d dit\xeb",M:"nj\xeb muaj",MM:"%d muaj",y:"nj\xeb vit",yy:"%d vite"},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}});var sd={words:{ss:["\u0441\u0435\u043a\u0443\u043d\u0434\u0430","\u0441\u0435\u043a\u0443\u043d\u0434\u0435","\u0441\u0435\u043a\u0443\u043d\u0434\u0438"],m:["\u0458\u0435\u0434\u0430\u043d \u043c\u0438\u043d\u0443\u0442","\u0458\u0435\u0434\u043d\u0435 \u043c\u0438\u043d\u0443\u0442\u0435"],mm:["\u043c\u0438\u043d\u0443\u0442","\u043c\u0438\u043d\u0443\u0442\u0435","\u043c\u0438\u043d\u0443\u0442\u0430"],h:["\u0458\u0435\u0434\u0430\u043d \u0441\u0430\u0442","\u0458\u0435\u0434\u043d\u043e\u0433 \u0441\u0430\u0442\u0430"],hh:["\u0441\u0430\u0442","\u0441\u0430\u0442\u0430","\u0441\u0430\u0442\u0438"],dd:["\u0434\u0430\u043d","\u0434\u0430\u043d\u0430","\u0434\u0430\u043d\u0430"],MM:["\u043c\u0435\u0441\u0435\u0446","\u043c\u0435\u0441\u0435\u0446\u0430","\u043c\u0435\u0441\u0435\u0446\u0438"],yy:["\u0433\u043e\u0434\u0438\u043d\u0430","\u0433\u043e\u0434\u0438\u043d\u0435","\u0433\u043e\u0434\u0438\u043d\u0430"]},correctGrammaticalCase:function(e,a){return 1===e?a[0]:2<=e&&e<=4?a[1]:a[2]},translate:function(e,a,t){var s=sd.words[t];return 1===t.length?a?s[0]:s[1]:e+" "+sd.correctGrammaticalCase(e,s)}};l.defineLocale("sr-cyrl",{months:"\u0458\u0430\u043d\u0443\u0430\u0440_\u0444\u0435\u0431\u0440\u0443\u0430\u0440_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0438\u043b_\u043c\u0430\u0458_\u0458\u0443\u043d_\u0458\u0443\u043b_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043f\u0442\u0435\u043c\u0431\u0430\u0440_\u043e\u043a\u0442\u043e\u0431\u0430\u0440_\u043d\u043e\u0432\u0435\u043c\u0431\u0430\u0440_\u0434\u0435\u0446\u0435\u043c\u0431\u0430\u0440".split("_"),monthsShort:"\u0458\u0430\u043d._\u0444\u0435\u0431._\u043c\u0430\u0440._\u0430\u043f\u0440._\u043c\u0430\u0458_\u0458\u0443\u043d_\u0458\u0443\u043b_\u0430\u0432\u0433._\u0441\u0435\u043f._\u043e\u043a\u0442._\u043d\u043e\u0432._\u0434\u0435\u0446.".split("_"),monthsParseExact:!0,weekdays:"\u043d\u0435\u0434\u0435\u0459\u0430_\u043f\u043e\u043d\u0435\u0434\u0435\u0459\u0430\u043a_\u0443\u0442\u043e\u0440\u0430\u043a_\u0441\u0440\u0435\u0434\u0430_\u0447\u0435\u0442\u0432\u0440\u0442\u0430\u043a_\u043f\u0435\u0442\u0430\u043a_\u0441\u0443\u0431\u043e\u0442\u0430".split("_"),weekdaysShort:"\u043d\u0435\u0434._\u043f\u043e\u043d._\u0443\u0442\u043e._\u0441\u0440\u0435._\u0447\u0435\u0442._\u043f\u0435\u0442._\u0441\u0443\u0431.".split("_"),weekdaysMin:"\u043d\u0435_\u043f\u043e_\u0443\u0442_\u0441\u0440_\u0447\u0435_\u043f\u0435_\u0441\u0443".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[\u0434\u0430\u043d\u0430\u0441 \u0443] LT",nextDay:"[\u0441\u0443\u0442\u0440\u0430 \u0443] LT",nextWeek:function(){switch(this.day()){case 0:return"[\u0443] [\u043d\u0435\u0434\u0435\u0459\u0443] [\u0443] LT";case 3:return"[\u0443] [\u0441\u0440\u0435\u0434\u0443] [\u0443] LT";case 6:return"[\u0443] [\u0441\u0443\u0431\u043e\u0442\u0443] [\u0443] LT";case 1:case 2:case 4:case 5:return"[\u0443] dddd [\u0443] LT"}},lastDay:"[\u0458\u0443\u0447\u0435 \u0443] LT",lastWeek:function(){return["[\u043f\u0440\u043e\u0448\u043b\u0435] [\u043d\u0435\u0434\u0435\u0459\u0435] [\u0443] LT","[\u043f\u0440\u043e\u0448\u043b\u043e\u0433] [\u043f\u043e\u043d\u0435\u0434\u0435\u0459\u043a\u0430] [\u0443] LT","[\u043f\u0440\u043e\u0448\u043b\u043e\u0433] [\u0443\u0442\u043e\u0440\u043a\u0430] [\u0443] LT","[\u043f\u0440\u043e\u0448\u043b\u0435] [\u0441\u0440\u0435\u0434\u0435] [\u0443] LT","[\u043f\u0440\u043e\u0448\u043b\u043e\u0433] [\u0447\u0435\u0442\u0432\u0440\u0442\u043a\u0430] [\u0443] LT","[\u043f\u0440\u043e\u0448\u043b\u043e\u0433] [\u043f\u0435\u0442\u043a\u0430] [\u0443] LT","[\u043f\u0440\u043e\u0448\u043b\u0435] [\u0441\u0443\u0431\u043e\u0442\u0435] [\u0443] LT"][this.day()]},sameElse:"L"},relativeTime:{future:"\u0437\u0430 %s",past:"\u043f\u0440\u0435 %s",s:"\u043d\u0435\u043a\u043e\u043b\u0438\u043a\u043e \u0441\u0435\u043a\u0443\u043d\u0434\u0438",ss:sd.translate,m:sd.translate,mm:sd.translate,h:sd.translate,hh:sd.translate,d:"\u0434\u0430\u043d",dd:sd.translate,M:"\u043c\u0435\u0441\u0435\u0446",MM:sd.translate,y:"\u0433\u043e\u0434\u0438\u043d\u0443",yy:sd.translate},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}});var nd={words:{ss:["sekunda","sekunde","sekundi"],m:["jedan minut","jedne minute"],mm:["minut","minute","minuta"],h:["jedan sat","jednog sata"],hh:["sat","sata","sati"],dd:["dan","dana","dana"],MM:["mesec","meseca","meseci"],yy:["godina","godine","godina"]},correctGrammaticalCase:function(e,a){return 1===e?a[0]:2<=e&&e<=4?a[1]:a[2]},translate:function(e,a,t){var s=nd.words[t];return 1===t.length?a?s[0]:s[1]:e+" "+nd.correctGrammaticalCase(e,s)}};l.defineLocale("sr",{months:"januar_februar_mart_april_maj_jun_jul_avgust_septembar_oktobar_novembar_decembar".split("_"),monthsShort:"jan._feb._mar._apr._maj_jun_jul_avg._sep._okt._nov._dec.".split("_"),monthsParseExact:!0,weekdays:"nedelja_ponedeljak_utorak_sreda_\u010detvrtak_petak_subota".split("_"),weekdaysShort:"ned._pon._uto._sre._\u010det._pet._sub.".split("_"),weekdaysMin:"ne_po_ut_sr_\u010de_pe_su".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D. MMMM YYYY",LLL:"D. MMMM YYYY H:mm",LLLL:"dddd, D. MMMM YYYY H:mm"},calendar:{sameDay:"[danas u] LT",nextDay:"[sutra u] LT",nextWeek:function(){switch(this.day()){case 0:return"[u] [nedelju] [u] LT";case 3:return"[u] [sredu] [u] LT";case 6:return"[u] [subotu] [u] LT";case 1:case 2:case 4:case 5:return"[u] dddd [u] LT"}},lastDay:"[ju\u010de u] LT",lastWeek:function(){return["[pro\u0161le] [nedelje] [u] LT","[pro\u0161log] [ponedeljka] [u] LT","[pro\u0161log] [utorka] [u] LT","[pro\u0161le] [srede] [u] LT","[pro\u0161log] [\u010detvrtka] [u] LT","[pro\u0161log] [petka] [u] LT","[pro\u0161le] [subote] [u] LT"][this.day()]},sameElse:"L"},relativeTime:{future:"za %s",past:"pre %s",s:"nekoliko sekundi",ss:nd.translate,m:nd.translate,mm:nd.translate,h:nd.translate,hh:nd.translate,d:"dan",dd:nd.translate,M:"mesec",MM:nd.translate,y:"godinu",yy:nd.translate},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:7}}),l.defineLocale("ss",{months:"Bhimbidvwane_Indlovana_Indlov'lenkhulu_Mabasa_Inkhwekhweti_Inhlaba_Kholwane_Ingci_Inyoni_Imphala_Lweti_Ingongoni".split("_"),monthsShort:"Bhi_Ina_Inu_Mab_Ink_Inh_Kho_Igc_Iny_Imp_Lwe_Igo".split("_"),weekdays:"Lisontfo_Umsombuluko_Lesibili_Lesitsatfu_Lesine_Lesihlanu_Umgcibelo".split("_"),weekdaysShort:"Lis_Umb_Lsb_Les_Lsi_Lsh_Umg".split("_"),weekdaysMin:"Li_Us_Lb_Lt_Ls_Lh_Ug".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Namuhla nga] LT",nextDay:"[Kusasa nga] LT",nextWeek:"dddd [nga] LT",lastDay:"[Itolo nga] LT",lastWeek:"dddd [leliphelile] [nga] LT",sameElse:"L"},relativeTime:{future:"nga %s",past:"wenteka nga %s",s:"emizuzwana lomcane",ss:"%d mzuzwana",m:"umzuzu",mm:"%d emizuzu",h:"lihora",hh:"%d emahora",d:"lilanga",dd:"%d emalanga",M:"inyanga",MM:"%d tinyanga",y:"umnyaka",yy:"%d iminyaka"},meridiemParse:/ekuseni|emini|entsambama|ebusuku/,meridiem:function(e,a,t){return e<11?"ekuseni":e<15?"emini":e<19?"entsambama":"ebusuku"},meridiemHour:function(e,a){return 12===e&&(e=0),"ekuseni"===a?e:"emini"===a?11<=e?e:e+12:"entsambama"===a||"ebusuku"===a?0===e?0:e+12:void 0},dayOfMonthOrdinalParse:/\d{1,2}/,ordinal:"%d",week:{dow:1,doy:4}}),l.defineLocale("sv",{months:"januari_februari_mars_april_maj_juni_juli_augusti_september_oktober_november_december".split("_"),monthsShort:"jan_feb_mar_apr_maj_jun_jul_aug_sep_okt_nov_dec".split("_"),weekdays:"s\xf6ndag_m\xe5ndag_tisdag_onsdag_torsdag_fredag_l\xf6rdag".split("_"),weekdaysShort:"s\xf6n_m\xe5n_tis_ons_tor_fre_l\xf6r".split("_"),weekdaysMin:"s\xf6_m\xe5_ti_on_to_fr_l\xf6".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"D MMMM YYYY",LLL:"D MMMM YYYY [kl.] HH:mm",LLLL:"dddd D MMMM YYYY [kl.] HH:mm",lll:"D MMM YYYY HH:mm",llll:"ddd D MMM YYYY HH:mm"},calendar:{sameDay:"[Idag] LT",nextDay:"[Imorgon] LT",lastDay:"[Ig\xe5r] LT",nextWeek:"[P\xe5] dddd LT",lastWeek:"[I] dddd[s] LT",sameElse:"L"},relativeTime:{future:"om %s",past:"f\xf6r %s sedan",s:"n\xe5gra sekunder",ss:"%d sekunder",m:"en minut",mm:"%d minuter",h:"en timme",hh:"%d timmar",d:"en dag",dd:"%d dagar",M:"en m\xe5nad",MM:"%d m\xe5nader",y:"ett \xe5r",yy:"%d \xe5r"},dayOfMonthOrdinalParse:/\d{1,2}(e|a)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"e":1===a?"a":2===a?"a":"e")},week:{dow:1,doy:4}}),l.defineLocale("sw",{months:"Januari_Februari_Machi_Aprili_Mei_Juni_Julai_Agosti_Septemba_Oktoba_Novemba_Desemba".split("_"),monthsShort:"Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ago_Sep_Okt_Nov_Des".split("_"),weekdays:"Jumapili_Jumatatu_Jumanne_Jumatano_Alhamisi_Ijumaa_Jumamosi".split("_"),weekdaysShort:"Jpl_Jtat_Jnne_Jtan_Alh_Ijm_Jmos".split("_"),weekdaysMin:"J2_J3_J4_J5_Al_Ij_J1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[leo saa] LT",nextDay:"[kesho saa] LT",nextWeek:"[wiki ijayo] dddd [saat] LT",lastDay:"[jana] LT",lastWeek:"[wiki iliyopita] dddd [saat] LT",sameElse:"L"},relativeTime:{future:"%s baadaye",past:"tokea %s",s:"hivi punde",ss:"sekunde %d",m:"dakika moja",mm:"dakika %d",h:"saa limoja",hh:"masaa %d",d:"siku moja",dd:"masiku %d",M:"mwezi mmoja",MM:"miezi %d",y:"mwaka mmoja",yy:"miaka %d"},week:{dow:1,doy:7}});var dd={1:"\u0be7",2:"\u0be8",3:"\u0be9",4:"\u0bea",5:"\u0beb",6:"\u0bec",7:"\u0bed",8:"\u0bee",9:"\u0bef",0:"\u0be6"},rd={"\u0be7":"1","\u0be8":"2","\u0be9":"3","\u0bea":"4","\u0beb":"5","\u0bec":"6","\u0bed":"7","\u0bee":"8","\u0bef":"9","\u0be6":"0"};l.defineLocale("ta",{months:"\u0b9c\u0ba9\u0bb5\u0bb0\u0bbf_\u0baa\u0bbf\u0baa\u0bcd\u0bb0\u0bb5\u0bb0\u0bbf_\u0bae\u0bbe\u0bb0\u0bcd\u0b9a\u0bcd_\u0b8f\u0baa\u0bcd\u0bb0\u0bb2\u0bcd_\u0bae\u0bc7_\u0b9c\u0bc2\u0ba9\u0bcd_\u0b9c\u0bc2\u0bb2\u0bc8_\u0b86\u0b95\u0bb8\u0bcd\u0b9f\u0bcd_\u0b9a\u0bc6\u0baa\u0bcd\u0b9f\u0bc6\u0bae\u0bcd\u0baa\u0bb0\u0bcd_\u0b85\u0b95\u0bcd\u0b9f\u0bc7\u0bbe\u0baa\u0bb0\u0bcd_\u0ba8\u0bb5\u0bae\u0bcd\u0baa\u0bb0\u0bcd_\u0b9f\u0bbf\u0b9a\u0bae\u0bcd\u0baa\u0bb0\u0bcd".split("_"),monthsShort:"\u0b9c\u0ba9\u0bb5\u0bb0\u0bbf_\u0baa\u0bbf\u0baa\u0bcd\u0bb0\u0bb5\u0bb0\u0bbf_\u0bae\u0bbe\u0bb0\u0bcd\u0b9a\u0bcd_\u0b8f\u0baa\u0bcd\u0bb0\u0bb2\u0bcd_\u0bae\u0bc7_\u0b9c\u0bc2\u0ba9\u0bcd_\u0b9c\u0bc2\u0bb2\u0bc8_\u0b86\u0b95\u0bb8\u0bcd\u0b9f\u0bcd_\u0b9a\u0bc6\u0baa\u0bcd\u0b9f\u0bc6\u0bae\u0bcd\u0baa\u0bb0\u0bcd_\u0b85\u0b95\u0bcd\u0b9f\u0bc7\u0bbe\u0baa\u0bb0\u0bcd_\u0ba8\u0bb5\u0bae\u0bcd\u0baa\u0bb0\u0bcd_\u0b9f\u0bbf\u0b9a\u0bae\u0bcd\u0baa\u0bb0\u0bcd".split("_"),weekdays:"\u0b9e\u0bbe\u0baf\u0bbf\u0bb1\u0bcd\u0bb1\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8_\u0ba4\u0bbf\u0b99\u0bcd\u0b95\u0b9f\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8_\u0b9a\u0bc6\u0bb5\u0bcd\u0bb5\u0bbe\u0baf\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8_\u0baa\u0bc1\u0ba4\u0ba9\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8_\u0bb5\u0bbf\u0baf\u0bbe\u0bb4\u0b95\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8_\u0bb5\u0bc6\u0bb3\u0bcd\u0bb3\u0bbf\u0b95\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8_\u0b9a\u0ba9\u0bbf\u0b95\u0bcd\u0b95\u0bbf\u0bb4\u0bae\u0bc8".split("_"),weekdaysShort:"\u0b9e\u0bbe\u0baf\u0bbf\u0bb1\u0bc1_\u0ba4\u0bbf\u0b99\u0bcd\u0b95\u0bb3\u0bcd_\u0b9a\u0bc6\u0bb5\u0bcd\u0bb5\u0bbe\u0baf\u0bcd_\u0baa\u0bc1\u0ba4\u0ba9\u0bcd_\u0bb5\u0bbf\u0baf\u0bbe\u0bb4\u0ba9\u0bcd_\u0bb5\u0bc6\u0bb3\u0bcd\u0bb3\u0bbf_\u0b9a\u0ba9\u0bbf".split("_"),weekdaysMin:"\u0b9e\u0bbe_\u0ba4\u0bbf_\u0b9a\u0bc6_\u0baa\u0bc1_\u0bb5\u0bbf_\u0bb5\u0bc6_\u0b9a".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, HH:mm",LLLL:"dddd, D MMMM YYYY, HH:mm"},calendar:{sameDay:"[\u0b87\u0ba9\u0bcd\u0bb1\u0bc1] LT",nextDay:"[\u0ba8\u0bbe\u0bb3\u0bc8] LT",nextWeek:"dddd, LT",lastDay:"[\u0ba8\u0bc7\u0bb1\u0bcd\u0bb1\u0bc1] LT",lastWeek:"[\u0b95\u0b9f\u0ba8\u0bcd\u0ba4 \u0bb5\u0bbe\u0bb0\u0bae\u0bcd] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0b87\u0bb2\u0bcd",past:"%s \u0bae\u0bc1\u0ba9\u0bcd",s:"\u0b92\u0bb0\u0bc1 \u0b9a\u0bbf\u0bb2 \u0bb5\u0bbf\u0ba8\u0bbe\u0b9f\u0bbf\u0b95\u0bb3\u0bcd",ss:"%d \u0bb5\u0bbf\u0ba8\u0bbe\u0b9f\u0bbf\u0b95\u0bb3\u0bcd",m:"\u0b92\u0bb0\u0bc1 \u0ba8\u0bbf\u0bae\u0bbf\u0b9f\u0bae\u0bcd",mm:"%d \u0ba8\u0bbf\u0bae\u0bbf\u0b9f\u0b99\u0bcd\u0b95\u0bb3\u0bcd",h:"\u0b92\u0bb0\u0bc1 \u0bae\u0ba3\u0bbf \u0ba8\u0bc7\u0bb0\u0bae\u0bcd",hh:"%d \u0bae\u0ba3\u0bbf \u0ba8\u0bc7\u0bb0\u0bae\u0bcd",d:"\u0b92\u0bb0\u0bc1 \u0ba8\u0bbe\u0bb3\u0bcd",dd:"%d \u0ba8\u0bbe\u0b9f\u0bcd\u0b95\u0bb3\u0bcd",M:"\u0b92\u0bb0\u0bc1 \u0bae\u0bbe\u0ba4\u0bae\u0bcd",MM:"%d \u0bae\u0bbe\u0ba4\u0b99\u0bcd\u0b95\u0bb3\u0bcd",y:"\u0b92\u0bb0\u0bc1 \u0bb5\u0bb0\u0bc1\u0b9f\u0bae\u0bcd",yy:"%d \u0b86\u0ba3\u0bcd\u0b9f\u0bc1\u0b95\u0bb3\u0bcd"},dayOfMonthOrdinalParse:/\d{1,2}\u0bb5\u0ba4\u0bc1/,ordinal:function(e){return e+"\u0bb5\u0ba4\u0bc1"},preparse:function(e){return e.replace(/[\u0be7\u0be8\u0be9\u0bea\u0beb\u0bec\u0bed\u0bee\u0bef\u0be6]/g,function(e){return rd[e]})},postformat:function(e){return e.replace(/\d/g,function(e){return dd[e]})},meridiemParse:/\u0baf\u0bbe\u0bae\u0bae\u0bcd|\u0bb5\u0bc8\u0b95\u0bb1\u0bc8|\u0b95\u0bbe\u0bb2\u0bc8|\u0ba8\u0ba3\u0bcd\u0baa\u0b95\u0bb2\u0bcd|\u0b8e\u0bb1\u0bcd\u0baa\u0bbe\u0b9f\u0bc1|\u0bae\u0bbe\u0bb2\u0bc8/,meridiem:function(e,a,t){return e<2?" \u0baf\u0bbe\u0bae\u0bae\u0bcd":e<6?" \u0bb5\u0bc8\u0b95\u0bb1\u0bc8":e<10?" \u0b95\u0bbe\u0bb2\u0bc8":e<14?" \u0ba8\u0ba3\u0bcd\u0baa\u0b95\u0bb2\u0bcd":e<18?" \u0b8e\u0bb1\u0bcd\u0baa\u0bbe\u0b9f\u0bc1":e<22?" \u0bae\u0bbe\u0bb2\u0bc8":" \u0baf\u0bbe\u0bae\u0bae\u0bcd"},meridiemHour:function(e,a){return 12===e&&(e=0),"\u0baf\u0bbe\u0bae\u0bae\u0bcd"===a?e<2?e:e+12:"\u0bb5\u0bc8\u0b95\u0bb1\u0bc8"===a||"\u0b95\u0bbe\u0bb2\u0bc8"===a?e:"\u0ba8\u0ba3\u0bcd\u0baa\u0b95\u0bb2\u0bcd"===a&&10<=e?e:e+12},week:{dow:0,doy:6}}),l.defineLocale("te",{months:"\u0c1c\u0c28\u0c35\u0c30\u0c3f_\u0c2b\u0c3f\u0c2c\u0c4d\u0c30\u0c35\u0c30\u0c3f_\u0c2e\u0c3e\u0c30\u0c4d\u0c1a\u0c3f_\u0c0f\u0c2a\u0c4d\u0c30\u0c3f\u0c32\u0c4d_\u0c2e\u0c47_\u0c1c\u0c42\u0c28\u0c4d_\u0c1c\u0c41\u0c32\u0c48_\u0c06\u0c17\u0c38\u0c4d\u0c1f\u0c41_\u0c38\u0c46\u0c2a\u0c4d\u0c1f\u0c46\u0c02\u0c2c\u0c30\u0c4d_\u0c05\u0c15\u0c4d\u0c1f\u0c4b\u0c2c\u0c30\u0c4d_\u0c28\u0c35\u0c02\u0c2c\u0c30\u0c4d_\u0c21\u0c3f\u0c38\u0c46\u0c02\u0c2c\u0c30\u0c4d".split("_"),monthsShort:"\u0c1c\u0c28._\u0c2b\u0c3f\u0c2c\u0c4d\u0c30._\u0c2e\u0c3e\u0c30\u0c4d\u0c1a\u0c3f_\u0c0f\u0c2a\u0c4d\u0c30\u0c3f._\u0c2e\u0c47_\u0c1c\u0c42\u0c28\u0c4d_\u0c1c\u0c41\u0c32\u0c48_\u0c06\u0c17._\u0c38\u0c46\u0c2a\u0c4d._\u0c05\u0c15\u0c4d\u0c1f\u0c4b._\u0c28\u0c35._\u0c21\u0c3f\u0c38\u0c46.".split("_"),monthsParseExact:!0,weekdays:"\u0c06\u0c26\u0c3f\u0c35\u0c3e\u0c30\u0c02_\u0c38\u0c4b\u0c2e\u0c35\u0c3e\u0c30\u0c02_\u0c2e\u0c02\u0c17\u0c33\u0c35\u0c3e\u0c30\u0c02_\u0c2c\u0c41\u0c27\u0c35\u0c3e\u0c30\u0c02_\u0c17\u0c41\u0c30\u0c41\u0c35\u0c3e\u0c30\u0c02_\u0c36\u0c41\u0c15\u0c4d\u0c30\u0c35\u0c3e\u0c30\u0c02_\u0c36\u0c28\u0c3f\u0c35\u0c3e\u0c30\u0c02".split("_"),weekdaysShort:"\u0c06\u0c26\u0c3f_\u0c38\u0c4b\u0c2e_\u0c2e\u0c02\u0c17\u0c33_\u0c2c\u0c41\u0c27_\u0c17\u0c41\u0c30\u0c41_\u0c36\u0c41\u0c15\u0c4d\u0c30_\u0c36\u0c28\u0c3f".split("_"),weekdaysMin:"\u0c06_\u0c38\u0c4b_\u0c2e\u0c02_\u0c2c\u0c41_\u0c17\u0c41_\u0c36\u0c41_\u0c36".split("_"),longDateFormat:{LT:"A h:mm",LTS:"A h:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY, A h:mm",LLLL:"dddd, D MMMM YYYY, A h:mm"},calendar:{sameDay:"[\u0c28\u0c47\u0c21\u0c41] LT",nextDay:"[\u0c30\u0c47\u0c2a\u0c41] LT",nextWeek:"dddd, LT",lastDay:"[\u0c28\u0c3f\u0c28\u0c4d\u0c28] LT",lastWeek:"[\u0c17\u0c24] dddd, LT",sameElse:"L"},relativeTime:{future:"%s \u0c32\u0c4b",past:"%s \u0c15\u0c4d\u0c30\u0c3f\u0c24\u0c02",s:"\u0c15\u0c4a\u0c28\u0c4d\u0c28\u0c3f \u0c15\u0c4d\u0c37\u0c23\u0c3e\u0c32\u0c41",ss:"%d \u0c38\u0c46\u0c15\u0c28\u0c4d\u0c32\u0c41",m:"\u0c12\u0c15 \u0c28\u0c3f\u0c2e\u0c3f\u0c37\u0c02",mm:"%d \u0c28\u0c3f\u0c2e\u0c3f\u0c37\u0c3e\u0c32\u0c41",h:"\u0c12\u0c15 \u0c17\u0c02\u0c1f",hh:"%d \u0c17\u0c02\u0c1f\u0c32\u0c41",d:"\u0c12\u0c15 \u0c30\u0c4b\u0c1c\u0c41",dd:"%d \u0c30\u0c4b\u0c1c\u0c41\u0c32\u0c41",M:"\u0c12\u0c15 \u0c28\u0c46\u0c32",MM:"%d \u0c28\u0c46\u0c32\u0c32\u0c41",y:"\u0c12\u0c15 \u0c38\u0c02\u0c35\u0c24\u0c4d\u0c38\u0c30\u0c02",yy:"%d \u0c38\u0c02\u0c35\u0c24\u0c4d\u0c38\u0c30\u0c3e\u0c32\u0c41"},dayOfMonthOrdinalParse:/\d{1,2}\u0c35/,ordinal:"%d\u0c35",meridiemParse:/\u0c30\u0c3e\u0c24\u0c4d\u0c30\u0c3f|\u0c09\u0c26\u0c2f\u0c02|\u0c2e\u0c27\u0c4d\u0c2f\u0c3e\u0c39\u0c4d\u0c28\u0c02|\u0c38\u0c3e\u0c2f\u0c02\u0c24\u0c4d\u0c30\u0c02/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0c30\u0c3e\u0c24\u0c4d\u0c30\u0c3f"===a?e<4?e:e+12:"\u0c09\u0c26\u0c2f\u0c02"===a?e:"\u0c2e\u0c27\u0c4d\u0c2f\u0c3e\u0c39\u0c4d\u0c28\u0c02"===a?10<=e?e:e+12:"\u0c38\u0c3e\u0c2f\u0c02\u0c24\u0c4d\u0c30\u0c02"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0c30\u0c3e\u0c24\u0c4d\u0c30\u0c3f":e<10?"\u0c09\u0c26\u0c2f\u0c02":e<17?"\u0c2e\u0c27\u0c4d\u0c2f\u0c3e\u0c39\u0c4d\u0c28\u0c02":e<20?"\u0c38\u0c3e\u0c2f\u0c02\u0c24\u0c4d\u0c30\u0c02":"\u0c30\u0c3e\u0c24\u0c4d\u0c30\u0c3f"},week:{dow:0,doy:6}}),l.defineLocale("tet",{months:"Janeiru_Fevereiru_Marsu_Abril_Maiu_Ju\xf1u_Jullu_Agustu_Setembru_Outubru_Novembru_Dezembru".split("_"),monthsShort:"Jan_Fev_Mar_Abr_Mai_Jun_Jul_Ago_Set_Out_Nov_Dez".split("_"),weekdays:"Domingu_Segunda_Tersa_Kuarta_Kinta_Sesta_Sabadu".split("_"),weekdaysShort:"Dom_Seg_Ters_Kua_Kint_Sest_Sab".split("_"),weekdaysMin:"Do_Seg_Te_Ku_Ki_Ses_Sa".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[Ohin iha] LT",nextDay:"[Aban iha] LT",nextWeek:"dddd [iha] LT",lastDay:"[Horiseik iha] LT",lastWeek:"dddd [semana kotuk] [iha] LT",sameElse:"L"},relativeTime:{future:"iha %s",past:"%s liuba",s:"minutu balun",ss:"minutu %d",m:"minutu ida",mm:"minutu %d",h:"oras ida",hh:"oras %d",d:"loron ida",dd:"loron %d",M:"fulan ida",MM:"fulan %d",y:"tinan ida",yy:"tinan %d"},dayOfMonthOrdinalParse:/\d{1,2}(st|nd|rd|th)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}});var _d={0:"-\u0443\u043c",1:"-\u0443\u043c",2:"-\u044e\u043c",3:"-\u044e\u043c",4:"-\u0443\u043c",5:"-\u0443\u043c",6:"-\u0443\u043c",7:"-\u0443\u043c",8:"-\u0443\u043c",9:"-\u0443\u043c",10:"-\u0443\u043c",12:"-\u0443\u043c",13:"-\u0443\u043c",20:"-\u0443\u043c",30:"-\u044e\u043c",40:"-\u0443\u043c",50:"-\u0443\u043c",60:"-\u0443\u043c",70:"-\u0443\u043c",80:"-\u0443\u043c",90:"-\u0443\u043c",100:"-\u0443\u043c"};l.defineLocale("tg",{months:"\u044f\u043d\u0432\u0430\u0440_\u0444\u0435\u0432\u0440\u0430\u043b_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0435\u043b_\u043c\u0430\u0439_\u0438\u044e\u043d_\u0438\u044e\u043b_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043d\u0442\u044f\u0431\u0440_\u043e\u043a\u0442\u044f\u0431\u0440_\u043d\u043e\u044f\u0431\u0440_\u0434\u0435\u043a\u0430\u0431\u0440".split("_"),monthsShort:"\u044f\u043d\u0432_\u0444\u0435\u0432_\u043c\u0430\u0440_\u0430\u043f\u0440_\u043c\u0430\u0439_\u0438\u044e\u043d_\u0438\u044e\u043b_\u0430\u0432\u0433_\u0441\u0435\u043d_\u043e\u043a\u0442_\u043d\u043e\u044f_\u0434\u0435\u043a".split("_"),weekdays:"\u044f\u043a\u0448\u0430\u043d\u0431\u0435_\u0434\u0443\u0448\u0430\u043d\u0431\u0435_\u0441\u0435\u0448\u0430\u043d\u0431\u0435_\u0447\u043e\u0440\u0448\u0430\u043d\u0431\u0435_\u043f\u0430\u043d\u04b7\u0448\u0430\u043d\u0431\u0435_\u04b7\u0443\u043c\u044a\u0430_\u0448\u0430\u043d\u0431\u0435".split("_"),weekdaysShort:"\u044f\u0448\u0431_\u0434\u0448\u0431_\u0441\u0448\u0431_\u0447\u0448\u0431_\u043f\u0448\u0431_\u04b7\u0443\u043c_\u0448\u043d\u0431".split("_"),weekdaysMin:"\u044f\u0448_\u0434\u0448_\u0441\u0448_\u0447\u0448_\u043f\u0448_\u04b7\u043c_\u0448\u0431".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u0418\u043c\u0440\u04ef\u0437 \u0441\u043e\u0430\u0442\u0438] LT",nextDay:"[\u041f\u0430\u0433\u043e\u04b3 \u0441\u043e\u0430\u0442\u0438] LT",lastDay:"[\u0414\u0438\u0440\u04ef\u0437 \u0441\u043e\u0430\u0442\u0438] LT",nextWeek:"dddd[\u0438] [\u04b3\u0430\u0444\u0442\u0430\u0438 \u043e\u044f\u043d\u0434\u0430 \u0441\u043e\u0430\u0442\u0438] LT",lastWeek:"dddd[\u0438] [\u04b3\u0430\u0444\u0442\u0430\u0438 \u0433\u0443\u0437\u0430\u0448\u0442\u0430 \u0441\u043e\u0430\u0442\u0438] LT",sameElse:"L"},relativeTime:{future:"\u0431\u0430\u044a\u0434\u0438 %s",past:"%s \u043f\u0435\u0448",s:"\u044f\u043a\u0447\u0430\u043d\u0434 \u0441\u043e\u043d\u0438\u044f",m:"\u044f\u043a \u0434\u0430\u049b\u0438\u049b\u0430",mm:"%d \u0434\u0430\u049b\u0438\u049b\u0430",h:"\u044f\u043a \u0441\u043e\u0430\u0442",hh:"%d \u0441\u043e\u0430\u0442",d:"\u044f\u043a \u0440\u04ef\u0437",dd:"%d \u0440\u04ef\u0437",M:"\u044f\u043a \u043c\u043e\u04b3",MM:"%d \u043c\u043e\u04b3",y:"\u044f\u043a \u0441\u043e\u043b",yy:"%d \u0441\u043e\u043b"},meridiemParse:/\u0448\u0430\u0431|\u0441\u0443\u0431\u04b3|\u0440\u04ef\u0437|\u0431\u0435\u0433\u043e\u04b3/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u0448\u0430\u0431"===a?e<4?e:e+12:"\u0441\u0443\u0431\u04b3"===a?e:"\u0440\u04ef\u0437"===a?11<=e?e:e+12:"\u0431\u0435\u0433\u043e\u04b3"===a?e+12:void 0},meridiem:function(e,a,t){return e<4?"\u0448\u0430\u0431":e<11?"\u0441\u0443\u0431\u04b3":e<16?"\u0440\u04ef\u0437":e<19?"\u0431\u0435\u0433\u043e\u04b3":"\u0448\u0430\u0431"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0443\u043c|\u044e\u043c)/,ordinal:function(e){return e+(_d[e]||_d[e%10]||_d[100<=e?100:null])},week:{dow:1,doy:7}}),l.defineLocale("th",{months:"\u0e21\u0e01\u0e23\u0e32\u0e04\u0e21_\u0e01\u0e38\u0e21\u0e20\u0e32\u0e1e\u0e31\u0e19\u0e18\u0e4c_\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21_\u0e40\u0e21\u0e29\u0e32\u0e22\u0e19_\u0e1e\u0e24\u0e29\u0e20\u0e32\u0e04\u0e21_\u0e21\u0e34\u0e16\u0e38\u0e19\u0e32\u0e22\u0e19_\u0e01\u0e23\u0e01\u0e0e\u0e32\u0e04\u0e21_\u0e2a\u0e34\u0e07\u0e2b\u0e32\u0e04\u0e21_\u0e01\u0e31\u0e19\u0e22\u0e32\u0e22\u0e19_\u0e15\u0e38\u0e25\u0e32\u0e04\u0e21_\u0e1e\u0e24\u0e28\u0e08\u0e34\u0e01\u0e32\u0e22\u0e19_\u0e18\u0e31\u0e19\u0e27\u0e32\u0e04\u0e21".split("_"),monthsShort:"\u0e21.\u0e04._\u0e01.\u0e1e._\u0e21\u0e35.\u0e04._\u0e40\u0e21.\u0e22._\u0e1e.\u0e04._\u0e21\u0e34.\u0e22._\u0e01.\u0e04._\u0e2a.\u0e04._\u0e01.\u0e22._\u0e15.\u0e04._\u0e1e.\u0e22._\u0e18.\u0e04.".split("_"),monthsParseExact:!0,weekdays:"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c_\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c_\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23_\u0e1e\u0e38\u0e18_\u0e1e\u0e24\u0e2b\u0e31\u0e2a\u0e1a\u0e14\u0e35_\u0e28\u0e38\u0e01\u0e23\u0e4c_\u0e40\u0e2a\u0e32\u0e23\u0e4c".split("_"),weekdaysShort:"\u0e2d\u0e32\u0e17\u0e34\u0e15\u0e22\u0e4c_\u0e08\u0e31\u0e19\u0e17\u0e23\u0e4c_\u0e2d\u0e31\u0e07\u0e04\u0e32\u0e23_\u0e1e\u0e38\u0e18_\u0e1e\u0e24\u0e2b\u0e31\u0e2a_\u0e28\u0e38\u0e01\u0e23\u0e4c_\u0e40\u0e2a\u0e32\u0e23\u0e4c".split("_"),weekdaysMin:"\u0e2d\u0e32._\u0e08._\u0e2d._\u0e1e._\u0e1e\u0e24._\u0e28._\u0e2a.".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"H:mm",LTS:"H:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY \u0e40\u0e27\u0e25\u0e32 H:mm",LLLL:"\u0e27\u0e31\u0e19dddd\u0e17\u0e35\u0e48 D MMMM YYYY \u0e40\u0e27\u0e25\u0e32 H:mm"},meridiemParse:/\u0e01\u0e48\u0e2d\u0e19\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07|\u0e2b\u0e25\u0e31\u0e07\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07/,isPM:function(e){return"\u0e2b\u0e25\u0e31\u0e07\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07"===e},meridiem:function(e,a,t){return e<12?"\u0e01\u0e48\u0e2d\u0e19\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07":"\u0e2b\u0e25\u0e31\u0e07\u0e40\u0e17\u0e35\u0e48\u0e22\u0e07"},calendar:{sameDay:"[\u0e27\u0e31\u0e19\u0e19\u0e35\u0e49 \u0e40\u0e27\u0e25\u0e32] LT",nextDay:"[\u0e1e\u0e23\u0e38\u0e48\u0e07\u0e19\u0e35\u0e49 \u0e40\u0e27\u0e25\u0e32] LT",nextWeek:"dddd[\u0e2b\u0e19\u0e49\u0e32 \u0e40\u0e27\u0e25\u0e32] LT",lastDay:"[\u0e40\u0e21\u0e37\u0e48\u0e2d\u0e27\u0e32\u0e19\u0e19\u0e35\u0e49 \u0e40\u0e27\u0e25\u0e32] LT",lastWeek:"[\u0e27\u0e31\u0e19]dddd[\u0e17\u0e35\u0e48\u0e41\u0e25\u0e49\u0e27 \u0e40\u0e27\u0e25\u0e32] LT",sameElse:"L"},relativeTime:{future:"\u0e2d\u0e35\u0e01 %s",past:"%s\u0e17\u0e35\u0e48\u0e41\u0e25\u0e49\u0e27",s:"\u0e44\u0e21\u0e48\u0e01\u0e35\u0e48\u0e27\u0e34\u0e19\u0e32\u0e17\u0e35",ss:"%d \u0e27\u0e34\u0e19\u0e32\u0e17\u0e35",m:"1 \u0e19\u0e32\u0e17\u0e35",mm:"%d \u0e19\u0e32\u0e17\u0e35",h:"1 \u0e0a\u0e31\u0e48\u0e27\u0e42\u0e21\u0e07",hh:"%d \u0e0a\u0e31\u0e48\u0e27\u0e42\u0e21\u0e07",d:"1 \u0e27\u0e31\u0e19",dd:"%d \u0e27\u0e31\u0e19",M:"1 \u0e40\u0e14\u0e37\u0e2d\u0e19",MM:"%d \u0e40\u0e14\u0e37\u0e2d\u0e19",y:"1 \u0e1b\u0e35",yy:"%d \u0e1b\u0e35"}}),l.defineLocale("tl-ph",{months:"Enero_Pebrero_Marso_Abril_Mayo_Hunyo_Hulyo_Agosto_Setyembre_Oktubre_Nobyembre_Disyembre".split("_"),monthsShort:"Ene_Peb_Mar_Abr_May_Hun_Hul_Ago_Set_Okt_Nob_Dis".split("_"),weekdays:"Linggo_Lunes_Martes_Miyerkules_Huwebes_Biyernes_Sabado".split("_"),weekdaysShort:"Lin_Lun_Mar_Miy_Huw_Biy_Sab".split("_"),weekdaysMin:"Li_Lu_Ma_Mi_Hu_Bi_Sab".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"MM/D/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY HH:mm",LLLL:"dddd, MMMM DD, YYYY HH:mm"},calendar:{sameDay:"LT [ngayong araw]",nextDay:"[Bukas ng] LT",nextWeek:"LT [sa susunod na] dddd",lastDay:"LT [kahapon]",lastWeek:"LT [noong nakaraang] dddd",sameElse:"L"},relativeTime:{future:"sa loob ng %s",past:"%s ang nakalipas",s:"ilang segundo",ss:"%d segundo",m:"isang minuto",mm:"%d minuto",h:"isang oras",hh:"%d oras",d:"isang araw",dd:"%d araw",M:"isang buwan",MM:"%d buwan",y:"isang taon",yy:"%d taon"},dayOfMonthOrdinalParse:/\d{1,2}/,ordinal:function(e){return e},week:{dow:1,doy:4}});var id="pagh_wa\u2019_cha\u2019_wej_loS_vagh_jav_Soch_chorgh_Hut".split("_");function od(e,a,t,s){var n=function(e){var a=Math.floor(e%1e3/100),t=Math.floor(e%100/10),s=e%10,n="";0<a&&(n+=id[a]+"vatlh");0<t&&(n+=(""!==n?" ":"")+id[t]+"maH");0<s&&(n+=(""!==n?" ":"")+id[s]);return""===n?"pagh":n}(e);switch(t){case"ss":return n+" lup";case"mm":return n+" tup";case"hh":return n+" rep";case"dd":return n+" jaj";case"MM":return n+" jar";case"yy":return n+" DIS"}}l.defineLocale("tlh",{months:"tera\u2019 jar wa\u2019_tera\u2019 jar cha\u2019_tera\u2019 jar wej_tera\u2019 jar loS_tera\u2019 jar vagh_tera\u2019 jar jav_tera\u2019 jar Soch_tera\u2019 jar chorgh_tera\u2019 jar Hut_tera\u2019 jar wa\u2019maH_tera\u2019 jar wa\u2019maH wa\u2019_tera\u2019 jar wa\u2019maH cha\u2019".split("_"),monthsShort:"jar wa\u2019_jar cha\u2019_jar wej_jar loS_jar vagh_jar jav_jar Soch_jar chorgh_jar Hut_jar wa\u2019maH_jar wa\u2019maH wa\u2019_jar wa\u2019maH cha\u2019".split("_"),monthsParseExact:!0,weekdays:"lojmItjaj_DaSjaj_povjaj_ghItlhjaj_loghjaj_buqjaj_ghInjaj".split("_"),weekdaysShort:"lojmItjaj_DaSjaj_povjaj_ghItlhjaj_loghjaj_buqjaj_ghInjaj".split("_"),weekdaysMin:"lojmItjaj_DaSjaj_povjaj_ghItlhjaj_loghjaj_buqjaj_ghInjaj".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[DaHjaj] LT",nextDay:"[wa\u2019leS] LT",nextWeek:"LLL",lastDay:"[wa\u2019Hu\u2019] LT",lastWeek:"LLL",sameElse:"L"},relativeTime:{future:function(e){var a=e;return a=-1!==e.indexOf("jaj")?a.slice(0,-3)+"leS":-1!==e.indexOf("jar")?a.slice(0,-3)+"waQ":-1!==e.indexOf("DIS")?a.slice(0,-3)+"nem":a+" pIq"},past:function(e){var a=e;return a=-1!==e.indexOf("jaj")?a.slice(0,-3)+"Hu\u2019":-1!==e.indexOf("jar")?a.slice(0,-3)+"wen":-1!==e.indexOf("DIS")?a.slice(0,-3)+"ben":a+" ret"},s:"puS lup",ss:od,m:"wa\u2019 tup",mm:od,h:"wa\u2019 rep",hh:od,d:"wa\u2019 jaj",dd:od,M:"wa\u2019 jar",MM:od,y:"wa\u2019 DIS",yy:od},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}});var md={1:"'inci",5:"'inci",8:"'inci",70:"'inci",80:"'inci",2:"'nci",7:"'nci",20:"'nci",50:"'nci",3:"'\xfcnc\xfc",4:"'\xfcnc\xfc",100:"'\xfcnc\xfc",6:"'nc\u0131",9:"'uncu",10:"'uncu",30:"'uncu",60:"'\u0131nc\u0131",90:"'\u0131nc\u0131"};function ud(e,a,t,s){var n={s:["viensas secunds","'iensas secunds"],ss:[e+" secunds",e+" secunds"],m:["'n m\xedut","'iens m\xedut"],mm:[e+" m\xeduts",e+" m\xeduts"],h:["'n \xfeora","'iensa \xfeora"],hh:[e+" \xfeoras",e+" \xfeoras"],d:["'n ziua","'iensa ziua"],dd:[e+" ziuas",e+" ziuas"],M:["'n mes","'iens mes"],MM:[e+" mesen",e+" mesen"],y:["'n ar","'iens ar"],yy:[e+" ars",e+" ars"]};return s?n[t][0]:a?n[t][0]:n[t][1]}function ld(e,a,t){var s,n;return"m"===t?a?"\u0445\u0432\u0438\u043b\u0438\u043d\u0430":"\u0445\u0432\u0438\u043b\u0438\u043d\u0443":"h"===t?a?"\u0433\u043e\u0434\u0438\u043d\u0430":"\u0433\u043e\u0434\u0438\u043d\u0443":e+" "+(s=+e,n={ss:a?"\u0441\u0435\u043a\u0443\u043d\u0434\u0430_\u0441\u0435\u043a\u0443\u043d\u0434\u0438_\u0441\u0435\u043a\u0443\u043d\u0434":"\u0441\u0435\u043a\u0443\u043d\u0434\u0443_\u0441\u0435\u043a\u0443\u043d\u0434\u0438_\u0441\u0435\u043a\u0443\u043d\u0434",mm:a?"\u0445\u0432\u0438\u043b\u0438\u043d\u0430_\u0445\u0432\u0438\u043b\u0438\u043d\u0438_\u0445\u0432\u0438\u043b\u0438\u043d":"\u0445\u0432\u0438\u043b\u0438\u043d\u0443_\u0445\u0432\u0438\u043b\u0438\u043d\u0438_\u0445\u0432\u0438\u043b\u0438\u043d",hh:a?"\u0433\u043e\u0434\u0438\u043d\u0430_\u0433\u043e\u0434\u0438\u043d\u0438_\u0433\u043e\u0434\u0438\u043d":"\u0433\u043e\u0434\u0438\u043d\u0443_\u0433\u043e\u0434\u0438\u043d\u0438_\u0433\u043e\u0434\u0438\u043d",dd:"\u0434\u0435\u043d\u044c_\u0434\u043d\u0456_\u0434\u043d\u0456\u0432",MM:"\u043c\u0456\u0441\u044f\u0446\u044c_\u043c\u0456\u0441\u044f\u0446\u0456_\u043c\u0456\u0441\u044f\u0446\u0456\u0432",yy:"\u0440\u0456\u043a_\u0440\u043e\u043a\u0438_\u0440\u043e\u043a\u0456\u0432"}[t].split("_"),s%10==1&&s%100!=11?n[0]:2<=s%10&&s%10<=4&&(s%100<10||20<=s%100)?n[1]:n[2])}function Md(e){return function(){return e+"\u043e"+(11===this.hours()?"\u0431":"")+"] LT"}}l.defineLocale("tr",{months:"Ocak_\u015eubat_Mart_Nisan_May\u0131s_Haziran_Temmuz_A\u011fustos_Eyl\xfcl_Ekim_Kas\u0131m_Aral\u0131k".split("_"),monthsShort:"Oca_\u015eub_Mar_Nis_May_Haz_Tem_A\u011fu_Eyl_Eki_Kas_Ara".split("_"),weekdays:"Pazar_Pazartesi_Sal\u0131_\xc7ar\u015famba_Per\u015fembe_Cuma_Cumartesi".split("_"),weekdaysShort:"Paz_Pts_Sal_\xc7ar_Per_Cum_Cts".split("_"),weekdaysMin:"Pz_Pt_Sa_\xc7a_Pe_Cu_Ct".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[bug\xfcn saat] LT",nextDay:"[yar\u0131n saat] LT",nextWeek:"[gelecek] dddd [saat] LT",lastDay:"[d\xfcn] LT",lastWeek:"[ge\xe7en] dddd [saat] LT",sameElse:"L"},relativeTime:{future:"%s sonra",past:"%s \xf6nce",s:"birka\xe7 saniye",ss:"%d saniye",m:"bir dakika",mm:"%d dakika",h:"bir saat",hh:"%d saat",d:"bir g\xfcn",dd:"%d g\xfcn",M:"bir ay",MM:"%d ay",y:"bir y\u0131l",yy:"%d y\u0131l"},ordinal:function(e,a){switch(a){case"d":case"D":case"Do":case"DD":return e;default:if(0===e)return e+"'\u0131nc\u0131";var t=e%10;return e+(md[t]||md[e%100-t]||md[100<=e?100:null])}},week:{dow:1,doy:7}}),l.defineLocale("tzl",{months:"Januar_Fevraglh_Mar\xe7_Avr\xefu_Mai_G\xfcn_Julia_Guscht_Setemvar_Listop\xe4ts_Noemvar_Zecemvar".split("_"),monthsShort:"Jan_Fev_Mar_Avr_Mai_G\xfcn_Jul_Gus_Set_Lis_Noe_Zec".split("_"),weekdays:"S\xfaladi_L\xfane\xe7i_Maitzi_M\xe1rcuri_Xh\xfaadi_Vi\xe9ner\xe7i_S\xe1turi".split("_"),weekdaysShort:"S\xfal_L\xfan_Mai_M\xe1r_Xh\xfa_Vi\xe9_S\xe1t".split("_"),weekdaysMin:"S\xfa_L\xfa_Ma_M\xe1_Xh_Vi_S\xe1".split("_"),longDateFormat:{LT:"HH.mm",LTS:"HH.mm.ss",L:"DD.MM.YYYY",LL:"D. MMMM [dallas] YYYY",LLL:"D. MMMM [dallas] YYYY HH.mm",LLLL:"dddd, [li] D. MMMM [dallas] YYYY HH.mm"},meridiemParse:/d\'o|d\'a/i,isPM:function(e){return"d'o"===e.toLowerCase()},meridiem:function(e,a,t){return 11<e?t?"d'o":"D'O":t?"d'a":"D'A"},calendar:{sameDay:"[oxhi \xe0] LT",nextDay:"[dem\xe0 \xe0] LT",nextWeek:"dddd [\xe0] LT",lastDay:"[ieiri \xe0] LT",lastWeek:"[s\xfcr el] dddd [lasteu \xe0] LT",sameElse:"L"},relativeTime:{future:"osprei %s",past:"ja%s",s:ud,ss:ud,m:ud,mm:ud,h:ud,hh:ud,d:ud,dd:ud,M:ud,MM:ud,y:ud,yy:ud},dayOfMonthOrdinalParse:/\d{1,2}\./,ordinal:"%d.",week:{dow:1,doy:4}}),l.defineLocale("tzm-latn",{months:"innayr_br\u02e4ayr\u02e4_mar\u02e4s\u02e4_ibrir_mayyw_ywnyw_ywlywz_\u0263w\u0161t_\u0161wtanbir_kt\u02e4wbr\u02e4_nwwanbir_dwjnbir".split("_"),monthsShort:"innayr_br\u02e4ayr\u02e4_mar\u02e4s\u02e4_ibrir_mayyw_ywnyw_ywlywz_\u0263w\u0161t_\u0161wtanbir_kt\u02e4wbr\u02e4_nwwanbir_dwjnbir".split("_"),weekdays:"asamas_aynas_asinas_akras_akwas_asimwas_asi\u1e0dyas".split("_"),weekdaysShort:"asamas_aynas_asinas_akras_akwas_asimwas_asi\u1e0dyas".split("_"),weekdaysMin:"asamas_aynas_asinas_akras_akwas_asimwas_asi\u1e0dyas".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[asdkh g] LT",nextDay:"[aska g] LT",nextWeek:"dddd [g] LT",lastDay:"[assant g] LT",lastWeek:"dddd [g] LT",sameElse:"L"},relativeTime:{future:"dadkh s yan %s",past:"yan %s",s:"imik",ss:"%d imik",m:"minu\u1e0d",mm:"%d minu\u1e0d",h:"sa\u025ba",hh:"%d tassa\u025bin",d:"ass",dd:"%d ossan",M:"ayowr",MM:"%d iyyirn",y:"asgas",yy:"%d isgasn"},week:{dow:6,doy:12}}),l.defineLocale("tzm",{months:"\u2d49\u2d4f\u2d4f\u2d30\u2d62\u2d54_\u2d31\u2d55\u2d30\u2d62\u2d55_\u2d4e\u2d30\u2d55\u2d5a_\u2d49\u2d31\u2d54\u2d49\u2d54_\u2d4e\u2d30\u2d62\u2d62\u2d53_\u2d62\u2d53\u2d4f\u2d62\u2d53_\u2d62\u2d53\u2d4d\u2d62\u2d53\u2d63_\u2d56\u2d53\u2d5b\u2d5c_\u2d5b\u2d53\u2d5c\u2d30\u2d4f\u2d31\u2d49\u2d54_\u2d3d\u2d5f\u2d53\u2d31\u2d55_\u2d4f\u2d53\u2d61\u2d30\u2d4f\u2d31\u2d49\u2d54_\u2d37\u2d53\u2d4a\u2d4f\u2d31\u2d49\u2d54".split("_"),monthsShort:"\u2d49\u2d4f\u2d4f\u2d30\u2d62\u2d54_\u2d31\u2d55\u2d30\u2d62\u2d55_\u2d4e\u2d30\u2d55\u2d5a_\u2d49\u2d31\u2d54\u2d49\u2d54_\u2d4e\u2d30\u2d62\u2d62\u2d53_\u2d62\u2d53\u2d4f\u2d62\u2d53_\u2d62\u2d53\u2d4d\u2d62\u2d53\u2d63_\u2d56\u2d53\u2d5b\u2d5c_\u2d5b\u2d53\u2d5c\u2d30\u2d4f\u2d31\u2d49\u2d54_\u2d3d\u2d5f\u2d53\u2d31\u2d55_\u2d4f\u2d53\u2d61\u2d30\u2d4f\u2d31\u2d49\u2d54_\u2d37\u2d53\u2d4a\u2d4f\u2d31\u2d49\u2d54".split("_"),weekdays:"\u2d30\u2d59\u2d30\u2d4e\u2d30\u2d59_\u2d30\u2d62\u2d4f\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d4f\u2d30\u2d59_\u2d30\u2d3d\u2d54\u2d30\u2d59_\u2d30\u2d3d\u2d61\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d4e\u2d61\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d39\u2d62\u2d30\u2d59".split("_"),weekdaysShort:"\u2d30\u2d59\u2d30\u2d4e\u2d30\u2d59_\u2d30\u2d62\u2d4f\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d4f\u2d30\u2d59_\u2d30\u2d3d\u2d54\u2d30\u2d59_\u2d30\u2d3d\u2d61\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d4e\u2d61\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d39\u2d62\u2d30\u2d59".split("_"),weekdaysMin:"\u2d30\u2d59\u2d30\u2d4e\u2d30\u2d59_\u2d30\u2d62\u2d4f\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d4f\u2d30\u2d59_\u2d30\u2d3d\u2d54\u2d30\u2d59_\u2d30\u2d3d\u2d61\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d4e\u2d61\u2d30\u2d59_\u2d30\u2d59\u2d49\u2d39\u2d62\u2d30\u2d59".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd D MMMM YYYY HH:mm"},calendar:{sameDay:"[\u2d30\u2d59\u2d37\u2d45 \u2d34] LT",nextDay:"[\u2d30\u2d59\u2d3d\u2d30 \u2d34] LT",nextWeek:"dddd [\u2d34] LT",lastDay:"[\u2d30\u2d5a\u2d30\u2d4f\u2d5c \u2d34] LT",lastWeek:"dddd [\u2d34] LT",sameElse:"L"},relativeTime:{future:"\u2d37\u2d30\u2d37\u2d45 \u2d59 \u2d62\u2d30\u2d4f %s",past:"\u2d62\u2d30\u2d4f %s",s:"\u2d49\u2d4e\u2d49\u2d3d",ss:"%d \u2d49\u2d4e\u2d49\u2d3d",m:"\u2d4e\u2d49\u2d4f\u2d53\u2d3a",mm:"%d \u2d4e\u2d49\u2d4f\u2d53\u2d3a",h:"\u2d59\u2d30\u2d44\u2d30",hh:"%d \u2d5c\u2d30\u2d59\u2d59\u2d30\u2d44\u2d49\u2d4f",d:"\u2d30\u2d59\u2d59",dd:"%d o\u2d59\u2d59\u2d30\u2d4f",M:"\u2d30\u2d62o\u2d53\u2d54",MM:"%d \u2d49\u2d62\u2d62\u2d49\u2d54\u2d4f",y:"\u2d30\u2d59\u2d33\u2d30\u2d59",yy:"%d \u2d49\u2d59\u2d33\u2d30\u2d59\u2d4f"},week:{dow:6,doy:12}}),l.defineLocale("ug-cn",{months:"\u064a\u0627\u0646\u06cb\u0627\u0631_\u0641\u06d0\u06cb\u0631\u0627\u0644_\u0645\u0627\u0631\u062a_\u0626\u0627\u067e\u0631\u06d0\u0644_\u0645\u0627\u064a_\u0626\u0649\u064a\u06c7\u0646_\u0626\u0649\u064a\u06c7\u0644_\u0626\u0627\u06cb\u063a\u06c7\u0633\u062a_\u0633\u06d0\u0646\u062a\u06d5\u0628\u0649\u0631_\u0626\u06c6\u0643\u062a\u06d5\u0628\u0649\u0631_\u0646\u0648\u064a\u0627\u0628\u0649\u0631_\u062f\u06d0\u0643\u0627\u0628\u0649\u0631".split("_"),monthsShort:"\u064a\u0627\u0646\u06cb\u0627\u0631_\u0641\u06d0\u06cb\u0631\u0627\u0644_\u0645\u0627\u0631\u062a_\u0626\u0627\u067e\u0631\u06d0\u0644_\u0645\u0627\u064a_\u0626\u0649\u064a\u06c7\u0646_\u0626\u0649\u064a\u06c7\u0644_\u0626\u0627\u06cb\u063a\u06c7\u0633\u062a_\u0633\u06d0\u0646\u062a\u06d5\u0628\u0649\u0631_\u0626\u06c6\u0643\u062a\u06d5\u0628\u0649\u0631_\u0646\u0648\u064a\u0627\u0628\u0649\u0631_\u062f\u06d0\u0643\u0627\u0628\u0649\u0631".split("_"),weekdays:"\u064a\u06d5\u0643\u0634\u06d5\u0646\u0628\u06d5_\u062f\u06c8\u0634\u06d5\u0646\u0628\u06d5_\u0633\u06d5\u064a\u0634\u06d5\u0646\u0628\u06d5_\u0686\u0627\u0631\u0634\u06d5\u0646\u0628\u06d5_\u067e\u06d5\u064a\u0634\u06d5\u0646\u0628\u06d5_\u062c\u06c8\u0645\u06d5_\u0634\u06d5\u0646\u0628\u06d5".split("_"),weekdaysShort:"\u064a\u06d5_\u062f\u06c8_\u0633\u06d5_\u0686\u0627_\u067e\u06d5_\u062c\u06c8_\u0634\u06d5".split("_"),weekdaysMin:"\u064a\u06d5_\u062f\u06c8_\u0633\u06d5_\u0686\u0627_\u067e\u06d5_\u062c\u06c8_\u0634\u06d5".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY-MM-DD",LL:"YYYY-\u064a\u0649\u0644\u0649M-\u0626\u0627\u064a\u0646\u0649\u06adD-\u0643\u06c8\u0646\u0649",LLL:"YYYY-\u064a\u0649\u0644\u0649M-\u0626\u0627\u064a\u0646\u0649\u06adD-\u0643\u06c8\u0646\u0649\u060c HH:mm",LLLL:"dddd\u060c YYYY-\u064a\u0649\u0644\u0649M-\u0626\u0627\u064a\u0646\u0649\u06adD-\u0643\u06c8\u0646\u0649\u060c HH:mm"},meridiemParse:/\u064a\u06d0\u0631\u0649\u0645 \u0643\u06d0\u0686\u06d5|\u0633\u06d5\u06be\u06d5\u0631|\u0686\u06c8\u0634\u062a\u0649\u0646 \u0628\u06c7\u0631\u06c7\u0646|\u0686\u06c8\u0634|\u0686\u06c8\u0634\u062a\u0649\u0646 \u0643\u06d0\u064a\u0649\u0646|\u0643\u06d5\u0686/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u064a\u06d0\u0631\u0649\u0645 \u0643\u06d0\u0686\u06d5"===a||"\u0633\u06d5\u06be\u06d5\u0631"===a||"\u0686\u06c8\u0634\u062a\u0649\u0646 \u0628\u06c7\u0631\u06c7\u0646"===a?e:"\u0686\u06c8\u0634\u062a\u0649\u0646 \u0643\u06d0\u064a\u0649\u0646"===a||"\u0643\u06d5\u0686"===a?e+12:11<=e?e:e+12},meridiem:function(e,a,t){var s=100*e+a;return s<600?"\u064a\u06d0\u0631\u0649\u0645 \u0643\u06d0\u0686\u06d5":s<900?"\u0633\u06d5\u06be\u06d5\u0631":s<1130?"\u0686\u06c8\u0634\u062a\u0649\u0646 \u0628\u06c7\u0631\u06c7\u0646":s<1230?"\u0686\u06c8\u0634":s<1800?"\u0686\u06c8\u0634\u062a\u0649\u0646 \u0643\u06d0\u064a\u0649\u0646":"\u0643\u06d5\u0686"},calendar:{sameDay:"[\u0628\u06c8\u06af\u06c8\u0646 \u0633\u0627\u0626\u06d5\u062a] LT",nextDay:"[\u0626\u06d5\u062a\u06d5 \u0633\u0627\u0626\u06d5\u062a] LT",nextWeek:"[\u0643\u06d0\u0644\u06d5\u0631\u0643\u0649] dddd [\u0633\u0627\u0626\u06d5\u062a] LT",lastDay:"[\u062a\u06c6\u0646\u06c8\u06af\u06c8\u0646] LT",lastWeek:"[\u0626\u0627\u0644\u062f\u0649\u0646\u0642\u0649] dddd [\u0633\u0627\u0626\u06d5\u062a] LT",sameElse:"L"},relativeTime:{future:"%s \u0643\u06d0\u064a\u0649\u0646",past:"%s \u0628\u06c7\u0631\u06c7\u0646",s:"\u0646\u06d5\u0686\u0686\u06d5 \u0633\u06d0\u0643\u0648\u0646\u062a",ss:"%d \u0633\u06d0\u0643\u0648\u0646\u062a",m:"\u0628\u0649\u0631 \u0645\u0649\u0646\u06c7\u062a",mm:"%d \u0645\u0649\u0646\u06c7\u062a",h:"\u0628\u0649\u0631 \u0633\u0627\u0626\u06d5\u062a",hh:"%d \u0633\u0627\u0626\u06d5\u062a",d:"\u0628\u0649\u0631 \u0643\u06c8\u0646",dd:"%d \u0643\u06c8\u0646",M:"\u0628\u0649\u0631 \u0626\u0627\u064a",MM:"%d \u0626\u0627\u064a",y:"\u0628\u0649\u0631 \u064a\u0649\u0644",yy:"%d \u064a\u0649\u0644"},dayOfMonthOrdinalParse:/\d{1,2}(-\u0643\u06c8\u0646\u0649|-\u0626\u0627\u064a|-\u06be\u06d5\u067e\u062a\u06d5)/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+"-\u0643\u06c8\u0646\u0649";case"w":case"W":return e+"-\u06be\u06d5\u067e\u062a\u06d5";default:return e}},preparse:function(e){return e.replace(/\u060c/g,",")},postformat:function(e){return e.replace(/,/g,"\u060c")},week:{dow:1,doy:7}}),l.defineLocale("uk",{months:{format:"\u0441\u0456\u0447\u043d\u044f_\u043b\u044e\u0442\u043e\u0433\u043e_\u0431\u0435\u0440\u0435\u0437\u043d\u044f_\u043a\u0432\u0456\u0442\u043d\u044f_\u0442\u0440\u0430\u0432\u043d\u044f_\u0447\u0435\u0440\u0432\u043d\u044f_\u043b\u0438\u043f\u043d\u044f_\u0441\u0435\u0440\u043f\u043d\u044f_\u0432\u0435\u0440\u0435\u0441\u043d\u044f_\u0436\u043e\u0432\u0442\u043d\u044f_\u043b\u0438\u0441\u0442\u043e\u043f\u0430\u0434\u0430_\u0433\u0440\u0443\u0434\u043d\u044f".split("_"),standalone:"\u0441\u0456\u0447\u0435\u043d\u044c_\u043b\u044e\u0442\u0438\u0439_\u0431\u0435\u0440\u0435\u0437\u0435\u043d\u044c_\u043a\u0432\u0456\u0442\u0435\u043d\u044c_\u0442\u0440\u0430\u0432\u0435\u043d\u044c_\u0447\u0435\u0440\u0432\u0435\u043d\u044c_\u043b\u0438\u043f\u0435\u043d\u044c_\u0441\u0435\u0440\u043f\u0435\u043d\u044c_\u0432\u0435\u0440\u0435\u0441\u0435\u043d\u044c_\u0436\u043e\u0432\u0442\u0435\u043d\u044c_\u043b\u0438\u0441\u0442\u043e\u043f\u0430\u0434_\u0433\u0440\u0443\u0434\u0435\u043d\u044c".split("_")},monthsShort:"\u0441\u0456\u0447_\u043b\u044e\u0442_\u0431\u0435\u0440_\u043a\u0432\u0456\u0442_\u0442\u0440\u0430\u0432_\u0447\u0435\u0440\u0432_\u043b\u0438\u043f_\u0441\u0435\u0440\u043f_\u0432\u0435\u0440_\u0436\u043e\u0432\u0442_\u043b\u0438\u0441\u0442_\u0433\u0440\u0443\u0434".split("_"),weekdays:function(e,a){var t={nominative:"\u043d\u0435\u0434\u0456\u043b\u044f_\u043f\u043e\u043d\u0435\u0434\u0456\u043b\u043e\u043a_\u0432\u0456\u0432\u0442\u043e\u0440\u043e\u043a_\u0441\u0435\u0440\u0435\u0434\u0430_\u0447\u0435\u0442\u0432\u0435\u0440_\u043f\u2019\u044f\u0442\u043d\u0438\u0446\u044f_\u0441\u0443\u0431\u043e\u0442\u0430".split("_"),accusative:"\u043d\u0435\u0434\u0456\u043b\u044e_\u043f\u043e\u043d\u0435\u0434\u0456\u043b\u043e\u043a_\u0432\u0456\u0432\u0442\u043e\u0440\u043e\u043a_\u0441\u0435\u0440\u0435\u0434\u0443_\u0447\u0435\u0442\u0432\u0435\u0440_\u043f\u2019\u044f\u0442\u043d\u0438\u0446\u044e_\u0441\u0443\u0431\u043e\u0442\u0443".split("_"),genitive:"\u043d\u0435\u0434\u0456\u043b\u0456_\u043f\u043e\u043d\u0435\u0434\u0456\u043b\u043a\u0430_\u0432\u0456\u0432\u0442\u043e\u0440\u043a\u0430_\u0441\u0435\u0440\u0435\u0434\u0438_\u0447\u0435\u0442\u0432\u0435\u0440\u0433\u0430_\u043f\u2019\u044f\u0442\u043d\u0438\u0446\u0456_\u0441\u0443\u0431\u043e\u0442\u0438".split("_")};return!0===e?t.nominative.slice(1,7).concat(t.nominative.slice(0,1)):e?t[/(\[[\u0412\u0432\u0423\u0443]\]) ?dddd/.test(a)?"accusative":/\[?(?:\u043c\u0438\u043d\u0443\u043b\u043e\u0457|\u043d\u0430\u0441\u0442\u0443\u043f\u043d\u043e\u0457)? ?\] ?dddd/.test(a)?"genitive":"nominative"][e.day()]:t.nominative},weekdaysShort:"\u043d\u0434_\u043f\u043d_\u0432\u0442_\u0441\u0440_\u0447\u0442_\u043f\u0442_\u0441\u0431".split("_"),weekdaysMin:"\u043d\u0434_\u043f\u043d_\u0432\u0442_\u0441\u0440_\u0447\u0442_\u043f\u0442_\u0441\u0431".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY \u0440.",LLL:"D MMMM YYYY \u0440., HH:mm",LLLL:"dddd, D MMMM YYYY \u0440., HH:mm"},calendar:{sameDay:Md("[\u0421\u044c\u043e\u0433\u043e\u0434\u043d\u0456 "),nextDay:Md("[\u0417\u0430\u0432\u0442\u0440\u0430 "),lastDay:Md("[\u0412\u0447\u043e\u0440\u0430 "),nextWeek:Md("[\u0423] dddd ["),lastWeek:function(){switch(this.day()){case 0:case 3:case 5:case 6:return Md("[\u041c\u0438\u043d\u0443\u043b\u043e\u0457] dddd [").call(this);case 1:case 2:case 4:return Md("[\u041c\u0438\u043d\u0443\u043b\u043e\u0433\u043e] dddd [").call(this)}},sameElse:"L"},relativeTime:{future:"\u0437\u0430 %s",past:"%s \u0442\u043e\u043c\u0443",s:"\u0434\u0435\u043a\u0456\u043b\u044c\u043a\u0430 \u0441\u0435\u043a\u0443\u043d\u0434",ss:ld,m:ld,mm:ld,h:"\u0433\u043e\u0434\u0438\u043d\u0443",hh:ld,d:"\u0434\u0435\u043d\u044c",dd:ld,M:"\u043c\u0456\u0441\u044f\u0446\u044c",MM:ld,y:"\u0440\u0456\u043a",yy:ld},meridiemParse:/\u043d\u043e\u0447\u0456|\u0440\u0430\u043d\u043a\u0443|\u0434\u043d\u044f|\u0432\u0435\u0447\u043e\u0440\u0430/,isPM:function(e){return/^(\u0434\u043d\u044f|\u0432\u0435\u0447\u043e\u0440\u0430)$/.test(e)},meridiem:function(e,a,t){return e<4?"\u043d\u043e\u0447\u0456":e<12?"\u0440\u0430\u043d\u043a\u0443":e<17?"\u0434\u043d\u044f":"\u0432\u0435\u0447\u043e\u0440\u0430"},dayOfMonthOrdinalParse:/\d{1,2}-(\u0439|\u0433\u043e)/,ordinal:function(e,a){switch(a){case"M":case"d":case"DDD":case"w":case"W":return e+"-\u0439";case"D":return e+"-\u0433\u043e";default:return e}},week:{dow:1,doy:7}});var hd=["\u062c\u0646\u0648\u0631\u06cc","\u0641\u0631\u0648\u0631\u06cc","\u0645\u0627\u0631\u0686","\u0627\u067e\u0631\u06cc\u0644","\u0645\u0626\u06cc","\u062c\u0648\u0646","\u062c\u0648\u0644\u0627\u0626\u06cc","\u0627\u06af\u0633\u062a","\u0633\u062a\u0645\u0628\u0631","\u0627\u06a9\u062a\u0648\u0628\u0631","\u0646\u0648\u0645\u0628\u0631","\u062f\u0633\u0645\u0628\u0631"],Ld=["\u0627\u062a\u0648\u0627\u0631","\u067e\u06cc\u0631","\u0645\u0646\u06af\u0644","\u0628\u062f\u06be","\u062c\u0645\u0639\u0631\u0627\u062a","\u062c\u0645\u0639\u06c1","\u06c1\u0641\u062a\u06c1"];return l.defineLocale("ur",{months:hd,monthsShort:hd,weekdays:Ld,weekdaysShort:Ld,weekdaysMin:Ld,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd\u060c D MMMM YYYY HH:mm"},meridiemParse:/\u0635\u0628\u062d|\u0634\u0627\u0645/,isPM:function(e){return"\u0634\u0627\u0645"===e},meridiem:function(e,a,t){return e<12?"\u0635\u0628\u062d":"\u0634\u0627\u0645"},calendar:{sameDay:"[\u0622\u062c \u0628\u0648\u0642\u062a] LT",nextDay:"[\u06a9\u0644 \u0628\u0648\u0642\u062a] LT",nextWeek:"dddd [\u0628\u0648\u0642\u062a] LT",lastDay:"[\u06af\u0630\u0634\u062a\u06c1 \u0631\u0648\u0632 \u0628\u0648\u0642\u062a] LT",lastWeek:"[\u06af\u0630\u0634\u062a\u06c1] dddd [\u0628\u0648\u0642\u062a] LT",sameElse:"L"},relativeTime:{future:"%s \u0628\u0639\u062f",past:"%s \u0642\u0628\u0644",s:"\u0686\u0646\u062f \u0633\u06cc\u06a9\u0646\u0688",ss:"%d \u0633\u06cc\u06a9\u0646\u0688",m:"\u0627\u06cc\u06a9 \u0645\u0646\u0679",mm:"%d \u0645\u0646\u0679",h:"\u0627\u06cc\u06a9 \u06af\u06be\u0646\u0679\u06c1",hh:"%d \u06af\u06be\u0646\u0679\u06d2",d:"\u0627\u06cc\u06a9 \u062f\u0646",dd:"%d \u062f\u0646",M:"\u0627\u06cc\u06a9 \u0645\u0627\u06c1",MM:"%d \u0645\u0627\u06c1",y:"\u0627\u06cc\u06a9 \u0633\u0627\u0644",yy:"%d \u0633\u0627\u0644"},preparse:function(e){return e.replace(/\u060c/g,",")},postformat:function(e){return e.replace(/,/g,"\u060c")},week:{dow:1,doy:4}}),l.defineLocale("uz-latn",{months:"Yanvar_Fevral_Mart_Aprel_May_Iyun_Iyul_Avgust_Sentabr_Oktabr_Noyabr_Dekabr".split("_"),monthsShort:"Yan_Fev_Mar_Apr_May_Iyun_Iyul_Avg_Sen_Okt_Noy_Dek".split("_"),weekdays:"Yakshanba_Dushanba_Seshanba_Chorshanba_Payshanba_Juma_Shanba".split("_"),weekdaysShort:"Yak_Dush_Sesh_Chor_Pay_Jum_Shan".split("_"),weekdaysMin:"Ya_Du_Se_Cho_Pa_Ju_Sha".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Bugun soat] LT [da]",nextDay:"[Ertaga] LT [da]",nextWeek:"dddd [kuni soat] LT [da]",lastDay:"[Kecha soat] LT [da]",lastWeek:"[O'tgan] dddd [kuni soat] LT [da]",sameElse:"L"},relativeTime:{future:"Yaqin %s ichida",past:"Bir necha %s oldin",s:"soniya",ss:"%d soniya",m:"bir daqiqa",mm:"%d daqiqa",h:"bir soat",hh:"%d soat",d:"bir kun",dd:"%d kun",M:"bir oy",MM:"%d oy",y:"bir yil",yy:"%d yil"},week:{dow:1,doy:7}}),l.defineLocale("uz",{months:"\u044f\u043d\u0432\u0430\u0440_\u0444\u0435\u0432\u0440\u0430\u043b_\u043c\u0430\u0440\u0442_\u0430\u043f\u0440\u0435\u043b_\u043c\u0430\u0439_\u0438\u044e\u043d_\u0438\u044e\u043b_\u0430\u0432\u0433\u0443\u0441\u0442_\u0441\u0435\u043d\u0442\u044f\u0431\u0440_\u043e\u043a\u0442\u044f\u0431\u0440_\u043d\u043e\u044f\u0431\u0440_\u0434\u0435\u043a\u0430\u0431\u0440".split("_"),monthsShort:"\u044f\u043d\u0432_\u0444\u0435\u0432_\u043c\u0430\u0440_\u0430\u043f\u0440_\u043c\u0430\u0439_\u0438\u044e\u043d_\u0438\u044e\u043b_\u0430\u0432\u0433_\u0441\u0435\u043d_\u043e\u043a\u0442_\u043d\u043e\u044f_\u0434\u0435\u043a".split("_"),weekdays:"\u042f\u043a\u0448\u0430\u043d\u0431\u0430_\u0414\u0443\u0448\u0430\u043d\u0431\u0430_\u0421\u0435\u0448\u0430\u043d\u0431\u0430_\u0427\u043e\u0440\u0448\u0430\u043d\u0431\u0430_\u041f\u0430\u0439\u0448\u0430\u043d\u0431\u0430_\u0416\u0443\u043c\u0430_\u0428\u0430\u043d\u0431\u0430".split("_"),weekdaysShort:"\u042f\u043a\u0448_\u0414\u0443\u0448_\u0421\u0435\u0448_\u0427\u043e\u0440_\u041f\u0430\u0439_\u0416\u0443\u043c_\u0428\u0430\u043d".split("_"),weekdaysMin:"\u042f\u043a_\u0414\u0443_\u0421\u0435_\u0427\u043e_\u041f\u0430_\u0416\u0443_\u0428\u0430".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[\u0411\u0443\u0433\u0443\u043d \u0441\u043e\u0430\u0442] LT [\u0434\u0430]",nextDay:"[\u042d\u0440\u0442\u0430\u0433\u0430] LT [\u0434\u0430]",nextWeek:"dddd [\u043a\u0443\u043d\u0438 \u0441\u043e\u0430\u0442] LT [\u0434\u0430]",lastDay:"[\u041a\u0435\u0447\u0430 \u0441\u043e\u0430\u0442] LT [\u0434\u0430]",lastWeek:"[\u0423\u0442\u0433\u0430\u043d] dddd [\u043a\u0443\u043d\u0438 \u0441\u043e\u0430\u0442] LT [\u0434\u0430]",sameElse:"L"},relativeTime:{future:"\u042f\u043a\u0438\u043d %s \u0438\u0447\u0438\u0434\u0430",past:"\u0411\u0438\u0440 \u043d\u0435\u0447\u0430 %s \u043e\u043b\u0434\u0438\u043d",s:"\u0444\u0443\u0440\u0441\u0430\u0442",ss:"%d \u0444\u0443\u0440\u0441\u0430\u0442",m:"\u0431\u0438\u0440 \u0434\u0430\u043a\u0438\u043a\u0430",mm:"%d \u0434\u0430\u043a\u0438\u043a\u0430",h:"\u0431\u0438\u0440 \u0441\u043e\u0430\u0442",hh:"%d \u0441\u043e\u0430\u0442",d:"\u0431\u0438\u0440 \u043a\u0443\u043d",dd:"%d \u043a\u0443\u043d",M:"\u0431\u0438\u0440 \u043e\u0439",MM:"%d \u043e\u0439",y:"\u0431\u0438\u0440 \u0439\u0438\u043b",yy:"%d \u0439\u0438\u043b"},week:{dow:1,doy:7}}),l.defineLocale("vi",{months:"th\xe1ng 1_th\xe1ng 2_th\xe1ng 3_th\xe1ng 4_th\xe1ng 5_th\xe1ng 6_th\xe1ng 7_th\xe1ng 8_th\xe1ng 9_th\xe1ng 10_th\xe1ng 11_th\xe1ng 12".split("_"),monthsShort:"Th01_Th02_Th03_Th04_Th05_Th06_Th07_Th08_Th09_Th10_Th11_Th12".split("_"),monthsParseExact:!0,weekdays:"ch\u1ee7 nh\u1eadt_th\u1ee9 hai_th\u1ee9 ba_th\u1ee9 t\u01b0_th\u1ee9 n\u0103m_th\u1ee9 s\xe1u_th\u1ee9 b\u1ea3y".split("_"),weekdaysShort:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysMin:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysParseExact:!0,meridiemParse:/sa|ch/i,isPM:function(e){return/^ch$/i.test(e)},meridiem:function(e,a,t){return e<12?t?"sa":"SA":t?"ch":"CH"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM [n\u0103m] YYYY",LLL:"D MMMM [n\u0103m] YYYY HH:mm",LLLL:"dddd, D MMMM [n\u0103m] YYYY HH:mm",l:"DD/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[H\xf4m nay l\xfac] LT",nextDay:"[Ng\xe0y mai l\xfac] LT",nextWeek:"dddd [tu\u1ea7n t\u1edbi l\xfac] LT",lastDay:"[H\xf4m qua l\xfac] LT",lastWeek:"dddd [tu\u1ea7n r\u1ed3i l\xfac] LT",sameElse:"L"},relativeTime:{future:"%s t\u1edbi",past:"%s tr\u01b0\u1edbc",s:"v\xe0i gi\xe2y",ss:"%d gi\xe2y",m:"m\u1ed9t ph\xfat",mm:"%d ph\xfat",h:"m\u1ed9t gi\u1edd",hh:"%d gi\u1edd",d:"m\u1ed9t ng\xe0y",dd:"%d ng\xe0y",M:"m\u1ed9t th\xe1ng",MM:"%d th\xe1ng",y:"m\u1ed9t n\u0103m",yy:"%d n\u0103m"},dayOfMonthOrdinalParse:/\d{1,2}/,ordinal:function(e){return e},week:{dow:1,doy:4}}),l.defineLocale("x-pseudo",{months:"J~\xe1\xf1\xfa\xe1~r\xfd_F~\xe9br\xfa~\xe1r\xfd_~M\xe1rc~h_\xc1p~r\xedl_~M\xe1\xfd_~J\xfa\xf1\xe9~_J\xfal~\xfd_\xc1\xfa~g\xfast~_S\xe9p~t\xe9mb~\xe9r_\xd3~ct\xf3b~\xe9r_\xd1~\xf3v\xe9m~b\xe9r_~D\xe9c\xe9~mb\xe9r".split("_"),monthsShort:"J~\xe1\xf1_~F\xe9b_~M\xe1r_~\xc1pr_~M\xe1\xfd_~J\xfa\xf1_~J\xfal_~\xc1\xfag_~S\xe9p_~\xd3ct_~\xd1\xf3v_~D\xe9c".split("_"),monthsParseExact:!0,weekdays:"S~\xfa\xf1d\xe1~\xfd_M\xf3~\xf1d\xe1\xfd~_T\xfa\xe9~sd\xe1\xfd~_W\xe9d~\xf1\xe9sd~\xe1\xfd_T~h\xfars~d\xe1\xfd_~Fr\xedd~\xe1\xfd_S~\xe1t\xfar~d\xe1\xfd".split("_"),weekdaysShort:"S~\xfa\xf1_~M\xf3\xf1_~T\xfa\xe9_~W\xe9d_~Th\xfa_~Fr\xed_~S\xe1t".split("_"),weekdaysMin:"S~\xfa_M\xf3~_T\xfa_~W\xe9_T~h_Fr~_S\xe1".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[T~\xf3d\xe1~\xfd \xe1t] LT",nextDay:"[T~\xf3m\xf3~rr\xf3~w \xe1t] LT",nextWeek:"dddd [\xe1t] LT",lastDay:"[\xdd~\xe9st~\xe9rd\xe1~\xfd \xe1t] LT",lastWeek:"[L~\xe1st] dddd [\xe1t] LT",sameElse:"L"},relativeTime:{future:"\xed~\xf1 %s",past:"%s \xe1~g\xf3",s:"\xe1 ~f\xe9w ~s\xe9c\xf3~\xf1ds",ss:"%d s~\xe9c\xf3\xf1~ds",m:"\xe1 ~m\xed\xf1~\xfat\xe9",mm:"%d m~\xed\xf1\xfa~t\xe9s",h:"\xe1~\xf1 h\xf3~\xfar",hh:"%d h~\xf3\xfars",d:"\xe1 ~d\xe1\xfd",dd:"%d d~\xe1\xfds",M:"\xe1 ~m\xf3\xf1~th",MM:"%d m~\xf3\xf1t~hs",y:"\xe1 ~\xfd\xe9\xe1r",yy:"%d \xfd~\xe9\xe1rs"},dayOfMonthOrdinalParse:/\d{1,2}(th|st|nd|rd)/,ordinal:function(e){var a=e%10;return e+(1==~~(e%100/10)?"th":1===a?"st":2===a?"nd":3===a?"rd":"th")},week:{dow:1,doy:4}}),l.defineLocale("yo",{months:"S\u1eb9\u0301r\u1eb9\u0301_E\u0300re\u0300le\u0300_\u1eb8r\u1eb9\u0300na\u0300_I\u0300gbe\u0301_E\u0300bibi_O\u0300ku\u0300du_Ag\u1eb9mo_O\u0300gu\u0301n_Owewe_\u1ecc\u0300wa\u0300ra\u0300_Be\u0301lu\u0301_\u1ecc\u0300p\u1eb9\u0300\u0300".split("_"),monthsShort:"S\u1eb9\u0301r_E\u0300rl_\u1eb8rn_I\u0300gb_E\u0300bi_O\u0300ku\u0300_Ag\u1eb9_O\u0300gu\u0301_Owe_\u1ecc\u0300wa\u0300_Be\u0301l_\u1ecc\u0300p\u1eb9\u0300\u0300".split("_"),weekdays:"A\u0300i\u0300ku\u0301_Aje\u0301_I\u0300s\u1eb9\u0301gun_\u1eccj\u1ecd\u0301ru\u0301_\u1eccj\u1ecd\u0301b\u1ecd_\u1eb8ti\u0300_A\u0300ba\u0301m\u1eb9\u0301ta".split("_"),weekdaysShort:"A\u0300i\u0300k_Aje\u0301_I\u0300s\u1eb9\u0301_\u1eccjr_\u1eccjb_\u1eb8ti\u0300_A\u0300ba\u0301".split("_"),weekdaysMin:"A\u0300i\u0300_Aj_I\u0300s_\u1eccr_\u1eccb_\u1eb8t_A\u0300b".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[O\u0300ni\u0300 ni] LT",nextDay:"[\u1ecc\u0300la ni] LT",nextWeek:"dddd [\u1eccs\u1eb9\u0300 to\u0301n'b\u1ecd] [ni] LT",lastDay:"[A\u0300na ni] LT",lastWeek:"dddd [\u1eccs\u1eb9\u0300 to\u0301l\u1ecd\u0301] [ni] LT",sameElse:"L"},relativeTime:{future:"ni\u0301 %s",past:"%s k\u1ecdja\u0301",s:"i\u0300s\u1eb9ju\u0301 aaya\u0301 die",ss:"aaya\u0301 %d",m:"i\u0300s\u1eb9ju\u0301 kan",mm:"i\u0300s\u1eb9ju\u0301 %d",h:"wa\u0301kati kan",hh:"wa\u0301kati %d",d:"\u1ecdj\u1ecd\u0301 kan",dd:"\u1ecdj\u1ecd\u0301 %d",M:"osu\u0300 kan",MM:"osu\u0300 %d",y:"\u1ecddu\u0301n kan",yy:"\u1ecddu\u0301n %d"},dayOfMonthOrdinalParse:/\u1ecdj\u1ecd\u0301\s\d{1,2}/,ordinal:"\u1ecdj\u1ecd\u0301 %d",week:{dow:1,doy:4}}),l.defineLocale("zh-cn",{months:"\u4e00\u6708_\u4e8c\u6708_\u4e09\u6708_\u56db\u6708_\u4e94\u6708_\u516d\u6708_\u4e03\u6708_\u516b\u6708_\u4e5d\u6708_\u5341\u6708_\u5341\u4e00\u6708_\u5341\u4e8c\u6708".split("_"),monthsShort:"1\u6708_2\u6708_3\u6708_4\u6708_5\u6708_6\u6708_7\u6708_8\u6708_9\u6708_10\u6708_11\u6708_12\u6708".split("_"),weekdays:"\u661f\u671f\u65e5_\u661f\u671f\u4e00_\u661f\u671f\u4e8c_\u661f\u671f\u4e09_\u661f\u671f\u56db_\u661f\u671f\u4e94_\u661f\u671f\u516d".split("_"),weekdaysShort:"\u5468\u65e5_\u5468\u4e00_\u5468\u4e8c_\u5468\u4e09_\u5468\u56db_\u5468\u4e94_\u5468\u516d".split("_"),weekdaysMin:"\u65e5_\u4e00_\u4e8c_\u4e09_\u56db_\u4e94_\u516d".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY/MM/DD",LL:"YYYY\u5e74M\u6708D\u65e5",LLL:"YYYY\u5e74M\u6708D\u65e5Ah\u70b9mm\u5206",LLLL:"YYYY\u5e74M\u6708D\u65e5ddddAh\u70b9mm\u5206",l:"YYYY/M/D",ll:"YYYY\u5e74M\u6708D\u65e5",lll:"YYYY\u5e74M\u6708D\u65e5 HH:mm",llll:"YYYY\u5e74M\u6708D\u65e5dddd HH:mm"},meridiemParse:/\u51cc\u6668|\u65e9\u4e0a|\u4e0a\u5348|\u4e2d\u5348|\u4e0b\u5348|\u665a\u4e0a/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u51cc\u6668"===a||"\u65e9\u4e0a"===a||"\u4e0a\u5348"===a?e:"\u4e0b\u5348"===a||"\u665a\u4e0a"===a?e+12:11<=e?e:e+12},meridiem:function(e,a,t){var s=100*e+a;return s<600?"\u51cc\u6668":s<900?"\u65e9\u4e0a":s<1130?"\u4e0a\u5348":s<1230?"\u4e2d\u5348":s<1800?"\u4e0b\u5348":"\u665a\u4e0a"},calendar:{sameDay:"[\u4eca\u5929]LT",nextDay:"[\u660e\u5929]LT",nextWeek:"[\u4e0b]ddddLT",lastDay:"[\u6628\u5929]LT",lastWeek:"[\u4e0a]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(\u65e5|\u6708|\u5468)/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+"\u65e5";case"M":return e+"\u6708";case"w":case"W":return e+"\u5468";default:return e}},relativeTime:{future:"%s\u5185",past:"%s\u524d",s:"\u51e0\u79d2",ss:"%d \u79d2",m:"1 \u5206\u949f",mm:"%d \u5206\u949f",h:"1 \u5c0f\u65f6",hh:"%d \u5c0f\u65f6",d:"1 \u5929",dd:"%d \u5929",M:"1 \u4e2a\u6708",MM:"%d \u4e2a\u6708",y:"1 \u5e74",yy:"%d \u5e74"},week:{dow:1,doy:4}}),l.defineLocale("zh-hk",{months:"\u4e00\u6708_\u4e8c\u6708_\u4e09\u6708_\u56db\u6708_\u4e94\u6708_\u516d\u6708_\u4e03\u6708_\u516b\u6708_\u4e5d\u6708_\u5341\u6708_\u5341\u4e00\u6708_\u5341\u4e8c\u6708".split("_"),monthsShort:"1\u6708_2\u6708_3\u6708_4\u6708_5\u6708_6\u6708_7\u6708_8\u6708_9\u6708_10\u6708_11\u6708_12\u6708".split("_"),weekdays:"\u661f\u671f\u65e5_\u661f\u671f\u4e00_\u661f\u671f\u4e8c_\u661f\u671f\u4e09_\u661f\u671f\u56db_\u661f\u671f\u4e94_\u661f\u671f\u516d".split("_"),weekdaysShort:"\u9031\u65e5_\u9031\u4e00_\u9031\u4e8c_\u9031\u4e09_\u9031\u56db_\u9031\u4e94_\u9031\u516d".split("_"),weekdaysMin:"\u65e5_\u4e00_\u4e8c_\u4e09_\u56db_\u4e94_\u516d".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY/MM/DD",LL:"YYYY\u5e74M\u6708D\u65e5",LLL:"YYYY\u5e74M\u6708D\u65e5 HH:mm",LLLL:"YYYY\u5e74M\u6708D\u65e5dddd HH:mm",l:"YYYY/M/D",ll:"YYYY\u5e74M\u6708D\u65e5",lll:"YYYY\u5e74M\u6708D\u65e5 HH:mm",llll:"YYYY\u5e74M\u6708D\u65e5dddd HH:mm"},meridiemParse:/\u51cc\u6668|\u65e9\u4e0a|\u4e0a\u5348|\u4e2d\u5348|\u4e0b\u5348|\u665a\u4e0a/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u51cc\u6668"===a||"\u65e9\u4e0a"===a||"\u4e0a\u5348"===a?e:"\u4e2d\u5348"===a?11<=e?e:e+12:"\u4e0b\u5348"===a||"\u665a\u4e0a"===a?e+12:void 0},meridiem:function(e,a,t){var s=100*e+a;return s<600?"\u51cc\u6668":s<900?"\u65e9\u4e0a":s<1130?"\u4e0a\u5348":s<1230?"\u4e2d\u5348":s<1800?"\u4e0b\u5348":"\u665a\u4e0a"},calendar:{sameDay:"[\u4eca\u5929]LT",nextDay:"[\u660e\u5929]LT",nextWeek:"[\u4e0b]ddddLT",lastDay:"[\u6628\u5929]LT",lastWeek:"[\u4e0a]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(\u65e5|\u6708|\u9031)/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+"\u65e5";case"M":return e+"\u6708";case"w":case"W":return e+"\u9031";default:return e}},relativeTime:{future:"%s\u5167",past:"%s\u524d",s:"\u5e7e\u79d2",ss:"%d \u79d2",m:"1 \u5206\u9418",mm:"%d \u5206\u9418",h:"1 \u5c0f\u6642",hh:"%d \u5c0f\u6642",d:"1 \u5929",dd:"%d \u5929",M:"1 \u500b\u6708",MM:"%d \u500b\u6708",y:"1 \u5e74",yy:"%d \u5e74"}}),l.defineLocale("zh-tw",{months:"\u4e00\u6708_\u4e8c\u6708_\u4e09\u6708_\u56db\u6708_\u4e94\u6708_\u516d\u6708_\u4e03\u6708_\u516b\u6708_\u4e5d\u6708_\u5341\u6708_\u5341\u4e00\u6708_\u5341\u4e8c\u6708".split("_"),monthsShort:"1\u6708_2\u6708_3\u6708_4\u6708_5\u6708_6\u6708_7\u6708_8\u6708_9\u6708_10\u6708_11\u6708_12\u6708".split("_"),weekdays:"\u661f\u671f\u65e5_\u661f\u671f\u4e00_\u661f\u671f\u4e8c_\u661f\u671f\u4e09_\u661f\u671f\u56db_\u661f\u671f\u4e94_\u661f\u671f\u516d".split("_"),weekdaysShort:"\u9031\u65e5_\u9031\u4e00_\u9031\u4e8c_\u9031\u4e09_\u9031\u56db_\u9031\u4e94_\u9031\u516d".split("_"),weekdaysMin:"\u65e5_\u4e00_\u4e8c_\u4e09_\u56db_\u4e94_\u516d".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY/MM/DD",LL:"YYYY\u5e74M\u6708D\u65e5",LLL:"YYYY\u5e74M\u6708D\u65e5 HH:mm",LLLL:"YYYY\u5e74M\u6708D\u65e5dddd HH:mm",l:"YYYY/M/D",ll:"YYYY\u5e74M\u6708D\u65e5",lll:"YYYY\u5e74M\u6708D\u65e5 HH:mm",llll:"YYYY\u5e74M\u6708D\u65e5dddd HH:mm"},meridiemParse:/\u51cc\u6668|\u65e9\u4e0a|\u4e0a\u5348|\u4e2d\u5348|\u4e0b\u5348|\u665a\u4e0a/,meridiemHour:function(e,a){return 12===e&&(e=0),"\u51cc\u6668"===a||"\u65e9\u4e0a"===a||"\u4e0a\u5348"===a?e:"\u4e2d\u5348"===a?11<=e?e:e+12:"\u4e0b\u5348"===a||"\u665a\u4e0a"===a?e+12:void 0},meridiem:function(e,a,t){var s=100*e+a;return s<600?"\u51cc\u6668":s<900?"\u65e9\u4e0a":s<1130?"\u4e0a\u5348":s<1230?"\u4e2d\u5348":s<1800?"\u4e0b\u5348":"\u665a\u4e0a"},calendar:{sameDay:"[\u4eca\u5929] LT",nextDay:"[\u660e\u5929] LT",nextWeek:"[\u4e0b]dddd LT",lastDay:"[\u6628\u5929] LT",lastWeek:"[\u4e0a]dddd LT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(\u65e5|\u6708|\u9031)/,ordinal:function(e,a){switch(a){case"d":case"D":case"DDD":return e+"\u65e5";case"M":return e+"\u6708";case"w":case"W":return e+"\u9031";default:return e}},relativeTime:{future:"%s\u5167",past:"%s\u524d",s:"\u5e7e\u79d2",ss:"%d \u79d2",m:"1 \u5206\u9418",mm:"%d \u5206\u9418",h:"1 \u5c0f\u6642",hh:"%d \u5c0f\u6642",d:"1 \u5929",dd:"%d \u5929",M:"1 \u500b\u6708",MM:"%d \u500b\u6708",y:"1 \u5e74",yy:"%d \u5e74"}}),l.locale("en"),l});
 "use strict";
-function hexToRgb(hex){
-    var bigint = parseInt(hex, 16);
-    return [
-        (bigint >> 16) & 255,
-        (bigint >> 8) & 255,
-        bigint & 255
-    ];
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory();
+  } else {
+    // Browser globals (root is window)
+    window.propagating = factory();
+  }
+}(function () {
+  var _firstTarget = null; // singleton, will contain the target element where the touch event started
+  /**
+   * Extend an Hammer.js instance with event propagation.
+   *
+   * Features:
+   * - Events emitted by hammer will propagate in order from child to parent
+   *   elements.
+   * - Events are extended with a function `event.stopPropagation()` to stop
+   *   propagation to parent elements.
+   * - An option `preventDefault` to stop all default browser behavior.
+   *
+   * Usage:
+   *   var hammer = propagatingHammer(new Hammer(element));
+   *   var hammer = propagatingHammer(new Hammer(element), {preventDefault: true});
+   *
+   * @param {Hammer.Manager} hammer   An hammer instance.
+   * @param {Object} [options]        Available options:
+   *                                  - `preventDefault: true | false | 'mouse' | 'touch' | 'pen'`.
+   *                                    Enforce preventing the default browser behavior.
+   *                                    Cannot be set to `false`.
+   * @return {Hammer.Manager} Returns the same hammer instance with extended
+   *                          functionality
+   */
+  return function propagating(hammer, options) {
+    var _options = options || {
+      preventDefault: false
+    };
+    if (hammer.Manager) {
+      // This looks like the Hammer constructor.
+      // Overload the constructors with our own.
+      var Hammer = hammer;
+      var PropagatingHammer = function(element, options) {
+        var o = Object.create(_options);
+        if (options) Hammer.assign(o, options);
+        return propagating(new Hammer(element, o), o);
+      };
+      Hammer.assign(PropagatingHammer, Hammer);
+      PropagatingHammer.Manager = function (element, options) {
+        var o = Object.create(_options);
+        if (options) Hammer.assign(o, options);
+        return propagating(new Hammer.Manager(element, o), o);
+      };
+      return PropagatingHammer;
+    }
+    // create a wrapper object which will override the functions
+    // `on`, `off`, `destroy`, and `emit` of the hammer instance
+    var wrapper = Object.create(hammer);
+    // attach to DOM element
+    var element = hammer.element;
+    if(!element.hammer) element.hammer = [];
+    element.hammer.push(wrapper);
+    // register an event to catch the start of a gesture and store the
+    // target in a singleton
+    hammer.on('hammer.input', function (event) {
+      if (_options.preventDefault === true || (_options.preventDefault === event.pointerType)) {
+        event.preventDefault();
+      }
+      if (event.isFirst) {
+        _firstTarget = event.target;
+      }
+    });
+    /** @type {Object.<String, Array.<function>>} */
+    wrapper._handlers = {};
+    /**
+     * Register a handler for one or multiple events
+     * @param {String} events    A space separated string with events
+     * @param {function} handler A callback function, called as handler(event)
+     * @returns {Hammer.Manager} Returns the hammer instance
+     */
+    wrapper.on = function (events, handler) {
+      // register the handler
+      split(events).forEach(function (event) {
+        var _handlers = wrapper._handlers[event];
+        if (!_handlers) {
+          wrapper._handlers[event] = _handlers = [];
+          // register the static, propagated handler
+          hammer.on(event, propagatedHandler);
+        }
+        _handlers.push(handler);
+      });
+      return wrapper;
+    };
+    /**
+     * Unregister a handler for one or multiple events
+     * @param {String} events      A space separated string with events
+     * @param {function} [handler] Optional. The registered handler. If not
+     *                             provided, all handlers for given events
+     *                             are removed.
+     * @returns {Hammer.Manager}   Returns the hammer instance
+     */
+    wrapper.off = function (events, handler) {
+      // unregister the handler
+      split(events).forEach(function (event) {
+        var _handlers = wrapper._handlers[event];
+        if (_handlers) {
+          _handlers = handler ? _handlers.filter(function (h) {
+            return h !== handler;
+          }) : [];
+          if (_handlers.length > 0) {
+            wrapper._handlers[event] = _handlers;
+          }
+          else {
+            // remove static, propagated handler
+            hammer.off(event, propagatedHandler);
+            delete wrapper._handlers[event];
+          }
+        }
+      });
+      return wrapper;
+    };
+    /**
+     * Emit to the event listeners
+     * @param {string} eventType
+     * @param {Event} event
+     */
+    wrapper.emit = function(eventType, event) {
+      _firstTarget = event.target;
+      hammer.emit(eventType, event);
+    };
+    wrapper.destroy = function () {
+      // Detach from DOM element
+      var hammers = hammer.element.hammer;
+      var idx = hammers.indexOf(wrapper);
+      if(idx !== -1) hammers.splice(idx,1);
+      if(!hammers.length) delete hammer.element.hammer;
+      // clear all handlers
+      wrapper._handlers = {};
+      // call original hammer destroy
+      hammer.destroy();
+    };
+    // split a string with space separated words
+    function split(events) {
+      return events.match(/[^ ]+/g);
+    }
+    /**
+     * A static event handler, applying event propagation.
+     * @param {Object} event
+     */
+    function propagatedHandler(event) {
+      // let only a single hammer instance handle this event
+      if (event.type !== 'hammer.input') {
+        // it is possible that the same srcEvent is used with multiple hammer events,
+        // we keep track on which events are handled in an object _handled
+        if (!event.srcEvent._handled) {
+          event.srcEvent._handled = {};
+        }
+        if (event.srcEvent._handled[event.type]) {
+          return;
+        }
+        else {
+          event.srcEvent._handled[event.type] = true;
+        }
+      }
+      // attach a stopPropagation function to the event
+      var stopped = false;
+      event.stopPropagation = function () {
+        stopped = true;
+      };
+      //wrap the srcEvent's stopPropagation to also stop hammer propagation:
+      var srcStop = event.srcEvent.stopPropagation.bind(event.srcEvent);
+      if(typeof srcStop == "function") {
+        event.srcEvent.stopPropagation = function(){
+          srcStop();
+          event.stopPropagation();
+        }
+      }
+      // attach firstTarget property to the event
+      event.firstTarget = _firstTarget;
+      // propagate over all elements (until stopped)
+      var elem = _firstTarget;
+      while (elem && !stopped) {
+        var elemHammer = elem.hammer;
+        if(elemHammer){
+          var _handlers;
+          for(var k = 0; k < elemHammer.length; k++){
+            _handlers = elemHammer[k]._handlers[event.type];
+            if(_handlers) for (var i = 0; i < _handlers.length && !stopped; i++) {
+              _handlers[i](event);
+            }
+          }
+        }
+        elem = elem.parentNode;
+      }
+    }
+    return wrapper;
+  };
+}));
+
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.ResizeObserver = factory());
+}(this, (function () { ;
+    /**
+     * A collection of shims that provide minimal functionality of the ES6 collections.
+     *
+     * These implementations are not meant to be used outside of the ResizeObserver
+     * modules as they cover only a limited range of use cases.
+     */
+    /* eslint-disable require-jsdoc, valid-jsdoc */
+    var MapShim = (function () {
+        if (typeof Map !== 'undefined') {
+            return Map;
+        }
+        /**
+         * Returns index in provided array that matches the specified key.
+         *
+         * @param {Array<Array>} arr
+         * @param {*} key
+         * @returns {number}
+         */
+        function getIndex(arr, key) {
+            var result = -1;
+            arr.some(function (entry, index) {
+                if (entry[0] === key) {
+                    result = index;
+                    return true;
+                }
+                return false;
+            });
+            return result;
+        }
+        return /** @class */ (function () {
+            function class_1() {
+                this.__entries__ = [];
+            }
+            Object.defineProperty(class_1.prototype, "size", {
+                /**
+                 * @returns {boolean}
+                 */
+                get: function () {
+                    return this.__entries__.length;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * @param {*} key
+             * @returns {*}
+             */
+            class_1.prototype.get = function (key) {
+                var index = getIndex(this.__entries__, key);
+                var entry = this.__entries__[index];
+                return entry && entry[1];
+            };
+            /**
+             * @param {*} key
+             * @param {*} value
+             * @returns {void}
+             */
+            class_1.prototype.set = function (key, value) {
+                var index = getIndex(this.__entries__, key);
+                if (~index) {
+                    this.__entries__[index][1] = value;
+                }
+                else {
+                    this.__entries__.push([key, value]);
+                }
+            };
+            /**
+             * @param {*} key
+             * @returns {void}
+             */
+            class_1.prototype.delete = function (key) {
+                var entries = this.__entries__;
+                var index = getIndex(entries, key);
+                if (~index) {
+                    entries.splice(index, 1);
+                }
+            };
+            /**
+             * @param {*} key
+             * @returns {void}
+             */
+            class_1.prototype.has = function (key) {
+                return !!~getIndex(this.__entries__, key);
+            };
+            /**
+             * @returns {void}
+             */
+            class_1.prototype.clear = function () {
+                this.__entries__.splice(0);
+            };
+            /**
+             * @param {Function} callback
+             * @param {*} [ctx=null]
+             * @returns {void}
+             */
+            class_1.prototype.forEach = function (callback, ctx) {
+                if (ctx === void 0) { ctx = null; }
+                for (var _i = 0, _a = this.__entries__; _i < _a.length; _i++) {
+                    var entry = _a[_i];
+                    callback.call(ctx, entry[1], entry[0]);
+                }
+            };
+            return class_1;
+        }());
+    })();
+    /**
+     * Detects whether window and document objects are available in current environment.
+     */
+    var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined' && window.document === document;
+    // Returns global object of a current environment.
+    var global$1 = (function () {
+        if (typeof global !== 'undefined' && global.Math === Math) {
+            return global;
+        }
+        if (typeof self !== 'undefined' && self.Math === Math) {
+            return self;
+        }
+        if (typeof window !== 'undefined' && window.Math === Math) {
+            return window;
+        }
+        // eslint-disable-next-line no-new-func
+        return Function('return this')();
+    })();
+    /**
+     * A shim for the requestAnimationFrame which falls back to the setTimeout if
+     * first one is not supported.
+     *
+     * @returns {number} Requests' identifier.
+     */
+    var requestAnimationFrame$1 = (function () {
+        if (typeof requestAnimationFrame === 'function') {
+            // It's required to use a bounded function because IE sometimes throws
+            // an "Invalid calling object" error if rAF is invoked without the global
+            // object on the left hand side.
+            return requestAnimationFrame.bind(global$1);
+        }
+        return function (callback) { return setTimeout(function () { return callback(Date.now()); }, 1000 / 60); };
+    })();
+    // Defines minimum timeout before adding a trailing call.
+    var trailingTimeout = 2;
+    /**
+     * Creates a wrapper function which ensures that provided callback will be
+     * invoked only once during the specified delay period.
+     *
+     * @param {Function} callback - Function to be invoked after the delay period.
+     * @param {number} delay - Delay after which to invoke callback.
+     * @returns {Function}
+     */
+    function throttle (callback, delay) {
+        var leadingCall = false, trailingCall = false, lastCallTime = 0;
+        /**
+         * Invokes the original callback function and schedules new invocation if
+         * the "proxy" was called during current request.
+         *
+         * @returns {void}
+         */
+        function resolvePending() {
+            if (leadingCall) {
+                leadingCall = false;
+                callback();
+            }
+            if (trailingCall) {
+                proxy();
+            }
+        }
+        /**
+         * Callback invoked after the specified delay. It will further postpone
+         * invocation of the original function delegating it to the
+         * requestAnimationFrame.
+         *
+         * @returns {void}
+         */
+        function timeoutCallback() {
+            requestAnimationFrame$1(resolvePending);
+        }
+        /**
+         * Schedules invocation of the original function.
+         *
+         * @returns {void}
+         */
+        function proxy() {
+            var timeStamp = Date.now();
+            if (leadingCall) {
+                // Reject immediately following calls.
+                if (timeStamp - lastCallTime < trailingTimeout) {
+                    return;
+                }
+                // Schedule new call to be in invoked when the pending one is resolved.
+                // This is important for "transitions" which never actually start
+                // immediately so there is a chance that we might miss one if change
+                // happens amids the pending invocation.
+                trailingCall = true;
+            }
+            else {
+                leadingCall = true;
+                trailingCall = false;
+                setTimeout(timeoutCallback, delay);
+            }
+            lastCallTime = timeStamp;
+        }
+        return proxy;
+    }
+    // Minimum delay before invoking the update of observers.
+    var REFRESH_DELAY = 20;
+    // A list of substrings of CSS properties used to find transition events that
+    // might affect dimensions of observed elements.
+    var transitionKeys = ['top', 'right', 'bottom', 'left', 'width', 'height', 'size', 'weight'];
+    // Check if MutationObserver is available.
+    var mutationObserverSupported = typeof MutationObserver !== 'undefined';
+    /**
+     * Singleton controller class which handles updates of ResizeObserver instances.
+     */
+    var ResizeObserverController = /** @class */ (function () {
+        /**
+         * Creates a new instance of ResizeObserverController.
+         *
+         * @private
+         */
+        function ResizeObserverController() {
+            /**
+             * Indicates whether DOM listeners have been added.
+             *
+             * @private {boolean}
+             */
+            this.connected_ = false;
+            /**
+             * Tells that controller has subscribed for Mutation Events.
+             *
+             * @private {boolean}
+             */
+            this.mutationEventsAdded_ = false;
+            /**
+             * Keeps reference to the instance of MutationObserver.
+             *
+             * @private {MutationObserver}
+             */
+            this.mutationsObserver_ = null;
+            /**
+             * A list of connected observers.
+             *
+             * @private {Array<ResizeObserverSPI>}
+             */
+            this.observers_ = [];
+            this.onTransitionEnd_ = this.onTransitionEnd_.bind(this);
+            this.refresh = throttle(this.refresh.bind(this), REFRESH_DELAY);
+        }
+        /**
+         * Adds observer to observers list.
+         *
+         * @param {ResizeObserverSPI} observer - Observer to be added.
+         * @returns {void}
+         */
+        ResizeObserverController.prototype.addObserver = function (observer) {
+            if (!~this.observers_.indexOf(observer)) {
+                this.observers_.push(observer);
+            }
+            // Add listeners if they haven't been added yet.
+            if (!this.connected_) {
+                this.connect_();
+            }
+        };
+        /**
+         * Removes observer from observers list.
+         *
+         * @param {ResizeObserverSPI} observer - Observer to be removed.
+         * @returns {void}
+         */
+        ResizeObserverController.prototype.removeObserver = function (observer) {
+            var observers = this.observers_;
+            var index = observers.indexOf(observer);
+            // Remove observer if it's present in registry.
+            if (~index) {
+                observers.splice(index, 1);
+            }
+            // Remove listeners if controller has no connected observers.
+            if (!observers.length && this.connected_) {
+                this.disconnect_();
+            }
+        };
+        /**
+         * Invokes the update of observers. It will continue running updates insofar
+         * it detects changes.
+         *
+         * @returns {void}
+         */
+        ResizeObserverController.prototype.refresh = function () {
+            var changesDetected = this.updateObservers_();
+            // Continue running updates if changes have been detected as there might
+            // be future ones caused by CSS transitions.
+            if (changesDetected) {
+                this.refresh();
+            }
+        };
+        /**
+         * Updates every observer from observers list and notifies them of queued
+         * entries.
+         *
+         * @private
+         * @returns {boolean} Returns "true" if any observer has detected changes in
+         *      dimensions of it's elements.
+         */
+        ResizeObserverController.prototype.updateObservers_ = function () {
+            // Collect observers that have active observations.
+            var activeObservers = this.observers_.filter(function (observer) {
+                return observer.gatherActive(), observer.hasActive();
+            });
+            // Deliver notifications in a separate cycle in order to avoid any
+            // collisions between observers, e.g. when multiple instances of
+            // ResizeObserver are tracking the same element and the callback of one
+            // of them changes content dimensions of the observed target. Sometimes
+            // this may result in notifications being blocked for the rest of observers.
+            activeObservers.forEach(function (observer) { return observer.broadcastActive(); });
+            return activeObservers.length > 0;
+        };
+        /**
+         * Initializes DOM listeners.
+         *
+         * @private
+         * @returns {void}
+         */
+        ResizeObserverController.prototype.connect_ = function () {
+            // Do nothing if running in a non-browser environment or if listeners
+            // have been already added.
+            if (!isBrowser || this.connected_) {
+                return;
+            }
+            // Subscription to the "Transitionend" event is used as a workaround for
+            // delayed transitions. This way it's possible to capture at least the
+            // final state of an element.
+            document.addEventListener('transitionend', this.onTransitionEnd_);
+            window.addEventListener('resize', this.refresh);
+            if (mutationObserverSupported) {
+                this.mutationsObserver_ = new MutationObserver(this.refresh);
+                this.mutationsObserver_.observe(document, {
+                    attributes: true,
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+            }
+            else {
+                document.addEventListener('DOMSubtreeModified', this.refresh);
+                this.mutationEventsAdded_ = true;
+            }
+            this.connected_ = true;
+        };
+        /**
+         * Removes DOM listeners.
+         *
+         * @private
+         * @returns {void}
+         */
+        ResizeObserverController.prototype.disconnect_ = function () {
+            // Do nothing if running in a non-browser environment or if listeners
+            // have been already removed.
+            if (!isBrowser || !this.connected_) {
+                return;
+            }
+            document.removeEventListener('transitionend', this.onTransitionEnd_);
+            window.removeEventListener('resize', this.refresh);
+            if (this.mutationsObserver_) {
+                this.mutationsObserver_.disconnect();
+            }
+            if (this.mutationEventsAdded_) {
+                document.removeEventListener('DOMSubtreeModified', this.refresh);
+            }
+            this.mutationsObserver_ = null;
+            this.mutationEventsAdded_ = false;
+            this.connected_ = false;
+        };
+        /**
+         * "Transitionend" event handler.
+         *
+         * @private
+         * @param {TransitionEvent} event
+         * @returns {void}
+         */
+        ResizeObserverController.prototype.onTransitionEnd_ = function (_a) {
+            var _b = _a.propertyName, propertyName = _b === void 0 ? '' : _b;
+            // Detect whether transition may affect dimensions of an element.
+            var isReflowProperty = transitionKeys.some(function (key) {
+                return !!~propertyName.indexOf(key);
+            });
+            if (isReflowProperty) {
+                this.refresh();
+            }
+        };
+        /**
+         * Returns instance of the ResizeObserverController.
+         *
+         * @returns {ResizeObserverController}
+         */
+        ResizeObserverController.getInstance = function () {
+            if (!this.instance_) {
+                this.instance_ = new ResizeObserverController();
+            }
+            return this.instance_;
+        };
+        /**
+         * Holds reference to the controller's instance.
+         *
+         * @private {ResizeObserverController}
+         */
+        ResizeObserverController.instance_ = null;
+        return ResizeObserverController;
+    }());
+    /**
+     * Defines non-writable/enumerable properties of the provided target object.
+     *
+     * @param {Object} target - Object for which to define properties.
+     * @param {Object} props - Properties to be defined.
+     * @returns {Object} Target object.
+     */
+    var defineConfigurable = (function (target, props) {
+        for (var _i = 0, _a = Object.keys(props); _i < _a.length; _i++) {
+            var key = _a[_i];
+            Object.defineProperty(target, key, {
+                value: props[key],
+                enumerable: false,
+                writable: false,
+                configurable: true
+            });
+        }
+        return target;
+    });
+    /**
+     * Returns the global object associated with provided element.
+     *
+     * @param {Object} target
+     * @returns {Object}
+     */
+    var getWindowOf = (function (target) {
+        // Assume that the element is an instance of Node, which means that it
+        // has the "ownerDocument" property from which we can retrieve a
+        // corresponding global object.
+        var ownerGlobal = target && target.ownerDocument && target.ownerDocument.defaultView;
+        // Return the local global object if it's not possible extract one from
+        // provided element.
+        return ownerGlobal || global$1;
+    });
+    // Placeholder of an empty content rectangle.
+    var emptyRect = createRectInit(0, 0, 0, 0);
+    /**
+     * Converts provided string to a number.
+     *
+     * @param {number|string} value
+     * @returns {number}
+     */
+    function toFloat(value) {
+        return parseFloat(value) || 0;
+    }
+    /**
+     * Extracts borders size from provided styles.
+     *
+     * @param {CSSStyleDeclaration} styles
+     * @param {...string} positions - Borders positions (top, right, ...)
+     * @returns {number}
+     */
+    function getBordersSize(styles) {
+        var positions = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            positions[_i - 1] = arguments[_i];
+        }
+        return positions.reduce(function (size, position) {
+            var value = styles['border-' + position + '-width'];
+            return size + toFloat(value);
+        }, 0);
+    }
+    /**
+     * Extracts paddings sizes from provided styles.
+     *
+     * @param {CSSStyleDeclaration} styles
+     * @returns {Object} Paddings box.
+     */
+    function getPaddings(styles) {
+        var positions = ['top', 'right', 'bottom', 'left'];
+        var paddings = {};
+        for (var _i = 0, positions_1 = positions; _i < positions_1.length; _i++) {
+            var position = positions_1[_i];
+            var value = styles['padding-' + position];
+            paddings[position] = toFloat(value);
+        }
+        return paddings;
+    }
+    /**
+     * Calculates content rectangle of provided SVG element.
+     *
+     * @param {SVGGraphicsElement} target - Element content rectangle of which needs
+     *      to be calculated.
+     * @returns {DOMRectInit}
+     */
+    function getSVGContentRect(target) {
+        var bbox = target.getBBox();
+        return createRectInit(0, 0, bbox.width, bbox.height);
+    }
+    /**
+     * Calculates content rectangle of provided HTMLElement.
+     *
+     * @param {HTMLElement} target - Element for which to calculate the content rectangle.
+     * @returns {DOMRectInit}
+     */
+    function getHTMLElementContentRect(target) {
+        // Client width & height properties can't be
+        // used exclusively as they provide rounded values.
+        var clientWidth = target.clientWidth, clientHeight = target.clientHeight;
+        // By this condition we can catch all non-replaced inline, hidden and
+        // detached elements. Though elements with width & height properties less
+        // than 0.5 will be discarded as well.
+        //
+        // Without it we would need to implement separate methods for each of
+        // those cases and it's not possible to perform a precise and performance
+        // effective test for hidden elements. E.g. even jQuery's ':visible' filter
+        // gives wrong results for elements with width & height less than 0.5.
+        if (!clientWidth && !clientHeight) {
+            return emptyRect;
+        }
+        var styles = getWindowOf(target).getComputedStyle(target);
+        var paddings = getPaddings(styles);
+        var horizPad = paddings.left + paddings.right;
+        var vertPad = paddings.top + paddings.bottom;
+        // Computed styles of width & height are being used because they are the
+        // only dimensions available to JS that contain non-rounded values. It could
+        // be possible to utilize the getBoundingClientRect if only it's data wasn't
+        // affected by CSS transformations let alone paddings, borders and scroll bars.
+        var width = toFloat(styles.width), height = toFloat(styles.height);
+        // Width & height include paddings and borders when the 'border-box' box
+        // model is applied (except for IE).
+        if (styles.boxSizing === 'border-box') {
+            // Following conditions are required to handle Internet Explorer which
+            // doesn't include paddings and borders to computed CSS dimensions.
+            //
+            // We can say that if CSS dimensions + paddings are equal to the "client"
+            // properties then it's either IE, and thus we don't need to subtract
+            // anything, or an element merely doesn't have paddings/borders styles.
+            if (Math.round(width + horizPad) !== clientWidth) {
+                width -= getBordersSize(styles, 'left', 'right') + horizPad;
+            }
+            if (Math.round(height + vertPad) !== clientHeight) {
+                height -= getBordersSize(styles, 'top', 'bottom') + vertPad;
+            }
+        }
+        // Following steps can't be applied to the document's root element as its
+        // client[Width/Height] properties represent viewport area of the window.
+        // Besides, it's as well not necessary as the <html> itself neither has
+        // rendered scroll bars nor it can be clipped.
+        if (!isDocumentElement(target)) {
+            // In some browsers (only in Firefox, actually) CSS width & height
+            // include scroll bars size which can be removed at this step as scroll
+            // bars are the only difference between rounded dimensions + paddings
+            // and "client" properties, though that is not always true in Chrome.
+            var vertScrollbar = Math.round(width + horizPad) - clientWidth;
+            var horizScrollbar = Math.round(height + vertPad) - clientHeight;
+            // Chrome has a rather weird rounding of "client" properties.
+            // E.g. for an element with content width of 314.2px it sometimes gives
+            // the client width of 315px and for the width of 314.7px it may give
+            // 314px. And it doesn't happen all the time. So just ignore this delta
+            // as a non-relevant.
+            if (Math.abs(vertScrollbar) !== 1) {
+                width -= vertScrollbar;
+            }
+            if (Math.abs(horizScrollbar) !== 1) {
+                height -= horizScrollbar;
+            }
+        }
+        return createRectInit(paddings.left, paddings.top, width, height);
+    }
+    /**
+     * Checks whether provided element is an instance of the SVGGraphicsElement.
+     *
+     * @param {Element} target - Element to be checked.
+     * @returns {boolean}
+     */
+    var isSVGGraphicsElement = (function () {
+        // Some browsers, namely IE and Edge, don't have the SVGGraphicsElement
+        // interface.
+        if (typeof SVGGraphicsElement !== 'undefined') {
+            return function (target) { return target instanceof getWindowOf(target).SVGGraphicsElement; };
+        }
+        // If it's so, then check that element is at least an instance of the
+        // SVGElement and that it has the "getBBox" method.
+        // eslint-disable-next-line no-extra-parens
+        return function (target) { return (target instanceof getWindowOf(target).SVGElement &&
+            typeof target.getBBox === 'function'); };
+    })();
+    /**
+     * Checks whether provided element is a document element (<html>).
+     *
+     * @param {Element} target - Element to be checked.
+     * @returns {boolean}
+     */
+    function isDocumentElement(target) {
+        return target === getWindowOf(target).document.documentElement;
+    }
+    /**
+     * Calculates an appropriate content rectangle for provided html or svg element.
+     *
+     * @param {Element} target - Element content rectangle of which needs to be calculated.
+     * @returns {DOMRectInit}
+     */
+    function getContentRect(target) {
+        if (!isBrowser) {
+            return emptyRect;
+        }
+        if (isSVGGraphicsElement(target)) {
+            return getSVGContentRect(target);
+        }
+        return getHTMLElementContentRect(target);
+    }
+    /**
+     * Creates rectangle with an interface of the DOMRectReadOnly.
+     * Spec: https://drafts.fxtf.org/geometry/#domrectreadonly
+     *
+     * @param {DOMRectInit} rectInit - Object with rectangle's x/y coordinates and dimensions.
+     * @returns {DOMRectReadOnly}
+     */
+    function createReadOnlyRect(_a) {
+        var x = _a.x, y = _a.y, width = _a.width, height = _a.height;
+        // If DOMRectReadOnly is available use it as a prototype for the rectangle.
+        var Constr = typeof DOMRectReadOnly !== 'undefined' ? DOMRectReadOnly : Object;
+        var rect = Object.create(Constr.prototype);
+        // Rectangle's properties are not writable and non-enumerable.
+        defineConfigurable(rect, {
+            x: x, y: y, width: width, height: height,
+            top: y,
+            right: x + width,
+            bottom: height + y,
+            left: x
+        });
+        return rect;
+    }
+    /**
+     * Creates DOMRectInit object based on the provided dimensions and the x/y coordinates.
+     * Spec: https://drafts.fxtf.org/geometry/#dictdef-domrectinit
+     *
+     * @param {number} x - X coordinate.
+     * @param {number} y - Y coordinate.
+     * @param {number} width - Rectangle's width.
+     * @param {number} height - Rectangle's height.
+     * @returns {DOMRectInit}
+     */
+    function createRectInit(x, y, width, height) {
+        return { x: x, y: y, width: width, height: height };
+    }
+    /**
+     * Class that is responsible for computations of the content rectangle of
+     * provided DOM element and for keeping track of it's changes.
+     */
+    var ResizeObservation = /** @class */ (function () {
+        /**
+         * Creates an instance of ResizeObservation.
+         *
+         * @param {Element} target - Element to be observed.
+         */
+        function ResizeObservation(target) {
+            /**
+             * Broadcasted width of content rectangle.
+             *
+             * @type {number}
+             */
+            this.broadcastWidth = 0;
+            /**
+             * Broadcasted height of content rectangle.
+             *
+             * @type {number}
+             */
+            this.broadcastHeight = 0;
+            /**
+             * Reference to the last observed content rectangle.
+             *
+             * @private {DOMRectInit}
+             */
+            this.contentRect_ = createRectInit(0, 0, 0, 0);
+            this.target = target;
+        }
+        /**
+         * Updates content rectangle and tells whether it's width or height properties
+         * have changed since the last broadcast.
+         *
+         * @returns {boolean}
+         */
+        ResizeObservation.prototype.isActive = function () {
+            var rect = getContentRect(this.target);
+            this.contentRect_ = rect;
+            return (rect.width !== this.broadcastWidth ||
+                rect.height !== this.broadcastHeight);
+        };
+        /**
+         * Updates 'broadcastWidth' and 'broadcastHeight' properties with a data
+         * from the corresponding properties of the last observed content rectangle.
+         *
+         * @returns {DOMRectInit} Last observed content rectangle.
+         */
+        ResizeObservation.prototype.broadcastRect = function () {
+            var rect = this.contentRect_;
+            this.broadcastWidth = rect.width;
+            this.broadcastHeight = rect.height;
+            return rect;
+        };
+        return ResizeObservation;
+    }());
+    var ResizeObserverEntry = /** @class */ (function () {
+        /**
+         * Creates an instance of ResizeObserverEntry.
+         *
+         * @param {Element} target - Element that is being observed.
+         * @param {DOMRectInit} rectInit - Data of the element's content rectangle.
+         */
+        function ResizeObserverEntry(target, rectInit) {
+            var contentRect = createReadOnlyRect(rectInit);
+            // According to the specification following properties are not writable
+            // and are also not enumerable in the native implementation.
+            //
+            // Property accessors are not being used as they'd require to define a
+            // private WeakMap storage which may cause memory leaks in browsers that
+            // don't support this type of collections.
+            defineConfigurable(this, { target: target, contentRect: contentRect });
+        }
+        return ResizeObserverEntry;
+    }());
+    var ResizeObserverSPI = /** @class */ (function () {
+        /**
+         * Creates a new instance of ResizeObserver.
+         *
+         * @param {ResizeObserverCallback} callback - Callback function that is invoked
+         *      when one of the observed elements changes it's content dimensions.
+         * @param {ResizeObserverController} controller - Controller instance which
+         *      is responsible for the updates of observer.
+         * @param {ResizeObserver} callbackCtx - Reference to the public
+         *      ResizeObserver instance which will be passed to callback function.
+         */
+        function ResizeObserverSPI(callback, controller, callbackCtx) {
+            /**
+             * Collection of resize observations that have detected changes in dimensions
+             * of elements.
+             *
+             * @private {Array<ResizeObservation>}
+             */
+            this.activeObservations_ = [];
+            /**
+             * Registry of the ResizeObservation instances.
+             *
+             * @private {Map<Element, ResizeObservation>}
+             */
+            this.observations_ = new MapShim();
+            if (typeof callback !== 'function') {
+                throw new TypeError('The callback provided as parameter 1 is not a function.');
+            }
+            this.callback_ = callback;
+            this.controller_ = controller;
+            this.callbackCtx_ = callbackCtx;
+        }
+        /**
+         * Starts observing provided element.
+         *
+         * @param {Element} target - Element to be observed.
+         * @returns {void}
+         */
+        ResizeObserverSPI.prototype.observe = function (target) {
+            if (!arguments.length) {
+                throw new TypeError('1 argument required, but only 0 present.');
+            }
+            // Do nothing if current environment doesn't have the Element interface.
+            if (typeof Element === 'undefined' || !(Element instanceof Object)) {
+                return;
+            }
+            if (!(target instanceof getWindowOf(target).Element)) {
+                throw new TypeError('parameter 1 is not of type "Element".');
+            }
+            var observations = this.observations_;
+            // Do nothing if element is already being observed.
+            if (observations.has(target)) {
+                return;
+            }
+            observations.set(target, new ResizeObservation(target));
+            this.controller_.addObserver(this);
+            // Force the update of observations.
+            this.controller_.refresh();
+        };
+        /**
+         * Stops observing provided element.
+         *
+         * @param {Element} target - Element to stop observing.
+         * @returns {void}
+         */
+        ResizeObserverSPI.prototype.unobserve = function (target) {
+            if (!arguments.length) {
+                throw new TypeError('1 argument required, but only 0 present.');
+            }
+            // Do nothing if current environment doesn't have the Element interface.
+            if (typeof Element === 'undefined' || !(Element instanceof Object)) {
+                return;
+            }
+            if (!(target instanceof getWindowOf(target).Element)) {
+                throw new TypeError('parameter 1 is not of type "Element".');
+            }
+            var observations = this.observations_;
+            // Do nothing if element is not being observed.
+            if (!observations.has(target)) {
+                return;
+            }
+            observations.delete(target);
+            if (!observations.size) {
+                this.controller_.removeObserver(this);
+            }
+        };
+        /**
+         * Stops observing all elements.
+         *
+         * @returns {void}
+         */
+        ResizeObserverSPI.prototype.disconnect = function () {
+            this.clearActive();
+            this.observations_.clear();
+            this.controller_.removeObserver(this);
+        };
+        /**
+         * Collects observation instances the associated element of which has changed
+         * it's content rectangle.
+         *
+         * @returns {void}
+         */
+        ResizeObserverSPI.prototype.gatherActive = function () {
+            var _this = this;
+            this.clearActive();
+            this.observations_.forEach(function (observation) {
+                if (observation.isActive()) {
+                    _this.activeObservations_.push(observation);
+                }
+            });
+        };
+        /**
+         * Invokes initial callback function with a list of ResizeObserverEntry
+         * instances collected from active resize observations.
+         *
+         * @returns {void}
+         */
+        ResizeObserverSPI.prototype.broadcastActive = function () {
+            // Do nothing if observer doesn't have active observations.
+            if (!this.hasActive()) {
+                return;
+            }
+            var ctx = this.callbackCtx_;
+            // Create ResizeObserverEntry instance for every active observation.
+            var entries = this.activeObservations_.map(function (observation) {
+                return new ResizeObserverEntry(observation.target, observation.broadcastRect());
+            });
+            this.callback_.call(ctx, entries, ctx);
+            this.clearActive();
+        };
+        /**
+         * Clears the collection of active observations.
+         *
+         * @returns {void}
+         */
+        ResizeObserverSPI.prototype.clearActive = function () {
+            this.activeObservations_.splice(0);
+        };
+        /**
+         * Tells whether observer has active observations.
+         *
+         * @returns {boolean}
+         */
+        ResizeObserverSPI.prototype.hasActive = function () {
+            return this.activeObservations_.length > 0;
+        };
+        return ResizeObserverSPI;
+    }());
+    // Registry of internal observers. If WeakMap is not available use current shim
+    // for the Map collection as it has all required methods and because WeakMap
+    // can't be fully polyfilled anyway.
+    var observers = typeof WeakMap !== 'undefined' ? new WeakMap() : new MapShim();
+    /**
+     * ResizeObserver API. Encapsulates the ResizeObserver SPI implementation
+     * exposing only those methods and properties that are defined in the spec.
+     */
+    var ResizeObserver = /** @class */ (function () {
+        /**
+         * Creates a new instance of ResizeObserver.
+         *
+         * @param {ResizeObserverCallback} callback - Callback that is invoked when
+         *      dimensions of the observed elements change.
+         */
+        function ResizeObserver(callback) {
+            if (!(this instanceof ResizeObserver)) {
+                throw new TypeError('Cannot call a class as a function.');
+            }
+            if (!arguments.length) {
+                throw new TypeError('1 argument required, but only 0 present.');
+            }
+            var controller = ResizeObserverController.getInstance();
+            var observer = new ResizeObserverSPI(callback, controller, this);
+            observers.set(this, observer);
+        }
+        return ResizeObserver;
+    }());
+    // Expose public methods of ResizeObserver.
+    [
+        'observe',
+        'unobserve',
+        'disconnect'
+    ].forEach(function (method) {
+        ResizeObserver.prototype[method] = function () {
+            var _a;
+            return (_a = observers.get(this))[method].apply(_a, arguments);
+        };
+    });
+    var index = (function () {
+        // Export existing implementation if available.
+        if (typeof global$1.ResizeObserver !== 'undefined') {
+            return global$1.ResizeObserver;
+        }
+        return ResizeObserver;
+    })();
+    return index;
+})));
+
+function hexToRgb(hex, alpha) {
+    hex = hex.trim();
+    hex = hex[0] === '#' ? hex.substr(1) : hex;
+    var bigint = parseInt(hex, 16),
+        h = [];
+    if(hex.length === 3){
+        h.push((bigint >> 4) & 255);
+        h.push((bigint >> 2) & 255);
+    }
+    else {
+        h.push((bigint >> 16) & 255);
+        h.push((bigint >> 8) & 255);
+    }
+    h.push(bigint & 255);
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var a = isUndefined(alpha) ? 1.0 : alpha,
+        rgb = h.join(", ");
+    return {
+        "r": h[0],
+        "g": h[1],
+        "b": h[2],
+        "a": a,
+        "rgb": "rgb(" + rgb + ")",
+        "rgba": "rgba(" + rgb + ", " + a + ")"
+    };
 }
+
 /**
  * Type & Value Detection Functions
  */
@@ -155,10 +1231,10 @@ function isObjectiveClass(cls){
     return isFunction(cls) && isSet(cls.TYPE_KEY);
 }
 function isElement(obj){
-    return isObjective(obj) && isSet(obj._dom);
+    return isObjective(obj) && isSet(obj.dom);
 }
-function isComponent(obj){
-    return isElement(obj) && isSet(obj._template);
+function isComponent(obj, cls){
+    return isElement(obj) && isSet(obj._template) && (!cls || obj.is(cls));
 }
 function isXml(obj){
     // documentElement is verified for cases where it doesn't yet exist
@@ -224,9 +1300,9 @@ function isUnset(obj){
  * Framework Logging Functions
  */
 function print(obj/*, ...objs*/){
-    if(OJ.mode == OJ.PROD){
-        return;
-    }
+    // if(OJ.mode == OJ.PROD){
+    //     return;
+    // }
     var ln = arguments.length, i;
     if(ln < 2){
         console.log(obj);
@@ -384,6 +1460,14 @@ function onDomReady(){
     else{
         css.append('1x'); // 1x resolution
     }
+    // css env support
+    if(CSS.supports("padding", "env(test, 10)")){
+        css.append("env-support");
+    }
+    // css constant support
+    else if(CSS.supports("padding", "constant(test, 10)")){
+        css.append("constant-support");
+    }
     // add the css
     OJ.addCss(css);
     // set all the content as displayed
@@ -433,7 +1517,8 @@ function onDomReady(){
             // dispatch the ready event
             printGroup("Your OJ is ready. Enjoy!", true);
             OJ._is_ready = true;
-            OJ.fadeIn();
+            // show it
+            OJ.alpha = 1.0;
             OJ.dispatchEvent(new OjEvent(OjEvent.READY));
             // detect if the browser is not supported
             if(!OJ.is_supported){
@@ -450,7 +1535,7 @@ function onDomReady(){
 }
 
 window.OJ = function Oj(){
-    var obj = {
+    const obj = {
         "_events" : [], "_guid" : 8, "_loaded" : {},
         "_is_landscape" : true, "_is_mobile" : false, "_is_ready" : false,
         "_is_supported" : true, "_is_tablet" : false, "_is_touch_capable" : false, "_is_webview" : false,
@@ -489,7 +1574,7 @@ window.OJ = function Oj(){
         // OSs
         "CHROME_OS" : "Chromium OS",
         "LINUX" : "Linux",
-        "MAC" : "Mac",
+        "MAC" : "macOS",
         "WINDOWS" : "Windows",
         // mobile OSs
         "ANDROID" : "Android",
@@ -562,13 +1647,13 @@ window.OJ = function Oj(){
                     h = (OJ.is_mobile ? window.screen : {}).height || window.innerHeight || document.body.clientHeight;
                 vp.width = w;
                 vp.height = h;
-                if(OJ._is_landscape = vp.width > vp.height){
+                if(OJ._is_landscape = (vp.width > vp.height)){
                     OJ.addCss("is-landscape");
                     OJ.removeCss("is-portrait");
                 }
                 else{
                     OJ.addCss("is-portrait");
-                    OJ.removeCss("is-portrait");
+                    OJ.removeCss("is-landscape");
                 }
                 OJ.dispatchEvent(new OjTransformEvent(OjTransformEvent.RESIZE, vp, prev));
                 OJ._viewport = vp;
@@ -698,15 +1783,15 @@ window.OJ = function Oj(){
         },
         "attributeToProp" : function(attr){
             var str = "";
-            parts = attr.split("-").forEach(function(item, i){
+            attr.split("-").forEach(function(item, i){
                 str += i ? item.ucFirst() : item;
             });
             return str;
         },
         "propToAttribute" : function(prop, sep){
-            var str = "";
+            let str = "";
             sep = sep || "-";
-            prop.split(/(?=[A-Z])/).forEach(function(item, i){
+            prop.split(/(?=[A-Z])/).forEach((item, i) => {
                 str += (i ? sep : "") + item.toLowerCase();
             });
             return str;
@@ -726,7 +1811,7 @@ window.OJ = function Oj(){
                    return obj.prototype._class_name_;
                 }
                 if(obj.prototype.constructor && obj.prototype.constructor.toString){
-                    var arr = obj.prototype.constructor.toString().match(/function\s*(\w+)/);
+                    const arr = obj.prototype.constructor.toString().match(/function\s*(\w+)/);
                     if(arr && arr.length == 2){
                         return arr[1];
                     }
@@ -749,8 +1834,7 @@ window.OJ = function Oj(){
         "destroy" : function(obj/*, depth = 0*/){
             if(obj && isFunction(obj._destructor)){
                 if(!obj._destroyed_){
-                    var args = arguments;
-                    obj._destructor(args.length > 1 ? args[1] : 0);
+                    obj._destructor(arguments.length > 1 ? arguments[1] : 0);
                 }
                 else{
                     // debugger;
@@ -765,14 +1849,13 @@ window.OJ = function Oj(){
 
         "defineClass" : function(ns, def, static_def){
             eval("window[ns] = function " + ns + "(){" + (def["_constructor"] ? "this._constructor.apply(this, arguments);" : "") + "};");
-            var cls = window[ns],
-                key;
+            const cls = window[ns];
             def._class_name_ = ns;
             def._supers = (def._supers || []).slice(0);
             cls.oj_id = ns;
             cls.prototype = def;
             if(static_def){
-                for(key in static_def){
+                for(const key in static_def){
                     cls[key] = static_def[key];
                 }
             }
@@ -1149,8 +2232,8 @@ window.OJ = function Oj(){
         },
         "viewport" : function(val){
         }
-    },
-    key;
+    };
+    let key;
 
     function makeProperty(key, is_setting){
         var get_func = is_setting ? function(){ return this._settings[key]; } : function(){ return this["_" + key]; },
@@ -1323,19 +2406,44 @@ window.OJ = function Oj(){
     OJ._browser_version = detector.version(navigator.userAgent) || detector.version(navigator.appVersion) ||
         detector.version(navigator.user_agent);
     // detect OS
-    var user_agent = navigator.userAgent.toLowerCase();
+    const user_agent = navigator.userAgent.toLowerCase();
     if(/(android)/i.test(user_agent)){
+        const v = navigator.appVersion.match(/(.*)Android\ (.*);\ (.*)\ Build/);
         OJ._os = OJ.ANDROID;
+        OJ._os_version = v[2];
         OJ._is_tablet = !(OJ._is_mobile = /(mobile)/i.test(user_agent));
         OJ._is_touch_capable = true;
+        OJ._is_webview = /(.*);\ wv/g.test(navigator.appVersion);
+        // check for in app
+        if(!OJ._browser_version){
+            OJ._browser_version = OJ.IN_APP;
+        }
     }
     else if(/(iphone|ipod|ipad)/i.test(user_agent)){
-        var v = (navigator.appVersion).match(/OS\ (\d+)_(\d+)_?(\d+)?/);
+        const v = navigator.appVersion.match(/OS\ (\d+)_(\d+)_?(\d+)?/);
         OJ._os = OJ.IOS;
-        OJ._is_tablet = !(OJ._is_mobile = (user_agent.indexOf('ipad') == -1));
+        OJ._is_tablet = !(OJ._is_mobile = (user_agent.indexOf("ipad") == -1));
         OJ._is_touch_capable = true;
         OJ._is_webview = !(/safari/i.test(user_agent)) || (/crios/i.test(user_agent));
-        OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join('.');
+        OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join(".");
+        // check for in app
+        if(!OJ._browser_version){
+            OJ._browser_version = OJ.IN_APP;
+        }
+    }
+    else if(/(Macintosh;)/i.test(user_agent)){
+        let v = navigator.appVersion.match(/Mac\ OS\ X\ (\d+)_(\d+)_?(\d+)?/);
+        OJ._os = OJ.MAC;
+        OJ._is_tablet = false;
+        OJ._is_touch_capable = false;
+        OJ._is_webview = !(/safari/i.test(user_agent));
+        if(v){
+            OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)].join(".");
+        }
+        else{
+            v = navigator.userAgent.match(/Mac\ OS\ X\ (\d+).(\d+)?/);
+            OJ._os_version = [parseInt(v[1], 10), parseInt(v[2], 10)].join(".");
+        }
         // check for in app
         if(!OJ._browser_version){
             OJ._browser_version = OJ.IN_APP;
@@ -1352,7 +2460,7 @@ window.OJ = function Oj(){
                 {
                  's' : navigator.platform,
                  'sub' : 'Mac',
-                 'id' : 'Mac'
+                 'id' : 'macOS'
                 },
                 {
                  's' : navigator.platform,
@@ -1427,7 +2535,7 @@ if(!Date.prototype.exportData){
 }
 if(!Date.prototype.getUTCTimezoneOffset){
     Date.prototype.getUTCTimezoneOffset = function(){
-        return this.getTimezoneOffset() * -1;
+        return this.getTimezoneOffset() * -60;
     }
 }
 if(!Date.prototype.subtract){
@@ -1589,6 +2697,7 @@ Object.numKeys = function(obj){
     return isSet(obj) ? Object.keys(obj).length : 0;
 };
 Object.toJson = function(obj){
+    return JSON.stringify(obj);
 };
 Object.clone = function(obj){
     var cloned = {}, key;
@@ -1613,57 +2722,49 @@ Object.concat = function(obj, obj2/*, ...objs*/){
 // Setup OjObject Class
 window.OjObject = function(){ };
 OjObject.prototype = {
-    '_post_compile_' : [],
-    '_propCompile_' : function(context, props){
-        var key, prop, val,
-            props = context[props],
-            is_getter = props != '_set_props_',
-            is_setter = props != '_get_props_';
-        if(isFunction(context['_processProp_'])){
-            this._processProp_ = context['_processProp_'];
+    "_post_compile_" : [],
+    "_propCompile_" : function(context, props){
+        props = context[props];
+        const is_getter = props != "_set_props_",
+            is_setter = props != "_get_props_";
+        let key, prop, val;
+        if(isFunction(context["_processProp_"])){
+            this._processProp_ = context["_processProp_"];
         }
         for(key in props){
-            prop = '_' + key;
+            prop = "_" + key;
             val = props[key];
             // store the default value of the property
             if(isSet(val)){
                 this[prop] = val;
             }
-            this._processProp_(key, prop, is_getter ? '.' + key : null, is_setter ? '=' + key : null);
+            this._processProp_(key, prop, is_getter ? "." + key : null, is_setter ? "=" + key : null);
         }
     },
-    '_processProp_' : function(key, prop, getter, setter){
+    "_processProp_" : function(key, prop, getter, setter){
         // define property
         Object.defineProperty(this, key, {
-            'configurable': true,
-            'enumerable': false,
-            'get' : function(){
+            "configurable" : true,
+            "enumerable" : false,
+            "get" : function(){
                 if(!getter){
-                    throw 'Property "' + key + '" get not allowed.'
+                    throw "Property '" + key + "' get not allowed.";
                 }
-                var get_func = this[getter];
-                if(get_func){
-                    return get_func.call(this);
-                }
-                return this[prop];
+                const get_func = this[getter];
+                return get_func ? get_func.call(this) : this[prop];
             },
-            'set' : function(newValue){
+            "set" : function(newValue){
                 if(!setter){
-                    throw 'Property "' + key + '" set not allowed.'
+                    throw "Property '" + key + "' set not allowed.";
                 }
-                var set_func = this[setter];
-                if(set_func){
-                    set_func.call(this, newValue);
-                }
-                else{
-                    this[prop] = newValue;
-                }
+                const set_func = this[setter];
+                set_func ? set_func.call(this, newValue) : this[prop] = newValue;
                 return newValue;
             }
         });
     },
 
-    '_constructor' : function(obj){
+    "_constructor" : function(obj){
         this._id_ = OJ.guid(this);
         if(obj){
             this.bulkSet(obj);
@@ -1671,54 +2772,45 @@ OjObject.prototype = {
         return this;
     },
     // Internal Methods
-    '_super' : function(context, func, args){
+    "_super" : function(context, func, args){
         if(!context || !context.prototype || !context.prototype[func]){
             print(arguments);
             debugger;
         }
         return context.prototype[func].apply(this, args || []);
     },
-    '_destructor' : function(/*depth = 0*/){
-        var key;
-        for(key in this){
-            delete this[key];
+    "_destructor" : function(depth){
+        for(const key in this){
+            this[key] = undefined;
         }
         this._destroyed_ = true;
     },
 
-    '_processArguments' : function(args, def){
-        var ln = args.length,
-            count = 0,
-            key, val, ctx, ary, ln2, i;
-        for(key in def){
-            if(!isEmpty(key)){
-                val = def[key];
-                if(ln > count){
-                    val = args[count];
-                }
-                if(!isUndefined(val)){
-                    ctx = this;
-                    ary = key.split('.');
-                    if((ln2 = ary.length) > 1){
-                        for(i = 0; i < ln2; i++){
-                            if(i){
-                                ctx = ctx[key];
-                            }
-                            key = ary[i];
-                        }
+    "_set" : function(key, val, dflt){
+        // default the value
+        if(isUndefined(val)){
+            val = dflt;
+        }
+        // if the value is undefined then we don't need to do anything
+        if(!isUndefined(val)){
+            let ctx = this,
+                ary = key.split("."),
+                ln = ary.length;
+            if(ln > 1){
+                for(let i = 0; i < ln; i++){
+                    if(i){
+                        ctx = ctx[key];
                     }
-                    if(isFunction(ctx[key])){
-                        ctx[key](val);
-                    }
-                    else{
-                        ctx[key] = val;
-                    }
+                    key = ary[i];
                 }
             }
-            count++;
+            if(isFunction(ctx[key])){
+                return ctx[key](val);
+            }
+            return ctx[key] = val;
         }
     },
-    '_unset' : function(prop/*|props, depth*/){
+    "_unset" : function(prop_or_props, depth){
         OJ.unset(this, arguments);
     }
 };
@@ -1756,17 +2848,17 @@ OJ.extendClass(
             }
         },
         'clone' : function(){
-            var cls = this._static;
+            const cls = this._static;
             return new cls();
         },
         'exportData' : function(mode){
-            var self = this,
+            const self = this,
                 data = {};
             data[self._static.TYPE_KEY] = self.oj_class_name;
             return data;
         },
         'importData' : function(data, mode){
-            return data;
+            return this;
         },
         'is' : function(val){
             if(isString(val)){
@@ -1783,9 +2875,8 @@ OJ.extendClass(
         'toQueryString' : function(){
             return Object.toQueryString(this);
         },
-        'toString' : function(){
-            var self = this;
-            return self.oj_class_name + ' : ' + self.oj_id;
+        "toString" : function(){
+            return this.oj_class_name + " : " + this.oj_id;
         },
 
         // Public Properties
@@ -1835,19 +2926,20 @@ OJ.extendClass(
             }
             return data;
         },
-        'exportData' : function(obj, mode){
-            var key;
+        'exportData' : function(obj, mode, processed){
+            let key;
+            processed = processed || [];
             if(isArray(obj)){
                 for(key = obj.length; key--;){
-                    obj[key] = OjObject.exportData(obj[key], mode);
+                    obj[key] = OjObject.exportData(obj[key], mode, processed);
                 }
             }
             else if(isObject(obj)){
                 if(isFunction(obj.exportData)){
-                    return obj.exportData(mode);
+                    return obj.exportData(mode, processed);
                 }
                 for(key in obj){
-                    obj[key] = OjObject.exportData(obj[key], mode);
+                    obj[key] = OjObject.exportData(obj[key], mode, processed);
                 }
             }
             // this checks for NaN since NaN does not equal itself
@@ -1870,58 +2962,36 @@ OJ.extendClass(
 // force supers to empty array since we spoofed the super when extending the class
 OjObject.prototype._supers = [];
 
-
 OJ.extendClass(
-    'OjActionable', [OjObject],
+    "OjActionable", [OjObject],
     {
         // Internal Vars
-        '_prevent_dispatch' : false,
+        "_prevent_dispatch" : false,
 
         // Internal Methods
-        '_constructor' : function(){
+        "_constructor" : function(){
             this._actionable = this;
-            this._super(OjObject, '_constructor', arguments);
+            this._super(OjObject, "_constructor", arguments);
         },
-        '_destructor' : function(){
+        "_destructor" : function(){
             // dispatch a destroy event and then destroy all active listeners
             if(this._actionable){
                 this.dispatchEvent(new OjEvent(OjEvent.DESTROY));
                 this.removeAllListeners();
                 this._actionable = null;
             }
-            return this._super(OjObject, '_destructor', arguments);
-        },
-
-        '_listeners' : function(type) {
-            return null;
-        },
-        '_updateListeners' : function(action, type){
-            var func = action == 'add' ? 'addEventListener' : 'removeEventListener',
-                settings = this._listeners(type),
-                ln = settings ? settings.length : 0,
-                obj;
-            if(ln){
-                if((obj = settings[0]) && obj[func]){
-                    type = type.ucFirst()
-                    if(ln > 1){
-                        obj[func](settings[1], this, '_on' + type + 'Success');
-                    }
-                    if(ln > 2){
-                        obj[func](settings[2], this, '_on' + type + 'Fail');
-                    }
-                }
-            }
+            return this._super(OjObject, "_destructor", arguments);
         },
 
         // Public Methods
-        'addEventListener' : function(type, context, callback){
+        "addEventListener" : function(type, context, callback){
             EventManager.addEventListener(this._actionable, type, context, callback);
         },
-        'hasEventListener' : function(type){
+        "hasEventListener" : function(type){
             return EventManager.hasEventListener(this._actionable, type);
         },
-        'hasEventListeners' : function(type/*|types, type*/){
-            var args = arguments,
+        "hasEventListeners" : function(type/*|types, type*/){
+            let args = arguments,
                   ln = args.length;
             if(ln == 1){
                 if(isArray(args[0])){
@@ -1940,13 +3010,13 @@ OJ.extendClass(
             }
             return true;
         },
-        'removeAllListeners' : function(){
+        "removeAllListeners" : function(){
             return EventManager.removeAllListeners(this._actionable);
         },
-        'removeEventListener' : function(type, context, callback){
+        "removeEventListener" : function(type, context, callback){
             EventManager.removeEventListener(this._actionable, type, context, callback);
         },
-        'dispatchEvent' : function(evt){
+        "dispatchEvent" : function(evt){
             if(this._prevent_dispatch || evt.canceled){
                 return;
             }
@@ -1956,8 +3026,8 @@ OJ.extendClass(
         }
     },
   {
-    'ADD' : 'add',
-    'REMOVE' : 'remove'
+    "ADD" : "add",
+    "REMOVE" : "remove"
   }
 );
 
@@ -1972,214 +3042,226 @@ OJ.extendClass(
     }
   }
 );
-String.string = function(val){
-    if(isSet(val)){
-        return isObject(val) && val.toString ? val.toString() : String(val);
+(function(){
+    String.string = function(val){
+        if(isSet(val)){
+            return isObject(val) && val.toString ? val.toString() : String(val);
+        }
+        return "";
+    };
+    const proto = String.prototype;
+    if(!proto.append){
+        proto.append = function(str){
+            return this + str;
+        }
     }
-    return "";
-};
+    if(!proto.chunk){
+        proto.chunk = function(size, callback){
+            var num = Math.ceil(this.length / size), // | 0,
+                chunks = new Array(num),
+                i = 0,
+                o = 0;
+            for(; i < num; ++i, o += size) {
+                chunks[i] = this.substr(o, size);
+                if(callback){
+                    callback(chunks[i])
+                }
+            }
+            return chunks;
+        };
+    }
+    if(!proto.contains){
+        proto.contains = function(obj){
+            return this.indexOf(obj) != -1;
+        };
+    }
+    if(!proto.lcFirst){
+        proto.lcFirst = function(){
+            return this.charAt(0).toLowerCase() + this.slice(1);
+        };
+    }
 
-var proto = String.prototype;
-if(!proto.chunk){
-    proto.chunk = function(size, callback){
-        var num = Math.ceil(this.length / size), // | 0,
-            chunks = new Array(num),
-            i = 0,
-            o = 0;
-        for(; i < num; ++i, o += size) {
-            chunks[i] = this.substr(o, size);
-            if(callback){
-                callback(chunks[i])
-            }
-        }
-        return chunks;
-    };
-}
-if(!proto.contains){
-    proto.contains = function(obj){
-        return this.indexOf(obj) != -1;
-    };
-}
-if(!proto.lcFirst){
-    proto.lcFirst = function(){
-        return this.charAt(0).toLowerCase() + this.slice(1);
-    };
-}
+    if(!proto.ucFirst){
+        proto.ucFirst = function(){
+            return this.charAt(0).toUpperCase() + this.slice(1);
+        };
+    }
 
-if(!proto.ucFirst){
-    proto.ucFirst = function(){
-        return this.charAt(0).toUpperCase() + this.slice(1);
-    };
-}
+    if(!proto.capitalize){
+        proto.capitalize = function(){
+            var str = '',
+                words = this.split(' '),
+                ln = words.length;
+            for(; ln--;){
+                if(str != ''){
+                    str = ' ' + str;
+                }
+                str = words[ln].ucFirst() + str;
+            }
+            return str;
+        };
+    }
+    if(!proto.compareVersion){
+        proto.compareVersion = function(v){
+            var i = 0,
+                res = 0,
+                p1 = this.split('.'),
+                p2 = v.split('.'),
+                ln = Math.max(p1.length, p2.length);
+            for(; i < ln; i++){
+                var t1 = (i < p1.length) ? parseInt(p1[i], 10) : 0,
+                    t2 = (i < p2.length) ? parseInt(p2[i], 10) : 0;
+                if(isNaN(t1)){
+                    t1 = 0;
+                }
+                if(isNaN(t2)){
+                    t2 = 0;
+                }
+                if(t1 != t2){
+                    res = (t1 > t2) ? 1 : -1;
+                    break;
+                }
+            }
+            return res;
+        };
+    }
+    if(!proto.count){
+        proto.count = function(needle){
+            return (this.match(new RegExp(needle.regexEscape(), 'g')) || []).length;
+        };
+    }
+    if(!proto.decodeUri){
+        proto.decodeUri = function(){
+            return decodeURIComponent(this);
+        };
+    }
+    if(!proto.encodeUri){
+        proto.encodeUri = function(){
+            return encodeURIComponent(this);
+        };
+    }
+    if(!proto.format){
+        proto.format = function(value_or_tokens){
+            var self = this,
+                args = Array.array(arguments),
+                tokens = {},
+                token;
 
-if(!proto.capitalize){
-    proto.capitalize = function(){
-        var str = '',
-            words = this.split(' '),
-            ln = words.length;
-        for(; ln--;){
-            if(str != ''){
-                str = ' ' + str;
+            if(args.length == 1 && isObject(value_or_tokens)){
+                tokens = value_or_tokens;
             }
-            str = words[ln].ucFirst() + str;
+            else{
+                args.forEachReverse(function(item, i){
+                    tokens[i] = item;
+                });
+            }
+            for(token in tokens){
+                self = self.replace(new RegExp('\\{' + token + '\\}', 'g'), tokens[token]);
+            }
+            return self;
+        };
+    }
+    if(!proto.html){
+        proto.html = function(){
+            return this.replace(
+                /[\u00A0-\u9999<>\&]/gim,
+                function(i) {
+                    return '&#'+i.charCodeAt(0)+';';
+                }
+            ).replaceAll(['\n', '\t'], ['<br />', '&nbsp;&nbsp;&nbsp;&nbsp;']);
+        };
+    }
+    if(!proto.isEmpty){
+        proto.isEmpty = function(){
+            return this.trim() != '';
+        };
+    }
+    if(!proto.pluralize){
+        proto.pluralize = function(){
+            var self = this,
+                c = self.slice(-1),
+                c2 = self.slice(-2),
+                c3 = self.slice(-3);
+            if(c == "s"){
+                return self + "es";
+            }
+            if(c2 == "ey"){
+                return self.slice(0, -2) + "ies";
+            }
+            if(c3 == "elf"){
+                return self.slice(0, -3) + "elvs";
+            }
+            return self + "s";
+        };
+    }
+    if(!proto.possessive){
+        proto.possessive = function(){
+            var self = this,
+                c = self.slice(-1);
+            if(c == "s"){
+                return self + "'";
+            }
+            return self + "'s";
+        };
+    }
+    if(!proto.prepend){
+        proto.prepend = function(str){
+            return str + this;
         }
-        return str;
-    };
-}
-if(!proto.compareVersion){
-    proto.compareVersion = function(v){
-        var i = 0,
-            res = 0,
-            p1 = this.split('.'),
-            p2 = v.split('.'),
-            ln = Math.max(p1.length, p2.length);
-        for(; i < ln; i++){
-            var t1 = (i < p1.length) ? parseInt(p1[i], 10) : 0,
-                t2 = (i < p2.length) ? parseInt(p2[i], 10) : 0;
-            if(isNaN(t1)){
-                t1 = 0;
+    }
+    if(!proto.trim){
+        proto.trim = function(){
+            return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+        };
+    }
+    if(!proto.ltrim){
+        proto.ltrim = function(){
+            return this.replace(/^\s+/, '');
+        };
+    }
+    if(!proto.rtrim){
+        proto.rtrim = function(){
+            return this.replace(/\s+$/, '');
+        };
+    }
+    if(!proto.fulltrim){
+        proto.fulltrim = function(){
+            return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, '').replace(/\s+/g, ' ');
+        };
+    }
+    if(!proto.clean){
+        proto.clean = function(obj){
+            return obj.replace(/\r/g, '');
+        };
+    }
+    if(!proto.regexSpecialChars){
+        proto.regexSpecialChars = new RegExp('[.*+?$|()\\[\\]{}\\\\]', 'g'); // .*+?$|()[]{}\
+    }
+    if(!proto.regexEscape){
+        proto.regexEscape = function(){
+            return this.replace(String.prototype.regexSpecialChars, '\\$&');
+        };
+    }
+    if(!proto.replaceAll){
+        proto.replaceAll = function(needle, replace){
+            if(Array.isArray(needle)){
+                var haystack = this, i, ln = needle.length;
+                replace = needle.equalize(replace);
+                for(i = 0; i < ln; i++){
+                    haystack = haystack.replace(new RegExp(needle[i].regexEscape(), 'g'), replace[i]);
+                }
+                return haystack;
             }
-            if(isNaN(t2)){
-                t2 = 0;
+            else{
+                return this.replace(new RegExp(needle.regexEscape(), 'g'), replace);
             }
-            if(t1 != t2){
-                res = (t1 > t2) ? 1 : -1;
-                break;
-            }
-        }
-        return res;
-    };
-}
-if(!proto.count){
-    proto.count = function(needle){
-        return (this.match(new RegExp(needle.regexEscape(), 'g')) || []).length;
-    };
-}
-if(!proto.decodeUri){
-    proto.decodeUri = function(){
-        return decodeURIComponent(this);
-    };
-}
-if(!proto.encodeUri){
-    proto.encodeUri = function(){
-        return encodeURIComponent(this);
-    };
-}
-if(!proto.format){
-    proto.format = function(value_or_tokens){
-        var self = this,
-            args = Array.array(arguments),
-            tokens = {},
-            token;
+        };
+    }
+    if(SVGAnimatedString){
+        SVGAnimatedString.prototype.trim = function(){ return ""; }
+    }
+})();
 
-        if(args.length == 1 && isObject(value_or_tokens)){
-            tokens = value_or_tokens;
-        }
-        else{
-            args.forEachReverse(function(item, i){
-                tokens[i] = item;
-            });
-        }
-        for(token in tokens){
-            self = self.replace(new RegExp('\\{' + token + '\\}', 'g'), tokens[token]);
-        }
-        return self;
-    };
-}
-if(!proto.html){
-    proto.html = function(){
-        return this.replace(
-            /[\u00A0-\u9999<>\&]/gim,
-            function(i) {
-                return '&#'+i.charCodeAt(0)+';';
-            }
-        ).replaceAll(['\n', '\t'], ['<br />', '&nbsp;&nbsp;&nbsp;&nbsp;']);
-    };
-}
-if(!proto.isEmpty){
-    proto.isEmpty = function(){
-        return this.trim() != '';
-    };
-}
-if(!proto.pluralize){
-    proto.pluralize = function(){
-        var self = this,
-            c = self.slice(-1),
-            c2 = self.slice(-2),
-            c3 = self.slice(-3);
-        if(c == "s"){
-            return self + "es";
-        }
-        if(c2 == "ey"){
-            return self.slice(0, -2) + "ies";
-        }
-        if(c3 == "elf"){
-            return self.slice(0, -3) + "elvs";
-        }
-        return self + "s";
-    };
-}
-if(!proto.possessive){
-    proto.possessive = function(){
-        var self = this,
-            c = self.slice(-1);
-        if(c == "s"){
-            return self + "'";
-        }
-        return self + "'s";
-    };
-}
-if(!proto.trim){
-    proto.trim = function(){
-        return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    };
-}
-if(!proto.ltrim){
-    proto.ltrim = function(){
-        return this.replace(/^\s+/, '');
-    };
-}
-if(!proto.rtrim){
-    proto.rtrim = function(){
-        return this.replace(/\s+$/, '');
-    };
-}
-if(!proto.fulltrim){
-    proto.fulltrim = function(){
-        return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, '').replace(/\s+/g, ' ');
-    };
-}
-if(!proto.clean){
-    proto.clean = function(obj){
-        return obj.replace(/\r/g, '');
-    };
-}
-if(!proto.regexSpecialChars){
-    proto.regexSpecialChars = new RegExp('[.*+?$|()\\[\\]{}\\\\]', 'g'); // .*+?$|()[]{}\
-}
-if(!proto.regexEscape){
-    proto.regexEscape = function(){
-        return this.replace(String.prototype.regexSpecialChars, '\\$&');
-    };
-}
-if(!proto.replaceAll){
-    proto.replaceAll = function(needle, replace){
-        if(Array.isArray(needle)){
-            var haystack = this, i, ln = needle.length;
-            replace = needle.equalize(replace);
-            for(i = 0; i < ln; i++){
-                haystack = haystack.replace(new RegExp(needle[i].regexEscape(), 'g'), replace[i]);
-            }
-            return haystack;
-        }
-        else{
-            return this.replace(new RegExp(needle.regexEscape(), 'g'), replace);
-        }
-    };
-}
-if(SVGAnimatedString){
-    SVGAnimatedString.prototype.trim = function(){ return ""; }
-}
 
 OJ.extendClass(
     'OjArray', [OjActionable],
@@ -2307,6 +3389,9 @@ OJ.extendClass(
         'equalize' : function(){
             return this._callArrayFunc('equalize', arguments);
         },
+        "exportData" : function(){
+            return this._items;
+        },
         'forEach' : function(){
             return this._callArrayFunc('forEach', arguments);
         },
@@ -2330,6 +3415,9 @@ OJ.extendClass(
         },
         'join' : function() {
             return this._callArrayFunc('join', arguments);
+        },
+        "map" : function(){
+            return this._callArrayFunc("map", arguments);
         },
         'move' : function(item, index){
             var self = this,
@@ -2381,9 +3469,9 @@ OJ.extendClass(
                 index = self._updateIndexProperties(self.length - args.length),
                 col_evt = OjCollectionEvent;
             // find the lowest index
-            args.forEachReverse(function(item, i){
-                if(isUnset(index) || i < index){
-                    index = i;
+            args.forEachReverse(function(item){
+                if(isUnset(index) || item < index){
+                    index = item;
                 }
             });
             // process the request
@@ -2468,7 +3556,7 @@ Array.array = function(obj){
         return [];
     }
     else if(isArray(obj)){
-        return obj;
+        return obj.clone();
     }
     else if((isObject(obj) || isFunction(obj)) && !isUndefined(obj.length)){
         return [].slice.call(obj, 0);
@@ -2799,6 +3887,26 @@ Date.prototype.toQueryString = function(key){
     return this.toISOString().toQueryString(key);
 };
 String.prototype.parseQueryString = function(){
+    // const params = new URLSearchParams(this),
+    //     obj = {};
+    //
+    // let key, val, ln;
+    //
+    // for(key of params.keys()){
+    //     val = params.getAll(key);
+    //     ln = val.length;
+    //
+    //     if(!ln){
+    //         val = null;
+    //     }
+    //     else if(ln == 1){
+    //         val = val[0];
+    //     }
+    //
+    //     obj[key] = val;
+    // }
+    //
+    // return obj;
     var str = this, obj = {}, vars, ln, parts, i, ln2, tmp;
     if(str[0] == '?'){
         str = str.substring(1);
@@ -2841,20 +3949,18 @@ OJ.extendClass(
         '_get_props_' : {
             'bubbles' : null,
             'cancelable' : null,
-            'current_target' : null,
             'canceled' : false,
+            'current_target' : null,
             'phase' : 0,
             'target' : null,
             'type' : null
         },
 
-        '_constructor' : function(type/*, bubbles = false, cancelable = false*/){
-            this._super(OjObject, '_constructor', []);
-            this._processArguments(arguments, {
-                '_type' : type,
-                '_bubbles' : false,
-                '_cancelable' : false
-            });
+        "_constructor" : function(type, bubbles, cancelable){
+            this._super(OjObject, "_constructor", []);
+            this._set("_type", type);
+            this._set("_bubbles", bubbles, false);
+            this._set("_cancelable", cancelable, false);
         },
         'cancel' : function(){
             if(this._cancelable){
@@ -2876,6 +3982,44 @@ OJ.extendClass(
                 }
             }
             return clone;
+        },
+        "exportData" : function(mode, processed){
+            processed = processed || [];
+            var self = this,
+                data = self._super(OjObject, "exportData", [mode, processed]);
+            data.bubbles = self.bubbles;
+            data.cancelable = self.cancelable;
+            data.current_target = OjObject.exportData(self.current_target, mode, processed);
+            data.canceled = self.canceled;
+            data.phase = self.phase;
+            data.target = OjObject.exportData(self.target, mode, processed);
+            data.type = self.type;
+            return data;
+        },
+        "importData": function(data, mode){
+            var self = this;
+            if(isSet(data.bubbles)){
+                self._bubbles = data.bubbles;
+            }
+            if(isSet(data.cancelable)){
+                self._cancelable = data.cancelable;
+            }
+            if(isSet(data.canceled)){
+                self._canceled = data.canceled;
+            }
+            if(isSet(data.current_target)){
+                self._current_target = OjObject.importData(data.current_target);
+            }
+            if(isSet(data.phase)){
+                self._phase = data.phase;
+            }
+            if(isSet(data.target)){
+                self._target = OjObject.importData(data.target);
+            }
+            if(isSet(data.type)){
+                self._type = data.type;
+            }
+            return self;
         }
     },
     {
@@ -2975,7 +4119,7 @@ OJ.extendManager(
                 }
             }
         },
-        '_getIndex' : function(target_id, params){
+        '_setIndex' : function(target_id, params){
             var index = this._index;
             if(!index[target_id]){
                 index[target_id] = {};
@@ -2984,30 +4128,35 @@ OJ.extendManager(
         },
 
         'addEventListener' : function(target, type, context, callback){
-            // make sure the callback is a function
-            callback = isString(callback) ? context[callback] : callback;
-            // get the unique ids needed to qualify listeners
-            var events = this._events,
-                target_id = target.oj_id,
-                context_id = context == window ? 'window' : context.oj_id,
-                guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
-            // make sure we have a holder for this type of event
-            if(!events[type]){
-                events[type] = {};
+            try {
+                // make sure the callback is a function
+                callback = isString(callback) ? context[callback] : callback;
+                // get the unique ids needed to qualify listeners
+                var events = this._events,
+                    target_id = target.oj_id,
+                    context_id = context == window ? 'window' : context.oj_id,
+                    guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
+                // make sure we have a holder for this type of event
+                if(!events[type]){
+                    events[type] = {};
+                }
+                // make sure we have a holder for this target on this type of event
+                if(!events[type][target_id]){
+                    events[type][target.oj_id] = {};
+                }
+                // only make changes if we haven't already recorded this listener
+                if(!events[type][target_id][guid]){
+                    events[type][target_id][guid] = {
+                        'callback' : callback,
+                        'context' : context
+                    };
+                    // track the listener by the target for cleanup purposes
+                    this._setIndex(target_id, [target_id, type, context_id, guid]);
+                    this._setIndex(context_id, [target_id, type, context_id, guid]);
+                }
             }
-            // make sure we have a holder for this target on this type of event
-            if(!events[type][target_id]){
-                events[type][target.oj_id] = {};
-            }
-            // only make changes if we haven't already recorded this listener
-            if(!events[type][target_id][guid]){
-                events[type][target_id][guid] = {
-                    'callback' : callback,
-                    'context' : context
-                };
-                // track the listener by the target for cleanup purposes
-                this._getIndex(target_id, [target_id, type, context_id, guid]);
-                this._getIndex(context_id, [target_id, type, context_id, guid]);
+            catch (e) {
+                print("Could not add event listener", arguments);
             }
         },
         'dispatchEvent' : function(target, evt){
@@ -3090,70 +4239,84 @@ OJ.extendManager(
     }
 );
 
-
 OJ.extendClass(
-    'OjTextEvent', [OjEvent],
+    "OjTextEvent", [OjEvent],
     {
-        '_get_props_' : {
-            'text' : ''
+        "_get_props_" : {
+            "text" : ""
         },
 
-        '_constructor' : function(type/*, text = "", bubbles = false, cancelable = false*/){
-            var cancelable, bubbles = cancelable = false, ln = arguments.length;
-            if(ln > 1){
-                this._text = arguments[1];
-                if(ln > 2){
-                    bubbles = arguments[2];
-                    if(ln > 3){
-                        cancelable = arguments[3];
-                    }
-                }
+        '_constructor' : function(type, text, bubbles, cancelable){
+            var self = this;
+            self._super(OjEvent, "_constructor", [type, bubbles, cancelable]);
+            if(isSet(text)){
+                self._text = text;
             }
-            this._super(OjEvent, '_constructor', [type, bubbles, cancelable]);
-        }
+        },
+        "exportData" : function(mode){
+            var self = this,
+                data = self._super(OjEvent, "exportData", arguments);
+            data.text = self.text;
+            return data;
+        },
+		"importData" : function(data, mode){
+			var self = this;
+			if(isSet(data.text)){
+				self._text = data.text;
+			}
+			return self._super(OjEvent, "importData", arguments);
+		}
     },
     {
-        'TEXT' : 'onText'
+        "TEXT" : "onText"
     }
 );
 
 OJ.extendClass(
-    'OjErrorEvent', [OjTextEvent],
+    "OjError", [OjTextEvent],
     {
-        '_get_props_' : {
-            'code'    : 0
+        "_get_props_" : {
+            "code"    : 0
         },
 
-        '_constructor' : function(type/*, text = null, code = 0, bubbles = false, cancelable = false*/){
-            var args = Array.array(arguments),
-                ln = args.length;
-            if(ln > 2){
-                this._code = args[2];
-                args.removeAt(2);
-            }
-            this._super(OjTextEvent, '_constructor', args);
-        }
+        '_constructor' : function(type, text, code, bubbles, cancelable){
+            var self = this;
+            self._super(OjTextEvent, "_constructor", [type, text, bubbles, cancelable]);
+            self._code = code;
+        },
+
+        "exportData" : function(mode){
+            var self = this,
+                data = self._super(OjTextEvent, "exportData", arguments);
+            data.code = self.code;
+            return data;
+        },
+		"importData" : function(data, mode){
+			var self = this;
+			if(isSet(data.code)){
+				self._code = data.code;
+			}
+			return self._super(OjTextEvent, "importData", arguments);
+		}
     },
     {
-        'ERROR' : 'onError'
+        "ERROR" : "onError"
     }
 );
 
 OJ.extendClass(
     "OjUrl", [OjObject],
     {
-        "_get_props_" : {
-            "hashbang" : null
-        },
         "_props_" : {
-            "protocol"    : null,
-            "host"        : null,
-            "port"        : null,
-            "path"        : null,
-            "query"       : null,
+            "protocol"     : null,
+            "host"         : null,
+            "port"         : null,
+            "path"         : null,
+            "query"        : null,
             "query_params" : null,
-            "hash"        : null,
-            "source"      : null
+            "hash"         : null,
+            "hashbang"     : null,
+            "source"       : null
         },
 
         "_constructor" : function(url){
@@ -3167,7 +4330,7 @@ OJ.extendClass(
             var self = this;
             if(self._dirty.query){
                 self._query = Object.toQueryString(self._query_params)
-                delete self._dirty.query;
+                self._dirty.query = undefined;
             }
             return self._query;
         },
@@ -3242,6 +4405,9 @@ OJ.extendClass(
             var hash = this.hash;
             return hash && hash[0] == "!" ? hash.substr(1) : null;
         },
+        "=hashbang" : function(val){
+            this.hash = "!" + val;
+        },
         ".source" : function(){
             return this.toString();
         },
@@ -3290,17 +4456,13 @@ OJ.extendClass(
         },
         '_ignores_cache' : false,  '_is_multipart' : false,
 
-        '_constructor' : function(){
-            var self = this,
-                u = undefined;
-            self._super(OjUrl, '_constructor', []);
-            self._headers = {};
-            self._processArguments(arguments, {
-                'source': u,
-                'data' : u,
-                'content_type' : u,
-                'method' : u
-            });
+        '_constructor' : function(source, data, content_type, method){
+            this._super(OjUrl, '_constructor', []);
+            this._headers = {};
+            this._set("source", source);
+            this._set("data", data);
+            this._set("content_type", content_type);
+            this._set("method", method);
         },
 
         '_search_for_files' : function(obj){
@@ -3570,7 +4732,7 @@ OJ.extendClass(
 
 
 OJ.extendClass(
-    'OjIoErrorEvent', [OjErrorEvent],
+    'OjIoError', [OjError],
     {},
     {
         'IO_ERROR'   : 'onIoError',
@@ -3626,11 +4788,12 @@ OJ.extendClass(
                 }
             }
         },
-        "exportData" : function(mode){
+        "exportData" : function(mode, processed){
+            processed = processed || [];
             var self = this,
                 obj = self._super(OjObject, "exportData", arguments);
             obj.created    = self.created;
-            obj.data       = self.data ? OjObject.exportData(self.data, mode) : null;
+            obj.data       = self.data ? OjObject.exportData(self.data, mode, processed) : null;
             obj.expiration = self.expiration;
             return obj;
         },
@@ -3865,7 +5028,6 @@ OJ.extendManager(
         'setData' : function(key, value/*, lifespan*/){
             throw new Error('No setData() defined.');
             return;
-            this._setCachedData(key, this._setData.apply(this, [].slice.call(arguments, 1)));
         },
         'unsetData' : function(key){
             throw new Error('No unsetData() defined.');
@@ -3918,26 +5080,23 @@ OJ.extendClass(
         "_get_props_" : {
             "policy" : null,
             "response_headers" : null,
-            "status_cide" : null
+            "status_code" : null
         },
         //"_error_thrown" : false,
         //
         //"_url" : null,  "_xhr" : null,
 
-        "_constructor" : function(/*request, async,*/){
+        "_constructor" : function(request, async){
             this._super(OjActionable, "_constructor", []);
-            this._processArguments(arguments, {
-                "request": undefined,
-                "async": undefined
-            });
+            this._set("request", request);
+            this._set("async", async);
         },
         "_destructor" : function(){
-            var self = this;
-            if(self._xhr){
-                self._cleanupXhr();
+            if(this._xhr){
+                this._cleanupXhr();
             }
-            self._unset("_request");
-            return self._super(OjActionable, "_destructor", arguments);
+            this._unset("_request");
+            return this._super(OjActionable, "_destructor", arguments);
         },
 
         '_calc_form_namespace' : function(ns, key){
@@ -4002,7 +5161,7 @@ OJ.extendClass(
             return form;
         },
         '_process_json_data' : function(data){
-            return toJson(data);
+            return toJson(OjObject.exportData(data));
         },
         '_process_multipart_data' : function(data){
             if(data instanceof FormData){
@@ -4038,7 +5197,7 @@ OJ.extendClass(
                 self.dispatchEvent(new OjProgressEvent(OjProgressEvent.PROGRESS));
             };
             //xhr.ontimeout = function(){
-            //    self.dispatchEvent(new OjIoErrorEvent(OjIoErrorEvent.IO_TIMEOUT));
+            //    self.dispatchEvent(new OjIoError(OjIoError.IO_TIMEOUT));
             //    self.dispatchEvent(new OjEvent(OjEvent.FAIL));
             //};
         },
@@ -4111,7 +5270,7 @@ OJ.extendClass(
             }
             // clear the timeout timer
             OJ.destroy(self._timer);
-            var error = new OjIoErrorEvent(OjIoErrorEvent.IO_ERROR, xhr.statusText, xhr.status);
+            const error = new OjIoError(OjIoError.IO_ERROR, xhr.statusText, xhr.status);
             self.dispatchEvent(error);
             self.dispatchEvent(new OjEvent(OjEvent.FAIL));
             if(callback){
@@ -4188,6 +5347,28 @@ OJ.extendClass(
         '_HOST_REQUEST_COUNT' : {},
         '_HOST_REQUEST_MAX' : 5,
         '_QUEUE' : [],
+        "OK": 200,
+        "CREATED": 201,
+        "ACCEPTED": 202,
+        "NOT_MODIFIED": 304,
+        "BAD_REQUEST": 400,
+        "UNAUTHORIZED": 401,
+        "PAYMENT_REQUIRED": 402,
+        "FORBIDDEN": 403,
+        "NOT_FOUND": 404,
+        "METHOD_NOT_ALLOWED": 405,
+        "NOT_ACCEPTABLE": 406,
+        "TIMEOUT": 408,
+        "CONFLICT": 409,
+        "GONE": 410,
+        "DUPLICATE": 412,  // Formally known as "Precondition Failed"
+        "UNSUPPORTED_TYPE": 415,
+        "INTERNAL_ERROR": 500,
+        "NOT_IMPLEMENTED": 501,
+        "BAD_GATEWAY": 502,
+        "UNAVAILABLE": 503,
+        "GATEWAY_TIMEOUT": 504,
+        "UNKNOWN": 520,
 
         '_loadLoader' : function(ldr){
             var self = this,
@@ -4308,96 +5489,106 @@ OJ.extendClass(
 
 
 OJ.extendClass(
-    'OjElement', [OjActionable],
+    "OjElement", [OjActionable],
     {
         // Internal Vars
-        '_props_' : {
-            'parent' : null
+        "_props_" : {
+            "parent" : null
         },
-        '_get_props_' : {
-            'dom' : null,
-            'id' : null,
-            'inDom' : false
+        "_get_props_" : {
+            "dom" : null,
+            "id" : null,
+            "in_dom" : false
         },
-        '_draggable' : false, '_dragX' : 0, '_dragY' : 0, '_did_drag' : false,
+        "_draggable" : false, "_drag_x" : 0, "_drag_y" : 0, "_did_drag" : false,
 
         // Internal Methods
-        '_constructor' : function(source, context){
-            this._super(OjActionable, '_constructor', []);
+        "_constructor" : function(source, context){
+            this._super(OjActionable, "_constructor", []);
+            this._id_ = {"id": this._id_};
             // set the dom
             // if no source present then create one
-            this._setDom(source ? source : OjElement.elm('div'), context);
-            OjElement.register(this);
+            this._setDom(source ? source : OjElement.elm("div"), context);
         },
-        '_destructor' : function(/*depth = 0*/){
-            OjElement.unregister(this);
-            // remove from parent
-            this.parent = null;
-            if(this._dom){
-                delete this._dom.ojProxy;
+        "_destructor" : function(/*depth = 0*/){
+            // cleanup dom
+            const dom = this._dom;
+            if(dom){
+                this.parent = null;
+                delete dom.__oj__;
                 // release the vars
                 this._dom = this._proxy = null;
             }
+            // unregister element
+            OjElement.unregister(this);
             // continue on with the destruction
-            return this._super(OjActionable, '_destructor', arguments);
+            return this._super(OjActionable, "_destructor", arguments);
         },
 
         // Internal Properties
-        '_setDom' : function(dom_elm){
-            this._setProxy(this._dom = dom_elm);
-            this._dom.id = this.id;
+        "_setDom" : function(dom_elm){
+            dom_elm.id = this.id;
+            dom_elm.__oj__ = this._id_;
+            this._dom = dom_elm;
+            this._proxy = null;
+            OjElement.register(this);
         },
-        '_setProxy' : function(dom_elm){
-            if(this._proxy){
-                this._proxy.ojProxy = null;
-            }
-            (this._proxy = dom_elm).ojProxy = this.id;
+        "_getProxy" : function(){
+            return this._proxy || this._dom;
         },
-        '_getEventProxy' : function(){
-            if(this._proxy == document.body){
+        "_setProxy" : function(dom_elm){
+            this._proxy = dom_elm;
+        },
+        "_getEventProxy" : function(){
+            const proxy = this._getProxy();
+            if(proxy == document.body){
                 return window;
             }
-            return this._proxy;
+            return proxy;
         },
 
-        '_setIsDisplayed' : function(displayed){
-            var self = this,
-                dispatch = self.dispatchEvent,
-                evt = OjEvent;
-            if(self._is_displayed == displayed){
+        "_setIsDisplayed" : function(displayed){
+            const evt = OjEvent;
+            if(this._is_displayed == displayed){
                 return;
             }
-            if(self._is_displayed = displayed){
-                self.dispatchEvent(new evt(evt.ADDED_TO_DISPLAY));
+            if(this._is_displayed = displayed){
+                this.dispatchEvent(new evt(evt.ADDED_TO_DISPLAY));
             }
             else{
-                self.dispatchEvent(new evt(evt.REMOVED_FROM_DISPLAY));
+                this.dispatchEvent(new evt(evt.REMOVED_FROM_DISPLAY));
             }
         },
 
         // Public Methods
-        'hasDomElement' : function(dom_elm){
+        "hasDomElement" : function(dom_elm){
             return OjElement.hasDomElement(this._dom, dom_elm);
         },
-        'query' : function(query){
+        "query" : function(query){
             return new OjElmArray(this._dom.querySelectorAll(query));
+        },
+        "scrollIntoView" : function(){
+            try{
+                this._dom.scrollIntoView();
+            }
+            catch(e){}
         },
 
         // Public Properties
-        '.dom' : function(){
-            return this._dom;
-        },
-        '.id' : function(){
+        ".id" : function(){
             return this.oj_id;
         },
-        '.inDom' : function(){
-            var dom = this._dom;
+        ".in_dom" : function(){
+            const dom = this._dom;
             return dom.ownerDocument && isObject(dom.ownerDocument) && dom.parentNode ? true : false;
         },
-        '.parent' : function(){
-            return this._dom ? OjElement.element(this._dom.parentNode) : null;
+        ".oj_id" : function(){
+            return this._id_.id;
         },
-        '=parent' : function(parent){
+        ".parent" : function(){
+            return OjElement.element((this._dom || {}).parentNode);
+        },
+        "=parent" : function(parent){
             if(parent){
                 parent.appendChild(this);
             }
@@ -4405,68 +5596,85 @@ OJ.extendClass(
                 parent.removeChild(this);
             }
         },
-        '.parentComponent' : function(){
+        ".parentComponent" : function(){
             if(!this._parentComponent){
-                this._parentComponent = OjElement.parentComponent(this._dom.parentNode);
+                this._parentComponent = OjElement.parentComponent((this._dom || {}).parentNode);
             }
             return this._parentComponent;
         }
     },
     {
-        '_elms' : {},
-        'byId' : function(id){
-            var elms = this._elms,
-                elm;
-            if(elms[id]){
-                return elms[id];
-            }
-            return (elm = document.getElementById(id)) ? elms[elm.id] : null;
+        // "_elms" : {},
+        "_doms": new WeakMap(),
+        "_elms": new WeakMap(),
+        "byId" : function(id){
+            // print(id);
+            return this.element(document.getElementById(id));
+            // const elms = this._elms;
+            //
+            // if(elms[id]){
+            //     return elms[id];
+            // }
+            //
+            // let elm = document.getElementById(id);
+            //
+            // return elm ? elms[elm.id] : null;
         },
-        'byPoint' : function(x, y){
-            var obj = document.elementFromPoint(x, y);
-            return obj ? this.element(obj) : null;
+        "byPoint" : function(x, y){
+            return this.element(
+                document.elementFromPoint(x, y)
+            );
         },
-        'elm' : function(tag){
+        "elm" : function(tag){
             return document.createElement(tag);
         },
-        'element' : function(obj){
-            var self = this;
+        "element" : function(obj){
             if(!obj){
                 return null;
             }
             if(isDomElement(obj)){
-                return self.isTextNode(obj) ? new OjTextElement(obj) : self.byId(obj.id);
+                const oj_id = obj.__oj__;
+                if(oj_id){
+                    return this._elms.get(oj_id);
+                }
+                if(this.isCommentNode(obj)){
+                    return new OjCommentElement(obj);
+                }
+                if(this.isTextNode(obj)){
+                    return new OjTextElement(obj);
+                }
+                return this._doms.get(obj);
             }
             if(isObjective(obj)){
                 return obj;
             }
             return obj == window ? OJ : new OjStyleElement(obj);
         },
-        'hasDomElement' : function(haystack, needle){
+        "hasDomElement" : function(haystack, needle){
             if(haystack == needle){
                 return true;
             }
-            while((needle = needle.parentNode)){
+            while(needle = needle.parentNode){
                 if(needle == haystack){
                     return true;
                 }
             }
             return false;
         },
-        'isCommentNode' : function(dom_elm){
-            return dom_elm.nodeName.toLowerCase() == '#comment';
+        "isCommentNode" : function(dom_elm){
+            return dom_elm.nodeName.toLowerCase() == "#comment";
         },
-        'isTextNode' : function(dom_elm){
-            return dom_elm.nodeName.toLowerCase() == '#text';
+        "isTextNode" : function(dom_elm){
+            return dom_elm.nodeName.toLowerCase() == "#text";
         },
-        'parentComponent' : function(elm){
+        "parentComponent" : function(elm, cls){
             if(isElement(elm)){
                 elm = elm._dom;
             }
-            var parent;
+            let parent;
             while(elm){
                 parent = elm.parentNode;
-                if(parent && (elm = this.element(parent)) && isComponent(elm)){
+                if(parent && (elm = this.element(parent)) && isComponent(elm, cls)){
                     return elm;
                 }
                 elm = parent;
@@ -4474,12 +5682,21 @@ OJ.extendClass(
             return null;
         },
         // todo: look into this it doesn't seem efficient
-        'register' : function(elm){
-            this._elms[elm.id] = elm;
+        "register" : function(elm){
+            const dom = elm._dom;
+            if(dom){
+                this._doms.set(dom, elm);
+            }
+            this._elms.set(elm._id_, elm);
+            // this._elms[elm.id] = elm;
         },
-        'unregister' : function(elm){
-            delete this._elms[elm.id];
-//            print(Object.keys(this._elms).length);
+        "unregister" : function(elm){
+            const dom = elm._dom;
+            if(dom){
+                this._doms.delete(dom);
+            }
+            this._elms.delete(elm._id_);
+            // delete this._elms[elm.id];
         }
     }
 );
@@ -4497,26 +5714,25 @@ OJ.extendClass(
             "height" : 0
         },
         "_get_props_" : {
+            "array": null,
             "bottom" : 0,
             "right"  : 0
         },
 
-        "_constructor" : function(/*left, top, width, height*/){
+        "_constructor" : function(left, top, width, height){
             this._super(OjObject, "_constructor", []);
-            this._processArguments(arguments, {
-                "left" : 0,
-                "top" : 0,
-                "width" : 0,
-                "height" : 0
-            });
+            this._set("left", left, 0);
+            this._set("top", top, 0);
+            this._set("width", width, 0);
+            this._set("height", height, 0);
         },
         "delta" : function(rect){
-            var self = this;
+            rect = rect || {};
             return new OjRect(
-                self.top - (rect ? rect.top : 0),
-                self.left - (rect ? rect.left : 0),
-                self.width - (rect ? rect.width : 0),
-                self.height - (rect ? rect.height : 0)
+                this.top - (rect.top || 0),
+                this.left - (rect.left || 0),
+                this.width - (rect.width || 0),
+                this.height - (rect.height || 0)
             );
         },
         "hitTestPoint" : function(x, y){
@@ -4531,6 +5747,9 @@ OJ.extendClass(
                 (rect._bottom >= self._top && rect._bottom <= self._bottom && rect._right >= self._left && rect._right <= self._right);
         },
 
+        ".array" : function(){
+            return [this.left, this.top, this.width, this.height];
+        },
         "=top" : function(val){
             var self = this;
             self._bottom = (self._top = val) + self._height;
@@ -4555,7 +5774,7 @@ OJ.extendClass(
             }
             if(isObject(obj)){
                 if(isSet(obj.top) && isSet(obj.left) && isSet(obj.width) && isSet(obj.height)){
-                    return new OjRect(obj.top, obj.left, obj.width, obj.height);
+                    return new OjRect(obj.left, obj.top, obj.width, obj.height);
                 }
             }
             else if(isArray(obj) && obj.length == 4){
@@ -4563,6 +5782,12 @@ OJ.extendClass(
             }
             return new OjRect();
         }
+    }
+);
+
+OJ.extendClass(
+    "OjCommentElement", [OjElement],
+    {
     }
 );
 
@@ -4610,74 +5835,130 @@ OJ.extendClass(
         }
     }
 );
+OJ.extendClass(
+    "OjTextElement", [OjElement],
+    {
+        "_props_" : {
+            'on_change' : null,
+            "text" : null
+        },
+        "_constructor" : function(text_or_dom){
+            const self = this,
+                is_dom = isDomElement(text_or_dom);
+            self._super(OjElement, "_constructor", is_dom ? [text_or_dom] : []);
+            if(!is_dom){
+                self.text = text_or_dom;
+            }
+        },
+        "_setDom" : function(dom_elm){
+            // force text dom elm
+            if(dom_elm.nodeName != "#text"){
+                dom_elm = document.createTextNode(dom_elm.innerText);
+            }
+            return this._super(OjElement, "_setDom", [dom_elm]);
+        },
+        "clone" : function(){
+            const obj = this._super(OjElement, "clone", arguments);
+            obj.on_change = this.on_change;
+            obj.text = this.text;
+            return obj;
+        },
+        "toString" : function(){
+            return this.dom.nodeValue;
+        },
+        ".text" : function(str){
+            return this.dom.nodeValue;
+        },
+        "=text" : function(str){
+            this.dom.nodeValue = String.string(str);
+            if(this._on_change){
+                this._on_change(this);
+            }
+        }
+    }
+);
 
 
 OJ.extendClass(
-    'OjDomEvent', [OjEvent],
-    {},
+    "OjDomEvent", [OjEvent],
     {
-        'normalizeDomEvent' : function(evt){
+        "cancel" : function(){
+            var self = this,
+                src = self._source;
+            if(self._cancelable){
+                if(src){
+                    try{ src.preventDefault(); } catch(e){}
+                    try{ src.stopPropagation(); } catch(e){}
+                }
+                self._super(OjEvent, "cancel", arguments);
+            }
+        }
+    },
+    {
+        "normalizeDomEvent" : function(evt){
             if(!evt){
                 evt = window.event;
             }
             // todo: figure out a better way to handle FF not liking us changing event properties
-            evt = OJ.merge({}, evt); // because FF sucks
-            if(evt.clientX || evt.clientY){
-                evt.pageX = evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-                evt.pageY = evt.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            const new_evt = OJ.merge({}, evt); // because FF sucks
+            if(new_evt.clientX || new_evt.clientY){
+                new_evt.pageX = new_evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                new_evt.pageY = new_evt.clientY + document.body.scrollTop + document.documentElement.scrollTop;
             }
-            if(evt.which){
-                evt.rightClick = evt.which == 3;
+            if(new_evt.which){
+                new_evt.rightClick = new_evt.which == 3;
             }
-            else if(evt.button){
-                evt.rightClick = evt.button == 2;
+            else if(new_evt.button){
+                new_evt.rightClick = new_evt.button == 2;
             }
-            return evt;
+            return new_evt;
         },
-        'convertDomEvent' : function(evt){
-            evt = OjDomEvent.normalizeDomEvent(evt);
-            return new OjDomEvent(evt.type, true, true);
+        "convertDomEvent" : function(evt){
+            var norm = OjDomEvent.normalizeDomEvent(evt),
+                new_evt = new OjDomEvent(norm.type, true, true);
+            new_evt._source = evt;
+            return new_evt;
         },
         // mouse events
-        'PRESS'        : 'click',
-        'DOUBLE_PRESS' : 'dblclick',
-        'MOUSE_DOWN'   : 'mousedown',
-        'MOUSE_MOVE'   : 'mousemove',
-        'MOUSE_OVER'   : 'mouseover',
-        'MOUSE_OUT'    : 'mouseout',
-        'MOUSE_UP'     : 'mouseup',
-        'MOUSE_WHEEL'  : 'mousewheel',
+        "PRESS"        : "click",
+        "DOUBLE_PRESS" : "dblclick",
+        "MOUSE_DOWN"   : "mousedown",
+        "MOUSE_MOVE"   : "mousemove",
+        "MOUSE_OVER"   : "mouseover",
+        "MOUSE_OUT"    : "mouseout",
+        "MOUSE_UP"     : "mouseup",
+        "MOUSE_WHEEL"  : "mousewheel",
         // keyboard events
-        'KEY_DOWN'  : 'keydown',
-        'KEY_PRESS' : 'keypress',
-        'KEY_UP'    : 'keyup',
+        "KEY_DOWN"  : "keydown",
+        "KEY_PRESS" : "keypress",
+        "KEY_UP"    : "keyup",
         // focus events
-        'FOCUS_IN'  : 'focus',
-        'FOCUS_OUT' : 'blur',
+        "FOCUS_IN"  : "focus",
+        "FOCUS_OUT" : "blur",
         // form events
-        'CHANGE' : 'change',
+        "CHANGE" : "change",
         // scroll events
-        'SCROLL' : 'scroll',
+        "SCROLL" : "scroll",
         // touch events
-        'TOUCH_CANCEL' : 'touchcancel',
-    'TOUCH_END'    : 'touchend',
-        'TOUCH_LEAVE'  : 'touchleave',
-    'TOUCH_MOVE'   : 'touchmove',
-        'TOUCH_START'  : 'touchstart',
+        "TOUCH_CANCEL" : "touchcancel",
+        "TOUCH_END"    : "touchend",
+        "TOUCH_LEAVE"  : "touchleave",
+        "TOUCH_MOVE"   : "touchmove",
+        "TOUCH_START"  : "touchstart",
         // orientation events
-        'ORIENTATION_CHANGE' : 'orientationchange'
+        "ORIENTATION_CHANGE" : "orientationchange"
     }
 );
 
 OJ.extendClass(
-    'OjUiEvent', [OjDomEvent],
+    "OjUiEvent", [OjDomEvent],
     {
-        '_get_props_' : {
-            'pageX' : NaN,
-            'pageY' : NaN
+        "_get_props_" : {
+            "pageX" : NaN,
+            "pageY" : NaN
         },
 
-        '_constructor' : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
+        "_constructor" : function(type/*, pageX = NaN, pageY = NaN, bubbles, cancelable*/){
             var args = Array.array(arguments),
                 ln = args.length;
             if(ln > 1){
@@ -4686,40 +5967,41 @@ OJ.extendClass(
                     this._pageY = args.removeAt(1)[0];
                 }
             }
-            this._super(OjDomEvent, '_constructor', args);
+            this._super(OjDomEvent, "_constructor", args);
         },
 
-        'clone' : function(){
-            var clone = this._super(OjDomEvent, 'clone', arguments);
+        "clone" : function(){
+            var clone = this._super(OjDomEvent, "clone", arguments);
             clone._pageX = this._pageX;
             clone._pageY = this._pageY;
             return clone;
         }
     },
     {
-        '_evt_map' : {
-            'click'        : 'onPress',
+        "_evt_map" : {
+            "click"        : "onPress",
             "contextmenu"  : "onUp",
-            'dblclick'     : 'onDoublePress',
-            'mousedown'    : 'onDown',
-            'mousemove'    : 'onMove',
-            'mouseover'    : 'onOver',
-            'mouseout'     : 'onOut',
-            'mouseup'      : 'onUp',
-            'mousewheel'   : 'onWheel'
+            "dblclick"     : "onDoublePress",
+            "mousedown"    : "onDown",
+            "mousemove"    : "onMove",
+            "mouseover"    : "onOver",
+            "mouseout"     : "onOut",
+            "mouseup"      : "onUp",
+            "mousewheel"   : "onWheel"
         },
-        'convertDomEvent' : function(evt){
-            evt = OjDomEvent.normalizeDomEvent(evt);
-            var type = this._evt_map[evt.type];
+        "convertDomEvent" : function(evt){
+            var norm = evt = OjDomEvent.normalizeDomEvent(evt),
+                type = this._evt_map[norm.type];
             if(type == OjUiEvent.PRESS){
                 // todo: OjUiEvent - add middle and right click event detection
             }
-            var new_evt = new OjUiEvent(type, evt.pageX, evt.pageY, evt.bubbles, evt.cancelable);
-            new_evt._target = OjElement.element(evt.target);
-            new_evt._current_target = OjElement.element(evt.current_target);
+            var new_evt = new OjUiEvent(type, norm.pageX, norm.pageY, norm.bubbles, norm.cancelable);
+            new_evt._target = OjElement.element(norm.target);
+            new_evt._current_target = OjElement.element(norm.current_target);
+            new_evt._source = evt;
             return new_evt;
         },
-        'isMouseEvent' : function(type){
+        "isMouseEvent" : function(type){
             var k;
             for(k in this._evt_map){
                 if(type == this._evt_map[k]){
@@ -4728,7 +6010,7 @@ OJ.extendClass(
             }
             return false;
         },
-        'isMouseDomEvent' : function(type){
+        "isMouseDomEvent" : function(type){
             var k;
             for(k in this._evt_map){
                 if(type == k){
@@ -4737,19 +6019,19 @@ OJ.extendClass(
             }
             return false;
         },
-        'PRESS'           : 'onPress',
-        'DOUBLE_PRESS'    : 'onDoublePress',
-        'MIDDLE_PRESS'    : 'onMiddlePress',
-        'RIGHT_PRESS'  : 'onRightPress',
-        'DOWN'            : 'onDown',
-        'RIGHT_DOWN'   : 'onRightDown',
-        'UP'           : 'onUp',
-        'UP_OUTSIDE'   : 'onUpOutside',
-        'RIGHT_UP'     : 'onRightUp',
-        'MOVE'         : 'onMove',
-        'OVER'         : 'onOver',
-        'OUT'          : 'onOut',
-        'WHEEL'        : 'onWheel'
+        "PRESS"           : "onPress",
+        "DOUBLE_PRESS"    : "onDoublePress",
+        "MIDDLE_PRESS"    : "onMiddlePress",
+        "RIGHT_PRESS"  : "onRightPress",
+        "DOWN"            : "onDown",
+        "RIGHT_DOWN"   : "onRightDown",
+        "UP"           : "onUp",
+        "UP_OUTSIDE"   : "onUpOutside",
+        "RIGHT_UP"     : "onRightUp",
+        "MOVE"         : "onMove",
+        "OVER"         : "onOver",
+        "OUT"          : "onOut",
+        "WHEEL"        : "onWheel"
     }
 );
 
@@ -4824,10 +6106,12 @@ OJ.extendClass(
     {
         '_props_' : {
             'callback' : null,
+            "enable": true,
             'event' : null,
             'pointers' : null,
             'threshold' : null
         },
+        "_touch_action": "compute",
 
         '_constructor' : function(event, pointers, threshold, callback){
             var self = this;
@@ -4843,18 +6127,26 @@ OJ.extendClass(
                 recognizer = self._recognizer;
             if(!recognizer){
                 self._recognizer = recognizer = self._make();
+                hammer.on(
+                    self.oj_id,
+                    function(evt){
+                        var callback = self.callback;
+                        if(callback){
+                            callback(evt);
+                        }
+                    }
+                );
             }
             hammer.add(recognizer);
-            hammer.on(
-                self.oj_id,
-                function(evt){
-                    var callback = self.callback;
-                    if(callback){
-                        callback(evt);
-                    }
-                }
-            );
             return hammer;
+        },
+        "_has" : function(hammer){
+            var self = this,
+                recognizer = self._recognizer;
+            if(recognizer){
+                return hammer.get(self.oj_id) != null;
+            }
+            return false;
         },
         '_make' : function(){
             var self = this,
@@ -4865,9 +6157,11 @@ OJ.extendClass(
         '_options' : function(){
             var self = this;
             return {
-                'event'     : self.oj_id,
-                'pointers'  : self.pointers,
-                'threshold' : self.threshold
+                "enable"    : self.enable,
+                "event"     : self.oj_id,
+                "pointers"  : self.pointers,
+                "threshold" : self.threshold,
+                "touchAction": self._touch_action
             };
         },
         '_remove' : function(hammer){
@@ -4877,6 +6171,14 @@ OJ.extendClass(
                 hammer.remove(recognizer);
             }
             return hammer;
+        },
+        ".enable" : function(val){
+            var self = this,
+                recognizer = self._recognizer;
+            if(recognizer){
+                recognizer.set({"enable": val});
+            }
+            return self._enable = val;
         }
     },
     {
@@ -4886,8 +6188,8 @@ OJ.extendClass(
         'RIGHT' : Hammer.DIRECTION_RIGHT,
         'UP' : Hammer.DIRECTION_UP,
         'ALL' : Hammer.DIRECTION_ALL,
-        'HORIZONTAL' : Hammer.HORIZONTAL,
-        'VERTICAL' : Hammer.VERTICAL
+        'HORIZONTAL' : Hammer.DIRECTION_HORIZONTAL,
+        'VERTICAL' : Hammer.DIRECTION_VERTICAL
     }
 );
 
@@ -5022,7 +6324,21 @@ OJ.extendClass(
             options.direction = self.direction;
             options.velocity = self.velocity;
             return options;
-        }
+        },
+        "=direction" : function(val){
+            const self = this,
+                cls = self._static;
+            self._direction = val;
+            if(val == cls.HORIZONTAL){
+                self._touch_action = "pan-x";
+            }
+            else if(val == cls.VERTICAL){
+                self._touch_action = "pan-y";
+            }
+            else{
+                self._touch_action = "pan-x pan-y";
+            }
+        },
     },
     {
         'SWIPE'       : 'swipe',
@@ -5073,11 +6389,25 @@ OJ.extendClass(
 
 
 OJ.extendClass(
-    'OjKeyboardEvent', [OjDomEvent],
-    {},
+    "OjKeyboardEvent", [OjDomEvent],
     {
-        'convertDomEvent' : function(evt){
-            var type;
+        "_get_props_" : {
+            "key_code": null
+        },
+        "_constructor" : function(type, key_code, bubbles, cancelable){
+            this._super(OjDomEvent, "_constructor", [type, bubbles, cancelable]);
+            this._key_code = key_code;
+        },
+
+        "clone" : function(){
+            const clone = this._super(OjDomEvent, "clone", arguments);
+            clone._key_code = this._key_code;
+            return clone;
+        }
+    },
+    {
+        "convertDomEvent" : function(evt){
+            let type;
             evt = OjDomEvent.normalizeDomEvent(evt);
             if(evt.type == OjDomEvent.KEY_DOWN){
                 type = OjKeyboardEvent.DOWN;
@@ -5088,19 +6418,19 @@ OJ.extendClass(
             else if(evt.type == OjDomEvent.KEY_UP){
                 type = OjKeyboardEvent.UP;
             }
-            return new OjKeyboardEvent(type, true, true);
+            return new OjKeyboardEvent(type, evt.keyCode, true, true);
         },
-        'isKeyboardEvent' : function(type){
+        "isKeyboardEvent" : function(type){
             return type == OjKeyboardEvent.DOWN || type == OjKeyboardEvent.PRESS || type == OjKeyboardEvent.UP;
         },
-        'isKeyboardDomEvent' : function(type){
+        "isKeyboardDomEvent" : function(type){
             return type == OjDomEvent.KEY_DOWN || type == OjDomEvent.KEY_PRESS || type == OjDomEvent.KEY_UP;
         },
-        'DOWN'  : 'onKeyDown',
-        'PRESS' : 'onKeyPress',
-        'UP'    : 'onKeyUp',
-        'SHOW'  : 'onKeyboardShow',
-        'HIDE'  : 'onKeyboardHide'
+        "DOWN"  : "onKeyDown",
+        "PRESS" : "onKeyPress",
+        "UP"    : "onKeyUp",
+        "SHOW"  : "onKeyboardShow",
+        "HIDE"  : "onKeyboardHide"
     }
 );
 
@@ -5109,22 +6439,22 @@ OJ.extendClass(
     'OjScrollEvent', [OjDomEvent],
     {
         '_get_props_' : {
-            'scrollX' : NaN,
-            'scrollY' : NaN
+            'scroll_x' : NaN,
+            'scroll_y' : NaN
         },
 
-        '_constructor' : function(type, scrollX, scrollY/*, bubbles, cancelable*/){
+        '_constructor' : function(type, scroll_x, scroll_y/*, bubbles, cancelable*/){
             var args = Array.array(arguments).slice(3);
             args.unshift(type);
             this._super(OjDomEvent, '_constructor', args);
-            this._scrollX = scrollX;
-            this._scrollY = scrollY;
+            this._scroll_x = scroll_x;
+            this._scroll_y = scroll_y;
         },
 
         'clone' : function(){
             var clone = this._super(OjDomEvent, 'clone', arguments);
-            clone._scrollX = this._scrollX;
-            clone._scrollY = this._scrollY;
+            clone._scroll_x = this._scroll_x;
+            clone._scroll_y = this._scroll_y;
             return clone;
         }
     },
@@ -5240,225 +6570,25 @@ OJ.extendClass(
     }
 );
 
-(function (factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define([], factory);
-  } else if (typeof exports === 'object') {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
-    module.exports = factory();
-  } else {
-    // Browser globals (root is window)
-    window.propagating = factory();
-  }
-}(function () {
-  var _firstTarget = null; // singleton, will contain the target element where the touch event started
-  var _processing = false; // singleton, true when a touch event is being handled
-  /**
-   * Extend an Hammer.js instance with event propagation.
-   *
-   * Features:
-   * - Events emitted by hammer will propagate in order from child to parent
-   *   elements.
-   * - Events are extended with a function `event.stopPropagation()` to stop
-   *   propagation to parent elements.
-   * - An option `preventDefault` to stop all default browser behavior.
-   *
-   * Usage:
-   *   var hammer = propagatingHammer(new Hammer(element));
-   *   var hammer = propagatingHammer(new Hammer(element), {preventDefault: true});
-   *
-   * @param {Hammer.Manager} hammer   An hammer instance.
-   * @param {Object} [options]        Available options:
-   *                                  - `preventDefault: true | 'mouse' | 'touch' | 'pen'`.
-   *                                    Enforce preventing the default browser behavior.
-   *                                    Cannot be set to `false`.
-   * @return {Hammer.Manager} Returns the same hammer instance with extended
-   *                          functionality
-   */
-  return function propagating(hammer, options) {
-    var _options = options || {
-      preventDefault: false
-    };
-    if (hammer.Manager) {
-      // This looks like the Hammer constructor.
-      // Overload the constructors with our own.
-      var Hammer = hammer;
-      var PropagatingHammer = function(element, options) {
-        var o = Object.create(_options);
-        if (options) Hammer.assign(o, options);
-        return propagating(new Hammer(element, o), o);
-      };
-      Hammer.assign(PropagatingHammer, Hammer);
-      PropagatingHammer.Manager = function (element, options) {
-        var o = Object.create(_options);
-        if (options) Hammer.assign(o, options);
-        return propagating(new Hammer.Manager(element, o), o);
-      };
-      return PropagatingHammer;
-    }
-    // create a wrapper object which will override the functions
-    // `on`, `off`, `destroy`, and `emit` of the hammer instance
-    var wrapper = Object.create(hammer);
-    // attach to DOM element
-    var element = hammer.element;
-    if(!element.hammer) element.hammer = [];
-    element.hammer.push(wrapper);
-    // register an event to catch the start of a gesture and store the
-    // target in a singleton
-    hammer.on('hammer.input', function (event) {
-      if (_options.preventDefault === true || (_options.preventDefault === event.pointerType)) {
-        event.preventDefault();
-      }
-      if (event.isFirst) {
-        _firstTarget = event.target;
-      }
-    });
-    /** @type {Object.<String, Array.<function>>} */
-    wrapper._handlers = {};
-    /**
-     * Register a handler for one or multiple events
-     * @param {String} events    A space separated string with events
-     * @param {function} handler A callback function, called as handler(event)
-     * @returns {Hammer.Manager} Returns the hammer instance
-     */
-    wrapper.on = function (events, handler) {
-      // register the handler
-      split(events).forEach(function (event) {
-        var _handlers = wrapper._handlers[event];
-        if (!_handlers) {
-          wrapper._handlers[event] = _handlers = [];
-          // register the static, propagated handler
-          hammer.on(event, propagatedHandler);
-        }
-        _handlers.push(handler);
-      });
-      return wrapper;
-    };
-    /**
-     * Unregister a handler for one or multiple events
-     * @param {String} events      A space separated string with events
-     * @param {function} [handler] Optional. The registered handler. If not
-     *                             provided, all handlers for given events
-     *                             are removed.
-     * @returns {Hammer.Manager}   Returns the hammer instance
-     */
-    wrapper.off = function (events, handler) {
-      // unregister the handler
-      split(events).forEach(function (event) {
-        var _handlers = wrapper._handlers[event];
-        if (_handlers) {
-          _handlers = handler ? _handlers.filter(function (h) {
-            return h !== handler;
-          }) : [];
-          if (_handlers.length > 0) {
-            wrapper._handlers[event] = _handlers;
-          }
-          else {
-            // remove static, propagated handler
-            hammer.off(event, propagatedHandler);
-            delete wrapper._handlers[event];
-          }
-        }
-      });
-      return wrapper;
-    };
-    /**
-     * Emit to the event listeners
-     * @param {string} eventType
-     * @param {Event} event
-     */
-    wrapper.emit = function(eventType, event) {
-      _firstTarget = event.target;
-      hammer.emit(eventType, event);
-    };
-    wrapper.destroy = function () {
-      // Detach from DOM element
-      var hammers = hammer.element.hammer;
-      var idx = hammers.indexOf(wrapper);
-      if(idx !== -1) hammers.splice(idx,1);
-      if(!hammers.length) delete hammer.element.hammer;
-      // clear all handlers
-      wrapper._handlers = {};
-      // call original hammer destroy
-      hammer.destroy();
-    };
-    // split a string with space separated words
-    function split(events) {
-      return events.match(/[^ ]+/g);
-    }
-    /**
-     * A static event handler, applying event propagation.
-     * @param {Object} event
-     */
-    function propagatedHandler(event) {
-      // let only a single hammer instance handle this event
-      if (event.type !== 'hammer.input') {
-        // it is possible that the same srcEvent is used with multiple hammer events,
-        // we keep track on which events are handled in an object _handled
-        if (!event.srcEvent._handled) {
-          event.srcEvent._handled = {};
-        }
-        if (event.srcEvent._handled[event.type]) {
-          return;
-        }
-        else {
-          event.srcEvent._handled[event.type] = true;
-        }
-      }
-      // attach a stopPropagation function to the event
-      var stopped = false;
-      event.stopPropagation = function () {
-        stopped = true;
-      };
-      //wrap the srcEvent's stopPropagation to also stop hammer propagation:
-      var srcStop = event.srcEvent.stopPropagation;
-      if(typeof srcStop == "function") {
-        event.srcEvent.stopPropagation = function(){
-          srcStop();
-          event.stopPropagation();
-        }
-      }
-      // attach firstTarget property to the event
-      event.firstTarget = _firstTarget;
-      // propagate over all elements (until stopped)
-      var elem = _firstTarget;
-      while (elem && !stopped) {
-        var elemHammer = elem.hammer;
-        if(elemHammer){
-          var _handlers;
-          for(var k = 0; k < elemHammer.length; k++){
-            _handlers = elemHammer[k]._handlers[event.type];
-            if(_handlers) for (var i = 0; i < _handlers.length && !stopped; i++) {
-              _handlers[i](event);
-            }
-          }
-        }
-        elem = elem.parentNode;
-      }
-    }
-    return wrapper;
-  };
-}));
-
-
 OJ.extendClass(
     "OjStyleElement", [OjElement],
     {
         "_props_" : {
             "alpha" : null,
             "background_color" : null,
+            "bottom" : null,
             "children" : null,
             "css" : null,
             "css_list" : null,
             "depth" : null,
-            "hAlign" : "l", // OjStyleElement.LEFT
+            "font_color": null,
+            "font_size": null,
+            "hAlign" : "left", // OjStyleElement.LEFT
             "height" : null,
             "id" : null,
             "innerHeight" : null,
             "innerWidth" : null,
+            "left" : null,
             "origin" : null,
             "outerHeight" : null,
             "outerWidth" : null,
@@ -5468,22 +6598,27 @@ OJ.extendClass(
             "pageX" : null,
             "pageY" : null,
             "rect" : null,
+            "right" : null,
             "rotation" : null,
-            "scrollHeight" : null,
-            "scrollWidth" : null,
-            "scrollX" : null,
-            "scrollY" : null,
+            "scroll_height" : null,
+            "scroll_width" : null,
+            "scroll_x" : null,
+            "scroll_y" : null,
+            "top" : null,
             "text" : null,
             "translate" : null,
-            "vAlign" : "t", // OjStyleElement.TOP
+            "vAlign" : "top", // OjStyleElement.TOP
             "width" : null,
             "x" : null,
             "y" : null
         },
         "_get_props_" : {
             "dom" : null,
-            "isVisible" : null,
-            "num_children" : null
+            "first_child" : null,
+            "is_visible" : null,
+            "last_child" : null,
+            "num_children" : null,
+            "tag" : null
         },
         "_alpha" : 1,
         "_depth" : 0,
@@ -5620,6 +6755,30 @@ OJ.extendClass(
                 }
                 return false;
             }
+            if(context && !context._template_vars_){
+                context._template_vars_ = [];
+            }
+            if(nm == "var"){
+                if(!isEmpty(val) && context){
+                    const parts = val.split(".");
+                    if(parts.length > 1){
+                        // we want these last
+                        context._template_vars_.append(
+                            {
+                                "context" : context,
+                                "property" : parts,
+                                "value" : self
+                            }
+                        );
+                        self.addCss(parts.last);
+                    }
+                    else{
+                        (context[val] = self).addCss(val);
+                    }
+                    self.owner = context;
+                }
+                return true;
+            }
             if(nm.substr(0, 3) == "on-"){
                 // todo: add support for multiple event listeners
                 // todo? add support for nested event listener functions in templates
@@ -5637,13 +6796,6 @@ OJ.extendClass(
                     }
                 }
                 self.addEventListener(OJ.attributeToProp(nm), target, solo ? setter[0] : setter[1]);
-                return true;
-            }
-            if(nm == "var"){
-                if(!isEmpty(val) && context){
-                    (context[val] = self).addCss(val);
-                    self.owner = context;
-                }
                 return true;
             }
             if(nm != "class"){
@@ -5668,17 +6820,16 @@ OJ.extendClass(
                         self[setter] = val;
                     }
                     catch(e){
-                        // setup holder for template reference values for deferred processing
-                        if(!context._template_vars_){
-                            context._template_vars_ = [];
+                        if(context){
+                            // setup holder for template reference values for deferred processing
+                            context._template_vars_.prepend(
+                                {
+                                    "context" : self,
+                                    "property" : setter,
+                                    "value" : val
+                                }
+                            );
                         }
-                        context._template_vars_.unshift(
-                            {
-                                "context" : self,
-                                "property" : setter,
-                                "value" : val
-                            }
-                        );
                     }
                     // if the nm is v-align or h-align we want to return false so that the attribute isn"t destroyed
                     return nm.indexOf("-align") == -1;
@@ -5714,8 +6865,8 @@ OJ.extendClass(
             if(!dom){
                 return;
             }
-            var children = dom.childNodes,
-                ln = children.length;
+            const children = dom.childNodes;
+            let ln = children.length;
             for(; ln--;){
                 if(!this._processChild(children[ln], context) && children[ln]){
                     dom.removeChild(children[ln]);
@@ -5727,12 +6878,12 @@ OJ.extendClass(
             if(!dom){
                 return;
             }
-            var tag = dom.tagName;
+            let tag = dom.tagName;
             if(!tag || OjElement.isTextNode(dom)){
                 return isEmpty(dom.nodeValue) ? null : new OjTextElement(dom);
             }
-            var child, cls_path,
-                cls = dom.getAttribute("class-name");
+            let cls = dom.getAttribute("class-name"),
+                cls_path;
             tag = tag.toLowerCase();
             // if this is a script or link tag ignore it
             if(tag == "script" || tag == "link"){
@@ -5741,28 +6892,20 @@ OJ.extendClass(
             // load the class if we need to
             if(!window[cls] && (cls_path = dom.getAttribute("class-path"))){
                             }
-            // get the component tag class
-            if(OjStyleElement.isComponentTag(tag)){
-                cls = OjStyleElement.getTagComponent(tag);
-            }
             // process the class
-            if(cls){
+            if(cls = OjStyleElement.getTagComponent(tag)){
                 if(isFunction(cls)){
-                    child = cls(dom);
+                    return cls(dom, context);
                 }
-                else{
-                    child = new window[cls]();
-                }
+                const child = new window[cls]();
                 child._setDomSource(dom, context);
+                return child;
             }
-            else{
-                child = new OjStyleElement(dom, context);
-            }
-            return child;
+            return new OjStyleElement(dom, context);
         },
         "_processReferenceValue" : function(val, context, src){
-            var $ = this;
-            if(val.contains("$") && $ != context){
+            const $ = this;
+            if(val && String.string(val).contains("$") && $ != context){
                 throw "Template Reference Value Processing Deferred"
             }
             try{
@@ -5772,12 +6915,27 @@ OJ.extendClass(
             return val;
         },
         "_processTemplateVars" : function(){
-            var self = this,
-                context;
+            const self = this;
+            let context, prop;
             if(self._template_vars_){
-                self._template_vars_.forEachReverse(function(item){
-                    context = item.context;
-                    context[item.property] = self._processReferenceValue(item.value, self, context);
+                self._template_vars_.forEachReverse(function(tvar){
+                    context = tvar.context;
+                    prop = tvar.property;
+                    if(isArray(prop)){
+                        const key = prop.pop();
+                        try {
+                            prop.forEach(function(p){
+                                context = context[p];
+                            });
+                            context[key] = tvar.value;
+                        }
+                        catch(e) {
+                            // do nothing
+                        }
+                    }
+                    else{
+                        context[prop] = self._processReferenceValue(tvar.value, self, context);
+                    }
                 });
                 self._unset("_template_vars_");
             }
@@ -5793,7 +6951,7 @@ OJ.extendClass(
             this._processTemplateVars();
             // setup the dom id if there isn"t one already
             if(!this._id){
-                this.id = this._id_;
+                this.id = this.oj_id;
             }
         },
         "_setIsDisplayed" : function(displayed){
@@ -5821,13 +6979,13 @@ OJ.extendClass(
             return true;
         },
         "_onOjDomEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
             if(proxy && proxy._processEvent(evt)){
                 proxy._onEvent(OjDomEvent.convertDomEvent(evt));
             }
         },
         "_onDomOjUiEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
             if(proxy && proxy._processEvent(evt)){
                 evt = OjUiEvent.convertDomEvent(evt);
                 proxy._onEvent(evt);
@@ -5837,25 +6995,25 @@ OJ.extendClass(
             }
         },
         "_onDomOjKeyboardEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
             if(proxy && proxy._processEvent(evt)){
                 proxy._onEvent(OjKeyboardEvent.convertDomEvent(evt));
             }
         },
         "_onDomOjFocusEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
             if(proxy && proxy._processEvent(evt)){
                 proxy._onEvent(OjFocusEvent.convertDomEvent(evt));
             }
         },
         "_onDomScrollEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
             if(proxy && proxy._processEvent(evt)){
                 proxy._onScroll(OjScrollEvent.convertDomEvent(evt));
             }
         },
         "_onDomTouchEvent" : function(evt){
-            var proxy = OjElement.element(this);
+            const proxy = OjElement.element(this);
             if(proxy && proxy._processEvent(evt)){
                 return proxy._onTouch(OjTouchEvent.convertDomEvent(evt));
             }
@@ -5867,13 +7025,13 @@ OJ.extendClass(
             this.dispatchEvent(
                 new OjDragEvent(
                     OjDragEvent.DRAG,
-                    new_x - this._dragX,
-                    new_y - this._dragY,
+                    new_x - this._drag_x,
+                    new_y - this._drag_y,
                     evt, false, false
                 )
             );
-            this._dragX = new_x;
-            this._dragY = new_y;
+            this._drag_x = new_x;
+            this._drag_y = new_y;
         },
         "_onDragEnd" : function(evt){
             OJ.removeEventListener(OjUiEvent.MOVE, this, "_onDrag");
@@ -5881,16 +7039,16 @@ OJ.extendClass(
             this.dispatchEvent(
                 new OjDragEvent(
                     OjDragEvent.END,
-                    evt.pageX - this._dragX,
-                    evt.pageY - this._dragY,
+                    evt.pageX - this._drag_x,
+                    evt.pageY - this._drag_y,
                     evt, false, false
                 )
             );
-            this._dragX = this._dragY = null;
+            this._drag_x = this._drag_y = null;
         },
         "_onDragStart" : function(evt){
-            this._dragX = evt.pageX;
-            this._dragY = evt.pageY;
+            this._drag_x = evt.pageX;
+            this._drag_y = evt.pageY;
             if(this.hasEventListener(OjDragEvent.DRAG)){
                 OJ.addEventListener(OjUiEvent.MOVE, this, "_onDrag");
             }
@@ -5910,23 +7068,22 @@ OJ.extendClass(
 //                response = this._onEvent(evt);
 //
 //
-////            if(type == OjUiEvent.UP && (!this._draggable || (this._dragX == x && this._dragY == y))){
-////                print(this._draggable, this._dragX == x, this._dragY == y);
+////            if(type == OjUiEvent.UP && (!this._draggable || (this._drag_x == x && this._drag_y == y))){
+////                print(this._draggable, this._drag_x == x, this._drag_y == y);
 ////                this._onEvent(new OjUiEvent(OjUiEvent.PRESS, evt.getBubbles(), evt.getCancelable(), x, y));
 ////            }
 //
 //            return response;
 //        },
         "_onMoveTick" : function(evt){
-            var page_x = this.pageX,
-                page_y = this.pageY,
-                delta_x = this._page_x - page_x,
-                delta_y = this._page_y - page_y;
-            if(delta_x || delta_y){
-                this.dispatchEvent(new OjTransformEvent(OjTransformEvent.MOVE, page_x, page_y, delta_x, delta_y));
+            var self = this,
+                cls = OjTransformEvent,
+                prev = self._prev_rect,
+                rect = self.rect;
+            if(prev.top != rect.top || prev.left != rect.left){
+                self._prev_rect = rect;
+                self.dispatchEvent(new cls(cls.MOVE, rect, prev));
             }
-            this._page_x = page_x;
-            this._page_y = page_y;
         },
         "_onOjMouseUp" : function(evt){
             OJ.removeEventListener(OjUiEvent.UP, this, "_onOjMouseUp");
@@ -5939,7 +7096,7 @@ OJ.extendClass(
             var x, y;
             // for native scroll events
             if(evt.is("OjScrollEvent")){
-                if(this._prev_x == (x = evt.scrollX) && this._prev_y == (y = evt.scrollY)){
+                if(this._prev_x == (x = evt.scroll_x) && this._prev_y == (y = evt.scroll_y)){
                     return;
                 }
                 this._prev_x = x;
@@ -5947,7 +7104,7 @@ OJ.extendClass(
                 return this._onEvent(evt);
             }
             // for touch scroll events
-            if(this._prev_x == (x = this.scrollX) && this._prev_y == (y = this.scrollY)){
+            if(this._prev_x == (x = this.scroll_x) && this._prev_y == (y = this.scroll_y)){
                 return;
             }
             return this._onEvent(
@@ -5963,8 +7120,8 @@ OJ.extendClass(
             }
             else if(type == OjTouchEvent.START){
                 type = OjUiEvent.DOWN;
-                this._dragX = x;
-                this._dragY = y;
+                this._drag_x = x;
+                this._drag_y = y;
             }
             else if(type == OjTouchEvent.MOVE){
                 type = OjUiEvent.MOVE;
@@ -5973,7 +7130,7 @@ OJ.extendClass(
                 this._onEvent(new OjUiEvent(type, x, y, true, true));
                 // if the touch hasn"t moved then issue a click event
                 if(type == OjUiEvent.UP && !this.hasEventListener(OjDragEvent.START) && this.hitTestPoint(x, y)){
-                    this._dragX = this._dragY = null;
+                    this._drag_x = this._drag_y = null;
                 }
             }
             return true;
@@ -6022,9 +7179,11 @@ OJ.extendClass(
                     function(evt){
                         var type = evt.type,
                             prev_tap = self._hammer.prev_tap,
-                            new_evt = ui.convertDomEvent(evt.srcEvent);
+                            og_evt = evt.srcEvent,
+                            new_evt = ui.convertDomEvent(og_evt);
                         new_evt._type = map[type];
-                        
+                        // og_evt.preventDefault();
+                        // og_evt.stopPropagation();
                         evt.stopPropagation();
                         if(type == "tap"){
                             self._hammer.prev_tap = new Date();
@@ -6051,19 +7210,18 @@ OJ.extendClass(
         },
         "_updateTouchEndListeners" : function(){
             if(!this.hasEventListeners(OjUiEvent.UP, OjUiEvent.UP_OUTSIDE, OjUiEvent.PRESS, OjDragEvent.END)){
-                var proxy = this._getEventProxy();
+                const proxy = this._getEventProxy();
                 proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = null;
             }
         },
         "addEventListener" : function(type){
-            var self = this,
-                is_touch = OJ.is_touch_capable,
-                proxy = self._getEventProxy(),
-                hammer = self._setupHammer();
-            self._super(OjElement, "addEventListener", arguments);
+            const is_touch = OJ.is_touch_capable,
+                proxy = this._getEventProxy(),
+                hammer = this._setupHammer();
+            this._super(OjElement, "addEventListener", arguments);
             if(type == OjScrollEvent.SCROLL){
-                self._scrollable = true;
-                proxy.onscroll = self._onDomScrollEvent;
+                this._scrollable = true;
+                proxy.onscroll = this._onDomScrollEvent;
 //                if(is_touch){
 //                    proxy.ontouchmove = this._onDomTouchEvent;
 //                }
@@ -6081,10 +7239,10 @@ OJ.extendClass(
             }
             else if(type == OjUiEvent.DOWN){
                 if(is_touch){
-                    proxy.ontouchstart = self._onDomTouchEvent;
+                    proxy.ontouchstart = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmousedown = self._onDomOjUiEvent;
+                    proxy.onmousedown = this._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.LONG_PRESS){
@@ -6094,38 +7252,38 @@ OJ.extendClass(
             }
             else if(type == OjUiEvent.MOVE){
                 if(is_touch){
-                    proxy.ontouchmove = self._onDomTouchEvent;
+                    proxy.ontouchmove = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmousemove = self._onDomOjUiEvent;
+                    proxy.onmousemove = this._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.OUT){
-                proxy.onmouseout = self._onDomOjUiEvent;
+                proxy.onmouseout = this._onDomOjUiEvent;
             }
             else if(type == OjUiEvent.OVER){
-                proxy.onmouseover = self._onDomOjUiEvent;
+                proxy.onmouseover = this._onDomOjUiEvent;
             }
             else if(type == OjUiEvent.UP){
                 if(is_touch){
-                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = self._onDomTouchEvent;
+                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmouseup = self._onDomOjUiEvent;
-                    proxy.oncontextmenu = self._onDomOjUiEvent;
+                    proxy.onmouseup = this._onDomOjUiEvent;
+                    proxy.oncontextmenu = this._onDomOjUiEvent;
                 }
             }
             else if(type == OjUiEvent.UP_OUTSIDE){
                 if(is_touch){
-                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = self._onDomTouchEvent;
+                    proxy.ontouchcancel = proxy.ontouchend = proxy.ontouchleave = this._onDomTouchEvent;
                 }
                 else{
-                    proxy.onmousedown = self._onDomOjUiEvent;
+                    proxy.onmousedown = this._onDomOjUiEvent;
                 }
             }
             // drag events
             else if(OjDragEvent.isDragEvent(type)){
-                self._draggable = true;
+                this._draggable = true;
 //
 //                if(is_touch){
 //                    proxy.ontouchstart = proxy.ontouchmove = proxy.ontouchend = this._onDomTouchEvent;
@@ -6133,49 +7291,56 @@ OJ.extendClass(
 //                else{
 //                    proxy.onmousedown = this._onDomOjUiEvent;
 //                }
-                self.addEventListener(OjUiEvent.DOWN, self, "_onDragStart");
+                this.addEventListener(OjUiEvent.DOWN, this, "_onDragStart");
             }
             // keyboard events
             else if(type == OjKeyboardEvent.DOWN){
-                proxy.onkeydown = self._onDomOjKeyboardEvent;
+                proxy.onkeydown = this._onDomOjKeyboardEvent;
             }
             else if(type == OjKeyboardEvent.PRESS){
-                proxy.onkeypress = self._onDomOjKeyboardEvent;
+                proxy.onkeypress = this._onDomOjKeyboardEvent;
             }
             else if(type == OjKeyboardEvent.UP){
-                proxy.onkeyup = self._onDomOjKeyboardEvent;
+                proxy.onkeyup = this._onDomOjKeyboardEvent;
             }
             // focus events
             else if(type == OjFocusEvent.IN){
-                proxy.onfocus = self._onDomOjFocusEvent;
+                proxy.onfocus = this._onDomOjFocusEvent;
                 //proxy.onfocusin = self._onDomOjFocusEvent;
             }
             else if(type == OjFocusEvent.OUT){
-                proxy.onblur = self._onDomOjFocusEvent;
+                proxy.onblur = this._onDomOjFocusEvent;
             }
             // transform events
             else if(type == OjTransformEvent.MOVE){
-                if(!self._move_timer){
-                    self._move_timer = new OjTimer(250, 0);
-                    self._move_timer.addEventListener(OjTimer.TICK, self, "_onMoveTick");
-                    self._page_x = self.pageX;
-                    self._page_y = self.pageY;
-                    self._move_timer.start();
+                if(!this._move_timer){
+                    this._move_timer = new OjTimer(250, 0);
+                    this._move_timer.addEventListener(OjTimer.TICK, this, "_onMoveTick");
+                    this._prev_rect = this.rect;
+                    this._move_timer.start();
                 }
             }
-            else if(type == OjTransformEvent.RESIZE && self._proxy != document.body){
-                proxy.onresize = self._onOjDomEvent;
+            else if(type == OjTransformEvent.RESIZE && proxy != document.body){
+                this._prev_rect = this.rect;
+                OjStyleElement._resize_observer.observe(proxy);
             }
             // misc dom events
             else if(type == OjDomEvent.CHANGE){
-                proxy.onchange = self._onOjDomEvent;
+                proxy.onchange = this._onOjDomEvent;
+                proxy.onanimationstart = this._onOjDomEvent;  // hack for autofill issues with some browsers
             }
         },
         "addGestureRecognizer" : function(recognizer){
+            if(!recognizer || this.hasGestureRecognizer(recognizer)){
+                return;
+            }
             recognizer._add(this._setupHammer());
         },
+        "hasGestureRecognizer" : function(recognizer){
+            return recognizer._has(this._setupHammer());
+        },
         "removeEventListener" : function(type, context, callback){
-            var proxy = this._getEventProxy();
+            const proxy = this._getEventProxy();
             this._super(OjElement, "removeEventListener", arguments);
             // scroll events
             if(type == OjScrollEvent.SCROLL){
@@ -6280,13 +7445,14 @@ OJ.extendClass(
             }
             else if(type == OjTransformEvent.RESIZE){
                 if(!this.hasEventListener(OjTransformEvent.RESIZE)){
-                    proxy.onresize = null;
+                    OjStyleElement._resize_observer.unobserve(proxy);
                 }
             }
             // misc dom events
             else if(type == OjDomEvent.CHANGE){
                 if(!this.hasEventListener(OjDomEvent.CHANGE)){
                     proxy.onchange = null;
+                    proxy.onanimationstart = null;  // hack for autofill issues with some browsers
                 }
             }
         },
@@ -6360,7 +7526,7 @@ OJ.extendClass(
             return this.insertChildAt(child, 0);
         },
         "removeAllChildren" : function(){
-            var ln = this.num_children,
+            let ln = this.num_children,
                 ary = [];
             for(; ln--;){
                 ary.unshift(this.removeChildAt(ln));
@@ -6370,7 +7536,7 @@ OJ.extendClass(
         "removeChild" : function(child){
             if(child){
                 // this will help exclude text elements
-                if(child.is(OjStyleElement)){
+                if(child.is(OjElement)){
                     try{
                         this.dom.removeChild(child.dom);
                     }
@@ -6426,28 +7592,38 @@ OJ.extendClass(
             }
         },
         ".num_children" : function(){
-            return this.dom.childNodes.length;
+            var dom = this.dom;
+            if(!dom || !dom.childNodes){
+                return 0;
+            }
+            return dom.childNodes.length;
         },
 
         // misc functions
         "blur" : function(){
-            if(isFunction(this._dom.blur)){
-                this._dom.blur();
+            try{
+                this.dom.blur();
+            }
+            catch(e){
+                // do nothing
             }
         },
         "find" : function(query){
             if(isElement(query)){
                 query = "#" + query.id;
             }
-            return OJ.query(query, this._dom);
+            return OJ.query(query, this.dom);
         },
         "focus" : function(){
-            if(isFunction(this._dom.focus)){
-                this._dom.focus();
+            try{
+                this.dom.focus();
+            }
+            catch(e){
+                // do nothing
             }
         },
         "hide" : function(should){
-            if(should === false){
+            if(should == false){
                 this.show();
             }
             else{
@@ -6455,14 +7631,13 @@ OJ.extendClass(
                 this.dispatchEvent(new OjEvent(OjEvent.HIDE));
             }
         },
-        ".isVisible" : function(){
-            var self = this;
-            return self._getStyle("display") != OjStyleElement.NONE &&
-                   self._getStyle("visibility") != "hidden" &&
-                   self.alpha > 0 && self.width > 0 && self.height > 0;
+        ".is_visible" : function(){
+            return this._getStyle("display") != OjStyleElement.NONE &&
+                   this._getStyle("visibility") != "hidden" &&
+                   this.alpha > 0 && this.width > 0 && this.height > 0;
         },
         "show" : function(should){
-            if(should === false){
+            if(should == false){
                 this.hide();
             }
             else{
@@ -6473,21 +7648,26 @@ OJ.extendClass(
 
         // single style getter & setter functions
         "_getStyleBackup" : function(style){
-            return this._proxy.style[style];
+            return this._getProxy().style.getPropertyValue(style);
         },
         "_getStyleIe" : function(style){
-            return this._proxy.currentStyle[style];
+            return this._getProxy().currentStyle.getPropertyValue(style);
         },
         "_getStyle" : function(style){
-            return document.defaultView.getComputedStyle(this._proxy, null)[style];
+            return document.defaultView.getComputedStyle(this._getProxy(), null).getPropertyValue(style);
         },
         "_setStyle" : function(style, value){
-            return this._proxy.style[style] = value;
+            if(isSet(value)){
+                this._getProxy().style.setProperty(style, value);
+                return value;
+            }
+            this._getProxy().style.removeProperty(style);
+            return null;
         },
         "_setStyleColor" : function(style, value){
             if(value){
                 if(isString(value) && value.charAt(0) == "#"){
-                    value = hexToRgb(value);
+                    value = hexToRgb(value).rgb;
                 }
                 if(isArray(value)){
                     value = "rgb" + (value.length > 3 ? "a(" : "(") + value.join(",") + ")";
@@ -6496,19 +7676,26 @@ OJ.extendClass(
             return this._setStyle(style, value);
         },
 
-        "_getStyleNumber" : function(prop){
+        "_getStyleNum" : function(prop){
             var val = this._getStyle(prop);
             if(!val || val == OjStyleElement.NONE){
                 return 0;
             }
             return parseFloat(val.replaceAll(["px", "%", "pt", "em"], ""));
         },
-        "_setStyleNumber" : function(prop, val/*, unit*/){
+        "_setStyleNum" : function(prop, val, unit){
             var args = arguments;
             this._setStyle(
                 prop,
-                isSet(val) ? val + (args.length > 2 ? args[2] : this._getStyleUnit(prop)) : null
+                isSet(val) ? val + (isUndefined(unit) ? this._getStyleUnit(prop) : unit) : null
             );
+            return val;
+        },
+        "styleNum" : function (prop, val, unit) {
+            if(isUndefined(val)){
+                return this._getStyleNum(prop);
+            }
+            return this._setStyleNum(prop, val, unit);
         },
         // Bulk Style Getter & Setter Functions
         "_getStyler" : function(prop, args){
@@ -6559,25 +7746,30 @@ OJ.extendClass(
 
         // Attribute Getter & Setter Functions
         "attr" : function(key, val){
-            var proxy = this._proxy;
+            const proxy = this._getProxy();
             // process the key incase its an attribute object
             if(isObject(key)){
                 key = key.nodeName;
             }
             if(!isUndefined(val)){
+                // if the value is set (not null) then update attribute value
                 if(isSet(val)){
-                    // if the value is set (not null) then update attribute value
-                    if(isSet(val)){
-                        proxy.setAttribute(key, val);
-                    }
-                    // otherwise remove
-                    else{
-                        proxy.removeAttribute(key);
-                    }
+                    proxy.setAttribute(key, val);
+                }
+                // otherwise remove
+                else{
+                    proxy.removeAttribute(key);
                 }
             }
             // read the attribute value
             return proxy.getAttribute(key);
+        },
+        "style" : function(key, val){
+            var self = this;
+            if(isUndefined(val)){
+                return self._getStyle(key);
+            }
+            return self._setStyle(key, val);
         },
         
         ".id" : function(){
@@ -6587,11 +7779,7 @@ OJ.extendClass(
             if(this._id == val){
                 return
             }
-            // unregister the old id
-            OjElement.unregister(this);
-            (this._proxy || {}).ojProxy = (this.dom || {}).id = this._id = val;
-            // register the new id
-            OjElement.register(this);
+            (this.dom || {}).id = this._id = val;
         },
         // Content Getter & Setter Functions
         ".text" : function(){
@@ -6599,8 +7787,10 @@ OJ.extendClass(
         },
         "=text" : function(str){
             this.removeAllChildren();
-            this.dom.innerHTML = String.string(str).html();
-            // we may want to process this html, just a thought
+            if(!isObjective(str, OjTextElement)){
+                str = new OjTextElement(str);
+            }
+            this.dom.appendChild(str.dom);
         },
         // Css Functions
         "_makeCssList" : function(args){
@@ -6647,7 +7837,7 @@ OJ.extendClass(
             return this._processCssList(arguments, "add");
         },
         ".css" : function(){
-            return this._proxy.className.trim();
+            return this._getProxy().className.trim();
         },
         ".css_list" : function(){
             return this.css.split(" ");
@@ -6659,7 +7849,7 @@ OJ.extendClass(
             return this._processCssList(arguments, "remove");
         },
         "=css" : function(css){
-            return this._proxy.className = (isArray(css) ? css.join(" ") : css).trim();
+            return this._getProxy().className = (isArray(css) ? css.join(" ") : css).trim();
         },
         "swapCss" : function(target, replacement){
             this.removeCss(target);
@@ -6670,7 +7860,7 @@ OJ.extendClass(
         },
         // Focus Functions
         "hasFocus" : function(){
-            return this._dom.hasFocus;
+            return this.dom.hasFocus;
         },
         "hitTest" : function(elm, local){
             return this.hitTestRect(elm.rect);
@@ -6707,13 +7897,14 @@ OJ.extendClass(
         "=outerWidth" : function(w){
             this.innerWidth = w - this.getPaddingLeft() - this.getPaddingRight() - this.getMarginLeft() - Math.abs(this.getMarginRight());
         },
-        ".width" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-                return (this._proxy.offsetWidth / parent.offsetWidth) * 100;
-            }
-            return this._proxy.offsetWidth || this._getStyleNumber("width");
+        ".width" : function(){
+            // const proxy = this._getProxy();
+            // if(arguments[0] == OjStyleElement.PERCENT){
+            //     const parent = proxy.offsetParent || proxy;
+            //
+            //     return (proxy.offsetWidth / parent.offsetWidth) * 100;
+            // }
+            return this._getProxy().offsetWidth || this._getStyleNum("width");
         },
         "_setWidth" : function(val){
             this._setStyle("width", val);
@@ -6731,19 +7922,6 @@ OJ.extendClass(
                 this.innerWidth = w - this.getPaddingLeft() - this.getPaddingRight();
             }
         },
-        //".minWidth" : function(){
-        //    return isNull(this._min_width) ? this._min_width = this._getStyleNumber("minWidth") : this._min_width;
-        //},
-        //"=minWidth" : function(min){
-        //    this._setStyleNumber("minWidth", this._min_width = min);
-        //},
-        //
-        //".maxWidth" : function(){
-        //    return isNull(this._max_width) ? this._max_width = this._getStyleNumber("maxWidth") : this._max_width;
-        //},
-        //"=maxWidth" : function(max){
-        //    this._setStyleNumber("maxWidth", this._max_width = max);
-        //},
         ".innerHeight" : function(){
             return this.height - this.getPaddingTop() - this.getPaddingBottom();
         },
@@ -6757,12 +7935,7 @@ OJ.extendClass(
             this.innerHeight = h - this.getPaddingTop() - this.getPaddingBottom() - this.getMarginTop() - Math.abs(this.getMarginBottom());
         },
         ".height" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-                return (this._proxy.offsetHeight / parent.offsetHeight) * 100;
-            }
-            return this._proxy.offsetHeight || this._getStyleNumber("height");
+            return this._getProxy().offsetHeight || this._getStyleNum("height");
         },
         "_setHeight" : function(val){
             this._setStyle("height", val);
@@ -6780,66 +7953,40 @@ OJ.extendClass(
                 this.innerHeight = h - this.getPaddingTop() - this.getPaddingBottom();
             }
         },
-        //".minHeight" : function(){
-        //    return isNull(this._min_height) ? this._min_height = this._getStyleNumber("minHeight") : this._min_height;
-        //},
-        //"=minHeight" : function(min){
-        //    this._min_height = min;
-        //
-        //    this._setStyleNumber("minHeight", min);
-        //},
-        //
-        //".maxHeight" : function(){
-        //    return isNull(this._max_height) ? this._max_height = this._getStyleNumber("maxHeight") : this._max_height;
-        //},
-        //"=maxHeight" : function(max){
-        //    this._max_height = max;
-        //
-        //    this._setStyleNumber("maxHeight", max);
-        //},
         // Style Getter & Setter Functions
         ".x" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-                return (this._proxy.offsetLeft / parent.offsetWidth) * 100;
-            }
-            return this._proxy.offsetLeft;
+            return this._getProxy().offsetLeft;
         },
         ".pageX" : function(){
-            if(this._proxy.getBoundingClientRect){
-                return this._proxy.getBoundingClientRect().left;
+            const proxy = this._getProxy();
+            if(proxy.getBoundingClientRect){
+                return proxy.getBoundingClientRect().left;
             }
-            // add backup solution
+            // todo: add backup solution
         },
-        "=x" : function(val/*[val, unit=px]*/){
-            var args = isArray(val) ? val : [val];
-            this._setStyleNumber("left", args[0], args.length > 1 ? args[1] : OJ.dim_unit);
+        "=x" : function(val_or_tuple){
+            this.left = val_or_tuple;
         },
         "=pageX" : function(val){
-            this.x = this.parent.localX(val);
+            this.left = this.parent.localX(val);
         },
-        ".y" : function(/*unit=px*/){
-            var unit = arguments.length ? arguments[0] : null;
-            if(unit == OjStyleElement.PERCENT){
-                var parent = this._proxy.offsetParent || this._proxy;
-                return (this._proxy.offsetTop / parent.offsetHeight) * 100;
-            }
-            return this._proxy.offsetTop;
+        ".y" : function(){
+            return this._getProxy().offsetTop;
         },
         ".pageY" : function(){
-            if(this._proxy.getBoundingClientRect){
-                return this._proxy.getBoundingClientRect().top;
+            const proxy = this._getProxy();
+            if(proxy.getBoundingClientRect){
+                return proxy.getBoundingClientRect().top;
             }
             // add backup solution
         },
-        "=y" : function(val/*[val, unit=px]*/){
-            var args = isArray(val) ? val : [val];
-            this._setStyleNumber("top", args[0], args.length > 1 ? args[1] : OJ.dim_unit);
+        "=y" : function(val_or_tuple){
+            this.top = val_or_tuple;
         },
         "=pageY" : function(val){
-            this.y = this.parent.localY(val);
+            this.top = this.parent.localY(val);
         },
+
         ".alpha" : function(){
             return this._alpha;
         },
@@ -6861,23 +8008,53 @@ OJ.extendClass(
         "=background_color" : function(color){
             this._setStyleColor("background-color", color);
         },
+        ".bottom" : function(){
+            return this._getStyleNum("bottom");
+        },
+        "=bottom" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+            this._setStyleNum("bottom", val, units);
+        },
         ".depth" : function(){
             return this._depth;
         },
         "=depth" : function(depth){
             this._depth = this._setStyle("zIndex", depth);
         },
+        ".first_child" : function(){
+            return this.getChildAt(0);
+        },
+        ".font_color" : function(){
+            return this._getStyle("color");
+        },
+        "=font_color" : function(color){
+            this._setStyleColor("color", color);
+        },
+        ".font_size" : function(){
+            this._getStyleNum("font-size");
+        },
+        "=font_size" : function(size){
+            this._setStyleNum("font-size", size, OJ.font_unit);
+        },
+        ".last_child" : function(){
+            return this.getChildAt(this.num_children - 1);
+        },
+        ".left" : function(){
+            return this._getStyleNum("left");
+        },
+        "=left" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+            this._setStyleNum("left", val, units);
+        },
         ".overflow" : function(){
             return this._overflow;
         },
         "=overflow" : function(overflow){
             this._overflow = this._setStyle("overflow", overflow);
-        },
-        ".rect" : function(){
-            return new OjRect(this.x, this.y, this.width, this.height);
-        },
-        "=rect" : function(rect){
-            // add this later
         },
         ".page_rect" : function(){
             var self = this;
@@ -6886,29 +8063,53 @@ OJ.extendClass(
         "=page_rect" : function(rect){
             // todo: =page_rect
         },
-        ".scrollHeight" : function(){
-            return this._proxy.scrollHeight;
+        ".rect" : function(){
+            return new OjRect(this.x, this.y, this.width, this.height);
         },
-        "=scrollHeight" : function(val){
-            this._proxy.scrollHeight = val;
+        "=rect" : function(rect){
+            // add this later
         },
-        ".scrollWidth" : function(){
-            return this._proxy.scrollWidth;
+        ".right" : function(){
+            return this._getStyleNum("right");
         },
-        "=scrollWidth" : function(val){
-            this._proxy.scrollWidth = val;
+        "=right" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+            this._setStyleNum("right", val, units);
         },
-        ".scrollX" : function(){
-            return this._proxy.scrollLeft;
+        ".scroll_height" : function(){
+            return this._getProxy().scrollHeight;
         },
-        "=scrollX" : function(val){
-            this._proxy.scrollLeft = val;
+        "=scroll_height" : function(val){
+            this._getProxy().scrollHeight = val;
         },
-        ".scrollY" : function(){
-            return this._proxy.scrollTop;
+        ".scroll_width" : function(){
+            return this._getProxy().scrollWidth;
         },
-        "=scrollY" : function(val){
-            this._proxy.scrollTop = val;
+        "=scroll_width" : function(val){
+            this._getProxy().scrollWidth = val;
+        },
+        ".scroll_x" : function(){
+            return this._getProxy().scrollLeft;
+        },
+        "=scroll_x" : function(val){
+            this._getProxy().scrollLeft = val;
+        },
+        ".scroll_y" : function(){
+            return this._getProxy().scrollTop;
+        },
+        "=scroll_y" : function(val){
+            this._getProxy().scrollTop = val;
+        },
+        ".top" : function(){
+            return this._getStyleNum("top");
+        },
+        "=top" : function(val_or_tuple){
+            const is_tuple = isArray(val_or_tuple),
+                val = is_tuple ? val_or_tuple[0] : val_or_tuple,
+                units = is_tuple ? val_or_tuple[1] : OJ.dim_unit;
+            this._setStyleNum("top", val, units);
         },
 
         // alignment getter & setters
@@ -6966,6 +8167,9 @@ OJ.extendClass(
             this._rotation = val;
             this._updateTransform();
         },
+        ".tag" : function(){
+            return this.dom.tagName;
+        },
         ".translate" : function(){
             return this._translate;
         },
@@ -6983,7 +8187,7 @@ OJ.extendClass(
         "STYLE_DEFAULT" : "styleDefault",
         "STYLE_IE" : "styleIE",
         "STYLE_MODE" : (function(){
-            var elm = OjElement.elm("div");
+            const elm = OjElement.elm("div");
             if(elm.currentStyle){
                 return "styleIE";
             }
@@ -6998,15 +8202,23 @@ OJ.extendClass(
         "NONE" : "none",
         "SCROLL" : "scroll",
         "VISIBLE" : "visible",
-        "LEFT" : "l",
-        "CENTER" : "c",
-        "RIGHT" : "r",
-        "TOP" : "t",
-        "MIDDLE" : "m",
-        "BOTTOM" : "b",
+        "LEFT" : "left",
+        "CENTER" : "center",
+        "RIGHT" : "right",
+        "TOP" : "top",
+        "MIDDLE" : "middle",
+        "BOTTOM" : "bottom",
         "PERCENT" : "%",
         "PX" : "px",
         "EM" : "em",
+        "_resize_observer" : new ResizeObserver((entries, observer) => {
+            const cls = OjTransformEvent;
+            for (const entry of entries) {
+                const self = OjElement.element(entry.target),
+                    prev = self._prev_rect;
+                self.dispatchEvent(new cls(cls.RESIZE, self._prev_rect = self.rect, prev));
+            }
+        }),
 
         "getTagComponent" : function(tag){
             return this.COMPONENT_TAGS[tag];
@@ -7033,46 +8245,6 @@ OJ.extendClass(
 );
 
 OJ.extendClass(
-    'OjTextElement', [OjElement],
-    {
-        '_props_' : {
-            'text' : null
-        },
-        '_constructor' : function(/*text*/){
-            var self = this,
-                args = arguments,
-                ln = args.length,
-                is_dom = ln && isDomElement(args[0]);
-            self._super(OjElement, '_constructor', is_dom ? [args[0]] : []);
-            if(ln && !is_dom){
-                self.text = args[0];
-            }
-        },
-        '_setDom' : function(dom_elm){
-            // force text dom elm
-            if(dom_elm.nodeName != "#text"){
-                dom_elm = document.createTextNode(dom_elm.innerText);
-            }
-            this._super(OjElement, '_setDom', [dom_elm]);
-        },
-
-        'appendText' : function(str){
-            this.dom.nodeValue += str.toString();
-        },
-        'prependText' : function(str){
-            this.dom.nodeValue = str.toString() + this.dom.nodeValue;
-        },
-
-        '.text' : function(){
-            return this.dom.nodeValue;
-        },
-        '=text' : function(str){
-            this.dom.nodeValue = String.string(str);
-        }
-    }
-);
-
-OJ.extendClass(
     "OjTimer", [OjActionable],
     {
         "_props_" : {
@@ -7090,58 +8262,53 @@ OJ.extendClass(
         },
         "_elapsed" : 0,
 
-        "_constructor" : function(/*duration, repeat_count*/){
-            var self = this;
-            self._super(OjActionable, "_constructor", []);
-            self._state = OjTimer.STOPPED;
-            self._processArguments(arguments, {
-                "duration" : 0,
-                "repeat_count" : 1
-            });
+        "_constructor" : function(duration, repeat_count){
+            this._super(OjActionable, "_constructor", []);
+            this._state = OjTimer.STOPPED;
+            this._set("duration", duration, 0);
+            this._set("repeat_count", repeat_count, 1);
         },
 
         "_setupInterval" : function(){
-            var self = this,
+            const self = this,
                 intrvl = self._interval;
             if(intrvl){
                 clearInterval(intrvl);
             }
-            self._interval = setInterval(function(){ self._tick(); }, self.duration);
+            self._interval = setInterval(() => { self._tick(); }, self.duration);
             self._updateLastTick();
         },
         "_tick" : function(){
-            var self = this,
-                on_complete = self.on_complete,
-                on_tick = self.on_tick,
-                repeat = self.repeat_count;
-            self._updateLastTick();
+            const on_complete = this.on_complete,
+                on_tick = this.on_tick,
+                repeat = this.repeat_count;
+            this._updateLastTick();
             if(on_tick){
                 on_tick(this);
             }
-            self.dispatchEvent(new OjEvent(OjTimer.TICK));
-            if(repeat > 0 && self._count++ == repeat){
-                self.stop();
+            this.dispatchEvent(new OjEvent(OjTimer.TICK));
+            if(repeat > 0 && this._count++ == repeat){
+                this.stop();
                 if(on_complete){
                     on_complete(this);
                 }
-                self.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
+                this.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
             }
         },
         "_updateLastTick" : function(){
-            self._last_tick = new Date();
-            self._elapsed = 0;
+            this._last_tick = new Date();
+            this._elapsed = 0;
         },
 
         "pause" : function(){
-            var self = this,
-                last_tick = self._last_tick,
-                intrvl = self._interval;
-            self._elapsed = last_tick ? (new Date()).getTime() - last_tick.getTime() : 0;
-            self._state = OjTimer.PAUSED;
+            const last_tick = this._last_tick,
+                intrvl = this._interval;
+            this._elapsed = last_tick ? (new Date()).getTime() - last_tick.getTime() : 0;
+            this._state = OjTimer.PAUSED;
             if(intrvl){
                 // todo: there is an edge case where this could be a timeout from a partial resume. not sure what to do.
                 clearInterval(intrvl);
-                self._interval = null;
+                this._interval = null;
             }
         },
         "restart" : function(){
@@ -7149,7 +8316,7 @@ OJ.extendClass(
             this.start();
         },
         "start" : function(){
-            var self = this,
+            const self = this,
                 elapsed = self._elapsed;
             if(!self._interval){
                 self._elapsed = 0;
@@ -7159,7 +8326,7 @@ OJ.extendClass(
                     self._last_tick = new Date((new Date().getTime() - elapsed)); // post date the last tick
                     // run the last little bit of the tick
                     self._interval = setTimeout(
-                        function(){
+                        () => {
                             self._tick();
                             self._setupInterval();
                         },
@@ -7172,21 +8339,18 @@ OJ.extendClass(
             }
         },
         "stop" : function(){
-            var self = this;
-            self.pause();
-            self._count = 0;
-            self._elapsed = 0;
-            self._state = OjTimer.STOPPED;
+            this.pause();
+            this._count = 0;
+            this._elapsed = 0;
+            this._state = OjTimer.STOPPED;
         },
 
         "=duration" : function(duration){
-            var self = this,
-                intrvl;
-            if(self._duration != duration){
-                self._duration = Math.abs(duration);
-                self._elapsed = 0;
-                if(intrvl){
-                    self._setupInterval();
+            if(this._duration != duration){
+                this._duration = Math.abs(duration);
+                this._elapsed = 0;
+                if(this._interval){
+                    this._setupInterval();
                 }
             }
         },
@@ -7194,11 +8358,10 @@ OJ.extendClass(
             return this._state == OjTimer.PAUSED;
         },
         "=repeat_count" : function(repeat_count){
-            var self = this;
-            self._repeat_count = repeat_count = Math.max(repeat_count, 0);
-            if(repeat_count >= self.count && self.running){
-                self.stop();
-                self.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
+            this._repeat_count = repeat_count = Math.max(repeat_count, 0);
+            if(repeat_count >= this.count && this.running){
+                this.stop();
+                this.dispatchEvent(new OjEvent(OjTimer.COMPLETE));
             }
         },
         ".running" : function(){
@@ -7497,50 +8660,49 @@ OJ.extendClass(
 
 // normalize browser diff on requestAnimationFrame function
 (function(){
-    var vendors = ['o', 'ms', 'webkit', 'moz'],
+    var vendors = ["o", "ms", "webkit", "moz"],
         ln = vendors.length,
         vendor;
     for(; ln-- && !window.requestAnimationFrame;){
         vendor = vendors[ln];
-        window.requestAnimationFrame = window[vendor + 'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+        window.requestAnimationFrame = window[vendor + "RequestAnimationFrame"];
+        window.cancelAnimationFrame = window[vendor + "CancelAnimationFrame"] || window[vendor + "CancelRequestAnimationFrame"];
     }
 })();
 
 OJ.extendClass(
-    'OjTween', [OjActionable],
+    "OjTween", [OjActionable],
     {
-        '_props_' : {
-            'duration' : null,
-            'easing' : null,
-            'from' : null,
-            'quality' : 60,  // frame rate
-            'to' : null
+        "_props_" : {
+            "completion" : null,
+            "duration" : null,
+            "easing" : null,
+            "from" : null,
+            "quality" : 60,  // frame rate
+            "to" : null
         },
-//      '_animationFrame': null,  '_onAnimationFrame': null,  '_start': null,  '_timer': null,
-        '_delta' : 0, '_progress' : 0,
+//      "_animationFrame": null,  "_onAnimationFrame": null,  "_start": null,  "_timer": null,
+        "_delta" : 0, "_progress" : 0,
 
-        '_constructor' : function(/*from = null, to = null, duration = 500, easing = NONE*/){
-            this._super(OjActionable, '_constructor', []);
-            this._processArguments(arguments, {
-                'from' : undefined,
-                'to' : undefined,
-                'duration' : 250,
-                'easing' : OjEasing.NONE
-            });
+        "_constructor" : function(from, to, duration, easing){
+            this._super(OjActionable, "_constructor", []);
+            this._set("from", from);
+            this._set("to", to);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
             this._onAnimationFrame = this._onTick.bind(this);
         },
 
-        '_destructor' : function(){
+        "_destructor" : function(){
             this.stop();
-            this._unset(['_timer', '_onAnimationFrame']);
-            return this._super(OjActionable, '_destructor', arguments);
+            this._unset(["_timer", "_onAnimationFrame"]);
+            return this._super(OjActionable, "_destructor", arguments);
         },
 
-        '_calculateDelta' : function(){
+        "_calculateDelta" : function(){
             this._delta = this._to - this._from;
         },
-        '_tick' : function(time){
+        "_tick" : function(time){
             this.dispatchEvent(
                 new OjTweenEvent(
                     OjTweenEvent.TICK, // type
@@ -7550,7 +8712,11 @@ OJ.extendClass(
             );
         },
 
-        '_onTick' : function(evt){
+        "_onTick" : function(evt){
+            // check if we should tick
+            if(!this._interval && !this._animationFrame){
+                return;
+            }
             var time = Math.min(Date.now() - this._start, this._duration);
             this._tick(time);
             if(time == this._duration){
@@ -7561,11 +8727,15 @@ OJ.extendClass(
                 this._animationFrame = window.requestAnimationFrame(this._onAnimationFrame);
             }
         },
-        '_onComplete' : function(evt){
+        "_onComplete" : function(evt){
+            const completion = this._completion;
+            if(completion){
+                completion(this);
+            }
             this.dispatchEvent(new OjTweenEvent(OjTweenEvent.COMPLETE, this._to, 1));
         },
 
-        'start' : function(){
+        "start" : function(){
             // make sure we have what we need to get started
             if(isUnset(this._from) || isUnset(this._to)){
                 return;
@@ -7580,63 +8750,60 @@ OJ.extendClass(
                 this._interval = setInterval(this._onAnimationFrame, 1000 / this._quality);
             }
         },
-        'pause' : function(){
+        "pause" : function(){
+            this._interval = clearInterval(this._interval);
+            this._progress = Date.now() - this._start;
             if(this._animationFrame){
                 window.cancelAnimationFrame(this._animationFrame);
                 return this._animationFrame = null;
             }
-            this._interval = clearInterval(this._interval);
-            this._progress = Date.now() - this._start;
         },
-        'stop' : function(){
+        "stop" : function(){
             this.pause();
             this._progress = this._start = 0;
         },
-        'restart' : function(){
+        "restart" : function(){
             this.stop();
             this.start();
         },
-        'reverse' : function(){
+        "reverse" : function(){
             // todo: implement tween reverse
         }
     },
     {
-        'USE_RAF' : (OJ.os != OJ.IOS || OJ.os_version.compareVersion('6.9') == 1 || !OJ.is_webview()) && window.requestAnimationFrame
+        "USE_RAF" : isSet(window.requestAnimationFrame)
     }
 );
 
 
 OJ.extendClass(
-    'OjPropTween', [OjTween],
+    "OjPropTween", [OjTween],
     {
-        '_props_' : {
-            'mode' : 'Javascript',
-            'target' : null,
-            'units' : null
+        "_props_" : {
+            "mode" : "Javascript",
+            "target" : null,
+            "units" : null
         },
-        //'_callback' : null, '_delta' : null, '_from_cache' : null,
 
-        '_constructor' : function(/*target = null, to = null, duration = 500, easing = NONE, units = null*/){
-            this._super(OjTween, '_constructor', []);
-            this._processArguments(arguments, {
-                'target' : undefined,
-                'to' : undefined,
-                'duration' : 250,
-                'easing' : OjEasing.NONE,
-                'units' : undefined
-            });
+        "_constructor" : function(target, to, duration, easing, units){
+            this._super(OjTween, "_constructor", []);
+            this._set("target", target);
+            this._set("to", to);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
+            this._set("units", units);
 //            var engine = OJ.getEngine();
 //
 //            if(engine == OJ.WEBKIT && !OJ.isMobile()){
 //                        this._mode = OjPropTween.WEBKIT;
 //            }
         },
-        '_destructor' : function(){
+        "_destructor" : function(){
             this._callback = null;
-            return this._super(OjTween, '_destructor', arguments);
+            return this._super(OjTween, "_destructor", arguments);
         },
 
-        '_calculateDelta' : function(){
+        "_calculateDelta" : function(){
             var self = this,
                 target = self.target;
             self._from_cache = {};
@@ -7644,70 +8811,72 @@ OJ.extendClass(
             var has_from = !isEmptyObject(self._from), key, transition_properties = '';
             for(key in self._to){
                 if(!has_from){
-                    self._from[key] = target[key];
+                    self._from[key] = target[key] || 0;
                 }
                 self._from_cache[key] = parseFloat(self._from[key]);
                 self._delta[key] = parseFloat(self._to[key]) - self._from_cache[key];
                 if(transition_properties != ''){
                     transition_properties += ', ';
                 }
-                transition_properties += OjPropTween.PROPERTY_CSS_MAP[key];
+                transition_properties += (OjPropTween.PROPERTY_CSS_MAP[key] || key);
             }
         },
-        '_is_animating' : function(val){
-            if(this._target && this._target.is('OjComponent')){
+        "_is_animating" : function(val){
+            if(this._target && this._target.is("OjComponent")){
                 this._target._setIsAnimating(val);
             }
         },
-        '_tick' : function(time){
-            var key,
-                self = this,
+        "_tick" : function(time){
+            const self = this,
+                cache = self._from_cache,
                 duration = self.duration,
                 delta = self._delta,
                 easing = self.easing,
                 target = self.target,
                 units = self.units;
-            for(key in delta){
-                var args = [
-                    Math.round(
-                        easing(time, self._from_cache[key], delta[key], duration, 0, 0) * 1000
-                    ) / 1000
-                ];
-                if(units){
-                    args.append(units);
+            if(target && cache && delta){
+                for(const key in delta){
+                    const args = [
+                        Math.round(
+                            easing(time, cache[key], delta[key], duration, 0, 0) * 1000
+                        ) / 1000
+                    ];
+                    if(units){
+                        args.append(units);
+                    }
+                    target[key] = args;
                 }
-                target[key] = args;
             }
+            self._super(OjTween, "_tick", arguments);
         },
 
-        '_onComplete' : function(evt){
+        "_onComplete" : function(evt){
             this._is_animating(false);
-            this._super(OjTween, '_onComplete', arguments);
+            this._super(OjTween, "_onComplete", arguments);
         },
-        '_onTargetDestroy' : function(evt){
-            this._super(OjTween, 'stop', arguments);
+        "_onTargetDestroy" : function(evt){
             this.target = null;
         },
-        '_onWebKitComplete' : function(evt){
+        "_onWebKitComplete" : function(evt){
             var self = this,
                 target = self.target,
-                prop = OjPropTween.CSS_PROPERTY_MAP[evt.propertyName];
+                prop = OjPropTween.CSS_PROPERTY_MAP[evt.propertyName] || evt.propertyName;
             if(isUndefined(self._from[prop])){
                 return;
             }
             // cleanup the webkit transition settings
-            target._setStyle('-webkit-transition-duration', null);
-            target._setStyle('-webkit-transition-property', null);
-            target.dom.removeEventListener('webkitTransitionEnd', self._callback, false);
+            target._setStyle("-webkit-transition-duration", null);
+            target._setStyle("-webkit-transition-property", null);
+            target.dom.removeEventListener("webkitTransitionEnd", self._callback, false);
             self._onComplete(evt);
             self._callback = null;
         },
 
-        'pause' : function(){
+        "pause" : function(){
             this._is_animating(false);
-            this._super(OjTween, 'pause', arguments);
+            this._super(OjTween, "pause", arguments);
         },
-        'start' : function(){
+        "start" : function(){
             if(!isSet(this._target) || !isSet(this._to)){
                 return;
             }
@@ -7718,25 +8887,25 @@ OJ.extendClass(
             if(this._mode == OjPropTween.WEBKIT){
                 var key;
                 this._calculateDelta();
-                this._target._setStyle('-webkit-transition-duration', this._duration + 'ms');
-                this._target._setStyle('-webkit-transition-property', transition_properties);
+                this._target._setStyle("-webkit-transition-duration", this._duration + "ms");
+                this._target._setStyle("-webkit-transition-property", transition_properties);
                 // add in easing setting later
-                this._target.dom.addEventListener('webkitTransitionEnd', this._callback = this._onWebKitComplete.bind(this), false);
+                this._target.dom.addEventListener("webkitTransitionEnd", this._callback = this._onWebKitComplete.bind(this), false);
                 for(key in this._delta){
                     this._target[key](this._from_cache[key] + this._delta[key]);
                 }
                 // maybe add fallback timer to trigger event in case something goes wrong...
             }
             else{
-                this._super(OjTween, 'start', arguments);
+                this._super(OjTween, "start", arguments);
             }
         },
-        'stop' : function(){
+        "stop" : function(){
             this._is_animating(false);
-            this._super(OjTween, 'stop', arguments);
+            this._super(OjTween, "stop", arguments);
         },
 
-        '=mode' : function(val){
+        "=mode" : function(val){
             if(this._mode == val){
                 return;
             }
@@ -7745,35 +8914,31 @@ OJ.extendClass(
                 OJ.destroy(this._timer);
             }
         },
-        '=target' : function(target){
+        "=target" : function(target){
             if(this._target == target){
                 return;
             }
             if(this._target){
-                this._target.removeEventListener(OjEvent.DESTROY, this, '_onTargetDestroy');
+                this._target.removeEventListener(OjEvent.DESTROY, this, "_onTargetDestroy");
             }
             if(this._target = target){
-                this._target.addEventListener(OjEvent.DESTROY, this, '_onTargetDestroy');
+                this._target.addEventListener(OjEvent.DESTROY, this, "_onTargetDestroy");
             }
         }
     },
     {
-        'PROPERTY_CSS_MAP' : {
-            'alpha' : 'opacity',
-            'x' : 'left',
-            'y' : 'top',
-            'width' : 'width',
-            'height' : 'height'
+        "PROPERTY_CSS_MAP" : {
+            "alpha" : "opacity",
+            "x" : "left",
+            "y" : "top"
         },
-        'CSS_PROPERTY_MAP' : {
-            'opacity' : 'alpha',
-            'left' : 'x',
-            'right' : 'y',
-            'width' : 'width',
-            'height' : 'height'
+        "CSS_PROPERTY_MAP" : {
+            "opacity" : "alpha",
+            "left" : "x",
+            "right" : "y"
         },
-        'JS' : 'Javascript',
-        'WEBKIT' : 'WebKit'
+        "JS" : "Javascript",
+        "WEBKIT" : "WebKit"
     }
 );
 
@@ -7786,14 +8951,12 @@ OJ.extendClass(
         },
         '_force' : false,
 
-        '_constructor' : function(/*target = null, direction = IN, duration = 250, easing = NONE*/){
-            this._super(OjPropTween, '_constructor', []);
-            this._processArguments(arguments, {
-                'target' : undefined,
-                'direction' : OjFade.IN,
-                'duration' : undefined,
-                'easing' : undefined
-            });
+        "_constructor" : function(target, direction, duration, easing){
+            this._super(OjPropTween, "_constructor", []);
+            this._set("target", target);
+            this._set("direction", direction, OjFade.IN);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
         },
 
         '_onComplete' : function(evt){
@@ -7837,30 +9000,42 @@ OJ.extendClass(
 );
 
 OJ.extendClass(
-    'OjComponent', [OjStyleElement],
+    "OjComponentEvent", [OjEvent],
+    { },
     {
-        '_props_' : {
-            'active' : false,
-            'enabled' : null,
-            'disabled' : false,
-            'elms' : null,
-            'is_active' : null,
-            'isEnabled' : null,
-            'isDisabled' : null,
-            'num_elms' : 0
+        "ACTIVE" : "onActive",
+        "INACTIVE" : "onInactive",
+        "ACTIVE_CHANGE" : "onActiveChange",
+        "ENABLED" : "onEnabled",
+        "DISABLED" : "onDisabled",
+        "ENABLED_CHANGE" : "onEnabledChange"
+    }
+);
+
+OJ.extendClass(
+    "OjComponent", [OjStyleElement],
+    {
+        "_props_" : {
+            "enabled" : null,
+            "disabled" : false,
+            "elms" : null,
+            "is_active" : null,
+            "is_inactive" : null,
+            "is_enabled" : null,
+            "is_disabled" : null,
+            "num_elms" : 0
         },
-        '_get_props_' : {
-            'controller' : null,
-            'is_animating' : false
+        "_get_props_" : {
+            "controller" : null,
+            "is_animating" : false
         },
 
-        '_constructor' : function(){
-            var self = this,
-                args = [null, self],
-                template = self._template;
+        "_constructor" : function(){
+            const args = [null, this],
+                template = this._template;
             // process the template if any
             if(template){
-                if(template.charAt(0) == '<'){
+                if(template.charAt(0) == "<"){
                     args[0] = template;
                 }
                 else{
@@ -7869,11 +9044,11 @@ OJ.extendClass(
                 }
             }
             // call super constructor
-            self._super(OjStyleElement, '_constructor', args);
+            this._super(OjStyleElement, "_constructor", args);
             // add the class name inheritance as css classes
-            self._setCss();
+            this._setCss();
             // setup the container
-            self._setContainer(self.container || self);
+            this._setContainer(this.container || this);
         },
         "_destructor" : function(){
             this._disableUiEvents();
@@ -7881,26 +9056,23 @@ OJ.extendClass(
         },
 
         "_disableUiEvents" : function(){
-            var self = this;
-            self.removeEventListener(OjUiEvent.DOWN, self, "_onUiDown");
-            self.removeEventListener(OjUiEvent.PRESS, self, "_onUiPress");
-            self.removeEventListener(OjUiEvent.OVER, self, "_onUiOver");
-            self.removeEventListener(OjUiEvent.OUT, self, "_onUiOut");
-            OJ.removeEventListener(OjUiEvent.MOVE, self, "_onUiMove");
-            OJ.removeEventListener(OjUiEvent.UP, self, "_onUiUp");
+            this.removeEventListener(OjUiEvent.DOWN, this, "_onUiDown");
+            this.removeEventListener(OjUiEvent.PRESS, this, "_onUiPress");
+            this.removeEventListener(OjUiEvent.OVER, this, "_onUiOver");
+            this.removeEventListener(OjUiEvent.OUT, this, "_onUiOut");
+            OJ.removeEventListener(OjUiEvent.MOVE, this, "_onUiMove");
+            OJ.removeEventListener(OjUiEvent.UP, this, "_onUiUp");
         },
         "_enableUiEvents" : function(){
-            var self = this;
-            self.addEventListener(OjUiEvent.DOWN, self, "_onUiDown");
-            self.addEventListener(OjUiEvent.PRESS, self, "_onUiPress");
-            self.addEventListener(OjUiEvent.OVER, self, "_onUiOver");
+            this.addEventListener(OjUiEvent.DOWN, this, "_onUiDown");
+            this.addEventListener(OjUiEvent.PRESS, this, "_onUiPress");
+            this.addEventListener(OjUiEvent.OVER, this, "_onUiOver");
         },
 
         "_onUiDown" : function(evt){
-            var self = this;
-            OJ.addEventListener(OjUiEvent.UP, self, "_onUiUp");
-            self.addEventListener(OjUiEvent.UP, self, "_onUiUp");
-            self.addCss("ui-down");
+            OJ.addEventListener(OjUiEvent.UP, this, "_onUiUp");
+            this.addEventListener(OjUiEvent.UP, this, "_onUiUp");
+            this.addCss("ui-down");
         },
         "_onUiMove" : function(evt){
             var self = this;
@@ -7910,9 +9082,7 @@ OJ.extendClass(
             }
         },
         "_onUiOut" : function(evt){
-            var self = this;
-            self.removeCss("ui-over");
-            self._updateIcon(self._icon);
+            this.removeCss("ui-over");
         },
         "_onUiOver" : function(evt){
             var self = this;
@@ -7920,13 +9090,7 @@ OJ.extendClass(
             self.addCss("ui-over");
         },
         "_onUiPress" : function(evt){
-            var url = this.url;
-            if(url){
-                WindowManager.open(url, this.target, {
-                    'width' : this.target_width,
-                    'height' : this.target_height
-                });
-            }
+            // do nothing
         },
         "_onUiUp" : function(evt){
             var self = this;
@@ -7935,19 +9099,19 @@ OJ.extendClass(
             self.removeCss("ui-down");
         },
         // override this so that the component gets properly set
-        '_processChild' : function(dom, context){
-            return this._super(OjStyleElement, '_processChild', [dom, context ? context : this]);
+        "_processChild" : function(dom, context){
+            return this._super(OjStyleElement, "_processChild", [dom, context ? context : this]);
         },
-        '_processDomSourceAttributes' : function(dom, context){
+        "_processDomSourceAttributes" : function(dom, context){
             this._processAttributes(dom, context);
         },
-        '_processDomSourceChild' : function(dom_elm, context){
+        "_processDomSourceChild" : function(dom_elm, context){
             if(!dom_elm || OjElement.isCommentNode(dom_elm)){
                 return ;
             }
             return this._processChild(dom_elm, context);
         },
-        '_processDomSourceChildren' : function(dom, context){
+        "_processDomSourceChildren" : function(dom, context){
             var self = this,
                 child,
                 children = dom.childNodes,
@@ -7959,7 +9123,7 @@ OJ.extendClass(
             }
         },
 
-        '_setCss' : function(){
+        "_setCss" : function(){
             var self = this,
                 css = [self.oj_class_name],
                 ln = self._supers.length,
@@ -7973,25 +9137,24 @@ OJ.extendClass(
             }
             self.addCss(css);
         },
-        '_setContainer' : function(container){
+        "_setContainer" : function(container){
             if(this.container == container){
                 return;
             }
             if(this.container){
-                this.container.removeCss('container');
+                this.container.removeCss("container");
             }
             if((this.container = container) != this){
-                this.container.addCss('container');
+                this.container.addCss("container");
             }
         },
-        '_setDomSource' : function(dom, context){
+        "_setDomSource" : function(dom, context){
             // setup our vars
-            var ary, prev, nm, val, ln, i,
-                is_body = (dom == document.body),
-                source = is_body ? this._dom : dom,
-                target = is_body ? dom : this._dom;
-            // prevent events from dispatching while we are setting everything up
-//            this._prevent_dispatch = true;
+            const is_body = (dom == document.body),
+                _dom = this.dom,
+                source = is_body ? _dom : dom,
+                target = is_body ? dom : _dom;
+            let ary, prev, nm, val, ln, i;
             // process dom attributes
             this._processDomSourceAttributes(dom, context);
             // copy over attributes
@@ -8000,11 +9163,11 @@ OJ.extendClass(
                 i = ary[ln];
                 nm = i.nodeName;
                 val = i.value;
-                if(nm == 'class'){
+                if(nm == "class"){
                     prev = target.getAttribute(nm);
-                    target.className = (String.string(prev) + ' ' + val).trim();
+                    target.className = (String.string(prev) + " " + val).trim();
                 }
-                else if(nm == 'id'){
+                else if(nm == "id"){
                     target.id = val;
                 }
                 else{
@@ -8026,41 +9189,39 @@ OJ.extendClass(
                     source.parentNode.replaceChild(target, source);
                 }
             }
-            // reengage event dispatching now that everything is setup
-//            this._prevent_dispatch = false;
             // update our dom var to the target
-            this._dom = target;
+            target.__oj__ = this._id_;
             // process any template vars
             this._processTemplateVars();
         },
-        '_setIsAnimating' : function(val){
+        "_setIsAnimating" : function(val){
             if(this._is_animating == val){
                 return;
             }
             if(this._is_animating = val){
-                this.addCss('animating');
+                this.addCss("animating");
             }
             else{
-                this.removeCss('animating');
+                this.removeCss("animating");
             }
         },
-        '_setIsDisplayed' : function(displayed){
-            this._super(OjStyleElement, '_setIsDisplayed', arguments);
+        "_setIsDisplayed" : function(displayed){
+            this._super(OjStyleElement, "_setIsDisplayed", arguments);
             this.redraw();
         },
 
-        '_processEvent' : function(evt){
-            if(this._isDisabled){
+        "_processEvent" : function(evt){
+            if(this._is_disabled){
                 return false;
             }
-            return this._super(OjStyleElement, '_processEvent', arguments);
+            return this._super(OjStyleElement, "_processEvent", arguments);
         },
 
         // Component Management Functions
-        '_callElmFunc' : function(func, args){
+        "_callElmFunc" : function(func, args){
             return this._callElmProp(func).apply(this.container, args);
         },
-        '_callElmProp' : function(prop, val){
+        "_callElmProp" : function(prop, val){
             var cls = this._static,
                 container = this.container,
                 translated;
@@ -8075,60 +9236,60 @@ OJ.extendClass(
             }
             return container[translated]
         },
-        'appendElm' : function(){
-            return this._callElmFunc('appendElm', arguments);
+        "appendElm" : function(){
+            return this._callElmFunc("appendElm", arguments);
         },
-        '.elms' : function(){
-            return this._callElmProp('elms');
+        ".elms" : function(){
+            return this._callElmProp("elms");
         },
-        '=elms' : function(elms){
-            return this._callElmProp('elms', elms);
+        "=elms" : function(elms){
+            return this._callElmProp("elms", elms);
         },
-        'forElm' : function(){
-            return this._callElmFunc('forElm', arguments);
+        "forElm" : function(){
+            return this._callElmFunc("forElm", arguments);
         },
-        'forElmReverse' : function(){
-            return this._callElmFunc('forElmReverse', arguments);
+        "forElmReverse" : function(){
+            return this._callElmFunc("forElmReverse", arguments);
         },
-        'getElmAt' : function(){
-            return this._callElmFunc('getElmAt', arguments);
+        "getElmAt" : function(){
+            return this._callElmFunc("getElmAt", arguments);
         },
-        'hasElm' : function(){
-            return this._callElmFunc('hasElm', arguments);
+        "hasElm" : function(){
+            return this._callElmFunc("hasElm", arguments);
         },
-        'indexOfElm' : function(){
-            return this._callElmFunc('indexOfElm', arguments);
+        "indexOfElm" : function(){
+            return this._callElmFunc("indexOfElm", arguments);
         },
-        'insertElmAt' : function(){
-            return this._callElmFunc('insertElmAt', arguments);
+        "insertElmAt" : function(){
+            return this._callElmFunc("insertElmAt", arguments);
         },
-        'moveElm' : function(){
-            return this._callElmFunc('moveElm', arguments);
+        "moveElm" : function(){
+            return this._callElmFunc("moveElm", arguments);
         },
-        '.num_elms' : function(){
-            return this._callElmProp('num_elms');
+        ".num_elms" : function(){
+            return this._callElmProp("num_elms");
         },
-        'prependElm' : function(){
-            return this._callElmFunc('prependElm', arguments);
+        "prependElm" : function(){
+            return this._callElmFunc("prependElm", arguments);
         },
-        'removeAllElms' : function(){
-            return this._callElmFunc('removeAllElms', arguments);
+        "removeAllElms" : function(){
+            return this._callElmFunc("removeAllElms", arguments);
         },
-        'removeElm' : function(){
-            return this._callElmFunc('removeElm', arguments);
+        "removeElm" : function(){
+            return this._callElmFunc("removeElm", arguments);
         },
-        'removeElmAt' : function(){
-            return this._callElmFunc('removeElmAt', arguments);
+        "removeElmAt" : function(){
+            return this._callElmFunc("removeElmAt", arguments);
         },
-        'replaceElm' : function(){
-            return this._callElmFunc('replaceElm', arguments);
+        "replaceElm" : function(){
+            return this._callElmFunc("replaceElm", arguments);
         },
-        'replaceElmAt' : function(){
-            return this._callElmFunc('replaceElmAt', arguments);
+        "replaceElmAt" : function(){
+            return this._callElmFunc("replaceElmAt", arguments);
         },
 
         // event handling functions
-        '_onFadeComplete' : function(evt){
+        "_onFadeComplete" : function(evt){
             this.alpha = 1;
             if(this._fader.direction == OjFade.OUT){
                 this.hide();
@@ -8137,47 +9298,47 @@ OJ.extendClass(
                 this.show();
             }
             this._setIsAnimating(false);
-            this._unset('_fader');
+            this._unset("_fader");
         },
 
-        'fadeIn' : function(duration, easing){
+        "fadeIn" : function(duration, easing){
             if(this._fader){
                 if(this._fader.direction == OjFade.IN){
                     return;
                 }
-                this._unset('_fader');
+                this._unset("_fader");
             }
-            else if(this.isVisible){
+            else if(this.is_visible){
                 return;
             }
             this.show();
             var ln = arguments.length;
             this._fader = new OjFade(this, OjFade.IN, ln ? duration : 250, ln > 1 ? easing : OjEasing.NONE);
-            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
+            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, "_onFadeComplete");
             this._fader.start();
             this._setIsAnimating(true);
         },
-        'fadeOut' : function(duration, easing){
+        "fadeOut" : function(duration, easing){
             if(this._fader){
                 if(this._fader.direction == OjFade.OUT){
                     return;
                 }
-                this._unset('_fader');
+                this._unset("_fader");
             }
-            else if(!this.isVisible){
+            else if(!this.is_visible){
                 return;
             }
             var ln = arguments.length;
             this._fader = new OjFade(this, OjFade.OUT, ln ? duration : 250, ln > 1 ? easing : OjEasing.NONE);
-            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, '_onFadeComplete');
+            this._fader.addEventListener(OjTweenEvent.COMPLETE, this, "_onFadeComplete");
             this._fader.start();
             this._setIsAnimating(true);
         },
-        'redraw' : function(force){
+        "redraw" : function(force){
             return this._is_displayed || force;
         },
         // Getter/Setter Methods
-        '.controller' : function(){
+        ".controller" : function(){
             if(!this._controller){
                 var p = this.parentComponent;
                 if(p){
@@ -8186,77 +9347,68 @@ OJ.extendClass(
             }
             return this._controller;
         },
-        // active
-        '.is_active' : function(){
-            return this.active;
-        },
-        '=is_active' : function(val){
-            this.active = val;
-        },
-        '=active' : function(val){
-            var self = this;
-            if(self._active != val){
-                if(self._active = val){
-                    self.addCss('active');
+        // is_active
+        "=is_active" : function(val){
+            var self = this,
+                evt = OjComponentEvent;
+            if(self._is_active != val){
+                if(self._is_active = val){
+                    self.addCss("active");
+                    self.dispatchEvent(new evt(evt.ACTIVE));
                 }
                 else{
-                    self.removeCss('active');
+                    self.removeCss("active");
+                    self.dispatchEvent(new evt(evt.INACTIVE));
                 }
+                self.dispatchEvent(new evt(evt.ACTIVE_CHANGE));
             }
         },
-        // disabled
-        '.isDisabled' : function(){
-            return this.disabled;
-        },
-        '=isDisabled' : function(val){
-            return this.disabled = val;
-        },
-        '=disabled' : function(val){
-            var self = this;
-            if(self._disabled != val){
-                if(self._disabled = val){
-                    self.addCss('disabled');
+        ".is_inactive" : function(){ return !this.is_active; },
+        "=is_inactive" : function(val){ return this.is_active = !val; },
+        // is_disabled
+        "=is_disabled" : function(val){
+            var self = this,
+                evt = OjComponentEvent;
+            if(self._is_disabled != val){
+                if(self._is_disabled = val){
+                    self.addCss("disabled");
+                    self.dispatchEvent(new evt(evt.DISABLED));
                 }
                 else{
-                    self.removeCss('disabled');
+                    self.removeCss("disabled");
+                    self.dispatchEvent(new evt(evt.ENABLED));
                 }
+                self.dispatchEvent(new evt(evt.ENABLED_CHANGE));
             }
         },
-        // enabled
-        '.isEnabled' : function(){
-            return this.enabled;
-        },
-        '=isEnabled' : function(val){
-            return this.enabled = val;
-        },
-        '.enabled' : function(){
-            return !this.disabled;
-        },
-        '=enabled' : function(val){
-            this.disabled = !val;
-        }
+        ".is_enabled" : function(){ return !this.is_disabled; },
+        "=is_enabled" : function(val){ return this.is_disabled = !val; }
     },
     {
-        '_TAGS' : [],
-        'ELM_FUNCS' : {
-            'appendElm' : 'appendChild',
-            'elms' : 'children',
-            'forElm' : 'forChild',
-            'forElmReverse' : 'forChildReverse',
-            'getElmAt' : 'getChildAt',
-            'hasElm' : 'hasChild',
-            'indexOfElm' : 'indexOfChild',
-            'insertElmAt' : 'insertChildAt',
-            'moveElm' : 'moveChild',
-            'num_elms' : 'num_children',
-            'prependElm' : 'prependChild',
-            'removeAllElms' : 'removeAllChildren',
-            'removeElm' : 'removeChild',
-            'removeElmAt' : 'removeChildAt',
-            'replaceElm' : 'replaceChild',
-            'replaceElmAt' : 'replaceChildAt'
+        "_TAGS" : [],
+        "ELM_FUNCS" : {
+            "appendElm" : "appendChild",
+            "elms" : "children",
+            "forElm" : "forChild",
+            "forElmReverse" : "forChildReverse",
+            "getElmAt" : "getChildAt",
+            "hasElm" : "hasChild",
+            "indexOfElm" : "indexOfChild",
+            "insertElmAt" : "insertChildAt",
+            "moveElm" : "moveChild",
+            "num_elms" : "num_children",
+            "prependElm" : "prependChild",
+            "removeAllElms" : "removeAllChildren",
+            "removeElm" : "removeChild",
+            "removeElmAt" : "removeChildAt",
+            "replaceElm" : "replaceChild",
+            "replaceElmAt" : "replaceChildAt"
         },
-        'load' : function(source){
+        "HORIZONTAL" : "horz",
+        "HORIZONTAL_REVERSE" : "horz-rev",
+        "VERTICAL" : "vert",
+        "VERTICAL_REVERSE" : "vert-rev",
+        "load" : function(source){
         }
     }
 );
@@ -8496,6 +9648,7 @@ OJ.extendComponent(
     "OjView", [OjComponent],
     {
         "_props_" : {
+            "nav_css": null,
             "controller" : null,
             "footer" : null,
             "header" : null,
@@ -8509,35 +9662,19 @@ OJ.extendComponent(
             "cancel_view" : null,
             "title_view" : null
         },
-//        "_elm_funcs" : null,  "_load_checkpoints" : null,  "_loading_icon" : null,
-//
-//        "_overlay" : null,  "_unload_checkpoints" : null,  "_unloading_icon" : null,
-        "_loading_msg" : "Loading", "_template" : "<div></div>", "_loaded" : false,
+        "_loading_msg" : "Loading", "_template" : "<div></div>", "_is_loaded" : false,
         "_unloading_msg" : "UnLoading",
 
-        "_constructor" : function(/*content, title, short_title, icon*/){
-            var self = this,
-                cls = self._static;
-            self._super(OjComponent, "_constructor", []);
+        "_constructor" : function(content, title, short_title, icon){
+            this._super(OjComponent, "_constructor", []);
             // setup vars
-            self._load_checkpoints = {};
-            self._unload_checkpoints = {};
+            this._checkpoints = {};
             // process arguments
-            self._processArguments(arguments, {
-                "content": undefined,
-                "title" : undefined,
-                "short_title" : undefined,
-                "icon" : undefined
-            });
-            if(!self.title){
-                self.title = cls.TITLE;
-            }
-            if(!self.short_title){
-                self.short_title = cls.SHORT_TITLE;
-            }
-            if(!self.icon){
-                self.icon = cls.ICON;
-            }
+            const cls = this._static;
+            this._set("content", content);
+            this._set("title", title, OJ.copy(cls.TITLE));
+            this._set("title", short_title, OJ.copy(cls.SHORT_TITLE));
+            this._set("icon", icon, OJ.copy(cls.ICON));
         },
         "_destructor" : function(){
             this.unload();
@@ -8545,13 +9682,19 @@ OJ.extendComponent(
             return this._super(OjComponent, "_destructor", arguments);
         },
 
-        "_checkpointsCompleted" : function(checkpoints){
-            for(var key in checkpoints){
-                if(!checkpoints[key]){
+        "_checkpointsCompleted" : function(){
+            for(const key in this._checkpoints){
+                if(!this._checkpoints[key]){
                     return false;
                 }
             }
             return true;
+        },
+        "_checkpointComplete" : function(checkpoint){
+            this._checkpoints[checkpoint] = true;
+            if(this._checkpointsCompleted()){
+                this._load();
+            }
         },
         "_hideOverlay" : function(overlay){
             if((overlay = overlay || this._overlay)){
@@ -8560,37 +9703,19 @@ OJ.extendComponent(
             }
         },
         "_load" : function(){
-            this._loaded = true;
+            this._is_loaded = true;
             this.removeCss("loading");
             this.redraw();
             this._hideOverlay();
             this.dispatchEvent(new OjEvent(OjView.LOAD));
         },
-        "_loadCheckpoint" : function(checkpoint){
-            var self = this,
-                checkpoints = self._load_checkpoints;
-            if(checkpoint){
-                checkpoints[checkpoint] = true;
-            }
-            if(self._checkpointsCompleted(checkpoints)){
-                self._load();
-            }
-            else{
-                self._showOverlay(self._loading_msg, self._loading_icon);
+        "_resetCheckpoints" : function(){
+            for(const key in this._checkpoints){
+                this._checkpoints[key] = false;
             }
         },
-        "_resetCheckpoints" : function(checkpoints){
-            var key;
-            for(key in checkpoints){
-                checkpoints[key] = false;
-            }
-        },
-        "_showOverlay" : function(/*msg, icon*/){
-            var args = arguments,
-                ln = args.length,
-                msg = ln ? args[0] : null,
-                icon = ln > 1 ? args[1] : null,
-                overlay = this._overlay;
+        "_showOverlay" : function(msg, icon){
+            let overlay = this._overlay;
             if(overlay){
                 overlay.message = msg;
                 overlay.icon = icon;
@@ -8602,46 +9727,61 @@ OJ.extendComponent(
             return overlay;
         },
         "_unload" : function(){
-            this._loaded = false;
-            this._hideOverlay();
+            this._is_loaded = false;
             // dispatch the event
             this.dispatchEvent(new OjEvent(OjView.UNLOAD));
-        },
-        "_unloadCheckpoint" : function(/*checkpoint*/){
-            var args = arguments;
-            if(args.length){
-                this._unload_checkpoints[args[0]] = true;
-            }
-            if(this._checkpointsCompleted(this._unload_checkpoints)){
-                this._unload();
-            }
-            else{
-                this._showOverlay(this._unloading_msg, this._unloading_icon);
-            }
         },
 
         "_onOverlayHide" : function(evt){
             this._unset("_overlay");
         },
 
+        "didHide" : function(){ },
+        "didShow" : function(){ },
         "load" : function(reload){
-            var self = this;
-            if(!reload && self._loaded){
+            // figure out if we need to actually load
+            if(!reload && this._is_loaded){
                 return false;
             }
-            self.addCss("loading");
-            self._resetCheckpoints(self._load_checkpoints);
-            self._loadCheckpoint();
+            // let the ui know we are loading
+            this.addCss("loading");
+            // reset the checkpoints
+            this._resetCheckpoints();
+            const self = this,
+                checkpoints = Object.keys(this._checkpoints);
+            // only show overlay if we have checkpoints
+            if(checkpoints.length){
+                this._showOverlay(this._loading_msg, this._loading_icon);
+                // call the checkpoints
+                checkpoints.forEachReverse( (checkpoint) => {
+                    self[checkpoint]();
+                });
+            }
+            // if not checkpoints then we are done
+            else{
+                this._load();
+            }
             return true;
         },
         "unload" : function(){
-            var self = this;
-            if(self._loaded){
-                self._resetCheckpoints(self._unload_checkpoints);
-                self._unloadCheckpoint();
-                return true;
+            // figure out if we need to unload
+            if(this._is_loaded){
+                this._unload();
             }
-            return false;
+        },
+        "willHide" : function(){
+            const container = this.container;
+            if(container){
+                this._container_scroll_pos = [container.scroll_x, container.scroll_y];
+            }
+        },
+        "willShow" : function(){
+            const pos = this._container_scroll_pos,
+                container = this.container;
+            if(pos && container){
+                container.scroll_x = pos[0];
+                container.scroll_y = pos[1];
+            }
         },
 
         // getter & Setter functions
@@ -8652,8 +9792,7 @@ OJ.extendComponent(
             this.removeAllElms();
             if(content){
                 content = Array.array(content);
-                var ln = content.length;
-                for(; ln--;){
+                for(let ln = content.length; ln--;){
                     this.insertElmAt(content[ln], 0);
                 }
             }
@@ -8697,7 +9836,11 @@ OJ.extendComponent(
             }
         },
         ".icon" : function(){
-            return OjImage.image(this._icon, true); // this will clone the icon so that we don"t run into the icon accidentally getting messed up
+            var icon = this._icon;
+            if(isObjective(icon)){
+                return icon;
+            }
+            return OjImage.image(icon, true); // this will clone the icon so that we don"t run into the icon accidentally getting messed up
         },
         "=icon" : function(icon){
             if(this._icon == icon){
@@ -8721,12 +9864,6 @@ OJ.extendComponent(
         "ICON" : null,
         "SHORT_TITLE" : null,
         "TITLE" : null,
-        "HORIZONTAL" : "horizontal",
-        "VERTICAL" : "vertical",
-        "TOP" : "top",
-        "BOTTOM" : "bottom",
-        "LEFT" : "left",
-        "RIGHT" : "right",
         "ICON_CHANGE" : "onTitleChange",
         "LOAD" : "onViewLoad",
         "TITLE_CHANGE" : "onTitleChange",
@@ -8739,6 +9876,7 @@ OJ.extendComponent(
     'OjIframe', [OjView],
     {
         '_props_' : {
+            "on_load" : null,
             'source' : null,
             'timeout' : 60
         },
@@ -8746,7 +9884,7 @@ OJ.extendComponent(
         '_interval' : null,
         '_template' : '<iframe></iframe>',
 
-        '_constructor' : function(source, target){
+        '_constructor' : function(source, target, on_load){
             var self = this;
             self._super(OjView, '_constructor', []);
             if(source){
@@ -8755,16 +9893,25 @@ OJ.extendComponent(
             if(target){
                 self.target = target;
             }
+            self.on_load = on_load;
             self.attr('name', self.id);
         },
 
         '_onLoad' : function(){
             clearInterval(this._interval);
+            var on_load = this.on_load;
+            if(on_load){
+                on_load(true);
+            }
             this.dispatchEvent(new OjEvent(OjEvent.COMPLETE));
         },
         '_onTimeout' : function(){
             clearInterval(this._interval);
-            this.dispatchEvent(new OjIoErrorEvent(OjIoErrorEvent.IO_ERROR));
+            var on_load = this.on_load;
+            if(on_load){
+                on_load(false);
+            }
+            this.dispatchEvent(new OjIoError(OjIoError.IO_ERROR));
         },
 
         '.source' : function(){
@@ -8773,15 +9920,7 @@ OJ.extendComponent(
         '=source' : function(source){
             var iframe = this.dom;
             this._source = source.toString();
-            if(iframe.src){
-                iframe.src = this._source;
-            }
-            else if(iframe.contentWindow !== null && iframe.contentWindow.location !== null){
-//                        iframe.contentWindow.location.href = this._source;
-            }
-            else{
-                this.attr('src', this._source);
-            }
+            this.attr('src', this._source);
             if(!isEmpty(this._source)){
                 clearInterval(this._interval);
                 this._interval = setInterval(this._onTimeout.bind(this), this._timeout * 1000);
@@ -8805,10 +9944,10 @@ OJ.extendClass(
     {
         '_props_': {
             'preload': false,
-            'resizeBy': 'none', // OjMedia.NONE
+            'resize_by': 'none', // OjMedia.NONE
             'source': null,
-            'showSpinner': false,
-            'spinnerTint': '#333'
+            'show_spinner': false,
+            'spinner_tint': '#333'
         },
         '_height': 0, '_loaded': false, '_resize_vals': ['none', 'fill', 'fit', 'hFill', 'wFill'], '_width': 0,
         //'_template': '<div><div var=container></div></div>',
@@ -8857,7 +9996,7 @@ OJ.extendClass(
                 this._media.height = ['100', '%'];
                 this._media.width = OjStyleElement.AUTO;
             }
-            else if(this._resizeBy == this._static.WIDTH){
+            else if(this._resize_by == this._static.WIDTH){
                 this._media.width = ['100', '%'];
                 this._media.height = OjStyleElement.AUTO;
             }
@@ -8950,19 +10089,19 @@ OJ.extendClass(
                 return;
             }
             this.unload();
-            if (!this.loading && this._showSpinner) {
-                this.appendElm(this.loading = new OjSpinner(this._spinnerTint));
+            if (!this.loading && this._show_spinner) {
+                this.appendElm(this.loading = new OjSpinner(this._spinner_tint));
             }
             this._setSource(url);
             if (this._preload || this._is_displayed) {
                 this._load();
             }
         },
-        '=resizeBy': function (val) {
-            if (this._resizeBy == val) {
+        '=resize_by': function (val) {
+            if (this._resize_by == val) {
                 return;
             }
-            this._resizeBy = this._resize_vals.indexOf(val) > -1 ? val : this._static.NONE;
+            this._resize_by = this._resize_vals.indexOf(val) > -1 ? val : this._static.NONE;
             this._resize();
         },
         '_setHeight': function (val) {
@@ -9010,10 +10149,10 @@ OJ.extendComponent(
         },
         '_resize': function () {
             this.removeCss(this._resize_vals);
-            if (this._resizeBy == this._static.NONE) {
+            if (this._resize_by == this._static.NONE) {
                 return;
             }
-            this.addCss(this._resizeBy);
+            this.addCss(this._resize_by);
         },
 
         '_onMediaLoad': function (evt) {
@@ -9031,7 +10170,8 @@ OJ.extendComponent(
                 if(!this.height){
                     this.height = this._original_h;
                 }
-                this._setStyle('backgroundImage', 'url(' + this.source + ')');
+                print("set background", this.source);
+                this._setStyle('background-image', 'url(' + this.source + ')');
             }
             return this._super(OjMedia, '_onMediaLoad', arguments);
         },
@@ -9059,7 +10199,7 @@ OJ.extendComponent(
             // cleanup old source
             if (!this._source_is_css) {
                 // remove old source background image
-                this._setStyle('backgroundImage', null);
+                this._setStyle('background-image', null);
             }
             this._unset('_media');
             this._source_is_css = false;
@@ -9120,14 +10260,12 @@ OJ.extendClass(
             'duration' : null
         },
 
-        '_constructor' : function(/*effect, duration, easing*/){
+        '_constructor' : function(effect, duration, easing){
             this._super(OjObject, '_constructor', []);
             // default the easing property
-            this._processArguments(arguments, {
-                'effect' : OjTransition.FADE,
-                'duration' : 250,
-                'easing' : [OjEasing.NONE, OjEasing.NONE]
-            });
+            this._set("effect", effect, OjTransition.FADE);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, [OjEasing.NONE, OjEasing.NONE]);
         },
 
         '_getEasing' : function(direction){
@@ -9264,19 +10402,9 @@ OJ.extendComponent(
         },
 
         // event listener callbacks
-        '_onStackChange' : function(evt){
+        "_onStackChange" : function(evt){
         },
-        '_onStackChangeComplete' : function(evt){
-            // remove all views after the active view
-            var stack = this.stack,
-                ln = stack.num_elms,
-                i = stack.active_index;
-            if(stack.has_deferred){
-                return;
-            }
-            for(; --ln > i;){
-                stack.removeElmAt(ln);
-            }
+        "_onStackChangeComplete" : function(evt){
         },
 
         // stack view functions
@@ -9368,85 +10496,86 @@ OJ.extendComponent(
     }
 );
 OJ.extendComponent(
-    'OjLabel', [OjComponent],
+    "OjLabel", [OjComponent],
     {
-        '_props_' : {
-            'prefix' : null,
-            'suffix' : null
+        "_props_" : {
+            "prefix" : null,
+            "suffix" : null
         },
-        '_template' : '<label></label>',
+        "_template" : "<label></label>",
 
-        '_constructor' : function(text){
-            this._super(OjComponent, '_constructor', []);
+        "_constructor" : function(text){
+            this._super(OjComponent, "_constructor", []);
             this.text = text;
         },
-        '_processDomSourceChild' : function(){
-            var self = this,
-                child = self._super(OjComponent, '_processDomSourceChild', arguments);
-            if(child && (child.is(OjTextElement) || child.is(OjLabel) || !child.is(OjComponent))){
-                self.text = child.text;
+        "_processDomSourceChild" : function(){
+            const child = this._super(OjComponent, "_processDomSourceChild", arguments);
+            if(child && child.is(OjTextElement)){
+                this.text = child;
                 return;
             }
             return child;
         },
-        //'_processDomSourceChildren' : function(dom_elm, component){
-        //    var txt = dom_elm.innerHTML;
-        //
-        //    if(!isEmpty(txt)){
-        //        this.text = String.string(this.text) + String.string(txt);
-        //
-        //        return;
-        //    }
-        //
-        //    return this._super(OjComponent, '_processDomSourceChildren', arguments);
-        //},
-        '_redrawText' : function(){
-            var self = this;
-            self.dom.innerHTML = String.string(self.prefix).html() + String.string(self.text).html() + String.string(self.suffix).html();
+        "_addSpan" : function(css, text, target){
+            const span = new OjStyleElement("<span class='" + css + "'></span>");
+            span.text = text;
+            target.appendChild(span);
         },
-
-        'appendText' : function(str){
-            this.text = String.string(this.text) + String.string(str);
+        "_redrawText" : function(target){
+            const prefix = this.prefix,
+                suffix = this.suffix,
+                text = this.text;
+            target = target || this;
+            target.removeAllChildren();
+            if(prefix){
+                this._addSpan("prefix", prefix, target);
+            }
+            if(prefix || suffix){
+                this._addSpan("stem", text, target);
+            }
+            else if(text){
+                target.appendChild(text);
+            }
+            if(suffix){
+                this._addSpan("suffix", suffix, target);
+            }
         },
-        'prependText' : function(str){
-            this.text = String.string(str) + String.string(this.text);
-        },
-        'redraw' : function(){
-            if(this._super(OjComponent, 'redraw', arguments)){
+        "redraw" : function(){
+            if(this._super(OjComponent, "redraw", arguments)){
                 this._redrawText();
                 return true;
             }
             return false;
         },
 
-        '=prefix' : function(val){
+        "=prefix" : function(val){
             if(this._prefix == val){
                 return;
             }
-            this._prefix = val;
+            this._prefix = isObjective(val, OjTextElement) ? val : new OjTextElement(val);
             this.redraw();
         },
-        '=suffix' : function(val){
+        "=suffix" : function(val){
             if(this._suffix == val){
                 return;
             }
-            this._suffix = val;
+            this._suffix = isObjective(val, OjTextElement) ? val : new OjTextElement(val);
             this.redraw();
         },
         // these are needed to override the OjStyleElement text getter/setter
-        '.text' : function(){
+        ".text" : function(){
             return this._text;
         },
-        '=text' : function(val){
+        "=text" : function(val){
             if(this._text == val){
                 return;
             }
-            this._text = val;
+            this._text = isObjective(val, OjTextElement) ? val : new OjTextElement(val);
             this.redraw();
         }
     },
     {
-        '_TAGS' : ['label']
+        "_TAGS" : ["label"]
     }
 );
 
@@ -9492,39 +10621,36 @@ OJ.extendClass(
 );
 
 OJ.extendClass(
-    'OjDimTween', [OjPropTween],
+    "OjDimTween", [OjPropTween],
     {
-        '_props_' : {
-            'amount'    : null,
-            'direction' : null
+        "_props_" : {
+            "amount"    : null,
+            "direction" : null
         },
 
-        '_constructor' : function(/*target, direction, amount, duration, easing, units*/){
-            var self = this;
-            self._super(OjPropTween, '_constructor', []);
-            self._to = {};
-            self._processArguments(arguments, {
-                'target' : undefined,
-                'direction' : self._static.BOTH,
-                'amount': undefined,
-                'duration' : 250,
-                'easing' : OjEasing.NONE,
-                'units' : OJ.dim_unit
-            });
+        "_constructor" : function(target, direction, amount, duration, easing, units){
+            this._super(OjPropTween, "_constructor", []);
+            this._to = {};
+            this._set("target", target);
+            this._set("direction", direction, this._static.BOTH);
+            this._set("amount", amount);
+            this._set("duration", duration, 250);
+            this._set("easing", easing, OjEasing.NONE);
+            this._set("units", units, OJ.dim_unit);
         }
     },
     {
-        'HORIZONTAL' : 'dimTweenHorizontal',
-        'VERTICAL'   : 'dimTweenVertical',
-        'BOTH'       : 'dimTweenBoth'
+        "HORIZONTAL" : "dimTweenHorizontal",
+        "VERTICAL"   : "dimTweenVertical",
+        "BOTH"       : "dimTweenBoth"
     }
 );
 
 OJ.extendClass(
-    'OjMove', [OjDimTween],
+    "OjMove", [OjDimTween],
     {
-        '=amount' : function(amount){
-            var self = this,
+        "=amount" : function(amount){
+            const self = this,
                 dir = self.direction,
                 cls = OjMove,
                 to = self._to;
@@ -9533,21 +10659,22 @@ OJ.extendClass(
             }
             self._amount = amount;
             if(dir == cls.BOTH){
-                to.x = amount[0];
-                to.y = amount[1];
-            }
-            else if(dir == cls.X){
-                to.x = amount;
+                to.top = amount[0];
+                to.left = amount[1];
             }
             else{
-                to.y = amount;
+                to[dir] = amount;
             }
         }
     },
     {
-        'X'    : OjDimTween.HORIZONTAL,
-        'Y'    : OjDimTween.VERTICAL,
-        'BOTH' : OjDimTween.BOTH
+        "X"    : "left",
+        "Y"    : "top",
+        "BOTH" : OjDimTween.BOTH,
+        "TOP"    : "top",
+        "LEFT"   : "left",
+        "BOTTOM" : "bottom",
+        "RIGHT"  : "right"
     }
 );
 
@@ -9682,13 +10809,17 @@ OJ.extendComponent(
     "OjFlowNavController", [OjNavController],
     {
         "_props_" : {
-            "cancel_icon" : null,
-            "cancel_label" : "Cancel",
-            "cancel_visible" : false,
-            "default_title" : null,
-            "title" : null
+            "action_view": null,
+            "cancel_icon": null,
+            "cancel_label": "Cancel",
+            "cancel_view": null,
+            "cancel_visible": false,
+            "default_title": null,
+            "icon_only_back": false,
+            "title": null,
+            "title_view": null
         },
-        "_template" : "<div class=flow-nav-controller><div var=bottom><div var=btm_left class=left flex-h></div><div var=btm_title class=title flex-h></div><div var=btm_right class=right flex-h></div></div><div var=top><div var=top_left class=left flex-h></div><div var=top_title class=title flex-h></div><div var=top_right class=right flex-h></div></div></div>",
+        "_template" : "<div class=flow-nav-controller><div var=bottom_bar><div var=btm_left class=left flex-h></div><div var=btm_title class=title flex-h></div><div var=btm_right class=right flex-h></div></div><div var=top_bar><div var=top_left class=left flex-h></div><div var=top_title class=title flex-h></div><div var=top_right class=right flex-h></div></div></div>",
 
         // internal stack methods
         "_setupStack" : function(stack){
@@ -9702,10 +10833,23 @@ OJ.extendComponent(
         //"_onStackAdd" : function(evt){
         //    this._stack.active = evt.view;
         //},
-
+        "_onStackChangeComplete" : function(evt){
+            // remove all views after the active view
+            var self = this,
+                stack = self.stack,
+                ln = stack.num_elms,
+                i = stack.active_index;
+            self._super(OjNavController, "_onStackChangeComplete", arguments);
+            if(stack.has_deferred){
+                return;
+            }
+            for(; --ln > i;){
+                stack.removeElmAt(ln);
+            }
+        },
         // helper functions
         "_makeBackButton" : function(view){
-            var btn = new OjButton(view.short_title);
+            const btn = new OjButton(this.icon_only_back ? null : OJ.copy(view.short_title));
             btn.addCss("back-button");
             return btn;
         },
@@ -9716,9 +10860,9 @@ OJ.extendComponent(
         },
         "_makeTitle" : function(title){
             if(isObjective(title)){
-                return title;
+                return title.clone();
             }
-            return new OjStyleElement("<div>" + title + "</div>");
+            return new OjTextElement(title);
         },
         "_update" : function(view, transition, index, old_index){
             var self = this;
@@ -9729,8 +10873,8 @@ OJ.extendComponent(
             }
             // process the left, title & right components
             // setup the vars
-            var t = self.top, tl = self.top_left, tt = self.top_title, tr = self.top_right,
-                b = self.bottom, bl = self.btm_left, bt = self.btm_title, br = self.btm_right,
+            var t = self.top_bar, tl = self.top_left, tt = self.top_title, tr = self.top_right,
+                b = self.bottom_bar, bl = self.btm_left, bt = self.btm_title, br = self.btm_right,
                 left = tl.num_children ? tl.getChildAt(0) : null,
                 center = tt.num_children ? tt.getChildAt(0) : null,
                 right = tr.num_children ? tr.getChildAt(0) : null,
@@ -9875,6 +11019,9 @@ OJ.extendComponent(
         "cancel" : function(){
             this.dispatchEvent(new OjEvent(OjEvent.CANCEL, false));
         },
+        "complete" : function(){
+            this.dispatchEvent(new OjEvent(OjEvent.COMPLETE, false));
+        },
 
         // stack view functions
         "pushView" : function(view, transition){
@@ -9893,6 +11040,28 @@ OJ.extendComponent(
         },
 
         // public properties
+        ".action_view" : function(){
+            return this.top_right.getChildAt(0);
+        },
+        "=action_view": function(val){
+            var top_right = this.top_right;
+            top_right.removeAllChildren();
+            if(val){
+                top_right.appendChild(val);
+            }
+        },
+        "=default_title" : function(title){
+            var self = this;
+            if(self._default_title == title){
+                return;
+            }
+            self._default_title = title;
+            if(!self.top_title.num_children){
+                self.top_title.appendChild(
+                    self._makeTitle(title)
+                );
+            }
+        },
         "=title" : function(title){
             var self = this,
                 hldr = self.top_title;
@@ -9921,6 +11090,16 @@ OJ.extendComponent(
             self._cancel_icon = val;
             if(btn){
                 btn.icon = val;
+            }
+        },
+        ".cancel_view": function(){
+            return this.top_left.getChildAt(0);
+        },
+        "=cancel_view": function(val){
+            var top_left = this.top_left;
+            top_left.removeAllChildren();
+            if(val){
+                top_left.appendChild(val);
             }
         },
         "=cancel_visible" : function(val){
@@ -10018,6 +11197,10 @@ OJ.extendComponent(
             // clear out the helper vars
             this._rendered = this._item_events = null;
             this._super(OjComponent, '_destructor', arguments);
+        },
+
+        "_getItemId" : function(item, index){
+            return isObjective(item) ? item.oj_id : (isUnset(index) ? item.toString() : index)
         },
 
         // event functions
@@ -10146,16 +11329,16 @@ OJ.extendComponent(
         //
         //    return false;
         //},
-        'renderItem' : function(item, index){
+        'renderItem' : function(item, index, cached_only){
             if(!item){
                 return null;
             }
             var self = this,
                 cls = self.item_renderer,
                 key, evt,
-                id = isObjective(item) ? item.oj_id : (isUnset(index) ? item.toString() : index);
+                id = self._getItemId(item, index);
             // if we have already rendered the item then just return the cached value
-            if(self._rendered[id]){
+            if(self._rendered[id] || cached_only){
                 return self._rendered[id];
             }
             item = cls ? new cls(self, item) : item;
@@ -10169,8 +11352,12 @@ OJ.extendComponent(
             return this.renderItem(this.elms[index]);
         },
         'unrenderItem' : function(item){
-            var self = this,
-                id = item.oj_id,
+            this.unrenderItemAt(this._elms.indexOf(item));
+        },
+        'unrenderItemAt' : function(index){
+            const self = this,
+                item = this.elms[index],
+                id = self._getItemId(item, index),
                 elm = self._rendered[id];
             if(elm){
                 delete self._rendered[id];
@@ -10179,9 +11366,6 @@ OJ.extendComponent(
                     OJ.destroy(elm);
                 }
             }
-        },
-        'unrenderItemAt' : function(index){
-            this.unrenderItem(this.elms[index]);
         },
 
         // Public Properties
@@ -10199,9 +11383,6 @@ OJ.extendComponent(
                 add_evt = col_evt.ITEM_ADD, add_func = '_onItemAdd',
                 change_evt = col_evt.ITEM_CHANGE, change_func = '_onItemChange',
                 move_evt = col_evt.ITEM_MOVE, move_func = '_onItemMove',
-                out_evt = col_evt.ITEM_OUT, out_func = '_onItemOut',
-                over_evt = col_evt.ITEM_OVER, over_func = '_onItemOver',
-                press_evt = col_evt.ITEM_PRESS, press_func = '_onItemPress',
                 remove_evt = col_evt.ITEM_REMOVE, remove_func = '_onItemRemove',
                 replace_evt = col_evt.ITEM_REPLACE, replace_func = '_onItemReplace';
             // cleanup the old items if it existed
@@ -10209,9 +11390,6 @@ OJ.extendComponent(
                 elms.removeEventListener(add_evt, self, add_func);
                 elms.removeEventListener(change_evt, self, change_func);
                 elms.removeEventListener(move_evt, self, move_func);
-                elms.removeEventListener(out_evt, self, out_func);
-                elms.removeEventListener(over_evt, self, over_func);
-                elms.removeEventListener(press_evt, self, press_func);
                 elms.removeEventListener(remove_evt, self, remove_func);
                 elms.removeEventListener(replace_evt, self, replace_func);
                 if(elms){
@@ -10262,10 +11440,10 @@ OJ.extendComponent(
 
 
 OJ.extendClass(
-    'OjResize', [OjDimTween],
+    "OjResize", [OjDimTween],
     {
-        '=amount' : function(amount){
-            this._super(OjDimTween, '=amount', arguments);
+        "=amount" : function(amount){
+            this._amount = amount;
             if(this._direction == OjResize.BOTH){
                 this._to.width = amount[0];
                 this._to.height = amount[1];
@@ -10279,9 +11457,9 @@ OJ.extendClass(
         }
     },
     {
-        'WIDTH'  : OjDimTween.HORIZONTAL,
-        'HEIGHT' : OjDimTween.VERTICAL,
-        'BOTH'   : OjDimTween.BOTH
+        "WIDTH"  : OjDimTween.HORIZONTAL,
+        "HEIGHT" : OjDimTween.VERTICAL,
+        "BOTH"   : OjDimTween.BOTH
     }
 );
 /*
@@ -10419,12 +11597,17 @@ OJ.extendComponent(
             return start < finish ? -1 : 1;
         },
         '_dispatchChangeComplete' : function(){
-            var self = this,
+            const self = this,
                 container = self.container;
             container.width = OjStyleElement.AUTO;
             container.height = OjStyleElement.AUTO;
             self._transitioning = false;
             self.dispatchEvent(new OjStackEvent(OjStackEvent.CHANGE_COMPLETE, self._active, self._transition, self._active_index, self._prev_index));
+            // show/hide methods
+            self._active.didShow();
+            if(self._prev_active){
+                self._prev_active.didHide();
+            }
             // process any deferred
             if(!isNull(self._deferred_active)){
                 self.active_index = self._deferred_active;
@@ -10539,12 +11722,14 @@ OJ.extendComponent(
                 self._removeActiveElm(elm);
             }
         },
-        '_removeActiveElm' : function(elm){
+        "_removeActiveElm" : function(elm){
             // remove the elm from the display
             this.container.removeChild(elm);
-            elm.removeCss('prev-active');
+            elm.removeCss("prev-active");
             elm.width = OjStyleElement.AUTO;
             elm.height = OjStyleElement.AUTO;
+            elm.x = null;
+            elm.y = null;
             elm.alpha = 1;
             elm.is_active = false;
         },
@@ -10620,19 +11805,20 @@ OJ.extendComponent(
             }
         },
         '_onTransOut' : function(evt){
+            var self = this;
             // cleanup the transition
-            this._unset('_trans_out');
+            self._unset('_trans_out');
             // remove the previously active item/elm
-            this._removeActive(this._prev_active);
+            self._removeActive(self._prev_active);
             // if there are no more transitions get us out of animating mode
-            if(!this._trans_in){
-                this._setIsAnimating(false);
+            if(!self._trans_in){
+                self._setIsAnimating(false);
                 // dispatch the change is complete
-                this._dispatchChangeComplete();
+                self._dispatchChangeComplete();
             }
             // unset prev vars since they are no longer needed
-            this._prev_active = null;
-            this._prev_index = null;
+            self._prev_active = null;
+            self._prev_index = null;
         },
 
         // Utility Functions
@@ -10677,17 +11863,21 @@ OJ.extendComponent(
                 self._deferred_active = [val, trans_diff];
                 return;
             }
+            // update transitioning flag
             self._transitioning = true;
             // handle custom transition if it exists
             if(trans_diff){
                 self.transition = self._processTransParam(trans_diff);
                 tmp_trans = self.transition;
             }
+            // reset deferred active
             self._deferred_active = null;
             // transition out the old active container
             if(active){
                 // get the old element
                 self._prev_active = active;
+                // let active know we are going to hide it
+                active.willHide();
                 // update the direction
                 // create the transition out animation
                 self._makeTransOut(direction = self._animationDirection(self._prev_index = self._active_index, val));
@@ -10696,6 +11886,7 @@ OJ.extendComponent(
                 direction = always_trans ? 1 : 0;
                 self._prev_index = 0;
             }
+            // update current index
             self._current_index = val = self._processIndex(val);
             // make sure we have something to set active
             if(!self.num_elms){
@@ -10715,6 +11906,7 @@ OJ.extendComponent(
                 val, self._prev_index
             );
             self._addActive(item, val);
+            item.willShow();
             // transition in the new active container
             // but only if we are transitioning out an old active
             if(self._trans_out || always_trans){
@@ -10774,42 +11966,54 @@ OJ.extendComponent(
             'controller' : null
         },
 
-        '_destructor' : function(){
-            // make sure to remove stack and controller references
-            if(this._active){
-            }
-            if(this._prev_active){
-                //this._unload(this._prev_active);
-            }
-            // continue on
-            this._super(OjStack, '_destructor', arguments);
-        },
+        // '_destructor' : function(){
+        //     // make sure to remove stack and controller references
+        //     if(this._active){
+        //
+        //     }
+        //
+        //     if(this._prev_active){
+        //         //this._unload(this._prev_active);
+        //     }
+        //
+        //     // continue on
+        //     this._super(OjStack, '_destructor', arguments);
+        // },
 
-        '_addActive' : function(item, index){
-            this._super(OjStack, '_addActive', arguments);
-            item.load();
-        },
-        '_removeActive' : function(item){
-            var self = this;
-            (item || self.getElmAt(self._active_index)).unload();
-            self._super(OjStack, '_removeActive', [item]);
-        },
+        // '_addActive' : function(item, index){
+        //     this._super(OjStack, '_addActive', arguments);
+        //
+        //     item.load();
+        // },
+        // '_removeActive' : function(item){
+        //     var self = this;
+        //
+        //     (item || self.getElmAt(self._active_index)).unload();
+        //
+        //     self._super(OjStack, '_removeActive', [item]);
+        // },
 
-        'renderItem' : function(){
-            var self = this,
-                elm = self._super(OjStack, 'renderItem', arguments);
-            elm.controller = self.controller;
-            elm.stack = self;
+        "renderItem" : function(item){
+            const loaded = item.oj_id in this._rendered,
+                elm = this._super(OjStack, "renderItem", arguments);
+            elm.controller = this.controller;
+            elm.stack = this;
+            if(!loaded){
+                item.load();
+            }
             return elm;
         },
-        'unrenderItem' : function(item){
-            var self = this,
-                elm = self._rendered[item.id];
+        "unrenderItemAt" : function(index){
+            const self = this,
+                item = self._elms[index],
+                id = self._getItemId(item, index)
+                elm = self._rendered[id];
             if(elm){
+                item.unload();
                 elm.controller = null;
                 elm.stack = null;
             }
-            return self._super(OjStack, 'unrenderItem', arguments);
+            return self._super(OjStack, "unrenderItemAt", arguments);
         },
 
         '=controller' : function(val){
@@ -10879,170 +12083,193 @@ OJ.extendClass(
 );
 
 OJ.extendComponent(
-    'OjIcon', [OjComponent], {
-        '_props_' : {
-            'source' : null
+    "OjIcon", [OjComponent], {
+        "_props_" : {
+            "source" : null
         },
-        '_template' : '<i></i>',
+        "_template" : "<i></i>",
 
-        '_constructor' : function(icon_class){
-            var self = this,
-                args = arguments;
-            self._super(OjComponent, '_constructor', []);
+        "_constructor" : function(icon_class){
+            this._super(OjComponent, "_constructor", []);
             if(icon_class){
-                self.source = args.length == 1 ? icon_class : Array.array(args).join(' ');
+                this.source = arguments.length == 1 ? icon_class : Array.array(arguments).join(" ");
             }
         },
-        '_processDomSourceChild' : function(){
-            var self = this,
-                child = self._super(OjComponent, '_processDomSourceChild', arguments);
+        "_processDomSourceChild" : function(){
+            const child = this._super(OjComponent, "_processDomSourceChild", arguments);
             if(child && child.is(OjTextElement)){
-                self.source = child.text;
+                this.source = child.text;
                 return;
             }
             return child;
         },
-        '_setCss' : function(){
-            // don't do anything here
+        "clone" : function(){
+            const obj = this._super(OjComponent, "clone", arguments);
+            obj.source = this.source;
+            return obj;
         },
-        '=source' : function(val){
-            var self = this,
-                old = self._source;
+        // "_setCss" : function(){
+        //     // don"t do anything here
+        // },
+        "=source" : function(val){
+            const old = this._source;
             if(old == val){
                 return;
             }
             if(old){
-                self.removeCss(old);
+                this.removeCss(old);
             }
-            if(self._source = val){
-                self.addCss(val);
+            if(this._source = val){
+                this.addCss(val);
             }
         }
     },
     {
-        '_TAGS' : ['i', 'icon']
+        "_TAGS" : ["i", "icon"]
     }
 );
 
 OJ.extendComponent(
-    'OjLink', [OjLabel],
+    "OjLink", [OjLabel],
     {
-        '_props_' : {
-            'down_icon'     : null,
-            'icon'         : null,
-            'over_icon'     : null,
-            'target'       : null,
-            'target_height' : null,
-            'target_width'  : null,
-            'url'          : null
+        "_props_" : {
+            "direction": OjComponent.HORIZONTAL,
+            "down_icon"     : null,
+            "icon"         : null,
+            "over_icon"     : null,
+            "form_reset" : null,
+            "form_submit" : null,
+            "target"       : null,
+            "target_height" : null,
+            "target_width"  : null,
+            "url"          : null
         },
-        '_template' : '<a class="no-icon no-label" flex-h><span var=icn></span><span var=lbl></span></a>',
+        "_template" : "<a class=\"no-icon no-label\" flex-h><span var=icn></span><span var=lbl></span></a>",
 
-        '_constructor' : function(/*label, url, target*/){
-            var self = this;
-            self._super(OjLabel, '_constructor', []);
-            self._processArguments(arguments, {
-                'text' : undefined,
-                'url' : undefined,
-                'target' : WindowManager.SELF
-            });
-            self._enableUiEvents();
+        "_constructor" : function(label, url, target){
+            this._super(OjLabel, "_constructor", []);
+            if(label){
+                this.text = label;
+            }
+            if(url){
+                this.url = url;
+            }
+            this.target = target || WindowManager.SELF;
+            this._enableUiEvents();
         },
-        '_destructor' : function(){
+        "_destructor" : function(){
             // just to make sure that the document mouse move event listener gets removed
-            OJ.removeEventListener(OjUiEvent.MOVE, this, '_onMouseMove');
-            this._super(OjLabel, '_destructor', arguments);
+            OJ.removeEventListener(OjUiEvent.MOVE, this, "_onMouseMove");
+            this._super(OjLabel, "_destructor", arguments);
         },
 
-        '_processAttribute' : function(dom, attr, context){
-            if(attr.nodeName == 'href'){
+        "_processAttribute" : function(dom, attr, context){
+            if(attr.nodeName == "href"){
                 this.url = attr.value;
                 return true;
             }
-            return this._super(OjLabel, '_processAttribute', arguments);
+            return this._super(OjLabel, "_processAttribute", arguments);
         },
-        '_processDomSourceChild' : function(){
-            var self = this,
-                child = self._super(OjLabel, '_processDomSourceChild', arguments);
+        "_processDomSourceChild" : function(){
+            const child = this._super(OjLabel, "_processDomSourceChild", arguments);
             if(child && (child.is(OjIcon) || child.is(OjImage))){
-                self.icon = child;
+                this.icon = child;
                 return;
             }
             return child;
         },
 
-        '_redrawText' : function(){
-            var self = this,
-                txt = (self.prefix || '') + (self.text || '') + (self.suffix || '').trim();
-            self.lbl.text = txt;
-            if(isEmpty(txt)){
-                self.addCss("no-label");
+        "_redrawText" : function(){
+            this._super(OjLabel, "_redrawText", [this.lbl]);
+            // update link label css flag
+            if(isEmpty(this.lbl.text)){
+                this.addCss("no-label");
             }
             else{
-                self.removeCss("no-label");
+                this.removeCss("no-label");
             }
         },
-        '_updateIcon' : function(val){
-            var self = this,
-                icn = self.icn;
+        "_updateIcon" : function(val){
+            const icn = this.icn;
             icn.removeAllChildren();
             if(val){
                 icn.appendChild(val);
-                self.removeCss("no-icon");
+                this.removeCss("no-icon");
             }
             else{
-                self.addCss("no-icon");
+                this.addCss("no-icon");
             }
         },
 
         "_onUiDown" : function(evt){
-            var self = this;
-            self._super(OjLabel, "_onUiDown", arguments);
-            if(self._down_icon){
-                self._updateIcon(self._down_icon);
+            this._super(OjLabel, "_onUiDown", arguments);
+            if(this._down_icon){
+                this._updateIcon(this._down_icon);
             }
         },
         "_onUiOut" : function(evt){
-            var self = this;
-            self._super(OjLabel, "_onUiOut", arguments);
-            self._updateIcon(self._icon);
+            this._super(OjLabel, "_onUiOut", arguments);
+            this._updateIcon(this._icon);
         },
         "_onUiOver" : function(evt){
-            var self = this;
-            self._super(OjLabel, "_onUiOver", arguments);
-            if(self._over_icon){
-                self._updateIcon(self._over_icon);
+            this._super(OjLabel, "_onUiOver", arguments);
+            if(this._over_icon){
+                this._updateIcon(this._over_icon);
             }
         },
         "_onUiPress" : function(evt){
-            var self = this,
-                url = self.url;
-            self._super(OjLabel, "_onUiPress", arguments);
+            const url = this.url,
+                form_reset = this.form_reset,
+                form_submit = this.form_submit;
+            this._super(OjLabel, "_onUiPress", arguments);
             if(url){
                 WindowManager.open(
                     url,
-                    self.target,
+                    this.target,
                     {
-                        "width" : self.target_width,
-                        "height" : self.target_height
+                        "width" : this.target_width,
+                        "height" : this.target_height
                     }
                 );
             }
+            if(form_reset){
+                form_reset.reset();
+            }
+            if(form_submit){
+                form_submit.submit();
+            }
         },
         "_onUiUp" : function(evt){
-            var self = this;
-            self._super(OjLabel, "_onUiUp", arguments);
-            self._updateIcon(self._icon);
+            this._super(OjLabel, "_onUiUp", arguments);
+            this._updateIcon(this._icon);
         },
 
         // GETTER & SETTER FUNCTIONS
-        '=down_icon' : function(icon){
+        "=direction": function(val){
+            var self = this,
+                cls = self._static,
+                is_horz = val == cls.HORIZONTAL || val == cls.HORIZONTAL_REVERSE;
+            // check for change
+            if(self.direction == val){
+                return;
+            }
+            self._direction = val;
+            self.attr(is_horz ? "flex-v" : "flex-h", null);
+            self.attr(is_horz ? "flex-h": "flex-v", "");
+            if(val == cls.HORIZONTAL_REVERSE || val == cls.VERTICAL_REVERSE){
+                self.addCss("reverse");
+            }
+            else{
+                self.removeCss("reverse");
+            }
+        },
+        "=down_icon" : function(icon){
             if(this._down_icon == (icon = OjImage.image(icon))){
                 return;
             }
             this._down_icon = icon;
         },
-        '=icon' : function(icon){
+        "=icon" : function(icon){
             var self = this;
             if(!isObjective(icon, OjIcon)){
                 icon = OjImage.image(icon);  // todo: revisit this to process as icon if css based and not image
@@ -11052,16 +12279,16 @@ OJ.extendComponent(
             }
             self._updateIcon(self._icon = icon);
         },
-        '=over_icon' : function(icon){
+        "=over_icon" : function(icon){
             if(this._over_icon == (icon = OjImage.image(icon))){
                 return;
             }
             this._over_icon = icon;
         },
-        '=url' : function(url){
+        "=url" : function(url){
             this._url = OjUrl.url(url)
         },
-        '=target' : function(target){
+        "=target" : function(target){
             if(isComponent(target)){
                 target = target.id;
             }
@@ -11069,25 +12296,31 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['a', 'link']
+        "_TAGS" : ["a", "link"]
     }
 );
 
 OJ.extendComponent(
-    'OjButton', [OjLink],
+    "OjButton", [OjLink],
     {
-        '_props_' : {
-            'label' : null
+        "_props_" : {
+            "callback" : null,
+            "label" : null
         },
 
-        '_constructor' : function(/*label, icon*/){
-            var self = this;
-            self._super(OjLink, '_constructor', []);
-            self.addCss('no-select');
-            self._processArguments(arguments, {
-                'text' : undefined,
-                'icon' : undefined
-            });
+        "_constructor" : function(text, icon, callback){
+            this._super(OjLink, "_constructor", []);
+            this.addCss("no-select");
+            this._set("text", text);
+            this._set("icon", icon);
+            this._set("callback", callback);
+        },
+
+        "_onUiPress" : function(evt){
+            this._super(OjLink, "_onUiPress", arguments);
+            if(this.callback){
+                this.callback(evt);
+            }
         },
 
         'redraw' : function(){
@@ -11116,100 +12349,120 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['button']
+        '_TAGS' : ['button'],
+        "button" : function(params, cls){
+            cls = cls || OjButton;
+            if(isObjective(params, cls)){
+                return params;
+            }
+            if(isArray(params)){
+                return new cls(params[0], params[1], params[2]);
+			}
+			if(isObject(params) && !isObjective(params, OjTextElement)){
+			    return new cls(params.label, params.icon, params.callback);
+			}
+			return new cls(params);
+        }
     }
 );
 
 OJ.extendClass(
-    'OjAlert', [OjComponent],
+    "OjAlert", [OjComponent],
     {
-        '_props_' : {
-            'buttons' : null,
-            'callback' : null,
-            'cancel_label' : null,
-            'content' : null,
-            'pane_height' : null,
-            'pane_width' : null,
-            'self_destruct' : 0, // OjAlert.NONE
-            'title' : null
+        "_props_" : {
+            "buttons" : null,
+            "callback" : null,
+            "cancel_callback" : null,
+            "cancel_label" : null,
+            "content" : null,
+            "pane_height" : null,
+            "pane_width" : null,
+            "self_destruct" : 0, // OjAlert.NONE
+            "title" : null
         },
-        "_add_cancel_btn" : false,
-        '_template' : '<div flex-h><div var=underlay></div><div var=pane><div var=bar></div><div var=container class=content></div><div var=btns flex-h></div></div></div>',
+        "_template" : "<div flex-h><div var=underlay></div><div var=pane><div var=bar></div><div var=container class=content></div><div var=btns flex-h><button var=cancel_btn on-press=_onCancelPress>Ok</button></div></div></div>",
 
-        '_constructor' : function(/*content, title, buttons, cancel_label, callback*/){
-            var self = this;
-            self._super(OjComponent, '_constructor', []);
-            // setup the display
-            if(self.oj_class_name.contains('Alert') || self._add_cancel_btn){
-                self.btns.appendChild(self.cancel_btn = new OjButton(OjAlert.OK));
-                self.cancel_btn.addEventListener(OjUiEvent.PRESS, self, '_onCancelPress');
-            }
-            self._processArguments(arguments, {
-                'content' : undefined,
-                'title' : undefined,
-                'buttons' : undefined,
-                'cancel_label' : OjAlert.CANCEL,
-                'callback' : undefined
-            });
+        "_constructor" : function(content, title, buttons, cancel_label, callback){
+            this._super(OjComponent, "_constructor", []);
+            this._set("content", content);
+            this._set("title", title);
+            this._set("buttons", buttons);
+            this._set("cancel_label", cancel_label, OjAlert.CANCEL);
+            this._set("callback", callback);
         },
-        '_destructor' : function(/*depth = 1*/){
+        "_redrawButtons" : function(){
+            var self = this;
+            if(self.btns.num_children == 1 && isEmpty(self.cancel_label)){
+                self.hideButtons();
+            }
+            else{
+                self.showButtons();
+            }
+        },
+        "_destructor" : function(/*depth = 1*/){
             var args = arguments,
                 depth = args.length ? args[0] : 0;
             if(!depth){
-                // remove all the content so it doesn't get destroyed
+                // remove all the content so it doesn"t get destroyed
                 this.container.removeAllChildren();
             }
-            return this._super(OjComponent, '_destructor', arguments);
+            return this._super(OjComponent, "_destructor", arguments);
         },
 
-        '_onButtonClick' : function(evt){
-            var self = this,
-                callback = self.callback,
+        "_onButtonClick" : function(evt){
+            const self = this,
                 index = self.btns.indexOfChild(evt.current_target) - 1; // offset for cancel
             self.dispatchEvent( new OjAlertEvent(OjAlertEvent.BUTTON_PRESS, index) );
+            self.complete(index);
+        },
+        "_onCancelPress" : function(evt){
+            this.cancel();
+        },
+        "cancel" : function(){
+            let callback = this.cancel_callback;
             if(callback){
-                if(callback(index) === false){
+                callback();
+            }
+            if(callback = this.callback){
+                callback(this._static.CANCEL_INDEX);
+            }
+            this.dispatchEvent( new OjEvent(OjEvent.CANCEL) );
+            WindowManager.hide(this);
+        },
+        
+        "complete" : function(button_index){
+            const callback = this.callback
+            if(callback){
+                if(callback(button_index) === false){
                     return;
                 }
             }
-            WindowManager.hide(self);
+            WindowManager.hide(this);
         },
-        '_onCancelPress' : function(evt){
-            this.cancel();
-        },
-        'cancel' : function(){
-            var self = this,
-                callback = self.callback;
-            self.dispatchEvent( new OjEvent(OjEvent.CANCEL) );
-            WindowManager.hide(self);
-            if(callback){
-                callback(-1);
-            }
-        },
-        'hideButtons' : function(){
-            this.addCss('no-buttons');
+        "hideButtons" : function(){
+            this.addCss("no-buttons");
             this.btns.hide();
         },
-        'present' : function(){
+        "present" : function(){
             WindowManager.show(this);
         },
-        'showButtons' : function(){
-            this.removeCss('no-buttons');
+        "showButtons" : function(){
+            this.removeCss("no-buttons");
             this.btns.show();
         },
 
-        '.buttons' : function(){
+        ".buttons" : function(){
             return this._buttons ? this._buttons.clone() : [];
         },
-        '=buttons' : function(buttons){
+        "=buttons" : function(buttons){
             this._buttons = buttons = buttons ? buttons.clone() : [];
             var num_btns = buttons.length,
                 ln = this.btns.num_children - 1,
                 diff = num_btns - ln, btn;
             if(diff > 0){
                 for(; diff > 0; ){
-                    this.btns.insertChildAt(btn = new OjButton(buttons[num_btns - (diff--)]), ln + 1);
-                    btn.addEventListener(OjUiEvent.PRESS, this, '_onButtonClick');
+                    this.btns.insertChildAt(btn = OjButton.button(buttons[num_btns - (diff--)]), ln + 1);
+                    btn.addEventListener(OjUiEvent.PRESS, this, "_onButtonClick");
                 }
             }
             else if(diff < 0){
@@ -11221,14 +12474,18 @@ OJ.extendClass(
                 btn = this.btns.getChildAt(ln);
                 btn.label = buttons[ln];
             }
+            this._redrawButtons();
         },
-        '.cancel_label' : function(){
+        ".cancel_label" : function(){
             return this.cancel_btn.label;
         },
-        '=cancel_label' : function(label){
-            return (this.cancel_btn || {}).label = label;
+        "=cancel_label" : function(label){
+            var btn = this.cancel_btn;
+            btn.label = label;
+            btn.hide(isEmpty(label));
+            this._redrawButtons();
         },
-        '=content' : function(content){
+        "=content" : function(content){
             var self = this,
                 container = self.container;
             if(self._content == content){
@@ -11237,56 +12494,63 @@ OJ.extendClass(
             container.removeAllChildren();
             self._content = content;
             if(isString(content)){
-                content = new OjStyleElement('<p>' + content.replaceAll('\n', '<br />') + '</p>');
+                content = new OjStyleElement("<p>" + content.replaceAll("\n", "<br />") + "</p>");
             }
             container.appendChild(content);
+            if(isObjective(content, OjView)){
+                content.load();
+            }
         },
-        '=title' : function(title){
+        "=title" : function(title){
             if(this._title == title){
                 return;
             }
             this.bar.text = this._title = title;
         },
-        '.pane_height' : function(){
+        ".pane_height" : function(){
             return this.pane.height;
         },
-        '=pane_height' : function(val/*, unit*/){
+        "=pane_height" : function(val/*, unit*/){
             this.pane.height = Array.array(arguments);
         },
-        '.pane_width' : function(){
+        ".pane_width" : function(){
             return this.pane.width;
         },
-        '=pane_width' : function(val/*, unit*/){
+        "=pane_width" : function(val/*, unit*/){
             this.pane.width = Array.array(arguments);
         }
     },
     {
-        'NONE' : 0,
-        'SHALLOW' : 1,
-        'DEEP' : 2,
-        'OK' : 'Ok',
-        'Cancel' : 'Cancel'
+        "NONE" : 0,
+        "SHALLOW" : 1,
+        "DEEP" : 2,
+        "OK" : "Ok",
+        "CANCEL" : "Cancel",
+        "CANCEL_INDEX" : -1
     }
 );
 
 OJ.extendClass(
-    'OjModal', [OjAlert],
+    "OjModal", [OjAlert],
     {
-        '_props_' : {
-            'bar_visible' : true,
-            'buttons_visible' : null,
-            'close_visible' : null,
-            'is_fullscreen' : false,
-            'underlay_visible' : true
+        "_props_" : {
+            "bar_visible" : true,
+            "buttons_visible" : null,
+            "cancel_icon" : null,
+            "cancel_visible" : null,
+            "is_fullscreen" : false,
+            "underlay_visible" : true
         },
-        '_template' : '<div flex-h><div var=underlay></div><div var=pane><flow-nav var=bar cancel-label=Close></flow-nav><nav-stack var=container class=content></nav-stack><div var=btns></div></div></div>',
+        "_template" : "<div flex-h><div var=underlay></div><div var=pane><flow-nav var=bar cancel-label=Close></flow-nav><nav-stack var=container class=content></nav-stack><div var=btns></div></div></div>",
 
         "_constructor" : function(view, title){
-            var self = this;
+            const self = this;
             self._super(OjAlert, "_constructor", []);
             // setup controller stack relationship
             self.bar.stack = self.container;
-            self.close_visible = true;
+            self.bar.addEventListener(OjEvent.CANCEL, self, "_onCancelPress");
+            self.bar.addEventListener(OjEvent.COMPLETE, self, "_onComplete");
+            self.cancel_visible = true;
             self.buttons_visible = false;
             // process arguments
             if(view){
@@ -11296,59 +12560,65 @@ OJ.extendClass(
                 self.title = title;
             }
         },
-        '_destructor' : function(depth){
-            this._unset('bar', depth || 0);
-            this._unset('stack', depth || 0);
-            return this._super(OjAlert, '_destructor', arguments);
+        "_destructor" : function(depth){
+            this._unset("bar", depth || 0);
+            this._unset("stack", depth || 0);
+            return this._super(OjAlert, "_destructor", arguments);
         },
 
-        '_onDrag' : function(evt){
+        "_onComplete" : function(){
+            this.complete(-1);
+        },
+        "_onDrag" : function(evt){
             this.pane.x += evt.deltaX;
             this.pane.y += evt.deltaY;
         },
 
-        '=bar_visible' : function(val){
+        "=bar_visible" : function(val){
             if(this._bar_visible = val){
                 this.bar.show();
-                //this.bar.addEventListener(OjDragEvent.DRAG, this, '_onDrag');
+                //this.bar.addEventListener(OjDragEvent.DRAG, this, "_onDrag");
             }
             else{
                 this.bar.hide();
-                //this.bar.removeEventListener(OjDragEvent.DRAG, this, '_onDrag');
+                //this.bar.removeEventListener(OjDragEvent.DRAG, this, "_onDrag");
             }
         },
-        '=buttons_visible' : function(val){
+        "=buttons_visible" : function(val){
             if(this._buttons_visible = val){
-                this.removeCss('no-buttons');
+                this.removeCss("no-buttons");
             }
             else{
-                this.addCss('no-buttons');
+                this.addCss("no-buttons");
             }
         },
-        '.close_visible' : function(){
+        ".cancel_icon" : function(){
+            return this.bar.cancel_icon;
+        },
+        "=cancel_icon" : function(icon){
+            this.bar.cancel_icon = icon;
+        },
+        ".cancel_label" : function(){
+            return this.bar.cancel_label;
+        },
+        "=cancel_label" : function(label){
+            this.bar.cancel_label = label;
+        },
+        ".cancel_visible" : function(){
             return this.bar.cancel_visible;
         },
-        '=close_visible' : function(val){
-            var self = this,
-                bar = self.bar,
-                evt = OjEvent.CANCEL;
-            bar.cancel_visible = val;
-            if(val){
-                bar.addEventListener(evt, self, '_onCancelPress');
-            }
-            else{
-                bar.removeEventListener(evt, self, '_onCancelPress');
-            }
+        "=cancel_visible" : function(val){
+            this.bar.cancel_visible = val;
         },
-        '=is_fullscreen' : function(val){
+        "=is_fullscreen" : function(val){
             if(this._is_fullscreen = val){
-                this.addCss('fullscreen');
+                this.addCss("fullscreen");
             }
             else{
-                this.removeCss('fullscreen');
+                this.removeCss("fullscreen");
             }
         },
-        '=underlay_visible' : function(val){
+        "=underlay_visible" : function(val){
             if(this._underlay_visible = val){
                 this.underlay.show();
             }
@@ -11357,8 +12627,8 @@ OJ.extendClass(
             }
         },
 
-        '=buttons' : function(val){
-            this._super(OjAlert, '=buttons', arguments);
+        "=buttons" : function(val){
+            this._super(OjAlert, "=buttons", arguments);
             if(this.btns.num_children){
                 this.btns.show();
             }
@@ -11366,7 +12636,7 @@ OJ.extendClass(
                 this.btns.hide();
             }
         },
-        '=title' : function(title){
+        "=title" : function(title){
             this.bar.title = this._title = title;
         }
     }
@@ -11389,36 +12659,42 @@ OJ.extendManager(
         '_get_props_' : {
             'holder' : null
         },
-        '_constructor' : function(manager){
+        "_constructor" : function(manager){
             var self = this;
-            self._super(OjActionable, '_constructor', []);
+            self._super(OjActionable, "_constructor", []);
             if(manager){
                 self._modals = manager._modals;
                 self._modal_holder = manager._modal_holder;
                 self._overlay = manager._overlay;
                 if(!OJ.is_ready){
-                    OJ.removeEventListener(OjEvent.READY, manager, '_onOjReady');
-                    OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
+                    OJ.addEventListener(OjEvent.READY, self, "_onOjReady");
                 }
                 OJ.destroy(manager);
             }
             else{
                 self._modals = [];
                 self._modal_holder = new OjStyleElement();
-                self._modal_holder.addCss('WindowManager');
+                self._modal_holder.addCss("WindowManager");
                 if(OJ.is_ready){
                     self._onOjReady(null);
                 }
                 else{
-                    OJ.addEventListener(OjEvent.READY, self, '_onOjReady');
+                    OJ.addEventListener(OjEvent.READY, self, "_onOjReady");
                 }
             }
-            OJ.addEventListener(OjKeyboardEvent.SHOW, self, '_onKeyboardUpdate');
-            OJ.addEventListener(OjKeyboardEvent.HIDE, self, '_onKeyboardUpdate');
+            OJ.addEventListener(OjKeyboardEvent.SHOW, self, "_onKeyboardUpdate");
+            OJ.addEventListener(OjKeyboardEvent.HIDE, self, "_onKeyboardUpdate");
+        },
+        "_destructor" : function(){
+            var self = this;
+            OJ.removeEventListener(OjEvent.READY, self, "_onOjReady");
+            OJ.removeEventListener(OjKeyboardEvent.SHOW, self, "_onKeyboardUpdate");
+            OJ.removeEventListener(OjKeyboardEvent.HIDE, self, "_onKeyboardUpdate");
+            self._super(OjActionable, "_destructor", arguments);
         },
 
         '_calcWindowWidth' : function(width, fullscreen){
-            var vp = OJ.viewport;
+            const vp = OJ.viewport;
             if(fullscreen){
                 return vp.width;
             }
@@ -11446,26 +12722,51 @@ OJ.extendManager(
         '_isMobileModal' : function(modal){
             return modal.is(OjModal) && OJ.is_mobile
         },
-        '_transIn' : function(modal){
-            var anim = new OjFade(modal, OjFade.IN, 250),
-                pane = modal.pane,
-                h, y;
-            // transition the alert/modal
-            anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
-            anim.start();
-            if(this._isMobileModal(modal)){
-                h = pane.height;
-                y = pane.y;
-                pane.y += h;
-                // transition the modal
-                anim = new OjMove(pane, OjMove.Y, y, anim.duration, OjEasing.OUT);
+        "_processSpecialProtocols" : function(url){
+            var self = this;
+            if(url) {
+                // check for email
+                if (url.protocol == "mailto") {
+                    return self.email(url);
+                }
+                // check for phone call
+                if (url.protocol == "tel") {
+                    return self.call(url);
+                }
+                if(url.protocol == "sms" || url.protocol == "mms") {
+                    return self.txt(url, params);
+                }
+                // TODO: handle map protocols
+            }
+            return false;
+        },
+        '_transIn' : function(modal, transition){
+            if(transition === false){
+                modal.dispatchEvent(new OjEvent(this.SHOW));
+            }
+            else{
+                let anim = new OjFade(modal, OjFade.IN, 250),
+                    pane = modal.pane,
+                    h, y;
+                modal._setIsAnimating(true);
+                // transition the alert/modal
+                anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onShow');
                 anim.start();
+                if(this._isMobileModal(modal)){
+                    h = pane.height;
+                    y = pane.y;
+                    pane.y += h;
+                    // transition the modal
+                    anim = new OjMove(pane, OjMove.Y, y, anim.duration, OjEasing.OUT);
+                    anim.start();
+                }
             }
         },
         '_transOut' : function(modal){
-            var anim = new OjFade(modal, OjFade.OUT, 250),
+            let anim = new OjFade(modal, OjFade.OUT, 250),
                 pane = modal.pane,
                 h, y;
+            modal._setIsAnimating(true);
             // transition the alert/modal
             anim.addEventListener(OjTweenEvent.COMPLETE, this, '_onHide');
             anim.start();
@@ -11480,26 +12781,13 @@ OJ.extendManager(
 
         '_onKeyboardUpdate' : function(evt){
             var self = this;
-            if(evt.type == OjKeyboardEvent.SHOW){
-                if(self._keyboard_int){
-                    return;
-                }
-                self._keyboard_int = setInterval(function(){
-                    if(self._keyboard_height == window.innerHeight){
-                        clearInterval(self._keyboard_int);
-                        self._keyboard_int = null;
-                    }
-                    else{
-                        self._modal_holder.height = window.innerHeight;
-                    }
-                }, 50);
-            }
-            else{
-                this._modal_holder.height = OjStyleElement.AUTO;
+            if(self.keyboard_frame){
+                self._modal_holder.height = self.keyboard_frame.height ? self.keyboard_frame.top : OjStyleElement.AUTO;
             }
         },
         '_onShow' : function(evt){
-            var modal = evt.current_target.target;
+            const modal = evt.current_target.target;
+            modal._setIsAnimating(false);
             // destroy tween
             evt = OJ.destroy(evt);
             // dispatch show event
@@ -11507,8 +12795,9 @@ OJ.extendManager(
         },
 
         '_onHide' : function(evt){
-            var holder = this._modal_holder,
+            const holder = this._modal_holder,
                 modal = evt.current_target.target;
+            modal._setIsAnimating(false);
             // remove the modal from the holder
             holder.removeChild(modal);
             // destroy the tween
@@ -11522,7 +12811,7 @@ OJ.extendManager(
             // dispatch hide event
             modal.dispatchEvent(new OjEvent(this.HIDE));
             // check to see if this modal is self destructing
-            var destruct = modal.self_destruct;
+            const destruct = modal.self_destruct;
             if(destruct){
                 OJ.destroy(modal, destruct);
             }
@@ -11562,22 +12851,27 @@ OJ.extendManager(
             window.location.href = 'mailto:' + email.path.substring(1);
         },
         'browser' : function(url, title, width, height, fullscreen){
+            var self = this,
+                result;
+            if(result = self._processSpecialProtocols(url)){
+                return result;
+            }
             var iframe = new OjIframe(url),
-                modal = this.makeModal(iframe, title);
+                modal = self.makeModal(iframe, title);
             if(isUnset(fullscreen)){
-                fullscreen = this._isMobileModal(modal)
+                fullscreen = self._isMobileModal(modal)
             }
             // update iframe dims
-            iframe.width = [100, '%'];
-            iframe.height = [100, '%'];
+            iframe.width = [100, "%"];
+            iframe.height = [100, "%"];
             // update the modal
-            modal.addCss('browser');
+            modal.addCss("browser");
             modal.self_destruct = OjAlert.DEEP;
-            modal.pane_width = this._calcWindowWidth(width, fullscreen);
-            modal.pane_height = this._calcWindowHeight(height, fullscreen);
-            return this.show(modal);
+            modal.pane_width = self._calcWindowWidth(width, fullscreen);
+            modal.pane_height = self._calcWindowHeight(height, fullscreen);
+            return self.show(modal);
         },
-        'modal' : function(content, title, width, height, fullscreen){
+        'modal' : function(content, title, width, height, fullscreen, transition){
             var self = this,
                 args = arguments,
                 modal = self.makeModal.apply(self, args);
@@ -11588,7 +12882,7 @@ OJ.extendManager(
             modal.is_fullscreen = fullscreen;
             modal.pane_width = self._calcWindowWidth(width, fullscreen);
             modal.pane_height = self._calcWindowHeight(height, fullscreen);
-            self.show(modal);
+            self.show(modal, null, transition);
             return modal;
         },
         'hide' : function(modal){
@@ -11632,23 +12926,16 @@ OJ.extendManager(
             this._modal_holder.moveChild(modal, this._modal_holder.num_children - 1);
         },
         'open' : function(url/*, target, params*/){
-            // check for email
-            if(url.protocol == 'mailto'){
-                return this.email(url);
-            }
-            // check for phone call
-            if(url.protocol == 'tel'){
-                return this.call(url);
-            }
-            var args = arguments,
+            var self = this,
+                args = arguments,
                 ln = args.length,
-                target = ln > 1 ? args[1] : this.BLANK,
+                target = ln > 1 ? args[1] : self.BLANK,
                 params = ln > 2 ? args[2] : {},
                 specs = [], key,
-                vp = OJ.viewport, scrn = OJ.screen;
-            // check for text message
-            if(url.protocol == 'sms' || url.protocol == 'mms'){
-                return this.txt(url, params);
+                vp = OJ.viewport, scrn = OJ.screen,
+                result;
+            if(result = self._processSpecialProtocols(url)){
+                return result;
             }
             if(target != this.SELF && target != this.TOP && target != this.PARENT){
                 if(isUnset(params.toolbar)){
@@ -11683,18 +12970,20 @@ OJ.extendManager(
             window.open.apply(window, args);
             return target;
         },
-        'show' : function(modal, depth){
+        'show' : function(modal, depth, transition){
             var holder = this._modal_holder;
             // store the modal
             this._modals.append(modal);
             // make sure the holder is visible
-            if(!holder.isVisible){
+            if(!holder.is_visible){
                 holder.addCss('active');
                 holder.show();
             }
             // prep the modal
             modal.show();
-            modal.alpha = 0;
+            if(transition !== false){
+                modal.alpha = 0;
+            }
             // add the modal
             if(isSet(depth)){
                 holder.insertChildAt(modal, depth);
@@ -11702,7 +12991,7 @@ OJ.extendManager(
             else{
                 holder.appendChild(modal);
             }
-            this._transIn(modal);
+            this._transIn(modal, transition);
         },
         'showLoading' : function(/*message, icon*/){
             var args = arguments,
@@ -11750,34 +13039,39 @@ OJ.extendClass(
 );
 
 OJ.extendComponent(
-    'OjItemRenderer', [OjComponent],
+    "OjItemRenderer", [OjComponent],
     {
-        '_props_' : {
-            'data' : null,
-            'group' : null
+        "_props_" : {
+            "data" : null,
+            "group" : null
         },
 
-        '_constructor' : function(/*group, data*/){
-            this._super(OjComponent, '_constructor', []);
-            this._processArguments(arguments, {
-                'group' : null,
-                'data' : null
-            });
+        "_constructor" : function(group, data){
+            var self = this;
+            self._super(OjComponent, '_constructor', []);
+            self.group = group;
+            self.data = data;
+        },
+        "_destructor" : function(){
+            var self = this;
+            self.group = null;
+            self.data = null;
+            return self._super(OjComponent, "_destructor", arguments);
         },
 
-        '_redrawData' : function(){
+        "_redrawData" : function(){
             return this._is_displayed;
         },
 
-        'redraw' : function(){
-            if(this._super(OjComponent, 'redraw', arguments)){
+        "redraw" : function(){
+            if(this._super(OjComponent, "redraw", arguments)){
                 this._redrawData();
                 return true;
             }
             return false;
         },
 
-        '=data' : function(data){
+        "=data" : function(data){
             var self = this;
             if(self._data == data){
                 return;
@@ -11787,7 +13081,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['item', 'item-renderer']
+        "_TAGS" : ["item", "item-renderer"]
     }
 );
 
@@ -11799,13 +13093,10 @@ OJ.extendComponent(
         '_props_' : {
             'direction' : null
         },
-        '_constructor' : function(elms, item_renderer, direction){
-            this._super(OjCollectionComponent, '_constructor', []);
-            this._processArguments(arguments, {
-                '' : undefined,
-                'item_renderer' : this._default_renderer,
-                'direction' : this._default_direction
-            });
+        "_constructor" : function(elms, item_renderer, direction){
+            this._super(OjCollectionComponent, "_constructor", []);
+            this._set("item_renderer", item_renderer, this._default_renderer);
+            this._set("direction", direction, this._default_direction);
             if(elms){
                 this.elms = elms;
             }
@@ -12222,11 +13513,9 @@ OJ.extendComponent(
 OJ.extendComponent(
     'OjImageButton', [OjButton],
     {
-        '_constructor' : function(/*image*/){
-            this._super(OjButton, '_constructor', []);
-            this._processArguments(arguments, {
-                'icon' : null
-            });
+        "_constructor" : function(icon){
+            this._super(OjButton, "_constructor", []);
+            this._set("icon", icon);
             this.removeChild(this.label);
         },
         '_processDomSourceChildren' : function(dom_elm, component){
@@ -12262,13 +13551,26 @@ OJ.extendClass(
             'label' : null
         },
 
-        '_constructor' : function(/*id, label*/){
+        '_constructor' : function(id, label){
             this._super(OjActionable, '_constructor', []);
-            this._processArguments(arguments, {
-                'id' : undefined,
-                'label' : undefined
-            });
+            this._set("id", id);
+            this._set("label", label);
+        },
+        "exportData" : function(){
+            const obj = this._super(OjActionable, 'exportData', arguments);
+            obj.id = this.id;
+            obj.label = this.label;
+            return obj;
+        },
+        "toString" : function(){
+            return this.label;
         }
+    }
+);
+
+OJ.extendClass(
+    "OjCommentElement", [OjElement],
+    {
     }
 );
 
@@ -12346,48 +13648,55 @@ OJ.extendClass(
             'error' : null,
             'errors' : null
         },
-        '_ready' : false, '_template' : '<div><div var=wrapper><label var=lbl></label><div var=psuedoInput><span var=prefix_lbl class=prefix></span><span var=stem><input var=input type=hidden /><label var=dflt></label></span><span var=suffix_lbl class=suffix></span></div></div></div>',
+        '_ready' : false, '_template' : '<div class="no-label no-default"><div var=wrapper><label var=lbl></label><div var=psuedoInput><span var=prefix_lbl class=prefix></span><span var=stem><input var=input type=hidden /><label var=dflt></label></span><span var=suffix_lbl class=suffix></span></div></div></div>',
 
-        '_constructor' : function(/*name, label, value, validators*/){
-            var self = this;
-            self._super(OjComponent, '_constructor', []);
-            self._errors = [];
-            self._validators = [];
+        "_constructor" : function(name, label, value, validators){
+            this._super(OjComponent, "_constructor", []);
+            this._errors = [];
+            this._validators = [];
             // detect default mode
-            var has_input = 'input' in self;
-            if(has_input && !isUndefined(this.input.dom.placeholder)){
-                self._unset('dflt');
+            const input = this.input;
+            if(input && !isUndefined(input.dom.placeholder)){
+                this._unset("dflt");
             }
-            self._processArguments(arguments, {
-                'name' : self.oj_id,
-                'label' : null,
-                'value' : null,
-                'validators' : []
-            });
-            if(has_input){
-                if(!self._value){
-                    self.value = self.input.dom.value;
+            this._set("name", name, this.oj_id);
+            this._set("label", label);
+            this._set("value", value);
+            this._set("validators", validators, []);
+            if(input){
+                if(!this._value){
+                    this.value = input.dom.value;
                 }
-                self.input.addEventListener(OjFocusEvent.IN, self, '_onInputFocusIn');
-                self.input.addEventListener(OjFocusEvent.OUT, self, '_onInputFocusOut');
-                self.input.addEventListener(OjDomEvent.CHANGE, self, '_onInputChange');
+                input.addEventListener(OjFocusEvent.IN, this, "_onInputFocusIn");
+                input.addEventListener(OjFocusEvent.OUT, this, "_onInputFocusOut");
+                input.addEventListener(OjDomEvent.CHANGE, this, "_onInputChange");
             }
-            if(self.oj_class_name == 'OjInput'){
-                self.hide();
+            if(this.oj_class_name == "OjInput"){
+                this.hide();
             }
             else{
-                var ln = self._supers.length,
+                let ln = this._supers.length,
                     cls;
                 for(; ln--;){
-                    cls = self._supers[ln];
-                    self.addCss(OJ.classToString(cls));
+                    cls = this._supers[ln];
+                    this.addCss(OJ.classToString(cls));
                     if(cls == OjInput){
                         break;
                     }
                 }
             }
-            self.addEventListener(OjUiEvent.PRESS, self, '_onPress');
-            self._ready = true;
+            this.addEventListener(OjUiEvent.PRESS, this, "_onPress");
+            this._ready = true;
+        },
+        "_destructor" : function(){
+            // unset placeholder for cleanup purposes
+            try {
+                this._placeholder.on_change = null;
+            }
+            catch(e){
+                // do nothing
+            }
+            return this._super(OjComponent, "_destructor", arguments);
         },
 
         '_formatError' : function(error){
@@ -12429,6 +13738,7 @@ OJ.extendClass(
         },
         '_onInputFocusOut' : function(evt){
             this.removeCss('focus');
+            this._onInputChange(evt);
         },
         '_onInputChange' : function(evt){
             this.value = this.input.dom.value;
@@ -12450,8 +13760,9 @@ OJ.extendClass(
             }
         },
         'isValid' : function(){
+            const val = this.value;
             this._errors = [];
-            if(this._required && isEmpty(this._value)){
+            if(this._required && isEmpty(val)){
                 this._errors.append(this._formatError(OjInput.REQUIRED_ERROR));
                 return false;
             }
@@ -12477,6 +13788,12 @@ OJ.extendClass(
             if(this._placeholder == val){
                 return;
             }
+            const input = this.input,
+                placeholder = this._placeholder;
+            // cleanup on change
+            if(isObjective(placeholder, OjTextElement)){
+                placeholder.on_change = null;
+            }
             this._placeholder = val;
             if(this.dflt){
                 if(val){
@@ -12488,8 +13805,14 @@ OJ.extendClass(
                 this.dflt.text = val;
                 this._redrawDefault();
             }
-            else if(this.input){
-                this.input.attr('placeholder', val);
+            else if(input){
+                input.attr("placeholder", String.string(val));
+                // set on change so we get updates if/when it changes
+                if(isObjective(val, OjTextElement)){
+                    val.on_change = function(txt){
+                        input.attr("placeholder", String.string(txt));
+                    };
+                }
             }
         },
         '.error' : function(){
@@ -12512,9 +13835,13 @@ OJ.extendClass(
             }
             return this._form;
         },
+        "=is_disabled" : function(val){
+            this._super(OjComponent, "=is_disabled", arguments);
+            this.input.attr("disabled", this._is_disabled ? "1" : null);
+        },
         '=label' : function(lbl){
             this.lbl.text = this._label = lbl;
-            if(isEmpty(this._label)){
+            if(isEmpty(lbl)){
                 this.addCss('no-label');
             }
             else{
@@ -12530,6 +13857,10 @@ OJ.extendClass(
             }
             if(this._name = nm){
                 this.addCss(nm.toLowerCase() + '-input');
+            }
+            const input = this.input;
+            if(input){
+                this.input.attr("name", this._name);
             }
         },
         '.notes' : function(){
@@ -12584,16 +13915,21 @@ OJ.extendClass(
         '=validators' : function(validators){
             this._validators = Array.array(validators);
         },
+        ".value" : function(){
+            if(isEmpty(this._value)){
+                this._onInputChange(null);
+            }
+            return this._value;
+        },
         '=value' : function(value){
-            var self = this;
-            if(value == self._value){
+            if(value == this._value){
                 return;
             }
-            self._value = value;
-            self._redrawValue();
-            self._redrawDefault();
-            if(self._ready){
-                self.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+            this._value = value;
+            this._redrawValue();
+            this._redrawDefault();
+            if(this._ready){
+                this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
             }
         }
     },
@@ -12624,7 +13960,7 @@ OJ.extendClass(
     }
 );
 
-OJ.extendClass(
+OJ.extendComponent(
     'OjComboBox', [OjInput],
     {
         '_props_' : {
@@ -12636,18 +13972,20 @@ OJ.extendClass(
         },
         '_list_visible' : false, '_ignore_click' : false, '_none_lbl' : '-- Select -- ',
 
-        '_constructor' : function(/*name, label, value, options*/){
-            var ln = arguments.length;
-            this._options_index = [];
-            this._super(OjInput, '_constructor', ln > 2 ? [].slice.call(arguments, 0, 2) : arguments);
-            this._list = new OjList();
-            this._list.addEventListener(OjCollectionEvent.ITEM_PRESS, this, '_onItemClick');
-            this._options_dp = this._list.dataProvider;
-            if(ln > 2){
-                if(ln > 3){
-                    this.options = arguments[3];
-                }
-                this.value = arguments[2];
+        "_constructor" : function(name, label, value, options){
+            var self = this,
+                list = new OjList();
+            self._options_index = [];
+            self._options = [];
+            self._super(OjInput, "_constructor", [name, label || null]);
+            self._list = list;
+            list.addEventListener(OjCollectionEvent.ITEM_PRESS, self, "_onItemClick");
+            self._options_dp = list.dataProvider;
+            if(isSet(options)){
+                self.options = options;
+            }
+            if(isSet(value)){
+                self.value = value;
             }
             // setup event listeners
 //            this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
@@ -12710,20 +14048,20 @@ OJ.extendClass(
         },
 
         '_redrawList' : function(){
-            this.input.removeAllChildren();
-            var ln = this._options.length;
-            for(; ln--;){
-                this.input.insertChildAt(
-                    new OjStyleElement(
-                        "<option value='{0}'>{1}</option>".format(
-                            this._options[ln].id,
-                            this._options[ln].label
-                        )
-                    ),
-                    0
+            var self = this,
+                input = self.input,
+                slctd_i = self._selected_index;
+            input.removeAllChildren();
+            self._options.forEachReverse(function(item, i){
+                const option = new OjStyleElement(
+                    "<option value='{0}'{1}></option>".format(
+                        item.id,
+                        i == slctd_i ? " selected='selected'" : ""
+                    )
                 );
-            }
-            return;
+                option.text = item.label;
+                input.insertChildAt(option, 0);
+            });
         },
         '_redrawValue' : function(){
             return;
@@ -12771,23 +14109,34 @@ OJ.extendClass(
             self._options = opts = [];
             if(isArray(options)){
                 options.forEachReverse(function(option, i){
-                    option = options[i];
-                    opts.prepend(
-                        isObjective(option, OjData) ? option : new OjData(String.string(option), option)
-                    );
+                    option = isObjective(option, OjData) ? option : new OjData(String.string(option), option)
+                    if(option.id == self._value){
+                        self._selected = option;
+                        self._selected_index = i;
+                    }
+                    opts.prepend(option);
                 });
             }
             else if(isObject(options)){
+                var i = 0;
                 for(key in options){
                     option = options[key];
-                    opts.append(
-                        isObjective(option, OjData) ? option : new OjData(key, option)
-                    );
+                    option = isObjective(option, OjData) ? option : new OjData(key, option)
+                    if(option.id == self._value){
+                        self._selected = option;
+                        self._selected_index = i;
+                    }
+                    opts.append(option);
+                    i++;
                 }
+            }
+            else{
+                self._selected_index = null;
+                self._selected = null;
+                self._value = null;
             }
             self._redrawList();
             self._redrawValue();
-            self.value = self._value;
         },
         '=selected' : function(selected){
             var self = this;
@@ -12825,8 +14174,11 @@ OJ.extendClass(
                     return false;
                 }
             });
-            self.input.selectedIndex = self._selected_index;
+            self.input.dom.selectedIndex = self._selected_index;
         }
+    },
+    {
+        "_TAGS" : ["select-input"]
     }
 );
 
@@ -12929,17 +14281,17 @@ OJ.extendComponent(
 );
 
 OJ.extendComponent(
-    'OjEmailInput', [OjTextInput],
+    "OjEmailInput", [OjTextInput],
     {
-        '_props_' : {
-            'max_length' : 254,
-            'min_length' : 3
+        "_props_" : {
+            "max_length" : 254,
+            "min_length" : 3
         },
-        '_type' : OjTextInput.EMAIL,
+        "_type" : OjTextInput.EMAIL,
 
-        'isValid' : function(){
+        "isValid" : function(){
             var self = this,
-                valid = self._super(OjTextInput, 'isValid', arguments),
+                valid = self._super(OjTextInput, "isValid", arguments),
                 value = self.value;
             if(!isEmpty(value) && !self._static.isValidEmail(value)){
                 self._errors.append(self._formatError(OjEmailInput.INVALID_ERROR));
@@ -12948,20 +14300,20 @@ OJ.extendComponent(
             return valid;
         },
 
-        '=max_length' : function(val){
-            throw new Error('Cannot set the max length of an email. This is a fixed value.');
+        "=max_length" : function(val){
+            throw new Error("Cannot set the max length of an email. This is a fixed value.");
         },
-        '=min_length' : function(val){
-            throw new Error('Cannot set the min length of an email. This is a fixed value.');
+        "=min_length" : function(val){
+            throw new Error("Cannot set the min length of an email. This is a fixed value.");
         }
     },
     {
-        'INVALID_ERROR' : '{INPUT} requires a valid email address.',
-        'SUPPORTS_EMAIL_TYPE' : OjInput.supportsInputType('email'),
-        'isValidEmail' : function(val){
-            return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(val)
+        "INVALID_ERROR" : "{INPUT} requires a valid email address.",
+        "SUPPORTS_EMAIL_TYPE" : OjInput.supportsInputType("email"),
+        "isValidEmail" : function(val){
+            return /.+@.+(\..+)*/.test(val)
         },
-        '_TAGS' : ['email-input']
+        "_TAGS" : ["email-input"]
     }
 );
 
@@ -13106,7 +14458,7 @@ OJ.extendComponent(
         '_props_' : {
             'minSize' : 0,
             'maxSize' : 0,
-            'selectionMax': 1
+            'selection_max': 1
         },
 
         '_constructor' : function(name, label, maxSize, minSize){
@@ -13161,7 +14513,7 @@ OJ.extendComponent(
             return valid;
         },
 
-        '=selectionMax' : function(val){
+        '=selection_max' : function(val){
             if(this._selectionMax == val){
                 return;
             }
@@ -13317,41 +14669,64 @@ OJ.extendClass(
 );
 
 OJ.extendComponent(
-    'OjForm', [OjView], 
+    "OjForm", [OjView], 
     {
-        '_props_' : {
-            'cancelLabel' : 'Cancel',
-            'data' : null,
-            'resetLabel' : 'Reset',
-            'submit_label' : 'Submit'
+        "_props_" : {
+            "cancel_icon" : null,
+            "cancel_label" : "Cancel",
+            "data" : null,
+            "dismiss_on_submit": true,
+            "on_submit" : null,
+            "reset_icon": null,
+            "reset_label" : "Reset",
+            "submit_icon" : null,
+            "submit_label" : "Submit"
         },
-        '_get_props_' : {
-            'errors' : null,
-            'inputs' : null,
-            'is_valid' : null
+        "_get_props_" : {
+            "errors" : null,
+            "inputs" : null,
+            "is_valid" : null
+        },
+        "_constructor" : function(){
+           this._super(OjView, "_constructor", arguments);
+           (this._action_view = new OjButton(this._submit_label, this._submit_icon)).addEventListener(OjUiEvent.PRESS, this, "_onSubmitClick");
+           this.addEventListener(OjKeyboardEvent.UP, this, "_onKeyPress");
+        },
+        "_destructor" : function(){
+            this.removeEventListener(OjKeyboardEvent.UP, this, "_onKeyPress");
+            return this._super(OjView, "_destructor", arguments);
         },
 
-        '_showFormError' : function(){
-            var self = this,
-                msg = '';
-            self._errors.forEachReverse(function(item){
-                msg = '\n' + item.error + msg;
+        "_showFormError" : function(){
+            let msg = "";
+            this._errors.forEachReverse(function(item){
+                msg = "\n" + item.error + msg;
             });
             WindowManager.alert(
-                'Please fix the following issues and re-submit:<span style="font-weight: bold;">' + msg + '</span>\nThank you.',
-                'Form Error'
+                "Please fix the following issues and re-submit:<span style='font-weight: bold;'>" + msg + "</span>\nThank you.",
+                "Form Error"
             );
         },
-        '_onSubmitClick' : function(evt){
-            var self = this,
-                controller = self.controller;
-            if(self.submit() && controller){
-                controller.removeView(self);
+        
+        "_submit" : function(){
+            const controller = this.controller;
+            if(controller && this.dismiss_on_submit){
+                controller.removeView(this);
+            }
+            this.dispatchEvent(new OjEvent(OjEvent.SUBMIT, false, false));
+        },
+        "_onKeyPress" : function(evt){
+            if(evt.key_code == 13){
+                this._onSubmitClick(evt);
             }
         },
-        'blur' : function(){
+        "_onSubmitClick" : function(evt){
+            const self = this;
+            OjTimer.delay(() => { self.submit(); }, 100);  // this gives the input enough time to blur
+        },
+        "blur" : function(){
             var self = this,
-                rtrn = self._super(OjView, 'blur', arguments),
+                rtrn = self._super(OjView, "blur", arguments),
                 inputs = self.inputs,
                 key;
             for(key in inputs){
@@ -13359,9 +14734,9 @@ OJ.extendComponent(
             }
             return rtrn;
         },
-        'focus' : function(){
+        "focus" : function(){
             var self = this,
-                rtrn = self._super(OjView, 'focus', arguments),
+                rtrn = self._super(OjView, "focus", arguments),
                 inputs = self.inputs,
                 key = Object.keys(inputs).first;
             if(key){
@@ -13369,44 +14744,31 @@ OJ.extendComponent(
             }
             return rtrn;
         },
-        'reset' : function(){
+        "reset" : function(){
             var inputs = this.inputs,
                 nm;
             for(nm in inputs){
                 inputs[nm].value = null;
             }
         },
-        'submit' : function(){
-            var self = this,
-                evt = OjEvent;
-            if(self.validate()){
-                // todo: OjForm - add submit code logic/functionality
-                self.dispatchEvent(new evt(evt.SUBMIT, false, false));
-                return true;
+        "submit" : function(){
+            const on_submit = this.on_submit;
+            if(on_submit && on_submit(this) === false){
+                return;
             }
-            return false;
+            if(this.validate()){
+                this._submit()
+            }
         },
-        'validate' : function(){
-            var self = this,
-                is_valid = self.is_valid,
-                msg = '';
+        "validate" : function(){
+            let is_valid = this.is_valid;
             if(is_valid){
                return true;
             }
             this._showFormError();
             return false;
         },
-
-        '.action_view' : function(){
-            var self = this;
-            if(!self._action_view){
-                (self._action_view = new OjButton(self._submit_label)).addEventListener(
-                    OjUiEvent.PRESS, self, '_onSubmitClick'
-                );
-            }
-            return self._action_view;
-        },
-        '.data' : function(){
+        ".data" : function(){
             var data = this.inputs,
                 nm;
             for(nm in data){
@@ -13414,7 +14776,7 @@ OJ.extendComponent(
             }
             return data;
         },
-        '=data' : function(data){
+        "=data" : function(data){
             var inputs = this.inputs,
                 key, input;
             for(key in data){
@@ -13423,12 +14785,12 @@ OJ.extendComponent(
                 }
             }
         },
-        '.errors' : function(){
+        ".errors" : function(){
             var errors = this._errors;
             return errors ? errors.clone() : [];
         },
-        '.inputs' : function(){
-            var inputs = this.dom.getElementsByClassName('OjInput'),
+        ".inputs" : function(){
+            var inputs = this.dom.getElementsByClassName("OjInput"),
                 ln = inputs.length,
                 rtrn = {},
                 item;
@@ -13439,7 +14801,7 @@ OJ.extendComponent(
             }
             return rtrn;
         },
-        '.is_valid' : function(){
+        ".is_valid" : function(){
             var self = this,
                 inputs = self.inputs,
                 errors = self._errors = [],
@@ -13448,14 +14810,14 @@ OJ.extendComponent(
                 input = inputs[nm];
                 if(!input.validate()){
                     errors.append({
-                        'input' : input,
-                        'error' : input.error
+                        "input" : input,
+                        "error" : input.error
                     });
                 }
             }
             return !errors.length;
         },
-        '=submit_label' : function(val){
+        "=submit_label" : function(val){
             if(this._submit_label == val){
                 return;
             }
@@ -13466,7 +14828,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['form']
+        "_TAGS" : ["form"]
     }
 );
 
@@ -13501,98 +14863,97 @@ OJ.extendClass(
 );
 
 OJ.extendClass(
-    'OjOption', [OjItemRenderer],
+    "OjOption", [OjItemRenderer],
     {
-        '_props_' : {
-            'dataRenderer' : null,
-            'isSelected'   : false
+        "_props_" : {
+            "data_renderer" : null,
+            "is_selected"   : false
         },
-//        '_selector' : null,
-        '_v_align' : OjStyleElement.MIDDLE,
-        '_template' : '<div><div var=indicator v-align=m><input var=input type=checkbox /></div></div>',
+//        "_selector" : null,
+        "_v_align" : OjStyleElement.MIDDLE,
+        "_template" : "<div><div var=indicator v-align=m><input var=input type=checkbox /></div></div>",
 
-        '_constructor' : function(/*group|dataRenderer, data*/){
+        "_constructor" : function(/*group|data_renderer, data*/){
             // process the arguments
             var args = arguments,
                 ln = args.length,
                 renderer = OjTextRenderer;
             if(ln > 1){
                 var tmp = args[1];
-                if(isString(tmp) || tmp.is('OjItemRenderer')){
+                if(isString(tmp) || tmp.is("OjItemRenderer")){
                     renderer = tmp;
                     args[1] = null;
                 }
             }
-            this._super(OjItemRenderer, '_constructor', arguments);
+            this._super(OjItemRenderer, "_constructor", arguments);
             if(!this._selector){
-                this.dataRenderer = renderer;
-                this.addEventListener(OjUiEvent.PRESS, this, '_onPress');
+                this.data_renderer = renderer;
+                this.addEventListener(OjUiEvent.PRESS, this, "_onPress");
             }
         },
-        '_destructor' : function(){
-            this._selector = this._dataRenderer = null;
-            return this._super(OjItemRenderer, '_destructor', arguments);
+        "_destructor" : function(){
+            this._selector = this._data_renderer = null;
+            return this._super(OjItemRenderer, "_destructor", arguments);
         },
 
-        '_processDomSourceChild' : function(dom_elm, component){
+        "_processDomSourceChild" : function(dom_elm, component){
             if(!isEmpty(dom_elm.nodeValue)){
-                this.data = (this._data ? this._data : '') + dom_elm.nodeValue;
+                this.data = (this._data ? this._data : "") + dom_elm.nodeValue;
                 return null;
             }
-            return this._super(OjItemRenderer, '_processDomSourceChild', arguments);
+            return this._super(OjItemRenderer, "_processDomSourceChild", arguments);
         },
-        '_redrawData' : function(){
-            if(this.option && this._super(OjItemRenderer, '_redrawData', arguments)){
+        "_redrawData" : function(){
+            if(this.option && this._super(OjItemRenderer, "_redrawData", arguments)){
                 this.option.data = this._data;
                 return true;
             }
             return false;
         },
 
-        '_onPress' : function(evt){
-            this.isSelected = !this.isSelected;
+        "_onPress" : function(evt){
+            this.is_selected = !this._is_selected;
         },
 
-        '=dataRenderer' : function(val){
+        "=data_renderer" : function(val){
             if(isString(val)){
                 val = OJ.stringToClass(val);
             }
-            if(this._dataRenderer == val){
+            if(this._data_renderer == val){
                 return;
             }
-            this._unset('option');
-            this._dataRenderer = val;
+            this._unset("option");
+            this._data_renderer = val;
             this.option = new val(this._group, this._data)
-            this.option.addCss('option');
+            this.option.addCss("option");
             this.appendElm(this.option);
         },
-        '=group' : function(group){
+        "=group" : function(group){
             if(this._group == group){
                 return;
             }
-            this._super(OjItemRenderer, '=group', arguments);
             var owner;
             if(this._group && (owner = this._group.owner) && owner.is(OjSelector)){
                 this._selector = owner;
-                this.dataRenderer = owner.item_renderer;
-                this.removeEventListener(OjUiEvent.PRESS, this, '_onPress');
+                this.data_renderer = owner.item_renderer;
+                this.removeEventListener(OjUiEvent.PRESS, this, "_onPress");
             }
             else{
                 this._selector = null;
-                this.dataRenderer = OjTextRenderer;
-                this.addEventListener(OjUiEvent.PRESS, this, '_onPress');
+                this.data_renderer = OjTextRenderer;
+                this.addEventListener(OjUiEvent.PRESS, this, "_onPress");
             }
         },
-        '=isSelected' : function(val){
-            if(this._isSelected == val){
+        "=is_selected" : function(val){
+            if(this._is_selected == val){
                 return;
             }
-            if(this._isSelected = val){
-                this.addCss('selected');
+            if(this._is_selected = val){
+                this.addCss("selected");
                 this.input.dom.checked = true;
             }
             else{
-                this.removeCss('selected');
+                this.removeCss("selected");
                 this.input.dom.checked = false;
             }
             this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
@@ -13602,249 +14963,283 @@ OJ.extendClass(
 
 
 OJ.extendComponent(
-    'OjCheckedOption', [OjOption],
+    "OjCheckedOption", [OjOption],
     {},
     {
-        '_TAGS' : ['oj-checkbox', 'checkbox']
+        "_TAGS" : ["oj-checkbox", "checkbox"]
     }
 );
 
 OJ.extendComponent(
-    'OjRadioOption', [OjOption],
+    "OjRadioOption", [OjOption],
     {
-        '_constructor' : function(){
-            this._super(OjOption, '_constructor', arguments);
-            this.input.attr('type', 'radio');
+        "_constructor" : function(){
+            this._super(OjOption, "_constructor", arguments);
+            this.input.attr("type", "radio");
         }
     },
     {
-        '_TAGS' : ['oj-radio', 'radio']
+        "_TAGS" : ["oj-radio", "radio"]
     }
 );
 
 OJ.extendComponent(
-    'OjSelector', [OjInput],
+    "OjSelector", [OjInput],
     {
-        '_props_' : {
-            'item_renderer' : OjTextRenderer,
-            'selectionMin' : 0,
-            'selectionMax' : 1
+        "_props_" : {
+            "item_renderer" : OjTextRenderer,
+            "options": null,
+            "selected": null,
+            "selection_min" : 1,
+            "selection_max" : 1,
+            "selection_renderer" : OjRadioOption
         },
-        '_template' : '<div><div var=wrapper><label var=label></label><div var=psuedoInput><span var=prefix class=prefix></span><span var=stem><list var=input item_renderer=OjOption></list><label var=dflt></label></span><span var=suffix class=suffix></span></div></div></div>',
+        "_template" : "<div><div var=wrapper><label var=lbl></label><div var=psuedoInput><span var=prefix_lbl class=prefix></span><span var=stem><list var=input item_renderer=OjRadioOption></list><label var=dflt></label></span><span var=suffix_lbl class=suffix></span></div></div></div>",
 
-        '_constructor' : function(/*name, label, value, options*/){
-            var args = arguments,
-                ln = args.length;
-            // default the value
-            this._value = [];
-            this._super(OjInput, '_constructor', ln > 2 ? Array.array(args).slice(0, 2) : args);
+        "_constructor" : function(name, label, value, options){
+            const self = this;
+            // default vars
+            self._selected = [];
+            self._value = [];
+            self._values_map = {};
+            self._super(OjInput, "_constructor", [name, label, value]);
             // setup the list listeners
-            this.input.addEventListener(OjCollectionEvent.ITEM_ADD, this, '_onItemAdd');
-            this.input.addEventListener(OjCollectionEvent.ITEM_PRESS, this, '_onItemClick');
-            this.input.addEventListener(OjCollectionEvent.ITEM_MOVE, this, '_onItemMove');
-            this.input.addEventListener(OjCollectionEvent.ITEM_REMOVE, this, '_onItemRemove');
-            this.input.addEventListener(OjCollectionEvent.ITEM_REPLACE, this, '_onItemReplace');
-            this.input.removeEventListener(OjDomEvent.CHANGE, this, '_onChange');
+            const input = self.input,
+                evt = OjCollectionEvent;
+            input.addEventListener(evt.ITEM_ADD, self, "_onItemAdd");
+            input.addEventListener(evt.ITEM_PRESS, self, "_onItemPress");
+            input.addEventListener(evt.ITEM_MOVE, self, "_onItemMove");
+            input.addEventListener(evt.ITEM_REMOVE, self, "_onItemRemove");
+            input.addEventListener(evt.ITEM_REPLACE, self, "_onItemReplace");
+            input.removeEventListener(OjDomEvent.CHANGE, self, "_onChange");
             // set options if available
-            if(ln > 3){
-                this.options = args[3];
+            if(options){
+                self.options = options;
             }
         },
-        '_setDom' : function(dom_elm){
-            this._super(OjInput, '_setDom', arguments);
-//
-//      var list = new OjList();
-//      list.setItemRenderer(OjOption);
-//      list.addCss('input');
-//
-//      this.stem.replaceChild(this.input, list);
-//
-//      this.input = list;
-        },
 
-        '_processDomSourceChild' : function(dom_elm, component){
+        "_processDomSourceChild" : function(dom_elm, component){
             if(OjElement.isTextNode(dom_elm)){
                 return;
             }
-            var txt = dom_elm.innerHTML;
+            const txt = dom_elm.innerHTML;
             if(txt){
                 this.input.addItem(OjObject.importData(txt.parseJson()));
             }
         },
-        '_selectOption' : function(option, data){
-            if(this._value.indexOf(data) > -1){
+        "_selectOption" : function(option, data){
+            const self = this,
+                evt = OjEvent,
+                max = self._selection_max,
+                value = self._value,
+                id = data.id;
+            if(value.contains(id)){
                 return;
             }
-            if(this._selectionMax && this._selectionMax == this._value.length){
-                this.input.renderItem(this._value.shift()).isSelected = false;
+            if(max && max == value.length){
+                return option.is_selected = false;
             }
-            option.isSelected = true;
-            this._value.append(data);
-            this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
-        },
-        '_toggleOptionAt' : function(index){
-            var option = this.input.renderItemAt(index),
-                data = this.input.getElmAt(index);
-            if(option.isSelected){
-                this._unselectOption(option, data);
-            }
-            else{
-                this._selectOption(option, data);
+            option.is_selected = true;
+            value.append(id);
+            if(!self._silent){
+                self.dispatchEvent(new evt(evt.CHANGE));
             }
         },
-        '_unselectOption' : function(option, data){
-            var index = this._value.indexOf(data);
-            if(index == -1 || this._value.length <= this._selectionMin){
+        "_unselectOption" : function(option, data){
+            const self = this,
+                evt = OjEvent,
+                min = self._selection_min,
+                value = self._value,
+                id = data.id,
+                index = value.indexOf(id);
+            // if not present nothing more to do
+            if(index == -1) {
                 return;
             }
-            option.isSelected = false;
-            this._value.removeAt(index);
-            this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
-        },
-        '_updateSelection' : function(){
-            // make sure we remove any stale values and replace with fresh if possible
-            var ln = this._value.length;
-            for(; ln--;){
-                if(this.input.indexOfElm(this._value[ln]) == -1){
-                    this._value.removeAt(ln);
-                }
+            if(min && value.length == min){
+                return option.is_selected = true;
             }
-            // make sure we have the at least the min amount selected
-            var i = 0,
-                ln2 = this.input.num_elms;
-            for(; (ln = this._value.length) < this._selectionMin && i < ln2; i++){
-                this._selectOption(this.input.renderItemAt(i), this.input.getElmAt(i));
+            option.is_selected = false;
+            value.removeAt(index);
+            if(!self._silent){
+                self.dispatchEvent(new evt(evt.CHANGE));
             }
         },
-        '_onInputChange' : function(evt){
+        "_onInputChange" : function(evt){
             // pass since options will take care of the update
         },
-        '_onItemAdd' : function(evt){
-            this._updateSelection();
+        "_onItemAdd" : function(evt){
+            // todo: implement onItemAdd in OjSelector
         },
-        '_onItemClick' : function(evt){
-            this._toggleOptionAt(evt.index);
+        "_onItemPress" : function(evt){
+            const self = this,
+                index = evt.index,
+                input = self.input,
+                option = input.renderItemAt(index),
+                data = input.getElmAt(index);
+            if(option.is_selected){
+                self._selectOption(option, data);
+            }
+            else{
+                self._unselectOption(option, data);
+            }
         },
-        '_onItemMove' : function(evt){
+        "_onItemMove" : function(evt){
             // todo: implement onItemMove in OjSelector
         },
-        '_onItemRemove' : function(evt){
+        "_onItemRemove" : function(evt){
             // todo: implement onItemRemove in OjSelector
-            this._updateSelection();
         },
-        '_onItemReplace' : function(evt){
+        "_onItemReplace" : function(evt){
             // todo: implement onItemReplace in OjSelector
-            return;
-            var index, old_data = this._options[evt.index];
-            if((index = this._value.indexOf(old_data)) > -1){
-                this._value[index] = evt.item;
-            }
-            this.options.getChildAt(evt.index).data = evt.item;
         },
 
-        'redraw' : function(){
-            if(this._super(OjInput, 'redraw', arguments)){
-                this.input.redraw();
+        "redraw" : function(){
+            const self = this;
+            if(self._super(OjInput, "redraw", arguments)){
+                self.input.redraw();
                 // update the selection
-                this._updateSelection();
+                // this._updateSelection();
                 return true;
             }
             return false;
         },
 
-        '=item_renderer' : function(val){
+        "=item_renderer" : function(val){
+            const self = this;
             if(isString(val)){
                 val = OJ.stringToClass(val);
             }
-            if(this._item_renderer == val){
+            if(self._item_renderer == val){
                 return;
             }
-            this._item_renderer = val;
-            this.redraw();
+            self._item_renderer = val;
+            self.redraw();
         },
 
-        '.options' : function(){
-            return this.input.dataProvider;
+        ".options" : function(){
+            return this.input.elms;
         },
-        '=options' : function(val){
-            // check to make sure we don't do extra work
-            if(val == this.options){
+        "=options" : function(val){
+            const self = this,
+                evt = OjEvent,
+                input = self.input,
+                old_value = self._value;
+            // check to make sure we don"t do extra work
+            if(val == self.options){
                 return;
             }
-            // get the old selected indices
-            var indices = [],
-                ln = this._value.length,
-                options, index, ln2;
-            for(; ln--;){
-                indices.unshift(this.input.indexOfElm(this._value[ln]));
-            }
-            this._value = [];
+            // enter silent mode
+            self._silent = true;
+            // reset value & map
+            self._value = [];
+            self._values_map = {};
             // set the new options
-            this.input.dataProvider = val;
-            // get the new options
-            ln = (options = this.options).length;
-            // try to select previous selected indices
-            ln2 = indices.length;
-            for(; ln2--;){
-                if((index = indices[ln2]) < ln){
-                    this._selectOption(this.input.renderItemAt(index), options.getItemAt(index));
+            input.elms = val;
+            let id;
+            self.options.forEach(function(item, i){
+                self._values_map[id = item.id] = item;
+                if(old_value.contains(id)){
+                    self._selectOption(input.renderItemAt(i), item);
                 }
-            }
-            this.redraw();
+            });
+            self.redraw();
+            self.dispatchEvent(new evt(evt.CHANGE));
+            self._silent = false;
         },
-        '=value' : function(val){
-            val = Array.array(val);
-            if(this._value != val){
-                if(this._value = val){
-                    var options = this.options,
-                        ln = options.length;
-                    for(; ln--;){
-                        this.input.renderItemAt(ln).isSelected = val.indexOf(options[ln]) > -1;
-                    }
+        ".selected" : function(){
+            var self = this,
+                slctd = [];
+            // translate the ids to the data objects
+            self.value.forEach(function(val){
+                if(val = self._values_map[val]){
+                    slctd.append(val);
                 }
-                this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
+            });
+            return slctd;
+        },
+        "=selected" : function(val){
+            this.value = Array.array(val).map(x => x.id);
+        },
+        "=selection_max" : function(val){
+            var self = this;
+            self._selection_max = val;
+            if(val != 1 && self.selection_renderer == OjRadioOption){
+                self.selection_renderer = OjCheckedOption;
             }
         },
-        '.selectionRenderer' : function(){
+        "=selection_min" : function(val){
+            var self = this;
+            self._selection_min = val;
+            if(val != 1 && self.selection_renderer == OjRadioOption){
+                self.selection_renderer = OjCheckedOption;
+            }
+        },
+        ".selection_renderer" : function(){
             return this.input.item_renderer;
         },
-        '=selectionRenderer' : function(val){
-            this.input.item_renderer = val;
-            if(this.selectionRenderer == OjRadioOption){
-                this.selectionMin = 1;
-                this.selectionMax = 1;
+        "=selection_renderer" : function(val){
+            var self = this;
+            self.input.item_renderer = val;
+            if(self.selection_renderer == OjRadioOption){
+                self.selection_min = 1;
+                self.selection_max = 1;
+            }
+        },
+        ".value" : function(){
+            var val = this._value;
+            // return a copy
+            return val ? val : val.clone();
+        },
+        "=value" : function(val){
+            const self = this,
+                evt = OjEvent;
+            if(self._value != val){
+                // store a copy
+                self._value = val = Array.array(val);
+                // update options selection state
+                self.options.forEachReverse(function(item, i){
+                    self.input.renderItemAt(i).is_selected = val.contains(item.id);
+                });
+                // dispatch change event
+                self.dispatchEvent(new evt(evt.CHANGE));
             }
         }
     },
     {
-        '_TAGS' : ['selector']
+        "_TAGS" : ["selector"]
     }
 );
 
+
 OJ.extendComponent(
-    'OjSwitch', [OjInput],
+    "OjSwitch", [OjInput],
     {
-        '_props_' : {
+        "_props_" : {
         },
-        '_template' : '<div class=off><div var=wrapper><label var=lbl></label><div var=psuedoInput><div var=slider><label var=prefix_lbl></label><label var=suffix_lbl></label><div class=highlight></div><span var=stem><input var=input type=hidden /></span></div></div></div></div>',
-        '_onPress' : function(evt){
-            this._super(OjInput, '_onPress', arguments);
+        "_template" : "<div class=\"off no-default no-label\"><div var=wrapper><label var=lbl></label><div var=psuedoInput><div var=slider><label var=prefix_lbl></label><label var=suffix_lbl></label><div class=highlight></div><span var=stem><input var=input type=hidden /></span></div></div></div></div>",
+        "_onPress" : function(evt){
+            this._super(OjInput, "_onPress", arguments);
             this.value = !this._value;
         },
-        '_redrawValue' : function(){
-            this._super(OjInput, '_redrawValue', arguments);
+        "_redrawValue" : function(){
+            this._super(OjInput, "_redrawValue", arguments);
             if(this._value){
-                this.addCss('on');
-                this.removeCss('off');
+                this.addCss("on");
+                this.removeCss("off");
             }
             else{
-                this.addCss('off');
-                this.removeCss('on');
+                this.addCss("off");
+                this.removeCss("on");
             }
+        },
+        "=value" : function(value){
+            value = isTrue(value);
+            return this._super(OjInput, "=value", [value]);
         }
     },
     {
-        '_TAGS' : ['switch']
+        "_TAGS" : ["switch"]
     }
 );
 
@@ -14059,13 +15454,11 @@ OJ.extendComponent(
         },
         '_template' : '<div flex-h><label var=lbl></label><div var=val></div></div>',
 
-        '_constructor' : function(/*name, label, value*/){
-            this._super(OjComponent, '_constructor', []);
-            this._processArguments(arguments, {
-                'name' : null,
-                'label' : null,
-                'value' : null
-            });
+        "_constructor" : function(name, label, value){
+            this._super(OjComponent, "_constructor", []);
+            this._set("name", name);
+            this._set("label", label);
+            this._set("value", value);
         },
 
         '_redrawLabel' : function(){
@@ -14226,12 +15619,6 @@ OJ.extendClass(
         'UP'    : 'flipUp'
     }
 );
-/*! Hammer.JS - v2.0.4 - 2014-09-28
- * http://hammerjs.github.io/
- *
- * Copyright (c) 2014 Jorik Tangelder;
- * Licensed under the MIT license */
-!function(a,b,c,d){;function e(a,b,c){return setTimeout(k(a,c),b)}function f(a,b,c){return Array.isArray(a)?(g(a,c[b],c),!0):!1}function g(a,b,c){var e;if(a)if(a.forEach)a.forEach(b,c);else if(a.length!==d)for(e=0;e<a.length;)b.call(c,a[e],e,a),e++;else for(e in a)a.hasOwnProperty(e)&&b.call(c,a[e],e,a)}function h(a,b,c){for(var e=Object.keys(b),f=0;f<e.length;)(!c||c&&a[e[f]]===d)&&(a[e[f]]=b[e[f]]),f++;return a}function i(a,b){return h(a,b,!0)}function j(a,b,c){var d,e=b.prototype;d=a.prototype=Object.create(e),d.constructor=a,d._super=e,c&&h(d,c)}function k(a,b){return function(){return a.apply(b,arguments)}}function l(a,b){return typeof a==kb?a.apply(b?b[0]||d:d,b):a}function m(a,b){return a===d?b:a}function n(a,b,c){g(r(b),function(b){a.addEventListener(b,c,!1)})}function o(a,b,c){g(r(b),function(b){a.removeEventListener(b,c,!1)})}function p(a,b){for(;a;){if(a==b)return!0;a=a.parentNode}return!1}function q(a,b){return a.indexOf(b)>-1}function r(a){return a.trim().split(/\s+/g)}function s(a,b,c){if(a.indexOf&&!c)return a.indexOf(b);for(var d=0;d<a.length;){if(c&&a[d][c]==b||!c&&a[d]===b)return d;d++}return-1}function t(a){return Array.prototype.slice.call(a,0)}function u(a,b,c){for(var d=[],e=[],f=0;f<a.length;){var g=b?a[f][b]:a[f];s(e,g)<0&&d.push(a[f]),e[f]=g,f++}return c&&(d=b?d.sort(function(a,c){return a[b]>c[b]}):d.sort()),d}function v(a,b){for(var c,e,f=b[0].toUpperCase()+b.slice(1),g=0;g<ib.length;){if(c=ib[g],e=c?c+f:b,e in a)return e;g++}return d}function w(){return ob++}function x(a){var b=a.ownerDocument;return b.defaultView||b.parentWindow}function y(a,b){var c=this;this.manager=a,this.callback=b,this.element=a.element,this.target=a.options.inputTarget,this.domHandler=function(b){l(a.options.enable,[a])&&c.handler(b)},this.init()}function z(a){var b,c=a.options.inputClass;return new(b=c?c:rb?N:sb?Q:qb?S:M)(a,A)}function A(a,b,c){var d=c.pointers.length,e=c.changedPointers.length,f=b&yb&&d-e===0,g=b&(Ab|Bb)&&d-e===0;c.isFirst=!!f,c.isFinal=!!g,f&&(a.session={}),c.eventType=b,B(a,c),a.emit("hammer.input",c),a.recognize(c),a.session.prevInput=c}function B(a,b){var c=a.session,d=b.pointers,e=d.length;c.firstInput||(c.firstInput=E(b)),e>1&&!c.firstMultiple?c.firstMultiple=E(b):1===e&&(c.firstMultiple=!1);var f=c.firstInput,g=c.firstMultiple,h=g?g.center:f.center,i=b.center=F(d);b.timeStamp=nb(),b.deltaTime=b.timeStamp-f.timeStamp,b.angle=J(h,i),b.distance=I(h,i),C(c,b),b.offsetDirection=H(b.deltaX,b.deltaY),b.scale=g?L(g.pointers,d):1,b.rotation=g?K(g.pointers,d):0,D(c,b);var j=a.element;p(b.srcEvent.target,j)&&(j=b.srcEvent.target),b.target=j}function C(a,b){var c=b.center,d=a.offsetDelta||{},e=a.prevDelta||{},f=a.prevInput||{};(b.eventType===yb||f.eventType===Ab)&&(e=a.prevDelta={x:f.deltaX||0,y:f.deltaY||0},d=a.offsetDelta={x:c.x,y:c.y}),b.deltaX=e.x+(c.x-d.x),b.deltaY=e.y+(c.y-d.y)}function D(a,b){var c,e,f,g,h=a.lastInterval||b,i=b.timeStamp-h.timeStamp;if(b.eventType!=Bb&&(i>xb||h.velocity===d)){var j=h.deltaX-b.deltaX,k=h.deltaY-b.deltaY,l=G(i,j,k);e=l.x,f=l.y,c=mb(l.x)>mb(l.y)?l.x:l.y,g=H(j,k),a.lastInterval=b}else c=h.velocity,e=h.velocityX,f=h.velocityY,g=h.direction;b.velocity=c,b.velocityX=e,b.velocityY=f,b.direction=g}function E(a){for(var b=[],c=0;c<a.pointers.length;)b[c]={clientX:lb(a.pointers[c].clientX),clientY:lb(a.pointers[c].clientY)},c++;return{timeStamp:nb(),pointers:b,center:F(b),deltaX:a.deltaX,deltaY:a.deltaY}}function F(a){var b=a.length;if(1===b)return{x:lb(a[0].clientX),y:lb(a[0].clientY)};for(var c=0,d=0,e=0;b>e;)c+=a[e].clientX,d+=a[e].clientY,e++;return{x:lb(c/b),y:lb(d/b)}}function G(a,b,c){return{x:b/a||0,y:c/a||0}}function H(a,b){return a===b?Cb:mb(a)>=mb(b)?a>0?Db:Eb:b>0?Fb:Gb}function I(a,b,c){c||(c=Kb);var d=b[c[0]]-a[c[0]],e=b[c[1]]-a[c[1]];return Math.sqrt(d*d+e*e)}function J(a,b,c){c||(c=Kb);var d=b[c[0]]-a[c[0]],e=b[c[1]]-a[c[1]];return 180*Math.atan2(e,d)/Math.PI}function K(a,b){return J(b[1],b[0],Lb)-J(a[1],a[0],Lb)}function L(a,b){return I(b[0],b[1],Lb)/I(a[0],a[1],Lb)}function M(){this.evEl=Nb,this.evWin=Ob,this.allow=!0,this.pressed=!1,y.apply(this,arguments)}function N(){this.evEl=Rb,this.evWin=Sb,y.apply(this,arguments),this.store=this.manager.session.pointerEvents=[]}function O(){this.evTarget=Ub,this.evWin=Vb,this.started=!1,y.apply(this,arguments)}function P(a,b){var c=t(a.touches),d=t(a.changedTouches);return b&(Ab|Bb)&&(c=u(c.concat(d),"identifier",!0)),[c,d]}function Q(){this.evTarget=Xb,this.targetIds={},y.apply(this,arguments)}function R(a,b){var c=t(a.touches),d=this.targetIds;if(b&(yb|zb)&&1===c.length)return d[c[0].identifier]=!0,[c,c];var e,f,g=t(a.changedTouches),h=[],i=this.target;if(f=c.filter(function(a){return p(a.target,i)}),b===yb)for(e=0;e<f.length;)d[f[e].identifier]=!0,e++;for(e=0;e<g.length;)d[g[e].identifier]&&h.push(g[e]),b&(Ab|Bb)&&delete d[g[e].identifier],e++;return h.length?[u(f.concat(h),"identifier",!0),h]:void 0}function S(){y.apply(this,arguments);var a=k(this.handler,this);this.touch=new Q(this.manager,a),this.mouse=new M(this.manager,a)}function T(a,b){this.manager=a,this.set(b)}function U(a){if(q(a,bc))return bc;var b=q(a,cc),c=q(a,dc);return b&&c?cc+" "+dc:b||c?b?cc:dc:q(a,ac)?ac:_b}function V(a){this.id=w(),this.manager=null,this.options=i(a||{},this.defaults),this.options.enable=m(this.options.enable,!0),this.state=ec,this.simultaneous={},this.requireFail=[]}function W(a){return a&jc?"cancel":a&hc?"end":a&gc?"move":a&fc?"start":""}function X(a){return a==Gb?"down":a==Fb?"up":a==Db?"left":a==Eb?"right":""}function Y(a,b){var c=b.manager;return c?c.get(a):a}function Z(){V.apply(this,arguments)}function $(){Z.apply(this,arguments),this.pX=null,this.pY=null}function _(){Z.apply(this,arguments)}function ab(){V.apply(this,arguments),this._timer=null,this._input=null}function bb(){Z.apply(this,arguments)}function cb(){Z.apply(this,arguments)}function db(){V.apply(this,arguments),this.pTime=!1,this.pCenter=!1,this._timer=null,this._input=null,this.count=0}function eb(a,b){return b=b||{},b.recognizers=m(b.recognizers,eb.defaults.preset),new fb(a,b)}function fb(a,b){b=b||{},this.options=i(b,eb.defaults),this.options.inputTarget=this.options.inputTarget||a,this.handlers={},this.session={},this.recognizers=[],this.element=a,this.input=z(this),this.touchAction=new T(this,this.options.touchAction),gb(this,!0),g(b.recognizers,function(a){var b=this.add(new a[0](a[1]));a[2]&&b.recognizeWith(a[2]),a[3]&&b.requireFailure(a[3])},this)}function gb(a,b){var c=a.element;g(a.options.cssProps,function(a,d){c.style[v(c.style,d)]=b?a:""})}function hb(a,c){var d=b.createEvent("Event");d.initEvent(a,!0,!0),d.gesture=c,c.target.dispatchEvent(d)}var ib=["","webkit","moz","MS","ms","o"],jb=b.createElement("div"),kb="function",lb=Math.round,mb=Math.abs,nb=Date.now,ob=1,pb=/mobile|tablet|ip(ad|hone|od)|android/i,qb="ontouchstart"in a,rb=v(a,"PointerEvent")!==d,sb=qb&&pb.test(navigator.userAgent),tb="touch",ub="pen",vb="mouse",wb="kinect",xb=25,yb=1,zb=2,Ab=4,Bb=8,Cb=1,Db=2,Eb=4,Fb=8,Gb=16,Hb=Db|Eb,Ib=Fb|Gb,Jb=Hb|Ib,Kb=["x","y"],Lb=["clientX","clientY"];y.prototype={handler:function(){},init:function(){this.evEl&&n(this.element,this.evEl,this.domHandler),this.evTarget&&n(this.target,this.evTarget,this.domHandler),this.evWin&&n(x(this.element),this.evWin,this.domHandler)},destroy:function(){this.evEl&&o(this.element,this.evEl,this.domHandler),this.evTarget&&o(this.target,this.evTarget,this.domHandler),this.evWin&&o(x(this.element),this.evWin,this.domHandler)}};var Mb={mousedown:yb,mousemove:zb,mouseup:Ab},Nb="mousedown",Ob="mousemove mouseup";j(M,y,{handler:function(a){var b=Mb[a.type];b&yb&&0===a.button&&(this.pressed=!0),b&zb&&1!==a.which&&(b=Ab),this.pressed&&this.allow&&(b&Ab&&(this.pressed=!1),this.callback(this.manager,b,{pointers:[a],changedPointers:[a],pointerType:vb,srcEvent:a}))}});var Pb={pointerdown:yb,pointermove:zb,pointerup:Ab,pointercancel:Bb,pointerout:Bb},Qb={2:tb,3:ub,4:vb,5:wb},Rb="pointerdown",Sb="pointermove pointerup pointercancel";a.MSPointerEvent&&(Rb="MSPointerDown",Sb="MSPointerMove MSPointerUp MSPointerCancel"),j(N,y,{handler:function(a){var b=this.store,c=!1,d=a.type.toLowerCase().replace("ms",""),e=Pb[d],f=Qb[a.pointerType]||a.pointerType,g=f==tb,h=s(b,a.pointerId,"pointerId");e&yb&&(0===a.button||g)?0>h&&(b.push(a),h=b.length-1):e&(Ab|Bb)&&(c=!0),0>h||(b[h]=a,this.callback(this.manager,e,{pointers:b,changedPointers:[a],pointerType:f,srcEvent:a}),c&&b.splice(h,1))}});var Tb={touchstart:yb,touchmove:zb,touchend:Ab,touchcancel:Bb},Ub="touchstart",Vb="touchstart touchmove touchend touchcancel";j(O,y,{handler:function(a){var b=Tb[a.type];if(b===yb&&(this.started=!0),this.started){var c=P.call(this,a,b);b&(Ab|Bb)&&c[0].length-c[1].length===0&&(this.started=!1),this.callback(this.manager,b,{pointers:c[0],changedPointers:c[1],pointerType:tb,srcEvent:a})}}});var Wb={touchstart:yb,touchmove:zb,touchend:Ab,touchcancel:Bb},Xb="touchstart touchmove touchend touchcancel";j(Q,y,{handler:function(a){var b=Wb[a.type],c=R.call(this,a,b);c&&this.callback(this.manager,b,{pointers:c[0],changedPointers:c[1],pointerType:tb,srcEvent:a})}}),j(S,y,{handler:function(a,b,c){var d=c.pointerType==tb,e=c.pointerType==vb;if(d)this.mouse.allow=!1;else if(e&&!this.mouse.allow)return;b&(Ab|Bb)&&(this.mouse.allow=!0),this.callback(a,b,c)},destroy:function(){this.touch.destroy(),this.mouse.destroy()}});var Yb=v(jb.style,"touchAction"),Zb=Yb!==d,$b="compute",_b="auto",ac="manipulation",bc="none",cc="pan-x",dc="pan-y";T.prototype={set:function(a){a==$b&&(a=this.compute()),Zb&&(this.manager.element.style[Yb]=a),this.actions=a.toLowerCase().trim()},update:function(){this.set(this.manager.options.touchAction)},compute:function(){var a=[];return g(this.manager.recognizers,function(b){l(b.options.enable,[b])&&(a=a.concat(b.getTouchAction()))}),U(a.join(" "))},preventDefaults:function(a){if(!Zb){var b=a.srcEvent,c=a.offsetDirection;if(this.manager.session.prevented)return void b.preventDefault();var d=this.actions,e=q(d,bc),f=q(d,dc),g=q(d,cc);return e||f&&c&Hb||g&&c&Ib?this.preventSrc(b):void 0}},preventSrc:function(a){this.manager.session.prevented=!0,a.preventDefault()}};var ec=1,fc=2,gc=4,hc=8,ic=hc,jc=16,kc=32;V.prototype={defaults:{},set:function(a){return h(this.options,a),this.manager&&this.manager.touchAction.update(),this},recognizeWith:function(a){if(f(a,"recognizeWith",this))return this;var b=this.simultaneous;return a=Y(a,this),b[a.id]||(b[a.id]=a,a.recognizeWith(this)),this},dropRecognizeWith:function(a){return f(a,"dropRecognizeWith",this)?this:(a=Y(a,this),delete this.simultaneous[a.id],this)},requireFailure:function(a){if(f(a,"requireFailure",this))return this;var b=this.requireFail;return a=Y(a,this),-1===s(b,a)&&(b.push(a),a.requireFailure(this)),this},dropRequireFailure:function(a){if(f(a,"dropRequireFailure",this))return this;a=Y(a,this);var b=s(this.requireFail,a);return b>-1&&this.requireFail.splice(b,1),this},hasRequireFailures:function(){return this.requireFail.length>0},canRecognizeWith:function(a){return!!this.simultaneous[a.id]},emit:function(a){function b(b){c.manager.emit(c.options.event+(b?W(d):""),a)}var c=this,d=this.state;hc>d&&b(!0),b(),d>=hc&&b(!0)},tryEmit:function(a){return this.canEmit()?this.emit(a):void(this.state=kc)},canEmit:function(){for(var a=0;a<this.requireFail.length;){if(!(this.requireFail[a].state&(kc|ec)))return!1;a++}return!0},recognize:function(a){var b=h({},a);return l(this.options.enable,[this,b])?(this.state&(ic|jc|kc)&&(this.state=ec),this.state=this.process(b),void(this.state&(fc|gc|hc|jc)&&this.tryEmit(b))):(this.reset(),void(this.state=kc))},process:function(){},getTouchAction:function(){},reset:function(){}},j(Z,V,{defaults:{pointers:1},attrTest:function(a){var b=this.options.pointers;return 0===b||a.pointers.length===b},process:function(a){var b=this.state,c=a.eventType,d=b&(fc|gc),e=this.attrTest(a);return d&&(c&Bb||!e)?b|jc:d||e?c&Ab?b|hc:b&fc?b|gc:fc:kc}}),j($,Z,{defaults:{event:"pan",threshold:10,pointers:1,direction:Jb},getTouchAction:function(){var a=this.options.direction,b=[];return a&Hb&&b.push(dc),a&Ib&&b.push(cc),b},directionTest:function(a){var b=this.options,c=!0,d=a.distance,e=a.direction,f=a.deltaX,g=a.deltaY;return e&b.direction||(b.direction&Hb?(e=0===f?Cb:0>f?Db:Eb,c=f!=this.pX,d=Math.abs(a.deltaX)):(e=0===g?Cb:0>g?Fb:Gb,c=g!=this.pY,d=Math.abs(a.deltaY))),a.direction=e,c&&d>b.threshold&&e&b.direction},attrTest:function(a){return Z.prototype.attrTest.call(this,a)&&(this.state&fc||!(this.state&fc)&&this.directionTest(a))},emit:function(a){this.pX=a.deltaX,this.pY=a.deltaY;var b=X(a.direction);b&&this.manager.emit(this.options.event+b,a),this._super.emit.call(this,a)}}),j(_,Z,{defaults:{event:"pinch",threshold:0,pointers:2},getTouchAction:function(){return[bc]},attrTest:function(a){return this._super.attrTest.call(this,a)&&(Math.abs(a.scale-1)>this.options.threshold||this.state&fc)},emit:function(a){if(this._super.emit.call(this,a),1!==a.scale){var b=a.scale<1?"in":"out";this.manager.emit(this.options.event+b,a)}}}),j(ab,V,{defaults:{event:"press",pointers:1,time:500,threshold:5},getTouchAction:function(){return[_b]},process:function(a){var b=this.options,c=a.pointers.length===b.pointers,d=a.distance<b.threshold,f=a.deltaTime>b.time;if(this._input=a,!d||!c||a.eventType&(Ab|Bb)&&!f)this.reset();else if(a.eventType&yb)this.reset(),this._timer=e(function(){this.state=ic,this.tryEmit()},b.time,this);else if(a.eventType&Ab)return ic;return kc},reset:function(){clearTimeout(this._timer)},emit:function(a){this.state===ic&&(a&&a.eventType&Ab?this.manager.emit(this.options.event+"up",a):(this._input.timeStamp=nb(),this.manager.emit(this.options.event,this._input)))}}),j(bb,Z,{defaults:{event:"rotate",threshold:0,pointers:2},getTouchAction:function(){return[bc]},attrTest:function(a){return this._super.attrTest.call(this,a)&&(Math.abs(a.rotation)>this.options.threshold||this.state&fc)}}),j(cb,Z,{defaults:{event:"swipe",threshold:10,velocity:.65,direction:Hb|Ib,pointers:1},getTouchAction:function(){return $.prototype.getTouchAction.call(this)},attrTest:function(a){var b,c=this.options.direction;return c&(Hb|Ib)?b=a.velocity:c&Hb?b=a.velocityX:c&Ib&&(b=a.velocityY),this._super.attrTest.call(this,a)&&c&a.direction&&a.distance>this.options.threshold&&mb(b)>this.options.velocity&&a.eventType&Ab},emit:function(a){var b=X(a.direction);b&&this.manager.emit(this.options.event+b,a),this.manager.emit(this.options.event,a)}}),j(db,V,{defaults:{event:"tap",pointers:1,taps:1,interval:300,time:250,threshold:2,posThreshold:10},getTouchAction:function(){return[ac]},process:function(a){var b=this.options,c=a.pointers.length===b.pointers,d=a.distance<b.threshold,f=a.deltaTime<b.time;if(this.reset(),a.eventType&yb&&0===this.count)return this.failTimeout();if(d&&f&&c){if(a.eventType!=Ab)return this.failTimeout();var g=this.pTime?a.timeStamp-this.pTime<b.interval:!0,h=!this.pCenter||I(this.pCenter,a.center)<b.posThreshold;this.pTime=a.timeStamp,this.pCenter=a.center,h&&g?this.count+=1:this.count=1,this._input=a;var i=this.count%b.taps;if(0===i)return this.hasRequireFailures()?(this._timer=e(function(){this.state=ic,this.tryEmit()},b.interval,this),fc):ic}return kc},failTimeout:function(){return this._timer=e(function(){this.state=kc},this.options.interval,this),kc},reset:function(){clearTimeout(this._timer)},emit:function(){this.state==ic&&(this._input.tapCount=this.count,this.manager.emit(this.options.event,this._input))}}),eb.VERSION="2.0.4",eb.defaults={domEvents:!1,touchAction:$b,enable:!0,inputTarget:null,inputClass:null,preset:[[bb,{enable:!1}],[_,{enable:!1},["rotate"]],[cb,{direction:Hb}],[$,{direction:Hb},["swipe"]],[db],[db,{event:"doubletap",taps:2},["tap"]],[ab]],cssProps:{userSelect:"none",touchSelect:"none",touchCallout:"none",contentZooming:"none",userDrag:"none",tapHighlightColor:"rgba(0,0,0,0)"}};var lc=1,mc=2;fb.prototype={set:function(a){return h(this.options,a),a.touchAction&&this.touchAction.update(),a.inputTarget&&(this.input.destroy(),this.input.target=a.inputTarget,this.input.init()),this},stop:function(a){this.session.stopped=a?mc:lc},recognize:function(a){var b=this.session;if(!b.stopped){this.touchAction.preventDefaults(a);var c,d=this.recognizers,e=b.curRecognizer;(!e||e&&e.state&ic)&&(e=b.curRecognizer=null);for(var f=0;f<d.length;)c=d[f],b.stopped===mc||e&&c!=e&&!c.canRecognizeWith(e)?c.reset():c.recognize(a),!e&&c.state&(fc|gc|hc)&&(e=b.curRecognizer=c),f++}},get:function(a){if(a instanceof V)return a;for(var b=this.recognizers,c=0;c<b.length;c++)if(b[c].options.event==a)return b[c];return null},add:function(a){if(f(a,"add",this))return this;var b=this.get(a.options.event);return b&&this.remove(b),this.recognizers.push(a),a.manager=this,this.touchAction.update(),a},remove:function(a){if(f(a,"remove",this))return this;var b=this.recognizers;return a=this.get(a),b.splice(s(b,a),1),this.touchAction.update(),this},on:function(a,b){var c=this.handlers;return g(r(a),function(a){c[a]=c[a]||[],c[a].push(b)}),this},off:function(a,b){var c=this.handlers;return g(r(a),function(a){b?c[a].splice(s(c[a],b),1):delete c[a]}),this},emit:function(a,b){this.options.domEvents&&hb(a,b);var c=this.handlers[a]&&this.handlers[a].slice();if(c&&c.length){b.type=a,b.preventDefault=function(){b.srcEvent.preventDefault()};for(var d=0;d<c.length;)c[d](b),d++}},destroy:function(){this.element&&gb(this,!1),this.handlers={},this.session={},this.input.destroy(),this.element=null}},h(eb,{INPUT_START:yb,INPUT_MOVE:zb,INPUT_END:Ab,INPUT_CANCEL:Bb,STATE_POSSIBLE:ec,STATE_BEGAN:fc,STATE_CHANGED:gc,STATE_ENDED:hc,STATE_RECOGNIZED:ic,STATE_CANCELLED:jc,STATE_FAILED:kc,DIRECTION_NONE:Cb,DIRECTION_LEFT:Db,DIRECTION_RIGHT:Eb,DIRECTION_UP:Fb,DIRECTION_DOWN:Gb,DIRECTION_HORIZONTAL:Hb,DIRECTION_VERTICAL:Ib,DIRECTION_ALL:Jb,Manager:fb,Input:y,TouchAction:T,TouchInput:Q,MouseInput:M,PointerEventInput:N,TouchMouseInput:S,SingleTouchInput:O,Recognizer:V,AttrRecognizer:Z,Tap:db,Pan:$,Swipe:cb,Pinch:_,Rotate:bb,Press:ab,on:n,off:o,each:g,merge:i,extend:h,inherit:j,bindFn:k,prefixed:v}),typeof define==kb&&define.amd?define(function(){return eb}):"undefined"!=typeof module&&module.exports?module.exports=eb:a[c]=eb}(window,document,"Hammer");
 
 
 OJ.extendComponent(
@@ -14355,24 +15742,22 @@ OJ.extendClass(
     {
         '_props_' : {
             'content' : null,
-            'horzOffset' : null,
+            'horz_offset' : null,
             'positioning' : null,
-            'parentMenu' : null,
-            'vertOffset' : 0
+            'parent_menu' : null,
+            'vert_offset' : 0
         },
 
-        '_constructor' : function(/*content, positioning, parent_menu*/){
-            this._super(OjComponent, '_constructor', []);
-            this._processArguments(arguments, {
-                'content' : null,
-                'positioning' : [
-                    OjMenu.RIGHT_MIDDLE, OjMenu.RIGHT_TOP, OjMenu.RIGHT_BOTTOM,
-                    OjMenu.LEFT_MIDDLE, OjMenu.LEFT_TOP, OjMenu.LEFT_BOTTOM,
-                    OjMenu.BOTTOM_LEFT, OjMenu.BOTTOM_CENTER, OjMenu.BOTTOM_RIGHT,
-                    OjMenu.TOP_LEFT, OjMenu.TOP_CENTER, OjMenu.TOP_RIGHT
-                ],
-                'parentMenu' : null
-            });
+        "_constructor" : function(content, positioning, parent_menu){
+            this._super(OjComponent, "_constructor", []);
+            this._set("content", content);
+            this._set("positioning", positioning, [
+                OjMenu.RIGHT_MIDDLE, OjMenu.RIGHT_TOP, OjMenu.RIGHT_BOTTOM,
+                OjMenu.LEFT_MIDDLE, OjMenu.LEFT_TOP, OjMenu.LEFT_BOTTOM,
+                OjMenu.BOTTOM_LEFT, OjMenu.BOTTOM_CENTER, OjMenu.BOTTOM_RIGHT,
+                OjMenu.TOP_LEFT, OjMenu.TOP_CENTER, OjMenu.TOP_RIGHT
+            ]);
+            this._set("parent_menu", parent_menu);
         },
         '_destructor' : function(){
             this._content = null;
@@ -14381,7 +15766,7 @@ OJ.extendClass(
 
         'hasSubMenu' : function(menu){
             while(menu){
-                if((menu = menu.parentMenu) == this){
+                if((menu = menu.parent_menu) == this){
                     return true;
                 }
             }
@@ -14612,8 +15997,8 @@ OJ.extendManager(
 
         'positionTopLeft' : function(target, menu){
             return new OjRect(
-                    target.pageX - menu.horzOffset,
-                    target.pageY - menu.height - menu.vertOffset,
+                    target.pageX - menu.horz_offset,
+                    target.pageY - menu.height - menu.vert_offset,
                     menu.width,
                     menu.height
             );
@@ -14713,84 +16098,128 @@ OJ.extendManager(
 );
 
 OJ.extendComponent(
-    'OjTabNavController', [OjNavController],
+    "OjTabNavController", [OjNavController],
     {
-        '_prev_active' : null,
-
-        '_addViewButton' : function(view, index){
-            var btn = new OjButton(view.short_title, view.icon);
-            btn.vAlign = OjStyleElement.TOP;
-            btn.addEventListener(OjUiEvent.PRESS, this, '_onTabClick');
-            view.addEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
-            view.addEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
+        "_props_" : {
+	        "on_tab_press" : null
+        },
+        "_constructor" : function(){
+            this._super(OjNavController, "_constructor", arguments);
+            this.attr("flex-h", "");
+        },
+        "_activeButton" : function(){
+            return this.getChildAt(this.active_index);
+        },
+        "_addViewButton" : function(view, index){
+            var btn = new OjButton(view.short_title, view.icon),
+                nav_css = view.nav_css;
+            btn.attr("flex-h", null);
+            btn.attr("flex-v", "");
+            if(nav_css){
+                btn.addCss(nav_css);
+            }
+            btn.addEventListener(OjUiEvent.PRESS, this, "_onTabPress");
+            view.addEventListener(OjView.ICON_CHANGE, this, "_onViewIconChange");
+            view.addEventListener(OjView.TITLE_CHANGE, this, "_onViewTitleChange");
             this.insertChildAt(btn, index);
         },
-        '_processDomSourceChildren' : function(dom, context){
+        "_processDomSourceChildren" : function(dom, context){
             return;
         },
-        '_removeViewButton' : function(view, index){
-            OJ.destroy(this.removeElmAt(index));
-            view.removeEventListener(OjView.ICON_CHANGE, this, '_onViewIconChange');
-            view.removeEventListener(OjView.TITLE_CHANGE, this, '_onViewTitleChange');
+        "_removeViewButton" : function(view, index){
+            var self = this,
+                views = isArray(view) ? view : [view];
+            OJ.destroy(self.removeChildAt(index));
+            views.forEachReverse(function(view){
+                view.removeEventListener(OjView.ICON_CHANGE, self, "_onViewIconChange");
+                view.removeEventListener(OjView.TITLE_CHANGE, self, "_onViewTitleChange");
+            });
         },
-        '_updateActiveBtn' : function(){
-            if(this._prev_active){
-                this._prev_active.is_active = false;
+        "_updateActiveBtn" : function(){
+            var self = this,
+                stack = self._stack,
+                prev_active = self._prev_active;
+            if(prev_active){
+                prev_active.is_active = false;
             }
-            if(this._prev_active = this.getChildAt(this._stack.active_index)){
-                this._prev_active.is_active = true;
+            if(stack && (prev_active = self._activeButton())){
+                prev_active.is_active = true;
             }
+            self._prev_active = prev_active;
         },
         // event listener callbacks
-        '_onStackChange' : function(evt){
+        "_onStackChange" : function(evt){
             this._updateActiveBtn();
         },
-        '_onStackViewAdd' : function(evt){
+        "_onStackViewAdd" : function(evt){
             this._addViewButton(evt.view, evt.index);
         },
-        '_onStackViewMove' : function(evt){
+        "_onStackViewMove" : function(evt){
+            // TODO: add tab button move
         },
-        '_onStackViewRemove' : function(evt){
+        "_onStackViewRemove" : function(evt){
             this._removeViewButton(evt.view, evt.index);
         },
-        '_onStackViewReplace' : function(evt){
+        "_onStackViewReplace" : function(evt){
+            const self = this,
+                btn = self._activeButton(),
+                view = evt.view,
+                active = self._stack.active_view,
+                old_css = active ? active.nav_css : null,
+                new_css = view.nav_css;
+            btn.label = OJ.copy(view.short_title);
+            btn.icon = OJ.copy(view.icon);
+            if(old_css){
+                btn.removeCss(old_css);
+            }
+            if(new_css){
+                btn.addCss(new_css);
+            }
         },
-        '_onTabClick' : function(evt){
-            this._stack.active_index = this.indexOfChild(evt.current_target);
-            this._updateActiveBtn();
+        "_onTabPress" : function(evt){
+            const stack = this._stack,
+                cur_i = stack.active_index;
+            let new_i = this.indexOfChild(evt.current_target);
+            if(this._on_tab_press){
+                this._on_tab_press(this, new_i, cur_i);
+            }
+            if(cur_i == new_i){
+                return;
+            }
+            stack.active_index = new_i;
         },
-        '_onViewIconChange' : function(evt){
-            var view = evt.current_target;
+        "_onViewIconChange" : function(evt){
+            const view = evt.view;
             this.getChildAt(this._stack.indexOfElm(view)).icon = view.icon;
         },
-        '_onViewTitleChange' : function(evt){
-            var view = evt.current_target;
+        "_onViewTitleChange" : function(evt){
+            const view = evt.view;
             this.getChildAt(this._stack.indexOfElm(view)).label = view.short_title;
         },
 
         // getter & setters
-        '=stack' : function(stack){
+        "=stack" : function(stack){
             if(this._stack == stack){
                 return;
             }
             var ln;
             if(this._stack){
-                this._stack.removeEventListener(OjStackEvent.ADD, this, '_onStackViewAdd');
-                this._stack.removeEventListener(OjStackEvent.MOVE, this, '_onStackViewMove');
-                this._stack.removeEventListener(OjStackEvent.REMOVE, this, '_onStackViewRemove');
-                this._stack.removeEventListener(OjStackEvent.REPLACE, this, '_onStackViewReplace');
+                this._stack.removeEventListener(OjStackEvent.ADD, this, "_onStackViewAdd");
+                this._stack.removeEventListener(OjStackEvent.MOVE, this, "_onStackViewMove");
+                this._stack.removeEventListener(OjStackEvent.REMOVE, this, "_onStackViewRemove");
+                this._stack.removeEventListener(OjStackEvent.REPLACE, this, "_onStackViewReplace");
                 // remove all the tabs
                 ln = this.num_elms;
                 for(; ln--;){
                     this._removeViewButton(this._stack.getElmAt(ln), ln);
                 }
             }
-            this._super(OjNavController, '=stack', arguments);
+            this._super(OjNavController, "=stack", arguments);
             if(stack){
-                stack.addEventListener(OjStackEvent.ADD, this, '_onStackViewAdd');
-                stack.addEventListener(OjStackEvent.MOVE, this, '_onStackViewMove');
-                stack.addEventListener(OjStackEvent.REMOVE, this, '_onStackViewRemove');
-                stack.addEventListener(OjStackEvent.REPLACE, this, '_onStackViewReplace');
+                stack.addEventListener(OjStackEvent.ADD, this, "_onStackViewAdd");
+                stack.addEventListener(OjStackEvent.MOVE, this, "_onStackViewMove");
+                stack.addEventListener(OjStackEvent.REMOVE, this, "_onStackViewRemove");
+                stack.addEventListener(OjStackEvent.REPLACE, this, "_onStackViewReplace");
                 // process the stack
                 ln = stack.num_elms;
                 for(; ln--;){
@@ -14801,7 +16230,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['tab-nav', 'tab-nav-controller']
+        "_TAGS" : ["tab-nav", "tab-nav-controller"]
     }
 );
 
@@ -14987,6 +16416,56 @@ OJ.extendComponent(
         '_TAGS' : ['oj-list-view-item', 'list-view-item', 'oj-lvi', 'lvi']
     }
 );
+
+OJ.extendClass(
+    "OjWorker", [OjActionable],
+    {
+        "_props_" : {
+            "on_message": null,
+            "on_error": null
+        },
+
+        "_constructor" : function(path_or_func){
+            var self = this;
+            self._super(OjActionable, "_constructor", []);
+            if(isFunction(path_or_func)){
+                var blob = new Blob(
+                        ["onmessage = " + path_or_func.toString()],
+                        { type: "text/javascript"}
+                    ),
+                    url = window.URL.createObjectURL(blob);
+                self._worker = new Worker(url);
+                URL.revokeObjectURL(url);
+            }
+            else{
+                self._worker = new Worker(path_or_func);
+            }
+        },
+
+        "postMessage" : function(){
+            var worker = this._worker;
+            return worker.postMessage.apply(worker, arguments);
+        },
+        "terminate" : function(){
+            var worker = this._worker;
+            return worker.terminate.apply(worker, arguments);
+        },
+
+        ".on_error" : function(){
+            return this._worker.onerror;
+        },
+        "=on_error" : function(func){
+            return this._worker.onerror = func;
+        },
+        ".on_message" : function(){
+            return this._worker.onmessage;
+        },
+        "=on_message" : function(func){
+            return this._worker.onmessage = func;
+        }
+    }
+);
+
 
 OJ.extendComponent(
   'OjListView', [OjView, OjList],
