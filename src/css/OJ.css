@@ -151,8 +151,8 @@ body.is-mobile, body.is-tablet {
 
 
 /* FlexBox CSS */
-[flex],
-.OjComponent[flex] {
+flex, [flex],
+flex.OjComponent, .OjComponent[flex] {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -160,8 +160,8 @@ body.is-mobile, body.is-tablet {
     display: flex;
 }
 
-[flex-h],
-.OjComponent[flex-h] {
+flex-h, [flex-h],
+flex-h.OjComponent, .OjComponent[flex-h] {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -172,15 +172,15 @@ body.is-mobile, body.is-tablet {
     -webkit-flex-direction: row;
     flex-direction: row;
 }
-[flex-h].reverse,
-.OjComponent[flex-h].reverse {
+flex-h.reverse, [flex-h].reverse,
+flex-h.OjComponent.reverse, .OjComponent[flex-h].reverse {
     -ms-flex-direction: row-reverse;
     -webkit-flex-direction: row-reverse;
     flex-direction: row-reverse;
 }
 
-[flex-v],
-.OjComponent[flex-v] {
+flex-v, [flex-v],
+flex-v.OjComponent, .OjComponent[flex-v] {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -191,8 +191,8 @@ body.is-mobile, body.is-tablet {
     -webkit-flex-direction: column;
     flex-direction: column;
 }
-[flex-v].reverse,
-.OjComponent[flex-v].reverse {
+flex-v.reverse, [flex-v].reverse,
+flex-v.OjComponent.reverse, .OjComponent[flex-v].reverse {
     -ms-flex-direction: column-reverse;
     -webkit-flex-direction: column-reverse;
     flex-direction: column-reverse;

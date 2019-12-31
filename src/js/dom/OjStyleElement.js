@@ -59,6 +59,7 @@ OJ.extendClass(
         "_get_props_" : {
             "dom" : null,
             "first_child" : null,
+            "has_focus": null,
             "is_visible" : null,
             "last_child" : null,
             "num_children" : null,
@@ -220,10 +221,11 @@ OJ.extendClass(
 
 
         "_processAttribute" : function(dom, attr, context){
-            var self = this,
-                setter, solo, target, lower,
-                nm = attr.nodeName,
-                val = attr.value;
+            const self = this,
+                nm = attr.nodeName;
+
+            let val = attr.value,
+                setter, solo, target, lower;
 
             if(nm == "id"){
                 if(!isEmpty(val) && val != "null"){
@@ -266,7 +268,7 @@ OJ.extendClass(
             if(nm.substr(0, 3) == "on-"){
                 // todo: add support for multiple event listeners
                 // todo? add support for nested event listener functions in templates
-                setter = val.split(".");
+                setter = val.split(".", 1);
                 solo = setter.length == 1;
                 target = context;
 
@@ -282,7 +284,29 @@ OJ.extendClass(
                     }
                 }
 
-                self.addEventListener(OJ.attributeToProp(nm), target, solo ? setter[0] : setter[1]);
+                const func_str = solo ? setter[0] : setter[1];
+                let func = target[func_str];
+
+                if(!func){
+                    func = function(evt){
+                        return (function(evt){
+                            const $ = self;
+
+                            try{
+                                if(func_str[0] == "$" && func_str[1] == "."){
+                                    throw "error";
+                                }
+
+                                return eval("this." + func_str);
+                            }
+                            catch(e){
+                                return eval(func_str);
+                            }
+                        }).call(target, evt);
+                    };
+                }
+
+                self.addEventListener(OJ.attributeToProp(nm), target, func);
 
                 return true;
             }
@@ -427,9 +451,9 @@ OJ.extendClass(
             }
 
             try{
-                val = (function(str){ return eval(str); }).call(src || $, val);
+                return (function(str){ return eval(str); }).call(src || $, val);
             }
-            catch(e){ }
+            catch(e){}
 
             return val;
         },
@@ -439,7 +463,7 @@ OJ.extendClass(
             let context, prop;
 
             if(self._template_vars_){
-                self._template_vars_.forEachReverse(function(tvar){
+                self._template_vars_.forEachReverse((tvar) => {
                     context = tvar.context;
                     prop = tvar.property;
 
@@ -447,7 +471,7 @@ OJ.extendClass(
                         const key = prop.pop();
 
                         try {
-                            prop.forEach(function(p){
+                            prop.forEach((p) => {
                                 context = context[p];
                             });
 
@@ -1615,10 +1639,6 @@ OJ.extendClass(
         },
 
         // Focus Functions
-        "hasFocus" : function(){
-            return this.dom.hasFocus;
-        },
-
         "hitTest" : function(elm, local){
             return this.hitTestRect(elm.rect);
         },
@@ -1825,6 +1845,10 @@ OJ.extendClass(
         },
         "=font_size" : function(size){
             this._setStyleNum("font-size", size, OJ.font_unit);
+        },
+
+        ".has_focus" : function(){
+            return this.dom.hasFocus;
         },
 
         ".last_child" : function(){
@@ -2047,7 +2071,7 @@ OJ.extendClass(
         "_resize_observer" : new ResizeObserver((entries, observer) => {
             const cls = OjTransformEvent;
 
-            for (const entry of entries) {
+            for(const entry of entries){
                 const self = OjElement.element(entry.target),
                     prev = self._prev_rect;
 

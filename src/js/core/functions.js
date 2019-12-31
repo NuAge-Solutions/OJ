@@ -384,6 +384,9 @@ function onDomReady(){
     else if(OJ.is_tablet){
         css.append('is-tablet');
     }
+    else{
+        css.append("is-desktop");
+    }
 
     if(os == OJ.ANDROID){
         css.append('is-android');

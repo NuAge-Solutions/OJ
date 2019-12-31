@@ -63,7 +63,7 @@ OJ.extendComponent(
                 if(!this.height){
                     this.height = this._original_h;
                 }
-                print("set background", this.source);
+
                 this._setStyle('background-image', 'url(' + this.source + ')');
             }
 
@@ -74,9 +74,9 @@ OJ.extendComponent(
         '_setSource': function (url) {
             this._super(OjMedia, '_setSource', arguments);
 
-            if (url) {
+            if(url){
                 // check to see if this is a css class
-                if (this._source_is_css = (this._source.charAt(0) == '@')) {
+                if(this._source_is_css = (this._source.charAt(0) == '@')){
                     // if the media holder doesn't exist then create it
                     this.appendElm(this._media = this._makeMedia());
 

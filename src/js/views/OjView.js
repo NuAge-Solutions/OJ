@@ -19,6 +19,7 @@ OJ.extendComponent(
         "_get_props_" : {
             "action_view" : null,
             "cancel_view" : null,
+            "scroll_container": null,
             "title_view" : null
         },
 
@@ -34,18 +35,19 @@ OJ.extendComponent(
             this._checkpoints = {};
 
             // process arguments
-            const cls = this._static;
+            const cls = this._static,
+                cls_title = OJ.copy(cls.TITLE);
 
             this._set("content", content);
-            this._set("title", title, OJ.copy(cls.TITLE));
-            this._set("title", short_title, OJ.copy(cls.SHORT_TITLE));
+            this._set("title", title, cls_title);
+            this._set("short_title", short_title, OJ.copy(cls.SHORT_TITLE) || cls_title);
             this._set("icon", icon, OJ.copy(cls.ICON));
         },
 
         "_destructor" : function(){
             this.unload();
 
-            this._unset(["_action_view", "_cancel_view", "_title_view", "_overlay"]);
+            this._unset(["_action_view", "_cancel_view", "_title_view", "_overlay"]);  // todo: this may be overkill...
 
             return this._super(OjComponent, "_destructor", arguments);
         },
@@ -123,8 +125,20 @@ OJ.extendComponent(
         },
 
 
-        "didHide" : function(){ },
-        "didShow" : function(){ },
+        "didHide" : function(){
+            this._is_shown = false;
+        },
+        "didShow" : function(){
+            const pos = this._container_scroll_pos,
+                container = this.scroll_container;
+
+            this._is_shown = true;
+
+            if(pos && container){
+                container.scroll_x = pos[0];
+                container.scroll_y = pos[1];
+            }
+        },
 
         "load" : function(reload){
             // figure out if we need to actually load
@@ -166,20 +180,14 @@ OJ.extendComponent(
         },
 
         "willHide" : function(){
-            const container = this.container;
+            const container = this.scroll_container;
 
             if(container){
                 this._container_scroll_pos = [container.scroll_x, container.scroll_y];
             }
         },
         "willShow" : function(){
-            const pos = this._container_scroll_pos,
-                container = this.container;
 
-            if(pos && container){
-                container.scroll_x = pos[0];
-                container.scroll_y = pos[1];
-            }
         },
 
 
@@ -268,6 +276,10 @@ OJ.extendComponent(
             this._icon = icon;
 
             this.dispatchEvent(new OjEvent(OjView.ICON_CHANGE, false));
+        },
+
+        ".scroll_container": function(){
+            return this.container;
         },
 
         "=title" : function(title){

@@ -285,32 +285,35 @@ OJ.extendManager(
             window.location.href = 'mailto:' + email.path.substring(1);
         },
 
-        'browser' : function(url, title, width, height, fullscreen){
-            var self = this,
-                result;
+        'browser' : function(url, title, width, height, options){
+            let result = this._processSpecialProtocols(url);
 
-            if(result = self._processSpecialProtocols(url)){
+            if(result){
                 return result;
             }
 
-            var iframe = new OjIframe(url),
-                modal = self.makeModal(iframe, title);
+            const iframe = new OjIframe(url),
+                modal = this.makeModal(iframe, title);
 
-            if(isUnset(fullscreen)){
-                fullscreen = self._isMobileModal(modal)
+            let fullscreen = this._isMobileModal(modal);
+
+            // process options
+            if(options){
+                fullscreen = options.fullscreen || fullscreen;
             }
 
             // update iframe dims
-            iframe.width = [100, "%"];
-            iframe.height = [100, "%"];
+            iframe.attr("scrolling", "no");
+            // iframe.width = [100, "%"];
+            // iframe.height = [100, "%"];
 
             // update the modal
             modal.addCss("browser");
             modal.self_destruct = OjAlert.DEEP;
-            modal.pane_width = self._calcWindowWidth(width, fullscreen);
-            modal.pane_height = self._calcWindowHeight(height, fullscreen);
+            modal.pane_width = this._calcWindowWidth(width, fullscreen);
+            modal.pane_height = this._calcWindowHeight(height, fullscreen);
 
-            return self.show(modal);
+            return this.show(modal);
         },
 
         'modal' : function(content, title, width, height, fullscreen, transition){

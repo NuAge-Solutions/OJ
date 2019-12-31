@@ -62,8 +62,8 @@ OJ.extendComponent(
         // },
 
 
-        'isValid' : function(){
-            var valid = this._super(OjInput, 'isValid', arguments);
+        '.is_valid' : function(){
+            var valid = this._super(OjInput, '.is_valid', arguments);
 
             var size = this._value ? this._value.size / 1000000 : 0;
 

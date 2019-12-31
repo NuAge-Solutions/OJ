@@ -8,7 +8,7 @@
 
     overflow: hidden;
 
-    z-index: 9999;
+    z-index: 99;
 }
 /* this is a hack for ios */
 .is-ios .WindowManager.active {

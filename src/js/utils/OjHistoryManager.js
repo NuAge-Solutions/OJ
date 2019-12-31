@@ -4,6 +4,61 @@ importJs("oj.net.OjUrl");
 importJs("oj.utils.OjTimer");
 
 
+OJ.extendClass(
+    "OjHistoryEvent", [OjEvent],
+    {
+        "_get_props_" : {
+            "direction" : null,
+            "old_url" : null,
+            "new_url" : null
+        },
+
+
+        "_constructor" : function(direction, old_value, new_value, bubbles, cancelable){
+            const cls = this._static;
+
+            this._super(OjEvent, "_constructor", [cls.CHANGE, bubbles, cancelable]);
+
+            this._direction = direction || cls.NEW;
+            this._old_value = old_value;
+            this._new_value = new_value;
+        },
+
+        "exportData" : function(mode){
+            const data = this._super(OjEvent, "exportData", arguments);
+
+            data.direction = this.direction;
+            data.old_value = this.old_value;
+            data.new_value = this.new_value;
+
+            return data;
+        },
+
+		"importData" : function(data, mode){
+			if(isSet(data.direction)){
+				this._direction = data.direction;
+			}
+
+			if(isSet(data.old_value)){
+				this._old_value = data.old_value;
+			}
+
+			if(isSet(data.new_value)){
+				this._new_value = data.new_value;
+			}
+
+			return this._super(OjEvent, "importData", arguments);
+		}
+    },
+    {
+        "FORWARD"   : "historyForward",
+        "BACK"      : "historyBack",
+        "NEW"      : "historyNew",
+
+        "CHANGE"    : "historyChange",
+    }
+);
+
 // TODO: make History Manager an extension of OjArray
 OJ.extendManager(
     "HistoryManager", "OjHistoryManager", [OjActionable],
@@ -13,26 +68,10 @@ OJ.extendManager(
         "_ignore_next" : false,  "_list" : null,
 
 
-        "PREVIOUS"  : "previous",
-        "NEXT"      : "next",
-        "FORWARD"   : "historyForward",
-        "BACK"      : "historyBack",
-        "CHANGE"    : "historyChange",
-
-
         "_constructor" : function(){
             this._super(OjActionable, "_constructor", []);
 
             this._list = [new OjUrl(window.location.href)];
-
-            try{
-                var prev = window.history.previous;
-
-                this._native = true;
-
-                prev = null;
-            }
-            catch(e){}
 
             if("onhashchange" in window){
                 // Add listener for url change
@@ -56,40 +95,30 @@ OJ.extendManager(
 
 
         "_onChange" : function(){
-            var old_url = HistoryManager.get();
+            const old_url = HistoryManager.get();
 
             // check to see if the url has changed
             if(old_url.toString() != window.location.href){
-                var new_url = new OjUrl(window.location.href);
+                const new_url = new OjUrl(window.location.href),
+                    cls = OjHistoryEvent;
 
-                // check to see if the url change was page driven or browser driven
-                // < 0 browser driven
-                // > -1 page driven
-                if(OJ.depth < 0){
-                    // check for a back button click
-                    if(new_url.toString() == this.get(-1).toString()){
-                        this._current--;
-                    }
-                    // check for a forward button click
-                    else if(new_url.toString() == this.get(this._current + 1).toString()){
-                        this._current++;
-                    }
-                    // we assume that if it wasn't a forward or a back button click that we know of then it is a back button click we did not know about
-                    // therefore we make an adjustment to our history list and current positioning
-                    else{
-                        this._current = 0;
+                let direction = cls.NEW;
 
-                        this._list.unshift(new_url);
-                    }
+                // check for a back button click
+                if(new_url.toString() == (this.get(-1) || "").toString()){
+                    this._current--;
+
+                    direction = cls.BACK;
                 }
-                else{
-                    if(this._current == 0){
-                        this._list = [this._list[0]];
-                    }
-                    else{
-                        this._list = this._list.slice(0, this._current + 1);
-                    }
+                // check for a forward button click
+                else if(new_url.toString() == (this.get(this._current + 1) || "").toString()){
+                    this._current++;
 
+                    direction = cls.FORWARD;
+                }
+                // we assume that if it wasn't a forward or a back button click that we know of then it is a back button click we did not know about
+                // therefore we make an adjustment to our history list and current positioning
+                else{
                     this._list.append(new_url);
 
                     this._current = this._list.length - 1;
@@ -99,26 +128,19 @@ OJ.extendManager(
 
                 this._next = this.get(this._current + 1);
 
-                this._dispatchChange(old_url, new_url);
+                this._dispatchChange(direction, old_url, new_url);
             }
         },
 
-        "_dispatchChange" : function(old_url, new_url){
-            this.dispatchEvent(new OjEvent(HistoryManager.CHANGE, true));
+        "_dispatchChange" : function(direction, old_url, new_url){
+            this.dispatchEvent(new OjHistoryEvent(direction, old_url, new_url, true));
         },
 
 
         "get" : function(){
-            var url, index = arguments.length ? arguments[0] : this._current;
+            let url, index = arguments.length ? arguments[0] : this._current;
 
-            if(this._native){
-                if(window.history[index]){
-                    return new OjUrl(window.history[index]);
-                }
-
-                url = this._list[index];
-            }
-            else if(index < 0){
+            if(index < 0){
                 url = this._list[Math.max(this._current + index, 0)];
             }
             else if(index >= this._list.length){
@@ -140,54 +162,51 @@ OJ.extendManager(
         },
 
         "go" : function(val){
-            if(this._native){
+            try{
                 window.history.go(val);
-
-                return;
             }
+            catch(e){
+                let url;
 
-            var url;
+                if(isNaN(index)){
+                    let ln = this._list.length;
 
-            if(isNaN(index)){
-                var ln = this._list.length;
+                    while(ln-- > 0){
+                        if(this._list[ln].toString() == val){
+                            url = val;
 
-                while(ln-- > 0){
-                    if(this._list[ln].toString() == val){
-                        url = val;
-
-                        break;
+                            break;
+                        }
                     }
+
+                    this._current = ln;
+                }
+                else{
+                    url = this.get(val);
+
+                    this._current = val;
                 }
 
-                this._current = ln;
+                window.location.href = url.toString();
             }
-            else{
-                url = this.get(val);
-
-                this._current = val;
-            }
-
-            window.location.href = url.toString();
         },
 
         "forward" : function(){
-            if(this._native){
-                window.history.forward();
-
-                return;
+            try{
+                window.history.forward()
             }
-
-            OJ.load(this.get(this._current + 1));
+            catch(e){
+                OJ.load(this.get(this._current + 1));
+            }
         },
 
         "back" : function(){
-            if(this._native){
+            try{
                 window.history.back();
-
-                return;
             }
-
-            OJ.load(this.get(this._current - 1));
+            catch(e){
+                OJ.load(this.get(this._current - 1));
+            }
         },
 
         "length" : function(){

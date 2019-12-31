@@ -739,3 +739,9 @@ if(!proto.unique){
         return ary;
     };
 }
+
+Array.range = function(start, end){
+    const length = end - start;
+
+    return Array.from({ length }, (_, i) => start + i);
+};

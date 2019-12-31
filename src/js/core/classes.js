@@ -269,24 +269,30 @@ window.OJ = function Oj(){
         },
 
         // dynamically add js to page
-        "loadJs" : function(js, is_path/*=true*/, is_async/*=true*/){
-            var ln = arguments.length;
-
-            if(ln < 3){
-                is_async = true;
-
-                if(ln < 2){
-                    is_path = true;
-                }
+        "loadJs" : function(js, is_path, is_async_or_callback){
+            if(isUndefined(is_path)){
+                is_path = true;
             }
 
-            if(this.mode != this.LOADING || is_async){
-                var elm = document.createElement("script");
+            if(isUndefined(is_async_or_callback)){
+                is_async_or_callback = true;
+            }
+
+            if(this.mode != this.LOADING || is_async_or_callback){
+                const elm = document.createElement("script");
                 elm.setAttribute("type", "text/javascript");
                 elm.setAttribute("language", "javascript");
 
-                if(is_async){
+                if(is_async_or_callback){
                     elm.setAttribute("async", "true");
+
+                    if(isFunction(is_async_or_callback)){
+                        is_async_or_callback = is_async_or_callback.name;
+                    }
+
+                    if(isString(is_async_or_callback)){
+                        elm.setAttribute("onload", is_async_or_callback + "()");
+                    }
                 }
 
                 if(is_path){

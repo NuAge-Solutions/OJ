@@ -40,11 +40,9 @@ OJ.extendComponent(
 
         // Construction & Destruction Functions
         '_constructor' : function(items, transition, item_renderer){
-            var self = this;
+            this.transition = transition || OjTransition.NONE;
 
-            self.transition = transition || OjTransition.NONE;
-
-            self._super(OjCollectionComponent, '_constructor', [items, item_renderer]);
+            this._super(OjCollectionComponent, "_constructor", [items, item_renderer]);
         },
 
         '_destructor' : function(){

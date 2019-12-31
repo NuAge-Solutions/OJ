@@ -426,7 +426,7 @@ OJ.extendClass(
         // Getter/Setter Methods
         ".controller" : function(){
             if(!this._controller){
-                var p = this.parentComponent;
+                const p = this.parent_component;
 
                 if(p){
                     this._controller = p.controller;

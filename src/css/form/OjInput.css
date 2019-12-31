@@ -13,149 +13,149 @@
 
     overflow: visible;
 }
-.OjInput .wrapper {
-    display: flex;
-
-    width: 100%;
-    height: 100%;
-
-    background: #F7F7F7;
-
-    flex-wrap: nowrap;
-
-    align-items: center;
-    justify-content: space-between;
-}
-.OjInput .wrapper:hover {
-    border-color: #AAAAAA;
-}
-.OjInput.error .wrapper,
-.OjInput.error .wrapper:hover {
-    /*background-color: #FEF5F1;*/
-
-    border-color: #ED541D;
-}
-    .OjInput .wrapper > * {
-        margin: 0px;
-        padding: 0px;
-
-        background: none repeat scroll 0 0 transparent;
-
-        color: #000000;
-        font-size: 16px;
-        font-weight: bold;
-
-        vertical-align: top;
-
-        white-space: nowrap;
-    }
-    .OjInput > .wrapper > .lbl {
-        padding: 6px 10px;
-    }
-    .OjInput.error > .wrapper > .lbl {
-        color: #CC0000;
-        font-weight: bold;
-    }
-    .OjInput.no-label > .wrapper > .lbl {
-        display: none;
-
-        padding: 0px;
-    }
-
-    .OjInput .psuedoInput {
+    .OjInput .wrapper {
         display: flex;
-        align-items: center;
 
         width: 100%;
         height: 100%;
 
-        min-width: 1px;
-        min-height: 26px;
+        background: #F7F7F7;
 
-        padding: 3px 5px;
+        flex-wrap: nowrap;
 
-        color: #333333;
+        align-items: center;
+        justify-content: space-between;
     }
+    .OjInput .wrapper:hover {
+        border-color: #AAAAAA;
+    }
+    .OjInput.error .wrapper,
+    .OjInput.error .wrapper:hover {
+        /*background-color: #FEF5F1;*/
 
-        .OjInput .stem {
-            display: block;
+        border-color: #ED541D;
+    }
+        .OjInput .wrapper > * {
+            margin: 0px;
+            padding: 0px;
+
+            background: none repeat scroll 0 0 transparent;
+
+            color: #000000;
+            font-size: 16px;
+            font-weight: bold;
+
+            vertical-align: top;
+
+            white-space: nowrap;
+        }
+        .OjInput > .wrapper > .lbl {
+            padding: 6px 10px;
+        }
+        .OjInput.error > .wrapper > .lbl {
+            color: #CC0000;
+            font-weight: bold;
+        }
+        .OjInput.no-label > .wrapper > .lbl {
+            display: none;
+
+            padding: 0px;
+        }
+
+        .OjInput .psuedoInput {
+            display: flex;
+            align-items: center;
 
             width: 100%;
             height: 100%;
 
-            min-width: 10px;
+            min-width: 1px;
             min-height: 26px;
 
-            margin: 0px 5px;
+            padding: 3px 5px;
+
+            color: #333333;
         }
-            .OjInput .input {
+
+            .OjInput .stem {
                 display: block;
 
                 width: 100%;
                 height: 100%;
 
-                min-width: 26px; /* this is a hack bug fix for ios safari */
-                min-height: 26px; /* this is a hack bug fix for ios safari */
+                min-width: 10px;
+                min-height: 26px;
 
-                margin: 0px;
-                padding: 0px;
-
-                background: none;
-                border: none;
-
-                color: #385487;
-                font-size: 16px;
-                line-height: 26px;
-
-                z-index: 1;
+                margin: 0px 5px;
             }
+                .OjInput .input {
+                    display: block;
 
-            .OjInput .dflt {
-                position: absolute;
+                    width: 100%;
+                    height: 100%;
 
-                top: 0px;
-                left: 0px;
-                right: 0px;
-                height: 100%;
+                    min-width: 26px; /* this is a hack bug fix for ios safari */
+                    min-height: 26px; /* this is a hack bug fix for ios safari */
 
-                color: #CCC;
+                    margin: 0px;
+                    padding: 0px;
 
-                z-index: 3;
+                    background: none;
+                    border: none;
 
-                overflow: hidden;
-            }
-            .OjInput.no-default .dflt {
-                height: 0px;
-            }
+                    color: #385487;
+                    font-size: 16px;
+                    line-height: 26px;
 
-            .OjInput .psuedoInput .notes {
-                display: block;
+                    z-index: 1;
+                }
 
-                padding: 5px 0px 0px;
+                .OjInput .dflt {
+                    position: absolute;
 
-                color: #AAA;
-                font-size: 10px;
-                font-weight: normal;
-                font-style: italic;
+                    top: 0px;
+                    left: 0px;
+                    right: 0px;
+                    height: 100%;
 
-                white-space: normal;
-            }
+                    color: #CCC;
 
-.OjInput.grey .wrapper,
-.OjInput.grey .wrapper:hover,
-.OjInput.grey.focus .wrapper,
-.OjInput.grey.focus .wrapper:hover {
-    background: #F0F0F0;
-    border-color: #E6E6E6;
+                    z-index: 3;
 
-    padding: 0px 5px;
-}
-    .OjInput.grey .wrapper > * {
-        padding: 0px;
+                    overflow: hidden;
+                }
+                .OjInput.no-default .dflt {
+                    height: 0px;
+                }
+
+                .OjInput .psuedoInput .notes {
+                    display: block;
+
+                    padding: 5px 0px 0px;
+
+                    color: #AAA;
+                    font-size: 10px;
+                    font-weight: normal;
+                    font-style: italic;
+
+                    white-space: normal;
+                }
+
+    .OjInput.grey .wrapper,
+    .OjInput.grey .wrapper:hover,
+    .OjInput.grey.focus .wrapper,
+    .OjInput.grey.focus .wrapper:hover {
+        background: #F0F0F0;
+        border-color: #E6E6E6;
+
+        padding: 0px 5px;
     }
-    .OjInput.grey > .wrapper > .label {
-        padding-right: 5px;
-    }
+        .OjInput.grey .wrapper > * {
+            padding: 0px;
+        }
+        .OjInput.grey > .wrapper > .label {
+            padding-right: 5px;
+        }
 
 /*.OjInput input:-webkit-autofill {*/
     /*background-color: #FF0000;*/

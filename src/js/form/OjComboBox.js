@@ -132,7 +132,7 @@ OJ.extendComponent(
 
             input.removeAllChildren();
 
-            self._options.forEachReverse(function(item, i){
+            self._options.forEachReverse((item, i) => {
                 const option = new OjStyleElement(
                     "<option value='{0}'{1}></option>".format(
                         item.id,
@@ -205,7 +205,7 @@ OJ.extendComponent(
             self._options = opts = [];
 
             if(isArray(options)){
-                options.forEachReverse(function(option, i){
+                options.forEachReverse((option, i) => {
                     option = isObjective(option, OjData) ? option : new OjData(String.string(option), option)
 
                     if(option.id == self._value){
@@ -251,7 +251,7 @@ OJ.extendComponent(
             if(self._selected != selected){
                 self._selected = selected;
 
-                self.options.forEachReverse(function(option, i){
+                self.options.forEachReverse((option, i) => {
                     if(option == selected){
                         self._selected_index = i;
                         self._value = option.id;
@@ -274,15 +274,13 @@ OJ.extendComponent(
         },
 
         '=value' : function(value){
-            var self = this;
+            const self = this;
 
             if(self._value == value){
                 return;
             }
 
-            self._super(OjInput, '=value', arguments);
-
-            self.options.forEachReverse(function(option, i){
+            self.options.forEachReverse((option, i) => {
                 if(option.id == value){
                     self._selected = option;
                     self._selected_index = i;
@@ -292,6 +290,8 @@ OJ.extendComponent(
             });
 
             self.input.dom.selectedIndex = self._selected_index;
+
+            self._super(OjInput, '=value', arguments);
         }
     },
     {

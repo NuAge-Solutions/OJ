@@ -13,7 +13,8 @@ OJ.extendClass(
         "_get_props_" : {
             "dom" : null,
             "id" : null,
-            "in_dom" : false
+            "in_dom" : false,
+            "parent_component" : null
         },
 
         "_draggable" : false, "_drag_x" : 0, "_drag_y" : 0, "_did_drag" : false,
@@ -141,12 +142,8 @@ OJ.extendClass(
             }
         },
 
-        ".parentComponent" : function(){
-            if(!this._parentComponent){
-                this._parentComponent = OjElement.parentComponent((this._dom || {}).parentNode);
-            }
-
-            return this._parentComponent;
+        ".parent_component" : function(){
+            return OjElement.parentComponent((this._dom || {}).parentNode);
         }
     },
     {

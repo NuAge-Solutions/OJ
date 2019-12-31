@@ -113,7 +113,7 @@ OJ.extendComponent(
                 if(isArray(value)){
                     value = value.clone();
 
-                    value.forEachReverse(function(item, i){
+                    value.forEachReverse((item, i) => {
                         value[i] = options[item];
                     });
 

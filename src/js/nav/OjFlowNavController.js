@@ -60,6 +60,10 @@ OJ.extendComponent(
             }
         },
 
+        "_onTitleChange" : function(){
+            this.title = this.stack.active.title;
+        },
+
         // helper functions
         "_makeBackButton" : function(view){
             const btn = new OjButton(this.icon_only_back ? null : OJ.copy(view.short_title));
@@ -84,10 +88,17 @@ OJ.extendComponent(
         },
 
         "_update" : function(view, transition, index, old_index){
-            var self = this;
+            const self = this,
+                stack = self.stack,
+                old_view = stack ? stack.getElmAt(old_index) : null;
 
             // remove any old animations
             self._unset("_tween");
+
+            // remove previous title change listener
+            if(old_view){
+                old_view.removeEventListener(OjView.TITLE_CHANGE, self, "_onTitleChange");
+            }
 
             if(!view){
                 return; // todo: re-evalute this to properly handle transition to on view
@@ -104,12 +115,13 @@ OJ.extendComponent(
                 cancel_view = view.cancel_view,
                 title_view = view.title_view,
                 evt = OjUiEvent,
-                stack = self.stack,
                 title;
 
             // if there is no title view than try to make one from the title
             if( !title_view && ((title = view.title) || (title = self.default_title)) ){
                 title_view = self._makeTitle(title);
+
+                view.addEventListener(OjView.TITLE_CHANGE, self, "_onTitleChange");
             }
 
             // figure out default values
@@ -340,19 +352,17 @@ OJ.extendComponent(
         },
 
         "=title" : function(title){
-            var self = this,
-                hldr = self.top_title;
-
-            if(self._title == title){
+            if(this._title == title){
                 return;
             }
             
-            self._title = title;
+            this._title = title;
 
+            const hldr = this.top_title;
             hldr.removeAllChildren();
             
             hldr.appendChild(
-                self._makeTitle(title)
+                this._makeTitle(title)
             );
         },
 

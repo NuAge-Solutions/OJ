@@ -33,13 +33,11 @@ OJ.extendClass(
         },
 
         "_redrawButtons" : function(){
-            var self = this;
-
-            if(self.btns.num_children == 1 && isEmpty(self.cancel_label)){
-                self.hideButtons();
+            if(this.btns.num_children == 1 && isEmpty(this.cancel_label)){
+                this.hideButtons();
             }
             else{
-                self.showButtons();
+                this.showButtons();
             }
         },
 
@@ -86,7 +84,7 @@ OJ.extendClass(
         },
         
         "complete" : function(button_index){
-            const callback = this.callback
+            const callback = this.callback;
 
             if(callback){
                 if(callback(button_index) === false){
@@ -120,28 +118,23 @@ OJ.extendClass(
         "=buttons" : function(buttons){
             this._buttons = buttons = buttons ? buttons.clone() : [];
 
-            var num_btns = buttons.length,
-                ln = this.btns.num_children - 1,
-                diff = num_btns - ln, btn;
+            // remove old buttons
+            for(let ln = this.btns.num_children; ln-- > 1;){
+                const btn = this.btns.removeChildAt(ln);
 
-            if(diff > 0){
-                for(; diff > 0; ){
-                    this.btns.insertChildAt(btn = OjButton.button(buttons[num_btns - (diff--)]), ln + 1);
-
-                    btn.addEventListener(OjUiEvent.PRESS, this, "_onButtonClick");
-                }
-            }
-            else if(diff < 0){
-                for(; diff++ < 0; ){
-                    OJ.destroy(this.btns.getChildAt(--ln - 1));
-                }
+                btn.removeEventListener(OjUiEvent.PRESS, this, "_onButtonClick")
             }
 
-            for(; ln-- > 1;){
-                btn = this.btns.getChildAt(ln);
+            // add new buttons
+            const self = this;
 
-                btn.label = buttons[ln];
-            }
+            buttons.forEach((btn) => {
+                btn = OjButton.button(btn);
+
+                btn.addEventListener(OjUiEvent.PRESS, self, "_onButtonClick");
+
+                self.btns.appendChild(btn);
+            });
 
             this._redrawButtons();
         },

@@ -15,21 +15,21 @@ OJ.extendComponent(
         },
 
 
-        '_constructor' : function(/*name, label, value, validators*/){
-            this._super(OjInput, '_constructor', arguments);
+        "_constructor" : function(/*name, label, value, validators*/){
+            this._super(OjInput, "_constructor", arguments);
 
-            this.input.addEventListener(OjKeyboardEvent.UP, this, '_onInputChange');
+            this.input.addEventListener(OjKeyboardEvent.UP, this, "_onInputChange");
         },
 
 
-        '_setDom' : function(dom_elm){
-            this._super(OjInput, '_setDom', arguments);
+        "_setDom" : function(dom_elm){
+            this._super(OjInput, "_setDom", arguments);
 
-            this.input.attr('type', this._type);
+            this.input.attr("type", this._type);
         },
 
-        '_formatErrorTokens' : function(){
-            var tokens = this._super(OjInput, '_formatErrorTokens', arguments);
+        "_formatErrorTokens" : function(){
+            const tokens = this._super(OjInput, "_formatErrorTokens", arguments);
             tokens.MAX = this.max_length;
             tokens.MIN = this.min_length;
 
@@ -37,10 +37,10 @@ OJ.extendComponent(
         },
 
 
-        '_onInputFocusIn' : function(evt){
-            var self = this;
+        "_onInputFocusIn" : function(evt){
+            const self = this;
 
-            self._super(OjInput, '_onInputFocusIn', arguments);
+            self._super(OjInput, "_onInputFocusIn", arguments);
 
             if(OJ.is_mobile){
                 self._static.triggerKeyboardShow(self);
@@ -48,29 +48,35 @@ OJ.extendComponent(
 
             if(self.select_on_focus){
                 OjTimer.delay(
-                    function(){
+                    () => {
                         self.select();
                     },
                     OJ.is_mobile ? 250 : 0
                 );
-
             }
         },
 
-        '_onInputFocusOut' : function(evt){
-            var self = this;
-
-            self._super(OjInput, '_onInputFocusOut', arguments);
+        "_onInputFocusOut" : function(evt){
+            this._super(OjInput, "_onInputFocusOut", arguments);
 
             if(OJ.is_mobile){
-                self._static.triggerKeyboardHide(self);
+                this._static.triggerKeyboardHide(this);
             }
         },
 
+        "select" : function(start, end){
+            const input = this.input.dom,
+                type = input.type;
 
-        'isValid' : function(){
+            input.type = "text";
+            input.setSelectionRange(start || 0, end || 9999999);
+            input.type = type;
+        },
+
+
+        ".is_valid" : function(){
             var self = this,
-                valid = self._super(OjInput, 'isValid', arguments),
+                valid = self._super(OjInput, ".is_valid", arguments),
                 value = self.value,
                 ln = value ? value.length : 0;
 
@@ -89,21 +95,17 @@ OJ.extendComponent(
             return valid;
         },
 
-        "select" : function(start, end){
-            this.input.dom.setSelectionRange(start || 0, end || 9999999);
-        },
-
-        '=max_length' : function(val){
+        "=max_length" : function(val){
             var self = this;
 
             if(self._max_length == val){
                 return;
             }
 
-            self.input.attr('maxlength', self._max_length = val);
+            self.input.attr("maxlength", self._max_length = val);
         },
 
-        '=value' : function(value){
+        "=value" : function(value){
             var self = this;
 
             if(isSet(value)){
@@ -114,19 +116,19 @@ OJ.extendComponent(
                 }
             }
 
-            return self._super(OjInput, '=value', [value]);
+            return self._super(OjInput, "=value", [value]);
         }
     },
     {
-        'EMAIL' : 'email',
-        'TEXT' : 'text',
-        'NUMBER' : 'number',
-        'SECURE' : 'password',
+        "EMAIL" : "email",
+        "TEXT" : "text",
+        "NUMBER" : "number",
+        "SECURE" : "password",
 
-        'MIN_LENGTH_ERROR' : '{INPUT} must be at least {MIN} characters.',
-        'MAX_LENGTH_ERROR' : '{INPUT} must be no more than {MAX} characters.',
+        "MIN_LENGTH_ERROR" : "{INPUT} must be at least {MIN} characters.",
+        "MAX_LENGTH_ERROR" : "{INPUT} must be no more than {MAX} characters.",
 
-        '_TAGS' : ['text-input']
+        "_TAGS" : ["text-input"]
     }
 );
 
@@ -142,9 +144,9 @@ OJ.extendComponent(
         "_type" : OjTextInput.EMAIL,
 
 
-        "isValid" : function(){
+        ".is_valid" : function(){
             var self = this,
-                valid = self._super(OjTextInput, "isValid", arguments),
+                valid = self._super(OjTextInput, ".is_valid", arguments),
                 value = self.value;
 
             if(!isEmpty(value) && !self._static.isValidEmail(value)){
@@ -155,7 +157,6 @@ OJ.extendComponent(
 
             return valid;
         },
-
 
         "=max_length" : function(val){
             throw new Error("Cannot set the max length of an email. This is a fixed value.");
@@ -185,6 +186,7 @@ OJ.extendComponent(
         "_type" : OjTextInput.NUMBER,
 
         "_props_" : {
+            "enforce_bounds": true,
             "max" : null,
             "min" : null
         },
@@ -200,11 +202,23 @@ OJ.extendComponent(
             return tokens;
         },
 
+        "_onInputChange" : function(){
+            const value = this.input.dom.value;
 
-        "isValid" : function(){
+            this.value = value;
+
+            const new_value = this.value;
+
+            if(new_value != value){
+                this.input.dom.value = new_value;
+            }
+        },
+
+
+        ".is_valid" : function(){
             var self = this,
                 cls = self._static,
-                valid = self._super(OjTextInput, "isValid", arguments),
+                valid = self._super(OjTextInput, ".is_valid", arguments),
                 errors = self._errors,
                 val = self.value;
             
@@ -225,13 +239,44 @@ OJ.extendComponent(
 
 
         ".value" : function(){
-            var val = this._value;
+            const val = this._value;
 
             if(isEmpty(val)){
-                return 0;
+                return null;
             }
 
             return parseFloat(val);
+        },
+        "=value" : function(val){
+            // check for change
+            if(this._value == val){
+                return;
+            }
+
+            if(this.enforce_bounds){
+                const min = this.min,
+                    max = this.max;
+
+                if(isEmpty(val)){
+                    val = this.required ? min : null;
+                }
+                else{
+                    val = parseFloat(val);
+
+                    if(isNaN(val)){
+                        val = min;
+                    }
+                    else if(isSet(min)){
+                        val = Math.max(val, min);
+                    }
+
+                    if(isSet(max)){
+                        val = Math.min(val, max);
+                    }
+                }
+            }
+
+            this._super(OjTextInput, "=value", [val]);
         },
 
 

@@ -1,7 +1,10 @@
 (function(){
     String.string = function(val){
         if(isSet(val)){
-            return isObject(val) && val.toString ? val.toString() : String(val);
+            try{
+                return isObject(val) && val.toString ? val.toString() : String(val);
+            }
+            catch(e){}
         }
 
         return "";

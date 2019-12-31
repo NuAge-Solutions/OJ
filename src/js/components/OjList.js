@@ -117,7 +117,7 @@ OJ.extendComponent(
         },
 
         '=elms' : function(val){
-            var self = this,
+            const self = this,
                 container = self.container,
                 elms = self._elms;
 
@@ -131,7 +131,7 @@ OJ.extendComponent(
             self._rendered = {};
 
             // render the new items
-            self._elms.forEach(function(item, i){
+            self._elms.forEach((item, i) => {
                 container.appendChild(self.renderItem(item, i));
             });
 

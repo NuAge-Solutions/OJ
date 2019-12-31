@@ -17,7 +17,7 @@ OJ.extendClass(
             'callback'    : null,
             'content_type' : OjUrlRequest.QUERY_STRING,
             'request'     : null,
-            'timeout'     : 30000
+            'timeout'     : 60000
         },
 
         "_get_props_" : {

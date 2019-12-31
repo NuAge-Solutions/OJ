@@ -289,7 +289,7 @@ OJ.extendClass(
         },
 
         '.oj_class_name' : function(){
-            return this._class_name_
+            return this._class_name_;
         },
 
         '.oj_id' : function(){

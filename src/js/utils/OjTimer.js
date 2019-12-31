@@ -190,10 +190,12 @@ OJ.extendClass(
         },
         
         "delay" : function(callback, duration, id){
-            var self = this;
+            if(!duration){
+                duration = 1;
+            }
 
             if(id){
-                self.cancel(id);
+                this.cancel(id);
             }
 
             return setTimeout(callback, duration);

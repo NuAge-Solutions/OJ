@@ -25,7 +25,7 @@ OJ.extendComponent(
         "_constructor" : function(){
            this._super(OjView, "_constructor", arguments);
 
-           (this._action_view = new OjButton(this._submit_label, this._submit_icon)).addEventListener(OjUiEvent.PRESS, this, "_onSubmitClick");
+           (this._action_view = new OjButton(this.submit_label, this.submit_icon)).addEventListener(OjUiEvent.PRESS, this, "_onSubmitClick");
 
            this.addEventListener(OjKeyboardEvent.UP, this, "_onKeyPress");
         },
@@ -40,7 +40,7 @@ OJ.extendComponent(
         "_showFormError" : function(){
             let msg = "";
 
-            this._errors.forEachReverse(function(item){
+            this._errors.forEachReverse((item) => {
                 msg = "\n" + item.error + msg;
             });
 
@@ -154,7 +154,7 @@ OJ.extendComponent(
         },
 
         ".errors" : function(){
-            var errors = this._errors;
+            const errors = this._errors;
 
             return errors ? errors.clone() : [];
         },

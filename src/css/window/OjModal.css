@@ -112,12 +112,6 @@
         .OjModal.no-buttons > .pane > .content {
             bottom: 0px;
         }
-        .is-mobile .OjModal.browser > .pane > .content,
-        .is-tablet .OjModal.browser > .pane > .content {
-            overflow: auto;
-
-            -webkit-overflow-scrolling: touch;
-        }
             .OjModal > .pane > .content > .OjView {
                 max-width: 100%;
                 max-height: 100%;
@@ -126,6 +120,25 @@
                 overflow: auto;
                 -webkit-overflow-scrolling: touch;
             }
+        .is-mobile .OjModal.browser > .pane > .content,
+        .is-tablet .OjModal.browser > .pane > .content {
+            overflow: auto;
+            padding: 0px;
+
+            -webkit-overflow-scrolling: touch;
+        }
+            .is-mobile .OjModal.browser > .pane > .content > iframe {
+                width: 100px;
+
+                min-width: 100%;
+                min-height: 100%;
+
+                max-width: 100%;
+                max-height: 100%;
+
+                overflow: visible;
+            }
+
 
         .OjModal > .pane > .buttons {
             position: absolute;

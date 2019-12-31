@@ -143,7 +143,7 @@ OJ.extendComponent(
 
             self.dispatchEvent(evt.clone());
 
-            evt.items.forEachReverse(function(item, index){
+            evt.items.forEachReverse((item, index) => {
                 self.unrenderItem(item, index)
             });
         },
@@ -255,6 +255,9 @@ OJ.extendComponent(
                 if(item != elm){
                     OJ.destroy(elm);
                 }
+                else{
+                    elm.parent = null;
+                }
             }
         },
 
@@ -290,7 +293,7 @@ OJ.extendComponent(
                 elms.removeEventListener(replace_evt, self, replace_func);
 
                 if(elms){
-                    elms.forEachReverse(function(item){
+                    elms.forEachReverse((item) => {
                         self.unrenderItem(item);
                     });
                 }

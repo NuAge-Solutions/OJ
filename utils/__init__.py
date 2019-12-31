@@ -120,8 +120,8 @@ def githash(path):
     data = file_get_contents(path)
 
     s = sha1()
-    s.update("blob %u\0" % len(data))
-    s.update(data)
+    s.update(("blob %u\0" % len(data)).encode("utf-8"))
+    s.update(data.encode("utf-8"))
 
     return s.hexdigest()
 
@@ -200,7 +200,7 @@ def load_manifest_file(manifest_path):
         )
 
         # discover package name
-        package = raw_manifest["packages"].keys()[0].split(".")[0]
+        package = list(raw_manifest["packages"].keys())[0].split(".")[0]
 
         # setup manifest
         manifest = dict()

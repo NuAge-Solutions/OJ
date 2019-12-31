@@ -1,10 +1,67 @@
 importJs("oj.nav.OjNavController");
 
+OJ.extendComponent(
+    "OjTabNavButton", [OjButton],
+    {
+        "_props_" : {
+            "view": null
+        },
+
+        "_constructor" : function(view){
+            this._super(OjButton, "_constructor", []);
+
+            this.attr("flex-h", null);
+            this.attr("flex-v", "");
+
+            this.view = view;
+        },
+
+        "_onViewIconChange" : function(){
+            this.icon = (this._view|| {}).icon;
+        },
+
+        "_onViewTitleChange" : function(){
+            this.label = (this._view || {}).short_title;
+        },
+
+        "=view" : function(val){
+            if(this._view == val){
+                return;
+            }
+
+            const view = this._view;
+            let nav_css;
+
+            if(view){
+                if(nav_css = view.nav_css){
+                    this.removeCss(nav_css);
+                }
+
+                view.removeEventListener(OjView.ICON_CHANGE, this, "_onViewIconChange");
+                view.removeEventListener(OjView.TITLE_CHANGE, this, "_onViewTitleChange");
+            }
+
+            if(this._view = val){
+                if(nav_css = val.nav_css){
+                    this.addCss(nav_css);
+                }
+
+                val.addEventListener(OjView.ICON_CHANGE, this, "_onViewIconChange");
+                val.addEventListener(OjView.TITLE_CHANGE, this, "_onViewTitleChange");
+            }
+
+            this._onViewIconChange();
+            this._onViewTitleChange();
+        }
+    }
+);
+
 
 OJ.extendComponent(
     "OjTabNavController", [OjNavController],
     {
         "_props_" : {
+            "tab_renderer": OjTabNavButton,
 	        "on_tab_press" : null
         },
 
@@ -19,20 +76,19 @@ OJ.extendComponent(
         },
 
         "_addViewButton" : function(view, index){
-            var btn = new OjButton(view.short_title, view.icon),
-                nav_css = view.nav_css;
-
-            btn.attr("flex-h", null);
-            btn.attr("flex-v", "");
-
-            if(nav_css){
-                btn.addCss(nav_css);
-            }
+            // var btn = new OjButton(view.short_title, view.icon),
+            //     nav_css = view.nav_css;
+            //
+            // // btn.attr("flex-h", null);
+            // // btn.attr("flex-v", "");
+            //
+            // if(nav_css){
+            //     btn.addCss(nav_css);
+            // }
+            const cls = this.tab_renderer,
+                btn = new cls(view);
 
             btn.addEventListener(OjUiEvent.PRESS, this, "_onTabPress");
-
-            view.addEventListener(OjView.ICON_CHANGE, this, "_onViewIconChange");
-            view.addEventListener(OjView.TITLE_CHANGE, this, "_onViewTitleChange");
 
             this.insertChildAt(btn, index);
         },
@@ -47,7 +103,7 @@ OJ.extendComponent(
 
             OJ.destroy(self.removeChildAt(index));
 
-            views.forEachReverse(function(view){
+            views.forEachReverse((view) => {
                 view.removeEventListener(OjView.ICON_CHANGE, self, "_onViewIconChange");
                 view.removeEventListener(OjView.TITLE_CHANGE, self, "_onViewTitleChange");
             });
@@ -122,19 +178,6 @@ OJ.extendComponent(
 
             stack.active_index = new_i;
         },
-
-        "_onViewIconChange" : function(evt){
-            const view = evt.view;
-
-            this.getChildAt(this._stack.indexOfElm(view)).icon = view.icon;
-        },
-
-        "_onViewTitleChange" : function(evt){
-            const view = evt.view;
-
-            this.getChildAt(this._stack.indexOfElm(view)).label = view.short_title;
-        },
-
 
         // getter & setters
         "=stack" : function(stack){
