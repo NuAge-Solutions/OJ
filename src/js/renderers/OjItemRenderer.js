@@ -5,27 +5,26 @@ OJ.extendComponent(
     "OjItemRenderer", [OjComponent],
     {
         "_props_" : {
+            "index": -1,
             "data" : null,
             "group" : null
         },
 
 
-        "_constructor" : function(group, data){
-            var self = this;
+        "_constructor" : function(group, data, index){
+            this._super(OjComponent, '_constructor', []);
 
-            self._super(OjComponent, '_constructor', []);
-
-            self.group = group;
-            self.data = data;
+            this.group = group;
+            this.data = data;
+            this.index = index;
         },
 
         "_destructor" : function(){
-            var self = this;
+            this.group = null;
+            this.data = null;
+            this.index = null;
 
-            self.group = null;
-            self.data = null;
-
-            return self._super(OjComponent, "_destructor", arguments);
+            return this._super(OjComponent, "_destructor", arguments);
         },
 
 

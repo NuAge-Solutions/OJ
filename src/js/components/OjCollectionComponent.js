@@ -223,7 +223,7 @@ OJ.extendComponent(
                 return self._rendered[id];
             }
 
-            item = cls ? new cls(self, item) : item;
+            item = cls ? new cls(self, item, index) : item;
 
             for(key in self._item_events){
                 evt = self._convertItemEventType(key);
