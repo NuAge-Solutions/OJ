@@ -282,12 +282,11 @@ OJ.extendComponent(
 
         // public methods
         "back" : function(){
-            var self = this,
-                stack = self.stack;
+            const stack = this.stack;
 
             stack.active_index = stack.active_index - 1;
 
-            self.dispatchEvent(new OjEvent(OjFlowNavController.BACK));
+            this.dispatchEvent(new OjEvent(OjFlowNavController.BACK));
         },
 
         "cancel" : function(){

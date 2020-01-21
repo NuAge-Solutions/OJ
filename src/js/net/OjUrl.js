@@ -18,26 +18,22 @@ OJ.extendClass(
 
 
         "_constructor" : function(url){
-            var self = this;
+            this._super(OjObject, "_constructor", []);
 
-            self._super(OjObject, "_constructor", []);
+            this._dirty = {};
 
-            self._dirty = {};
-
-            self.source = url || "";
+            this.source = url || "";
         },
 
 
         "_updateQuery" : function(){
-            var self = this;
+            if(this._dirty.query){
+                this._query = Object.toQueryString(this._query_params);
 
-            if(self._dirty.query){
-                self._query = Object.toQueryString(self._query_params)
-
-                self._dirty.query = undefined;
+                this._dirty.query = undefined;
             }
 
-            return self._query;
+            return this._query;
         },
 
 
@@ -50,8 +46,7 @@ OJ.extendClass(
         },
 
         "setQueryParam" : function(key, value){
-            var self = this,
-                params = self._query_params;
+            const params = this._query_params;
 
             if(isSet(value)){
                 params[key] = value;
@@ -60,19 +55,18 @@ OJ.extendClass(
                 delete params[key];
             }
 
-            self._dirty.query = true;
+            this._dirty.query = true;
         },
 
         "toString" : function() {
-            var self = this,
-                str = String.string,
-                hash = self.hash,
-                port = self.port,
-                protocol = self.protocol,
-                query = self._updateQuery();
+            const str = String.string,
+                hash = this.hash,
+                port = this.port,
+                protocol = this.protocol,
+                query = this._updateQuery();
 
-            return (protocol ? protocol + ":" : "") + "//" + str(self.host) + (port ? ":" + port : "") +
-                   str(self.path) + (isEmpty(query) ? "" : "?" + query) + (isEmpty(hash) ? "" : "#" + hash);
+            return (protocol ? protocol + ":" : "") + "//" + str(this.host) + (port ? ":" + port : "") +
+                   str(this.path) + (isEmpty(query) ? "" : "?" + query) + (isEmpty(hash) ? "" : "#" + hash);
         },
 
 
@@ -96,13 +90,11 @@ OJ.extendClass(
                 query = query.substr(1);
             }
 
-            var self = this;
-
-            if(self._query == query && !self._dirty.query){
+            if(this._query == query && !this._dirty.query){
                 return
             }
 
-            self._query_params = (self._query = query || "").parseQueryString();
+            this._query_params = (this._query = query || "").parseQueryString();
         },
 
         ".query_params" : function(){
@@ -126,7 +118,7 @@ OJ.extendClass(
         },
 
         ".hashbang" : function(){
-            var hash = this.hash;
+            const hash = this.hash;
 
             return hash && hash[0] == "!" ? hash.substr(1) : null;
         },
@@ -139,8 +131,7 @@ OJ.extendClass(
             return this.toString();
         },
         "=source" : function(val){
-            var self = this,
-                a = document.createElement("a");
+            const a = document.createElement("a");
 
             if(isObjective(val)){
                 val = val.toString();
@@ -150,19 +141,19 @@ OJ.extendClass(
             a.href = val;
 
             // get the parsed url info from the a element
-            self.protocol = a.protocol;
+            this.protocol = a.protocol;
 
-            self.host = a.hostname;
+            this.host = a.hostname;
 
-            self.port = a.port;
+            this.port = a.port;
 
-            self.path = a.pathname;
+            this.path = a.pathname;
 
-            self.query = a.search;
+            this.query = a.search;
 
-            self.hash = a.hash;
+            this.hash = a.hash;
 
-            self._dirty = {};
+            this._dirty = {};
         }
     },
     {

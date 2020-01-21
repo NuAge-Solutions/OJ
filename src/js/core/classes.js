@@ -215,14 +215,17 @@ window.OJ = function Oj(){
 
         "assetPath" : function(path, file){
             // search for package
-            var self = this,
-                pkg = path.replace(".", "/packages/");
+            const pkg = path.replace(".", "/packages/");
 
-            return new OjUrl(self.root + pkg + "/assets/" + (file ? file + self.version_query : ""));
+            return new OjUrl(this.root + pkg + "/assets/" + (file ? file + this.version_query : ""));
         },
 
         "load" : function(url){
-            window.location.href = String.string(url);
+            const loc = window.location;
+
+            if(loc.href != (url = String.string(url))){
+                loc.href = url;
+            }
         },
 
         "loadCss" : function(css/*, is_path=false, async=true*/){

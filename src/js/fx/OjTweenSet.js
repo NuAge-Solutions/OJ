@@ -12,19 +12,18 @@ OJ.extendClass(
         },
 
         '_get_props_' : {
-            'numTweens' : null,
-            'isFinished' : false
+            'num_tweens' : null,
+            'is_finished' : false
         },
 
 
         '_constructor' : function(/*tweens|tween, tween, tween...*/){
-            var self = this,
-                args = arguments;
+            const args = arguments;
 
-            self._completed = [];
-            self._tweens = [];
+            this._completed = [];
+            this._tweens = [];
 
-            self._super(OjActionable, '_constructor', []);
+            this._super(OjActionable, '_constructor', []);
 
             if(args.length){
                 if(isArray(args[0])){
@@ -37,19 +36,16 @@ OJ.extendClass(
         },
 
         '_destructor' : function(depth){
-            var self = this,
+            const self = this,
                 tweens = self._tweens;
 
-            this.stop();
+            self.stop();
+
+            self.tweens = null;
 
             if(depth){
-                tweens.forEachReverse(function(item){
+                tweens.forEach((item) => {
                     OJ.destroy(item, depth);
-                });
-            }
-            else{
-                tweens.forEachReverse(function(item){
-                    self.removeTween(item);
                 });
             }
 
@@ -58,32 +54,30 @@ OJ.extendClass(
 
 
         '_checkCompleted' : function(){
-            var self = this,
-                evt = OjTweenEvent;
+            if(this.num_tweens == this._completed.length && !this._is_finished){
+                const evt = OjTweenEvent;
 
-            if(self._tweens.length == self._completed.length && !self.isFinished){
-                self.dispatchEvent(new evt(evt.COMPLETE));
+                this._is_finished = true;
+
+                this.dispatchEvent(new evt(evt.COMPLETE));
             }
         },
 
 
-        '_onTweenComplete'  : function(evt){
-            var self = this,
-                completed = self._completed,
+        '_onTweenComplete' : function(evt){
+            const completed = this._completed,
                 tween = evt.target;
 
             if(!completed.contains(tween)){
                 completed.append(tween);
             }
 
-//                this.dispatchEvent(new OjTweenEvent(OjTweenEvent.TICK));
-
-            self._checkCompleted();
+            this._checkCompleted();
         },
 
 
         '_controlTweens' : function(command, args){
-            this._tweens.forEachReverse(function(item){
+            this._tweens.forEach((item) => {
                 item[command].apply(item, args);
             });
         },
@@ -107,33 +101,30 @@ OJ.extendClass(
 
         // tween management functions
         'addTween' : function(tween){
-            var self = this;
-
-            if(self.hasTween(tween)){
+            if(this.hasTween(tween)){
                 return;
             }
 
-            self._isFinished = false;
+            this._is_finished = false;
 
-            tween.addEventListener(OjTweenEvent.COMPLETE, self, '_onTweenComplete');
+            tween.addEventListener(OjTweenEvent.COMPLETE, this, '_onTweenComplete');
 
-            return self._tweens.append(tween);
+            return this._tweens.append(tween);
         },
 
         'removeTween' : function(tween){
-            var self = this,
-                tweens = self._tweens,
+            const tweens = this._tweens,
                 index = tweens.indexOf(tween);
 
             if(index == -1){
                 return;
             }
 
-            tween.removeEventListener(OjTweenEvent.COMPLETE, self, '_onTweenComplete');
+            tween.removeEventListener(OjTweenEvent.COMPLETE, this, '_onTweenComplete');
 
             tweens.removeAt(index);
 
-            self._checkCompleted();
+            this._checkCompleted();
 
             return tween;
         },
@@ -143,7 +134,7 @@ OJ.extendClass(
         },
 
 
-        '.numTweens' : function(){
+        '.num_tweens' : function(){
             return this._tweens.length;
         },
 
@@ -151,14 +142,14 @@ OJ.extendClass(
             return this._tweens.clone();
         },
         '=tweens' : function(tweens){
-            var self = this;
+            const self = this;
 
-            self._tweens.forEachReverse(function(item){
+            self._tweens.forEach((item) => {
                 self.removeTween(item);
             });
 
             if(tweens){
-                tweens.forEachReverse(function(item){
+                tweens.forEach((item) => {
                     self.addTween(item);
                 });
             }

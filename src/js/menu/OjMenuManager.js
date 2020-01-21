@@ -88,7 +88,7 @@ OJ.extendManager(
                 delete this._tweens[key];
             }
 
-            if(tweens.numTweens()){
+            if(tweens.num_tweens){
                 tweens.addEventListener(OjTweenEvent.COMPLETE, this, '_onTransOut');
                 tweens.start();
             }
