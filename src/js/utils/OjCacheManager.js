@@ -1,34 +1,30 @@
-importJs('oj.events.OjActionable');
-importJs('oj.utils.OjCacheObject');
-importJs('oj.utils.OjCachePolicy');
-
-
+importJs("oj.events.OjActionable");
+importJs("oj.utils.OjCacheObject");
+importJs("oj.utils.OjCachePolicy");
 
 
 OJ.extendManager(
-    'CacheManager', 'OjCacheManager', [OjActionable],
+    "CacheManager", "OjCacheManager", [OjActionable],
     {
         // lifespans
-        'MINUTE'  : 60,
-        'HOUR'    : 3600,
-        'DAY'     : 86400,
-        'WEEK'    : 604800,
-        'MONTH'   : 2419200,
-        'YEAR'    : 29030400,
-        'FOREVER' : 0,
+        "MINUTE"  : 60,
+        "HOUR"    : 3600,
+        "DAY"     : 86400,
+        "WEEK"    : 604800,
+        "MONTH"   : 2419200,
+        "YEAR"    : 29030400,
+        "FOREVER" : 0,
 
 
-        '_cache_size' : 0,  '_localStorage' : null,  '_policies' : null,
-
-        '_getCached' : null,  '_setCached' : null,  '_unsetCached' : null,
+        "_cache_size" : 0, "_cache_cls" : OjCacheObject,
 
 
-        '_constructor' : function(){
+        "_constructor" : function(){
             this._super(OjActionable, '_constructor', []);
 
             // check to see if local storage is supported
             try{
-                this._localStorage = 'localStorage' in window && !isNull(window['localStorage']) ? window.localStorage : null;
+                this._localStorage = "localStorage" in window && !isNull(window.localStorage) ? window.localStorage : null;
             }
             catch(exception){
                 // we don't need to do anything here since this was just to check for local storage support
@@ -36,14 +32,14 @@ OJ.extendManager(
 
             // determine which set of functions to use based on the systems capabilities
             if(this._localStorage){
-                this.getData   = this.getLocalData;
-                this.setData   = this.setLocalData;
-                this.unsetData = this.unsetLocalData;
+                this.getCachedData   = this.getLocalStorage;
+                this.setCachedData   = this.setLocalStorage;
+                this.unsetData       = this.unsetLocalStorage;
             }
             else{
-                this.getData   = this.getCookie;
-                this.setData   = this.setCookie;
-                this.unsetData = this.unsetCookie;
+                this.getCachedData   = this.getCookie;
+                this.setCachedData   = this.setCookie;
+                this.unsetData       = this.unsetCookie;
             }
 
             // setup vars
@@ -52,37 +48,24 @@ OJ.extendManager(
 
 
         // Caching Method Functions
-        '_getCookie' : function(key){
-            var cookies = ';' + document.cookie;
-            var index = cookies.indexOf(';' + key + '=');
+        "_getCachedData" : function(raw_data){
+            let data;
 
-            if(index == -1 || isEmpty(key)){
-                return undefined;
+            try{
+                if(!raw_data || !(data = raw_data.parseJson())){
+                    return null;
+                }
             }
-
-            var index2 = cookies.indexOf(';', index + 1);
-
-            if(index2 == -1){
-                index2 = theCookie.length;
-            }
-
-            return this._getData(decodeURIComponent(cookies.substring(index + key.length + 2, index2)));
-        },
-
-        '_getData' : function(raw_data){
-            var data;
-
-            if(!raw_data || !(data = raw_data.parseJson())){
+            catch(e){
                 return null;
             }
 
             if(isObject(data)){
-                var type = data[OjObject.TYPE_KEY];
+                const type = data[OjObject.TYPE_KEY];
 
-                if(
-                    isUndefined(type) ||
-                        (!isNull(type) && type != 'undefined' && type != 'boolean' && type != 'number' && type != 'string')
-                ){
+                if(isUndefined(type) || (
+                    !isNull(type) && type != "undefined" && type != "boolean" && type != "number" && type != "string"
+                )){
                     return OjObject.importData(data, OjObject.CACHE);
                 }
 
@@ -90,58 +73,53 @@ OJ.extendManager(
                     return null;
                 }
 
-                if(type == 'undefined'){
+                if(type == "undefined"){
                     return undefined;
                 }
 
-                return data['value'];
+                return data.value;
             }
 
             return data;
         },
 
-        '_getLocalData' : function(key){
-            return this._getData(this._localStorage.getItem(key));
-        },
+        "_getCookie" : function(key){
+            const cookies = ';' + document.cookie;
+            const index = cookies.indexOf(';' + key + '=');
 
-        '_isDataExpired' : function(data){
-            var exp;
-
-            // if this is a cache object and then make sure it hasn't expired
-            if(
-                isObjective(data) && data.is(OjCacheObject) &&
-                (exp = data.expiration) && exp < new Date()
-            ){
-                return true;
+            if(index == -1 || isEmpty(key)){
+                return undefined;
             }
 
-            return false;
+            let index2 = cookies.indexOf(';', index + 1);
+
+            if(index2 == -1){
+                index2 = theCookie.length;
+            }
+
+            return decodeURIComponent(cookies.substring(index + key.length + 2, index2));
         },
 
-        '_processDefault' : function(args){
+        "_getLocalStorage" : function(key){
+            return this._localStorage.getItem(key);
+        },
+
+        "_isCachedExpired" : function(data){
+            // if this is a cache object and then make sure it hasn't expired
+            return isObjective(data, this._cache_cls) && data.is_expired;
+        },
+
+        "_processDefault" : function(args){
             return args.length > 1 ? args[1] : null;
         },
 
-        '_setCookie' : function(key, data){
-            var expires = new Date();
-            var lifespan = arguments.length > 2 ? arguments[2] : this.FOREVER;
-
-            if(isNull(lifespan) || lifespan == 0){
-                lifespan = this.YEAR; // 1 year = forever
-            }
-
-            expires.setTime((new Date()).getTime() + lifespan);
-
-            document.cookie = key + '=' + encodeURIComponent(this._setData(data)) + ';expires=' + expires.toGMTString();
-        },
-
-        '_setData' : function(data){
+        "_setCachedData" : function(data){
             if(isObject(data)){
                 data = OjObject.exportData(data, OjObject.CACHE);
             }
             else{
                 data = {
-                    'value' : data
+                    "value" : data
                 };
 
                 data[OjObject.TYPE_KEY] = typeof data
@@ -150,13 +128,39 @@ OJ.extendManager(
             return toJson(data);
         },
 
-        '_setLocalData' : function(key, data){
-            this._localStorage[key] = this._setData(data);
+        "_setCookie" : function(key, data, lifespan){
+            const expires = new Date();
+
+            lifespan = lifespan || this.FOREVER;
+
+            if(isNull(lifespan) || lifespan == 0){
+                lifespan = this.YEAR; // 1 year = forever
+            }
+
+            expires.setTime((new Date()).getTime() + lifespan);
+
+            document.cookie = key + '=' + encodeURIComponent(data) + ';expires=' + expires.toGMTString();
+
+            return data;
+        },
+
+        "_setLocalStorage" : function(key, data){
+            this._localStorage[key] = data;
+
+            return data;
+        },
+
+        "_unsetCookie" : function(key){
+            document.cookie = key + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        },
+
+        "_unsetLocalStorage" : function(key){
+            delete this._localStorage[key];
         },
 
 
         // UrlRequest Caching Functions
-        'getCacheUrlRequestData' : function(url){
+        "getCacheUrlRequestData" : function(url){
             if(isEmpty(url = url.toString())){
                 return null;
             }
@@ -164,14 +168,12 @@ OJ.extendManager(
             return this.getData(url);
         },
 
-        'getCacheUrlRequestPolicy' : function(url){
+        "getCacheUrlRequestPolicy" : function(url){
             if(isEmpty(url = url.toString())){
                 return null;
             }
 
-            var key;
-
-            for(key in this._policies){
+            for(let key in this._policies){
                 if(url.match(key)){
                     return this._policies[key];
                 }
@@ -180,22 +182,22 @@ OJ.extendManager(
             return null;
         },
 
-        'setCacheUrlRequestData' : function(url, data/*, policy*/){
+        "setCacheUrlRequestData" : function(url, data, policy){
             if(isEmpty(url = url.toString())){
                 return null;
             }
 
-            var policy = arguments.length > 2 ? arguments[2] : this.getCacheUrlRequestPolicy(url);
+            policy = policy || this.getCacheUrlRequestPolicy(url);
 
             CacheManager.setData(url, data, policy ? policy.lifespan : null);
         },
 
-        'setCacheUrlRequestPolicy' : function(policy){
+        "setCacheUrlRequestPolicy" : function(policy){
             this._policies[policy.url.replace(/\*/g, '[^ ]*')] = policy;
         },
 
-        'unsetCacheUrlRequestPolicy' : function(policy/*|url*/){
-            var url;
+        "unsetCacheUrlRequestPolicy" : function(policy/*|url*/){
+            let url;
 
             if(isObjective(policy) && policy.is('OjCachePolicy')){
                 url = policy.url.toString();
@@ -210,69 +212,89 @@ OJ.extendManager(
             catch(e){}
         },
 
-        'unsetCacheUrlRequestData' : function(url){
+        "unsetCacheUrlRequestData" : function(url){
             CacheManager.unsetData(url);
         },
 
 
         // Regular Data Caching Functions
-        'getData' : function(key/*, default*/){
-            throw new Error('No getData() defined.');
+        "getCachedData" : function(key){
+            throw new Error('No getCachedData() defined.');
 
             return;
         },
 
-        'setData' : function(key, value/*, lifespan*/){
-            throw new Error('No setData() defined.');
+        "getData" : function(key, dflt){
+            const cached = this.getCachedData(key);
 
-            return;
+            dflt = dflt || null;
+
+            if(this._isCachedExpired(cached)){
+                this.unsetCachedData(cached);
+
+                return dflt;
+            }
+
+            return (cached ? cached.data : null) || dflt;
         },
 
-        'unsetData' : function(key){
+        "setCachedData" : function(cached){
+            throw new Error('No setCachedData() defined.');
+
+            return cached;
+        },
+
+        "setData" : function(key, value, lifespan){
+            const cls = this._cache_cls;
+
+            return this.setCachedData(new cls(key, value, lifespan))
+        },
+
+        "unsetCachedData" : function(cached){
+            return this.unsetData(cached.key);
+        },
+
+        "unsetData" : function(key){
             throw new Error('No unsetData() defined.');
         },
 
 
         // Cookie Caching Functions
-        'getCookie' : function(key/*, default*/){
-            var data = this._getCookie(key);
-
-            return data ? data.data : this._processDefault(arguments);
+        "getCookie" : function(key){
+            return this._getCachedData(this._getCookie(key));
         },
 
-        'setCookie' : function(key, value/*, lifespan*/){
-            var ln = arguments.length;
+        "setCookie" : function(cached){
+            this._setCookie(
+                cached.key,
+                this._setCachedData(cached),
+                cached.lifespan
+            );
 
-            this._setCookie(key, new OjCacheObject(value, ln > 2 ? arguments[2] : null));
+            return cached;
         },
 
-        'unsetCookie' : function(key){
-            document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        "unsetCookie" : function(key){
+            this._unsetCookie(key);
         },
 
 
         // LocalData Caching Functions
-        'getLocalData' : function(key/*, default*/){
-            var data = this._getLocalData(key);
-
-            if(this._isDataExpired(data)){
-                this.unsetLocalData(key);
-
-                return null;
-            }
-
-            return data ? data.data : this._processDefault(arguments);
+        "getLocalStorage" : function(key){
+            return this._getCachedData(this._getLocalStorage(key));
         },
 
-        'setLocalData' : function(key, value/*, lifespan*/){
-            var args = arguments,
-                ln = args.length;
+        "setLocalStorage" : function(cached){
+            this._setLocalStorage(
+                cached.key,
+                this._setCachedData(cached)
+            );
 
-            this._setLocalData(key, new OjCacheObject(value, ln > 2 ? args[2] : null));
+            return cached;
         },
 
-        'unsetLocalData' : function(key){
-            delete this._localStorage[key];
+        "unsetLocalStorage" : function(key){
+            this._unsetLocalStorage(key);
         }
     }
 );

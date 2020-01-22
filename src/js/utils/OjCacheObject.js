@@ -6,56 +6,59 @@ OJ.extendClass(
         "_props_" : {
             "created"    : null,
             "data"       : null,
-            "expiration" : null
+            "expiration" : null,
+            "key" : null
+        },
+
+        "_get_props_" : {
+            "is_expired" : null,
+            "is_valid": null
         },
 
 
-        "_constructor" : function(/*data, expiration*/){
+        "_constructor" : function(key, data, expiration){
             this._super(OjObject, "_constructor", []);
 
+            this.key = key;
             this.created = new Date();
 
-            var args = arguments,
-                ln = args.length;
+            if(data){
+                this.data = data;
+            }
 
-            if(ln){
-                this.data = args[0];
-
-                if(ln > 1){
-                    this.expiration = args[1];
-                }
+            if(expiration){
+                this.expiration = expiration;
             }
         },
 
         "exportData" : function(mode, processed){
-            processed = processed || [];
+            const obj = this._super(OjObject, "exportData", [
+                mode,
+                processed = processed || []
+            ]);
 
-            var self = this,
-                obj = self._super(OjObject, "exportData", arguments);
-
-            obj.created    = self.created;
-            obj.data       = self.data ? OjObject.exportData(self.data, mode, processed) : null;
-            obj.expiration = self.expiration;
+            obj.created    = this.created;
+            obj.data       = this.data ? OjObject.exportData(this.data, mode, processed) : null;
+            obj.expiration = this.expiration;
+            obj.key        = this.key;
 
             return obj;
         },
 
         "importData" : function(obj, mode){
-            var self = this;
-
             if(!obj){
                 obj = {
                     "created"    : null,
                     "data"       : null,
-                    "expiration" : null
+                    "expiration" : null,
+                    "key"        : null
                 }
             }
 
-            self.created = obj.created;
-
-            self.data = OjObject.importData(obj.data, mode);
-
-            self.expiration = obj.expiration;
+            this.created = obj.created;
+            this.data = OjObject.importData(obj.data, mode);
+            this.expiration = obj.expiration;
+            this.key = obj.key;
         },
 
 
@@ -71,6 +74,16 @@ OJ.extendClass(
             else{
                 this._expiration = exp;
             }
+        },
+
+        ".is_expired" : function(){
+            let exp = this.expiration;
+
+            return exp && exp < new Date();
+        },
+
+        ".is_valid" : function(){
+            return !this.is_expired;
         }
     }
 );
