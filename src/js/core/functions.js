@@ -1,4 +1,4 @@
-function debounce(func, wait, immediate) {
+function debounce(func, wait, now, and_later) {
 	let timeout;
 
 	return function() {
@@ -8,12 +8,12 @@ function debounce(func, wait, immediate) {
 		let later = function() {
 			timeout = null;
 
-			if(!immediate){
+			if(!now || and_later){
 			    func.apply(context, args);
             }
 		};
 
-		const callNow = immediate && !timeout;
+		const callNow = now && !timeout;
 
 		clearTimeout(timeout);
 
