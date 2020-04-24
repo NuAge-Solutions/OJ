@@ -433,24 +433,21 @@ if(!proto.contains){
 }
 
 if(!proto.equalize){
-    proto.equalize = function(obj){
-        var ln = this.length,
-            ln2,
-            v = null;
+    proto.equalize = function(obj, dflt){
+        const is_array = Array.isArray(obj);
 
-        if(!Array.isArray(obj)){
-            v = obj;
-
-            obj = [obj];
+        if(isUndefined(dflt)){
+            dflt = is_array ? null : obj;
         }
 
-        ln2 = obj.length;
+        const ary = is_array ? obj : [obj],
+            ln = ary.length;
 
-        for(; ln2-- > ln;){
-            obj.push(v);
+        for(let ln2 = this.length; ln2-- > ln;){
+            ary.append(dflt);
         }
 
-        return obj;
+        return ary;
     };
 }
 

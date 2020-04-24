@@ -170,7 +170,7 @@
         const user_agent = navigator.userAgent.toLowerCase();
 
         if(/(android)/i.test(user_agent)){
-            const v = navigator.appVersion.match(/(.*)Android\ (.*);\ (.*)\ Build/);
+            const v = navigator.appVersion.match(/(.*)Android\ (.*);\ (.*)/);
 
             OJ._os = OJ.ANDROID;
             OJ._os_version = v[2];

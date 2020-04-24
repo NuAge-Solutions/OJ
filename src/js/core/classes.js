@@ -376,6 +376,10 @@ window.OJ = function Oj(){
         },
 
         "copy" : function(val){
+            if(!val){
+                return val;
+            }
+
             if(isArray(val) || isObjective(val)){
                 return val.clone();
             }
@@ -394,10 +398,14 @@ window.OJ = function Oj(){
         "destroy" : function(obj/*, depth = 0*/){
             if(obj && isFunction(obj._destructor)){
                 if(!obj._destroyed_){
-                    obj._destructor(arguments.length > 1 ? arguments[1] : 0);
+                    try{
+                        obj._destructor(arguments.length > 1 ? arguments[1] : 0);
+                    }
+                    catch(e){
+                        // ignore errors that occur during destroy
+                    }
                 }
                 else{
-                    // debugger;
                     print("Called destroy multiple times on: " + obj.oj_id);
                 }
             }
@@ -546,22 +554,34 @@ window.OJ = function Oj(){
                 def._compile_.call(proto, def);
             }
 
-            var post_compile = proto._post_compile_;
+            // var post_compile = proto._post_compile_;
+            //
+            // if(post_compile){
+            //     var def_post = def._post_compile_;
+            //
+            //     // run the post compile functions
+            //     if(isFunction(def_post)){
+            //         proto._post_compile_ = post_compile = post_compile.slice(0);
+            //
+            //         post_compile.unshift(def_post);
+            //     }
+            //
+            //     for(ln = post_compile.length; ln--;){
+            //         post_compile[ln](cls, proto);
+            //     }
+            // }
 
-            if(post_compile){
-                var def_post = def._post_compile_;
+            const post_compile = cls._post_compile_.slice(0);  // clone
+            const def_post = def._post_compile_;
 
-                // run the post compile functions
-                if(isFunction(def_post)){
-                    proto._post_compile_ = post_compile = post_compile.slice(0);
-
-                    post_compile.unshift(def_post);
-                }
-
-                for(ln = post_compile.length; ln--;){
-                    post_compile[ln](cls, proto);
-                }
+            // run the post compile functions
+            if(isFunction(def_post)){
+                post_compile.push(def_post);
             }
+
+            cls._post_compile_ = post_compile;
+
+            post_compile.forEach(func =>  func(cls, proto));
 
             // setup the prototype and constructor for the class
             return cls.prototype.constructor = cls;
@@ -710,6 +730,85 @@ window.OJ = function Oj(){
 
         "pageDescription" : function(){
             return this.meta("description");
+        },
+
+        "registerClass" : function(cls, static_def = {}, mixins = []){
+            // setup our vars & prototype
+            const proto = cls.prototype;
+
+            // add the namespace back
+            const cls_name = cls.name;
+
+            proto._class_name_ = cls.oj_id = cls_name;
+
+            // setup static
+            proto._static = cls;
+
+            // if there is a compile function find it and remove it
+            const compileFunc = static_def._compile_;
+
+            // run compile func
+            if(isFunction(compileFunc)){
+                compileFunc.call(cls, static_def, proto);
+            }
+
+            delete static_def._compile_;
+
+            // if there is a post compile function find it and remove it
+            const postCompileFunc = static_def._post_compile_;
+
+            delete static_def._post_compile_;
+
+            // add new statics
+            // add in the rest of the static def
+            for(let key in static_def){
+                cls[key] = static_def[key];
+            }
+
+            // process post compile functions
+            const post_compile = cls._post_compile_.slice(0);  // clone
+
+            // run the post compile functions
+            if(isFunction(postCompileFunc)){
+                post_compile.push(postCompileFunc);
+            }
+
+            cls._post_compile_ = post_compile;
+
+            post_compile.forEach(func =>  func(cls, proto));
+
+            return window[cls_name] = cls;
+        },
+
+        "registerComponent" : function(...params){
+            const cls = this.registerClass(...params),
+                ns = cls.name,
+                tags = (cls._TAGS || []).concat([OJ.propToAttribute(ns)]);
+
+            // register special tags + class name as tag
+            tags.forEach(
+                tag => OjStyleElement.registerComponentTag(tag, ns)
+            );
+
+            return cls;
+        },
+
+        "registerManager" : function(manager_ns, ...params){
+            const prev_manager = window[manager_ns],
+                cls = this.registerClass(...params);
+
+            return window[manager_ns] = new cls(prev_manager);
+        },
+
+        "registerPackage" : function(cls, ...params){
+            this.registerClass(cls, ...params);
+
+            const pkg = new cls();
+
+            OJ.addEventListener(OjEvent.LOAD, pkg, "_onOjLoad");
+            OJ.addEventListener(OjEvent.READY, pkg, "_onOjReady");
+
+            return window[cls.name.toUpperCase()] = pkg;
         },
 
         "removeEventListener" : function(type, context, func){

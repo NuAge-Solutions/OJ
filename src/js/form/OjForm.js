@@ -62,7 +62,11 @@ OJ.extendComponent(
 
         "_onKeyPress" : function(evt){
             if(evt.key_code == 13){
-                this._onSubmitClick(evt);
+                const active = OjElement.parentComponent(document.activeElement);
+
+                if(active && isObjective(active, OjInput) && active.submit_on_enter){
+                    this._onSubmitClick(evt);
+                }
             }
         },
 

@@ -28,7 +28,7 @@ OJ.extendClass(
         },
 
 		"importData" : function(data, mode){
-			var self = this;
+			const self = this;
 
 			if(isSet(data.code)){
 				self._code = data.code;

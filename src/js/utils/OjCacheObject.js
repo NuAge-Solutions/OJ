@@ -59,6 +59,8 @@ OJ.extendClass(
             this.data = OjObject.importData(obj.data, mode);
             this.expiration = obj.expiration;
             this.key = obj.key;
+
+            return this;
         },
 
 

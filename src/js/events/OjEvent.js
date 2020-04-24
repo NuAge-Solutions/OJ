@@ -68,7 +68,7 @@ OJ.extendClass(
         },
 
         "importData": function(data, mode){
-            var self = this;
+            const self = this;
 
             if(isSet(data.bubbles)){
                 self._bubbles = data.bubbles;

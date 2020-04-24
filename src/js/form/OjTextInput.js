@@ -7,7 +7,8 @@ OJ.extendComponent(
         "_props_" : {
             "min_length" : 0,
             "max_length" : 255,
-            "select_on_focus" : false
+            "select_on_focus" : false,
+            "submit_on_enter" : true
         },
 
         "_get_props_" : {

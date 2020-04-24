@@ -10,6 +10,7 @@ OJ.extendClass(
             "placeholder" : null,
             "prefix" : null,
             "required" : false,
+            "submit_on_enter" : false,
             "suffix" : null,
             "title" : null,
             "validators" : null,

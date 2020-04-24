@@ -8,9 +8,8 @@
     -webkit-overflow-scrolling: hidden;
 }
 
-    .OjStack > *,
-    .OjStack.animating > * {
-        position: absolute;
+    .OjStack > * {
+        position: relative;
 
         top: 0px;
         left: 0px;
@@ -21,6 +20,9 @@
         z-index: 1;
 
         overflow: auto;
+    }
+    .OjStack.animating > * {
+        position: absolute;
     }
     .OjStack.animating > *.prev-active {
         z-index: 3;

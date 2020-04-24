@@ -76,10 +76,9 @@ Object.concat = function(obj, obj2/*, ...objs*/){
 
 // Setup OjObject Class
 window.OjObject = function(){ };
+OjObject._post_compile_ = [];
 
 OjObject.prototype = {
-    "_post_compile_" : [],
-
     "_propCompile_" : function(context, props){
         props = context[props];
 
@@ -146,10 +145,9 @@ OjObject.prototype = {
 
     // Internal Methods
     "_super" : function(context, func, args){
-        if(!context || !context.prototype || !context.prototype[func]){
-            print(arguments);
-            debugger;
-        }
+        // if(!context || !context.prototype || !context.prototype[func]){
+        //     debugger;
+        // }
 
         return context.prototype[func].apply(this, args || []);
     },
@@ -263,7 +261,7 @@ OJ.extendClass(
                 val = OJ.stringToClass(val);
             }
 
-            return val == this._static || this._supers.contains(val);
+            return val == this._static || this instanceof val || this._supers.contains(val);
         },
 
         'isEqualTo' : function(obj){

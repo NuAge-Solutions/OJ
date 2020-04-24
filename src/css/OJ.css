@@ -211,11 +211,6 @@ flex-v.OjComponent.reverse, .OjComponent[flex-v].reverse {
 }
 
 
-/* ClearFix For IE 6/7 (trigger hasLayout) */
-.cf {
-    zoom: 1;
-}
-
 a, blockquote, label, p, pre {
     -webkit-touch-callout: text;
     -webkit-user-select: text;

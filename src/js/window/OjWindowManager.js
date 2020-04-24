@@ -30,47 +30,43 @@ OJ.extendManager(
         },
 
         "_constructor" : function(manager){
-            var self = this;
-
-            self._super(OjActionable, "_constructor", []);
+            this._super(OjActionable, "_constructor", []);
 
             if(manager){
-                self._modals = manager._modals;
-                self._modal_holder = manager._modal_holder;
-                self._overlay = manager._overlay;
+                this._modals = manager._modals;
+                this._modal_holder = manager._modal_holder;
+                this._overlay = manager._overlay;
 
                 if(!OJ.is_ready){
-                    OJ.addEventListener(OjEvent.READY, self, "_onOjReady");
+                    OJ.addEventListener(OjEvent.READY, this, "_onOjReady");
                 }
 
                 OJ.destroy(manager);
             }
             else{
-                self._modals = [];
+                this._modals = [];
 
-                self._modal_holder = new OjStyleElement();
-                self._modal_holder.addCss("WindowManager");
+                this._modal_holder = new OjStyleElement();
+                this._modal_holder.addCss("WindowManager");
 
                 if(OJ.is_ready){
-                    self._onOjReady(null);
+                    this._onOjReady(null);
                 }
                 else{
-                    OJ.addEventListener(OjEvent.READY, self, "_onOjReady");
+                    OJ.addEventListener(OjEvent.READY, this, "_onOjReady");
                 }
             }
 
-            OJ.addEventListener(OjKeyboardEvent.SHOW, self, "_onKeyboardUpdate");
-            OJ.addEventListener(OjKeyboardEvent.HIDE, self, "_onKeyboardUpdate");
+            OJ.addEventListener(OjKeyboardEvent.SHOW, this, "_onKeyboardUpdate");
+            OJ.addEventListener(OjKeyboardEvent.HIDE, this, "_onKeyboardUpdate");
         },
 
         "_destructor" : function(){
-            var self = this;
+            OJ.removeEventListener(OjEvent.READY, this, "_onOjReady");
+            OJ.removeEventListener(OjKeyboardEvent.SHOW, this, "_onKeyboardUpdate");
+            OJ.removeEventListener(OjKeyboardEvent.HIDE, this, "_onKeyboardUpdate");
 
-            OJ.removeEventListener(OjEvent.READY, self, "_onOjReady");
-            OJ.removeEventListener(OjKeyboardEvent.SHOW, self, "_onKeyboardUpdate");
-            OJ.removeEventListener(OjKeyboardEvent.HIDE, self, "_onKeyboardUpdate");
-
-            self._super(OjActionable, "_destructor", arguments);
+            this._super(OjActionable, "_destructor", arguments);
         },
 
 
@@ -189,10 +185,10 @@ OJ.extendManager(
 
 
         '_onKeyboardUpdate' : function(evt){
-            var self = this;
+            const keyboard_frame = this.keyboard_frame;
 
-            if(self.keyboard_frame){
-                self._modal_holder.height = self.keyboard_frame.height ? self.keyboard_frame.top : OjStyleElement.AUTO;
+            if(keyboard_frame){
+                this._modal_holder.height = keyboard_frame.height ? keyboard_frame.top : OjStyleElement.AUTO;
             }
         },
 

@@ -55,12 +55,11 @@ OJ.extendClass(
 
 
         "_onButtonClick" : function(evt){
-            const self = this,
-                index = self.btns.indexOfChild(evt.current_target) - 1; // offset for cancel
+            const index = this.btns.indexOfChild(evt.current_target) - 1; // offset for cancel
 
-            self.dispatchEvent( new OjAlertEvent(OjAlertEvent.BUTTON_PRESS, index) );
+            this.dispatchEvent( new OjAlertEvent(OjAlertEvent.BUTTON_PRESS, index) );
 
-            self.complete(index);
+            this.complete(index);
         },
 
         "_onCancelPress" : function(evt){
@@ -78,7 +77,9 @@ OJ.extendClass(
                 callback(this._static.CANCEL_INDEX);
             }
 
-            this.dispatchEvent( new OjEvent(OjEvent.CANCEL) );
+            const evt = new OjEvent(OjEvent.CANCEL);
+
+            this.dispatchEvent(evt);
 
             WindowManager.hide(this);
         },

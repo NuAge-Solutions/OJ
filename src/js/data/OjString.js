@@ -248,24 +248,28 @@
         };
     }
 
-    if(!proto.replaceAll){
-        proto.replaceAll = function(needle, replace){
-            if(Array.isArray(needle)){
-                var haystack = this, i, ln = needle.length;
+    proto._ogReplaceAll = proto.replaceAll;
 
-                replace = needle.equalize(replace);
+    proto.replaceAll = function(needle, replace){
+        if(Array.isArray(needle)){
+            let haystack = this, i, ln = needle.length;
 
-                for(i = 0; i < ln; i++){
-                    haystack = haystack.replace(new RegExp(needle[i].regexEscape(), 'g'), replace[i]);
-                }
+            replace = needle.equalize(replace);
 
-                return haystack;
+            for(i = 0; i < ln; i++){
+                haystack = haystack.replace(new RegExp(needle[i].regexEscape(), 'g'), replace[i]);
             }
-            else{
-                return this.replace(new RegExp(needle.regexEscape(), 'g'), replace);
-            }
-        };
-    }
+
+            return haystack;
+        }
+
+        try{
+            return this._ogReplaceAll(needle, replace);
+        }
+        catch(e){
+            return this.replace(new RegExp(needle.regexEscape(), 'g'), replace);
+        }
+    };
 
     if(SVGAnimatedString){
         SVGAnimatedString.prototype.trim = function(){ return ""; }

@@ -47,6 +47,14 @@ OJ.extendComponent(
 //            this.psuedoInput.addEventListener(OjUiEvent.PRESS, this, '_onPress');
         },
 
+        "_destructor" : function(){
+            this._options = null;
+            this._options_index = null;
+            this._options_dp = null;
+
+            return this._super(OjInput, "_destructor", arguments);
+        },
+
         '_setDom' : function(dom_elm){
             this._super(OjInput, '_setDom', arguments);
 
@@ -139,7 +147,7 @@ OJ.extendComponent(
                         i == slctd_i ? " selected='selected'" : ""
                     )
                 );
-                option.text = item.label;
+                option.text = OJ.copy(item.label);
 
                 input.insertChildAt(option, 0);
             });
@@ -194,23 +202,22 @@ OJ.extendComponent(
         },
 
         '=options' : function(options){
-            var self = this,
-                opts = self._options,
+            let opts = this._options,
                 key, option;
 
             if(options == opts){
                 return;
             }
 
-            self._options = opts = [];
+            this._options = opts = [];
 
             if(isArray(options)){
                 options.forEachReverse((option, i) => {
                     option = isObjective(option, OjData) ? option : new OjData(String.string(option), option)
 
-                    if(option.id == self._value){
-                        self._selected = option;
-                        self._selected_index = i;
+                    if(option.id == this._value){
+                        this._selected = option;
+                        this._selected_index = i;
                     }
 
                     opts.prepend(option);
@@ -224,9 +231,9 @@ OJ.extendComponent(
 
                     option = isObjective(option, OjData) ? option : new OjData(key, option)
 
-                    if(option.id == self._value){
-                        self._selected = option;
-                        self._selected_index = i;
+                    if(option.id == this._value){
+                        this._selected = option;
+                        this._selected_index = i;
                     }
 
                     opts.append(option);
@@ -235,14 +242,14 @@ OJ.extendComponent(
                 }
             }
             else{
-                self._selected_index = null;
-                self._selected = null;
-                self._value = null;
+                this._selected_index = null;
+                this._selected = null;
+                this._value = null;
             }
 
-            self._redrawList();
+            this._redrawList();
 
-            self._redrawValue();
+            this._redrawValue();
         },
 
         '=selected' : function(selected){

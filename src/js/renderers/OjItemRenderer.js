@@ -20,9 +20,9 @@ OJ.extendComponent(
         },
 
         "_destructor" : function(){
-            this.group = null;
-            this.data = null;
-            this.index = null;
+            this._group = null;
+            this._data = null;
+            this._index = null;
 
             return this._super(OjComponent, "_destructor", arguments);
         },

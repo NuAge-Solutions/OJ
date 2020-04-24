@@ -1,35 +1,34 @@
-importJs('oj.data.OjXml');
-importJs('oj.events.OjActionable');
-importJs('oj.events.OjEvent');
-importJs('oj.events.OjHttpStatusEvent');
-importJs('oj.events.OjIoError');
-importJs('oj.events.OjProgressEvent');
-importJs('oj.net.OjUrlRequest');
-importJs('oj.utils.OjCacheManager');
+importJs("oj.data.OjXml");
+importJs("oj.events.OjActionable");
+importJs("oj.events.OjEvent");
+importJs("oj.events.OjHttpStatusEvent");
+importJs("oj.events.OjIoError");
+importJs("oj.events.OjProgressEvent");
+importJs("oj.net.OjUrlRequest");
+importJs("oj.utils.OjCacheManager");
 
 
 OJ.extendClass(
     "OjUrlLoader", [OjActionable],
     {
         "_props_" : {
-            'async'       : true,
-            'data'        : null,
-            'callback'    : null,
-            'content_type' : OjUrlRequest.QUERY_STRING,
-            'request'     : null,
-            'timeout'     : 60000
+            "async"       : true,
+            "content_type" : OjUrlRequest.QUERY_STRING,
+            "request"     : null,
+            "timeout"     : 60000
         },
 
         "_get_props_" : {
+            "error" : null,
+            "data" : null,
+            "is_failure" : false,
+            "is_loaded" : false,
+            "is_loading" : false,
+            "is_success" : false,
             "policy" : null,
-            "response_headers" : null,
-            "status_code" : null
+            "response_headers" : {},
+            "status_code" : 0
         },
-
-        //"_error_thrown" : false,
-        //
-        //"_url" : null,  "_xhr" : null,
-
 
         "_constructor" : function(request, async){
             this._super(OjActionable, "_constructor", []);
@@ -39,9 +38,7 @@ OJ.extendClass(
         },
 
         "_destructor" : function(){
-            if(this._xhr){
-                this._cleanupXhr();
-            }
+            this.cancel();
 
             this._unset("_request");
 
@@ -49,49 +46,58 @@ OJ.extendClass(
         },
 
 
-        '_calc_form_namespace' : function(ns, key){
-            return isEmpty(ns) ? key : ns + '[' + key + ']';
+        "_calc_form_namespace" : function(ns, key){
+            return isEmpty(ns) ? key : ns + "[" + key + "]";
         },
 
         "_cleanupXhr" : function(){
-            var self = this,
-                xhr = self._xhr;
+            const xhr = this._xhr;
 
-            xhr.onprogress = xhr.onloadend = xhr.ontimeout = null;
+            if(xhr){
+                xhr.onabort = xhr.onerror = xhr.onload = xhr.onloadend = xhr.onloadstart = xhr.onprogress = xhr.onreadystatechange = xhr.ontimeout = null;
 
-            self._unset("_xhr");
+                this._unset("_xhr");
+            }
         },
 
-        '_load' : function(){
-            var data,
-                method = this._request.method;
+        "_load" : function(){
+            // cancel current load
+            this.cancel();
 
-            this._error_thrown = false;
-            this._url = this._request.clone();
+            const req = this._request,
+                method = req.method;
 
-            if(method == OjUrlRequest.GET && (data = this._request.data)){
-                var key;
+            let data;
 
-                for(key in data){
+            this._data = null;
+            this._error = null;
+            this._is_loaded = false;
+            this._is_loading = true;
+            this._response_headers = {};
+            this._url = req.clone();
+            this._status_code = 0;
+
+            if(method == OjUrlRequest.GET && (data = req.data)){
+                for(let key in data){
                     this._url.setQueryParam(key, data[key]);
                 }
             }
 
-            // this._request.source = this._url;
-
             // check to see if we have this cached
-            if(!this._request.ignoresCache()){
-                var url = this._url.toString();
+            if(!req.ignoresCache()){
+                const url = this._url.toString(),
+                    policy = CacheManager.getCacheUrlRequestPolicy(url);
 
-                this._policy = CacheManager.getCacheUrlRequestPolicy(url);
+                this._policy = policy;
 
                 if(
-                    this._policy && this._policy.action == OjCachePolicy.ALWAYS &&
-                    (this._data = CacheManager.getCacheUrlRequestData(url, this._policy))
+                    policy && policy.action == OjCachePolicy.ALWAYS &&
+                    (this._data = CacheManager.getCacheUrlRequestData(url, policy))
                 ){
-                    this.dispatchEvent(new OjEvent(OjEvent.COMPLETE));
+                    this._error = null
+                    this._status_code = 301;
 
-                    return;
+                    return this._onCompletion(new OjEvent(OjEvent.COMPLETE));
                 }
             }
 
@@ -107,21 +113,18 @@ OJ.extendClass(
             this._xhrSend();
         },
 
-
-        '_process_data' : function(data){
+        "_process_data" : function(data){
             return data;
         },
 
-        '_process_form_data' : function(form, data, ns){
+        "_process_form_data" : function(form, data, ns){
             if(isArray(data) || data instanceof FileList){
-                for(var ln = data.length; ln--;){
+                for(let ln = data.length; ln--;){
                     this._process_form_data(form, data[ln], this._calc_form_namespace(ns, ln));
                 }
             }
             else if(!(data instanceof File) && isObject(data)){
-                var key;
-
-                for(key in data){
+                for(let key in data){
                     this._process_form_data(form, data[key], this._calc_form_namespace(ns, key));
                 }
             }
@@ -132,11 +135,11 @@ OJ.extendClass(
             return form;
         },
 
-        '_process_json_data' : function(data){
+        "_process_json_data" : function(data){
             return toJson(OjObject.exportData(data));
         },
 
-        '_process_multipart_data' : function(data){
+        "_process_multipart_data" : function(data){
             if(data instanceof FormData){
                 return data;
             }
@@ -144,233 +147,321 @@ OJ.extendClass(
             return this._process_form_data(new FormData(), data);
         },
 
-        '_process_query_data' : function(data){
+        "_process_query_data" : function(data){
             return toQueryString(data);
         },
 
-        '_process_xml_data' : function(data){
+        "_process_xml_data" : function(data){
             return toXml(data);
         },
 
+        "_setData": function(xhr){
+            try{
+                let data = xhr.response;
 
-        '_xhrEvents' : function(){
-            var self = this,
-                xhr = self._xhr;
+                if(data && isString(data)){
+                    const ct = (this.getResponseHeader("Content-Type") || OjUrlRequest.TEXT).toLowerCase();
 
-            self.dispatchEvent(new OjEvent(OjEvent.OPEN));
+                    if(ct.contains("/json")){
+                        data = data.parseJson();
+                    }
+                    else if(ct.contains("/xml") || ct.contains("/html")){
+                        data = OjXml.xml(data);
+                    }
+                    else if(ct == OjUrlRequest.QUERY_STRING){
+                        data = data.parseQueryString();
+                    }
+                }
 
-            xhr.onloadend = function(){
-                var status = this.status;
+                this._data = data;
+            }
+            catch(e){
+                this._data = null;
+            }
+        },
 
-                self._status_code = status;
-                self._static.dequeueLoader(self);
+        "_setError" : function(error){
+            this._error = error;
+        },
+
+
+        "_xhrEvents" : function(){
+            const xhr = this._xhr;
+
+            this.dispatchEvent(new OjEvent(OjEvent.OPEN));
+
+            xhr.onabort =  () => {
+                print("ABORT", this);
+            };
+
+            xhr.onreadystatechange = () => {
+                try{
+                    const xhr = this._xhr;
+
+                    if(xhr.readyState == xhr.HEADERS_RECEIVED){
+                        try{
+                            const all_headers = xhr.getAllResponseHeaders(),
+                                headers = {};
+
+                            all_headers.trim().split(/[\r\n]+/).forEach((line) => {
+                                const parts = line.split(': '),
+                                    header = parts.shift(),
+                                    value = parts.join(': ');
+
+                                headers[header.toLowerCase()] = value;
+                            });
+
+                            this._response_headers = headers;
+                        }
+                        catch(e){
+                            this._response_headers = {};
+                        }
+                    }
+                }
+                catch (e) {
+                    // do nothing
+                }
+            };
+
+            xhr.onloadend = () => {
+                const xhr = this._xhr,
+                    status = xhr.status;
+
+                this._status_code = status;
+                this._static.dequeueLoader(this);
 
                 if(status > 199 && status < 400){
-                    // detect the content type from the response
-                    self._content_type = xhr.getResponseHeader("Content-Type");
-
-                    self._onLoad();
+                    this._onLoad();
                 }
                 else{
-                    self._onError();
+                    this._onError(new OjIoError(OjIoError.IO_ERROR, xhr.statusText, status));
                 }
             };
 
-            xhr.onprogress = function(){
-                self.dispatchEvent(new OjProgressEvent(OjProgressEvent.PROGRESS));
+            xhr.onprogress = () => {
+                this.dispatchEvent(new OjProgressEvent(OjProgressEvent.PROGRESS));
             };
 
-            //xhr.ontimeout = function(){
-            //    self.dispatchEvent(new OjIoError(OjIoError.IO_TIMEOUT));
-            //    self.dispatchEvent(new OjEvent(OjEvent.FAIL));
-            //};
+            xhr.ontimeout = () => {
+                this._onError(new OjIoError(OjIoError.IO_TIMEOUT, "Request Timeout", 408));
+            };
         },
 
-        '_xhrFormat' : function(){
+        "_xhrFormat" : function(){
             // set the format
-            var key, headers = this._request.headers;
+            const headers = this._request.headers,
+                req = this._request,
+                policy = this._policy,
+                xhr = this._xhr;
 
-            if(headers){
-                for(key in headers){
-                    // ignore content-type setting when safe since no data is sent
-                    if(key.toLowerCase() == 'content-type' && (this._request.isSafe() || this._request.isMultiPart())){
-                        continue;
+            if(xhr){
+                if(headers){
+                    for(let key in headers){
+                        // ignore content-type setting when safe since no data is sent
+                        if(key.toLowerCase() == "content-type" && (req.isSafe() || req.isMultiPart())){
+                            continue;
+                        }
+
+                        xhr.setRequestHeader(key, headers[key]);
                     }
-
-                    this._xhr.setRequestHeader(key, headers[key]);
                 }
-            }
 
-            // set the caching
-            if(this._policy){
-                if(this._policy.action == OjCachePolicy.ALWAYS){
-                    var lifespan = this._policy.lifespan;
+                // set the caching
+                if(policy){
+                    if(policy.action == OjCachePolicy.ALWAYS){
+                        let lifespan = policy.lifespan;
 
-                    if(!lifespan){
-                        lifespan = CacheManager.YEAR;
-                    }
+                        if(!lifespan){
+                            lifespan = CacheManager.YEAR;
+                        }
 
-                    this._xhr.setRequestHeader('cache-control', 'max-age=' + lifespan);
-                }
-                else{
-                    this._xhr.setRequestHeader('cache-control', 'no-cache');
-                }
-            }
-        },
-
-        '_xhrOpen' : function(){
-            this._xhr.open(this._request.method, this._url, this._async);
-
-            if(this._async){
-                this._xhr.timeout = this._timeout;
-            }
-            else{
-                //todo: look into adding sync timeout capability if at all possible
-            }
-        },
-
-        '_xhrSend' : function(){
-            var data;
-
-            if(this._request.method != OjUrlRequest.GET){
-                if(data = this._request.data){
-                    var type = this._request.content_type;
-
-                    if(type == OjUrlRequest.JSON){
-                        data = this._process_json_data(data);
-                    }
-                    else if(type == OjUrlRequest.XML){
-                        data = this._process_xml_data(data);
-                    }
-                    else if(type == OjUrlRequest.QUERY_STRING){
-                        data = this._process_query_data(data);
-                    }
-                    else if(type == OjUrlRequest.MULTIPART){
-                        data = this._process_multipart_data(data);
+                        xhr.setRequestHeader("cache-control", "max-age=" + lifespan);
                     }
                     else{
-                        data = this._process_data(data);
+                        xhr.setRequestHeader("cache-control", "no-cache");
                     }
                 }
             }
+        },
 
-            this._xhr.send(data)
+        "_xhrOpen" : function(){
+            const xhr = this._xhr;
+
+            if(xhr){
+                const async = this._async;
+
+                xhr.open(this._request.method, this._url, async);
+
+                if(async){
+                    xhr.timeout = this.timeout;
+                }
+                else{
+                    const timer = new OjTimer(this.timeout, 0);
+                    timer.on_complete = () => {
+                        try{
+                            this._xhr.ontimeout();
+                        }
+                        catch(e){
+                            // do nothing
+                        }
+                    };
+                    timer.start();
+
+                    this._timer = timer;
+                }
+            }
+        },
+
+        "_xhrSend" : function(){
+            const xhr = this._xhr,
+                req = this._request;
+
+            if(xhr) {
+                let data;
+
+                if (req.method != OjUrlRequest.GET) {
+                    if (data = req.data) {
+                        const type = req.content_type;
+
+                        if(type == OjUrlRequest.JSON){
+                            data = this._process_json_data(data);
+                        }
+                        else if(type == OjUrlRequest.XML){
+                            data = this._process_xml_data(data);
+                        }
+                        else if(type == OjUrlRequest.QUERY_STRING){
+                            data = this._process_query_data(data);
+                        }
+                        else if(type == OjUrlRequest.MULTIPART){
+                            data = this._process_multipart_data(data);
+                        }
+                        else{
+                            data = this._process_data(data);
+                        }
+                    }
+                }
+
+                xhr.send(data)
+            }
         },
 
 
-        '_onError' : function(){
-            var self = this,
-                callback = self._callback,
-                xhr = self._xhr;
-
-            if(!xhr || self._error_thrown){
-                return;
-            }
+        "_onCompletion" : function(){
+            this._cleanupXhr();
 
             // clear the timeout timer
-            OJ.destroy(self._timer);
+            OJ.destroy(this._timer);
 
-            const error = new OjIoError(OjIoError.IO_ERROR, xhr.statusText, xhr.status);
+            this._is_loading = false;
+            this._is_loaded = !this._error || this._error.type == OjIoError.IO_ERROR;  // loaded only if successful request (no timeouts or cancels)
 
-            self.dispatchEvent(error);
-            self.dispatchEvent(new OjEvent(OjEvent.FAIL));
+            Array.array(arguments).forEach((evt) => {
+                this.dispatchEvent(evt);
+            });
 
-            if(callback){
-                callback(null, error);
-            }
-
-            self._error_thrown = true;
-        },
-
-        '_onLoad' : function(){
-            var self = this,
-                ct = self._content_type,
-                xhr = self._xhr;
-
-            if(!xhr){
-                return;
-            }
-
-            // clear the timeout timer
-            OJ.destroy(self._timer);
-
-            if(ct){
-                self._content_type = ct = ct.toLowerCase();
+            if(this._error){
+                this._reject(this._error);
             }
             else{
-                self._content_type = ct = OjUrlRequest.TEXT;
-            }
-
-            var data = xhr.response;
-
-            if(data && isString(data)){
-                if(ct.contains("/json")){
-                    data = data.parseJson();
-                }
-                else if(ct.contains("/xml") || ct.contains("/html")){
-                    data = OjXml.xml(data);
-                }
-                else if(ct == OjUrlRequest.QUERY_STRING){
-                    data = data.parseQueryString();
-                }
-            }
-
-            self.data = data;
-
-            self.dispatchEvent(new OjEvent(OjEvent.COMPLETE));
-
-            if(self._callback){
-                self._callback(self.data, null);
+                this._resolve(this._data);
             }
         },
 
+        "_onError" : function(error){
+            const xhr = this._xhr;
 
-        'cancel' : function(){
-            if(this._xhr){
-                this._xhr.abort();
-
-                this._xhr = null;
-            }
-        },
-
-        'load' : function(callback){
-            var self = this;
-
-            if(callback){
-                self.callback = callback;
+            // if the error is already set no need to send another
+            if(this._error){
+                return;
             }
 
-            self._static.queueLoader(self);
+            // set the data and error
+            this._setData(xhr);
+            this._setError(error);
 
-            return self._data;
+            // dispatch events
+            this._onCompletion(error, new OjEvent(OjEvent.FAIL));
         },
 
+        "_onLoad" : function(){
+            const xhr = this._xhr;
 
-        "=data" : function(data){
-            var self = this,
-                policy = self.policy;
+            if(!xhr){
+                return this._onError(new OjIoError(OjIoError.IO_CANCEL, "Request Failed", 499));
+            }
 
-            self._data = data;
+            // set the data and error
+            this._setData(xhr);
+            this._setError(null);
+
+            // update cache
+            const policy = this.policy;
 
             if(policy && policy.action != OjCachePolicy.NEVER){
-                CacheManager.setCacheUrlRequestData(self.request, data, policy);
+                CacheManager.setCacheUrlRequestData(this.request, this.data, policy);
+            }
+
+            // dispatch events
+            this._onCompletion(new OjEvent(OjEvent.COMPLETE));
+        },
+
+
+        "cancel" : function(){
+            // check if we even need to do anything
+            if(!this._is_loading){
+                return;
+            }
+
+            // check for xhr abort support
+            const xhr = this._xhr;
+
+            if(xhr && xhr.abort){
+                xhr.abort();
+            }
+            else{
+                this._onError(null, new OjIoError(OjIoError.IO_CANCEL, "Request Cancelled", 499))
             }
         },
 
-        '.response_headers' : function(){
-            var xhr = this._xhr;
+        "load" : function(completion){
+            const promise = new Promise((resolve, reject) => {
+                this._resolve = resolve;
+                this._reject = reject;
 
-            return xhr && xhr.getAllResponseHeaders ? xhr.getAllResponseHeaders() : {};
+                this._static.queueLoader(this);
+            });
+
+            if(completion){
+                return promise.then((data) => {
+                    completion(data);
+                }).catch((error) => {
+                    completion(null, error);
+                });
+            }
+
+            return promise;
         },
 
-        'getResponseHeader' : function(header){
-            return this._xhr.getResponseHeader(header);
+        "getResponseHeader" : function(header){
+            if(isEmpty(header)){
+                return null;
+            }
+
+            return this._response_headers[header.toLowerCase()];
+        },
+
+        ".is_failure" : function(){
+            return isDefined(this._error);
+        },
+
+        ".is_success" : function(){
+            return !this.is_failure;
         }
     },
     {
-        '_HOST_REQUEST_COUNT' : {},
-        '_HOST_REQUEST_MAX' : 5,
-        '_QUEUE' : [],
+        "_HOST_REQUEST_COUNT" : {},
+        "_HOST_REQUEST_MAX" : 5,
+        "_QUEUE" : [],
 
         "OK": 200,
         "CREATED": 201,
@@ -399,8 +490,8 @@ OJ.extendClass(
         "UNKNOWN": 520,
 
 
-        '_loadLoader' : function(ldr){
-            var self = this,
+        "_loadLoader" : function(ldr){
+            const self = this,
                 counts = self._HOST_REQUEST_COUNT,
                 queue = self._QUEUE,
                 host = ldr.request.host;
@@ -420,8 +511,8 @@ OJ.extendClass(
             ldr._load();
         },
 
-        'dequeueLoader' : function(ldr){
-            var self = this,
+        "dequeueLoader" : function(ldr){
+            const self = this,
                 counts = self._HOST_REQUEST_COUNT,
                 queue = self._QUEUE,
                 host = ldr.request.host;
@@ -430,7 +521,7 @@ OJ.extendClass(
             counts[host]--;
 
             // check to see if we have any queued request for that domain
-            queue.forEach(function(item, i){
+            queue.forEach((item, i) => {
                 if(item.request.host == host){
                     self._loadLoader(item);
 
@@ -439,8 +530,8 @@ OJ.extendClass(
             });
         },
 
-        'queueLoader' : function(ldr){
-            var self = this,
+        "queueLoader" : function(ldr){
+            const self = this,
                 counts = self._HOST_REQUEST_COUNT,
                 queue = self._QUEUE,
                 host = ldr.request.host,
@@ -461,6 +552,6 @@ OJ.extendClass(
         },
 
 
-        'USE_ACTIVEX' : (window.XDomainRequest || window.ActiveXObject)
+        "USE_ACTIVEX" : (window.XDomainRequest || window.ActiveXObject)
     }
 );
