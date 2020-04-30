@@ -12,8 +12,6 @@ OJ.extendComponent(
             'value' : null
         },
 
-        '_template' : 'oj.form.OjValue',
-
 
         "_constructor" : function(name, label, value){
             this._super(OjComponent, "_constructor", []);
@@ -83,7 +81,8 @@ OJ.extendComponent(
         }
     },
     {
-        "_TAGS" : ["value"]
+        "_TAGS" : ["value"],
+        '_TEMPLATE' : 'oj.form.OjValue'
     }
 );
 

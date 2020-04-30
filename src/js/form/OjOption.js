@@ -14,8 +14,6 @@ OJ.extendClass(
 
         "_v_align" : OjStyleElement.MIDDLE,
 
-        "_template" : "oj.form.OjOption",
-
 
         "_constructor" : function(/*group|data_renderer, data*/){
             // process the arguments
@@ -135,6 +133,9 @@ OJ.extendClass(
 
             this.dispatchEvent(new OjEvent(OjEvent.CHANGE));
         }
+    },
+    {
+        "_TEMPLATE" : "oj.form.OjOption"
     }
 );
 

@@ -167,7 +167,7 @@ OJ.extendClass(
         },
 
         "exportData" : function(){
-            return this._items;
+            return this._items.clone();
         },
 
         'forEach' : function(){

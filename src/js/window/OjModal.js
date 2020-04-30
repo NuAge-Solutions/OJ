@@ -18,8 +18,6 @@ OJ.extendClass(
             "underlay_visible" : true
         },
 
-        "_template" : "oj.window.OjModal",
-
 
         "_constructor" : function(view, title){
             const self = this;
@@ -139,5 +137,8 @@ OJ.extendClass(
         "=title" : function(title){
             this.bar.title = this._title = title;
         }
+    },
+    {
+        "_TEMPLATE" : "oj.window.OjModal"
     }
 );

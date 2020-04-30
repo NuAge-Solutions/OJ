@@ -13,8 +13,6 @@ OJ.extendComponent(
 
         '_v_align' : OjStyleElement.MIDDLE,
 
-        '_template' : 'oj.components.OjOverlay',
-
 
         '_constructor' : function(/*message, icon*/){
             var args = arguments,
@@ -100,6 +98,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['overlay']
+        '_TAGS' : ['overlay'],
+        '_TEMPLATE' : 'oj.components.OjOverlay'
     }
 );

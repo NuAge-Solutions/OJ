@@ -13,8 +13,6 @@ OJ.extendComponent(
 
         '_interval' : null,
 
-        '_template' : '<iframe></iframe>',
-
 
         '_constructor' : function(source, target, on_load){
             var self = this;
@@ -87,6 +85,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['iframe']
+        '_TAGS' : ['iframe'],
+        '_TEMPLATE' : '<iframe></iframe>'
     }
 );

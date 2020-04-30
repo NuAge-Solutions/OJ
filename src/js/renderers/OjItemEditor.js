@@ -10,8 +10,6 @@ OJ.extendComponent(
             'item_renderer' : OjTextRenderer
         },
 
-        '_template' : 'oj.renderers.OjItemEditor',
-
 
         '_resetItem' : function(){
             if(this.item){
@@ -53,6 +51,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['item-editor', 'oj-e-item', 'e-item']
+        '_TAGS' : ['item-editor', 'oj-e-item', 'e-item'],
+        '_TEMPLATE' : 'oj.renderers.OjItemEditor'
     }
 );

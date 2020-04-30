@@ -152,7 +152,7 @@ function isElement(obj){
     return isObjective(obj) && isSet(obj.dom);
 }
 function isComponent(obj, cls){
-    return isElement(obj) && isSet(obj._template) && (!cls || obj.is(cls));
+    return isElement(obj) && isSet(obj._static._TEMPLATE) && (!cls || obj.is(cls));
 }
 
 function isXml(obj){
@@ -376,11 +376,17 @@ function onDomReady(){
     delete OJ.removeEventListener;
 
     // merge OJ with component
-    tmp.bulkSet(OJ);
+    const props = Object.getOwnPropertyDescriptors(OJ);
 
-    tmp.addCss('OJ');
+    for(let prop in props){
+        if(prop == "initialize"){
+            continue;
+        }
 
-    window.OJ = tmp;
+        Object.defineProperty(tmp, prop, props[prop]);
+    }
+
+    (window.OJ = tmp).addCss("OJ");
 
     // setup the dom event proxy
     OJ._setProxy(document.body);

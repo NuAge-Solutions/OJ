@@ -18,8 +18,6 @@ OJ.extendComponent(
             'title'         : null
         },
 
-        '_template' : 'oj.components.OjFieldset',
-
 
         '_constructor' : function(/*title*/){
             var args = arguments,
@@ -271,6 +269,7 @@ OJ.extendComponent(
     },
     {
         '_TAGS' : ['fieldset'],
+        '_TEMPLATE' : 'oj.components.OjFieldset',
 
         'COLLAPSE' : 'onCollapse',
         'EXPAND'   : 'onExpand'

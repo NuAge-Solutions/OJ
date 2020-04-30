@@ -50,15 +50,16 @@ def add(src, classes=[], types=ALL):
         content += 'OJ.extendClass('
         content += "\n    '" + name + "', [" + ', '.join(parents) + '],'
         content += '\n    {'
-
-        if TEMPLATE in types:
-            content += "\n        '_template' : '" + cls + "',"
-
         content += "\n\n        '_constructor' : function(){"
         content += "\n            this._super(" + parents[0] + ", '_constructor', arguments);"
         content += '\n        }'
         content += '\n    },'
-        content += '\n    {}'
+        content += '\n    {'
+
+        if TEMPLATE in types:
+            content += "\n        '_TEMPLATE' : '" + cls + "'"
+
+        content += '\n    }'
         content += '\n);\n'
 
         _make(path, JS, dir, JS, content)

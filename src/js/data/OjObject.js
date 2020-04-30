@@ -344,26 +344,26 @@ OJ.extendClass(
         },
 
         'exportData' : function(obj, mode, processed){
-            let key;
-
             processed = processed || [];
 
             if(isArray(obj)){
-                for(key = obj.length; key--;){
-                    obj[key] = OjObject.exportData(obj[key], mode, processed);
-                }
+                return obj.map(x => OjObject.exportData(x, mode, processed));
             }
-            else if(isObject(obj)){
+
+            if(isObject(obj)){
                 if(isFunction(obj.exportData)){
                     return obj.exportData(mode, processed);
                 }
 
-                for(key in obj){
+                for(let key in obj){
                     obj[key] = OjObject.exportData(obj[key], mode, processed);
                 }
+
+                return obj;
             }
+
             // this checks for NaN since NaN does not equal itself
-            else if(obj !== obj){
+            if(obj !== obj){
                 return null;
             }
 

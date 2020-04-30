@@ -5,9 +5,6 @@ importJs('oj.components.OjLabel');
 OJ.extendComponent(
     'OjTextRenderer', [OjItemRenderer],
     {
-        '_template' : 'oj.renderers.OjTextRenderer',
-
-
         '_redrawData' : function(){
             var self = this,
                 data = self._data;
@@ -24,5 +21,8 @@ OJ.extendComponent(
 
             return false;
         }
+    },
+    {
+        '_TEMPLATE' : 'oj.renderers.OjTextRenderer'
     }
 );

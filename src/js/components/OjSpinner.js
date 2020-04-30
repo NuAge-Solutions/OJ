@@ -11,7 +11,7 @@ OJ.extendComponent(
             'tint'      : '#FFFFFF'
         },
 
-        '_position' : 0,  '_template' : 'oj.components.OjSpinner',
+        '_position' : 0,
 
 
         '_constructor' : function(/*tint, period, num_blades*/){
@@ -202,6 +202,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['spinner']
+        '_TAGS' : ['spinner'],
+        '_TEMPLATE' : 'oj.components.OjSpinner'
     }
 );

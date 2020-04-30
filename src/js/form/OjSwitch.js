@@ -9,7 +9,6 @@ OJ.extendComponent(
 
         },
 
-        "_template" : "oj.form.OjSwitch",
 
         "_onPress" : function(evt){
             this._super(OjInput, "_onPress", arguments);
@@ -37,6 +36,7 @@ OJ.extendComponent(
         }
     },
     {
-        "_TAGS" : ["switch"]
+        "_TAGS" : ["switch"],
+        "_TEMPLATE" : "oj.form.OjSwitch"
     }
 );

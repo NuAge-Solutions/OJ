@@ -18,8 +18,6 @@ OJ.extendComponent(
             "selection_renderer" : OjRadioOption
         },
 
-        "_template" : "oj.form.OjSelector",
-
 
         "_constructor" : function(name, label, value, options){
             const self = this;
@@ -298,6 +296,7 @@ OJ.extendComponent(
         }
     },
     {
-        "_TAGS" : ["selector"]
+        "_TAGS" : ["selector"],
+        "_TEMPLATE" : "oj.form.OjSelector"
     }
 );

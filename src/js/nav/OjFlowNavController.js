@@ -23,8 +23,6 @@ OJ.extendComponent(
             "title_view": null
         },
 
-        "_template" : "oj.nav.OjFlowNavController",
-
 
         // internal stack methods
         "_setupStack" : function(stack){
@@ -411,6 +409,7 @@ OJ.extendComponent(
     },
     {
         "_TAGS" : ["flow-nav", "flow-nav-controller"],
+        "_TEMPLATE" : "oj.nav.OjFlowNavController",
 
         "BACK" : "onFlowNavBack"
     }

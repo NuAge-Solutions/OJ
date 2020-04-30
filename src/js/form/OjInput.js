@@ -23,7 +23,7 @@ OJ.extendClass(
             "is_valid": null
         },
 
-        "_ready" : false, "_template" : "oj.form.OjInput",
+        "_ready" : false,
 
 
         "_constructor" : function(name, label, value, validators){
@@ -430,6 +430,8 @@ OJ.extendClass(
         }
     },
     {
+        "_TEMPLATE" : "oj.form.OjInput",
+
         "REQUIRED_ERROR" : "{INPUT} is required.",
 
 

@@ -18,8 +18,6 @@ OJ.extendComponent(
             "url"          : null
         },
 
-        "_template" : "oj.components.OjLink",
-
 
         "_constructor" : function(label, url, target){
             this._super(OjLabel, "_constructor", []);
@@ -219,6 +217,7 @@ OJ.extendComponent(
         }
     },
     {
-        "_TAGS" : ["a", "link"]
+        "_TAGS" : ["a", "link"],
+        "_TEMPLATE" : "oj.components.OjLink"
     }
 );

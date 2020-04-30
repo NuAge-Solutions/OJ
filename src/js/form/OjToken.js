@@ -7,9 +7,6 @@ importJs('oj.events.OjUiEvent');
 OJ.extendClass(
     'OjToken', [OjItemRenderer],
     {
-        '_template' : 'oj.form.OjToken',
-
-
         '_constructor' : function(/*data*/){
             this._super(OjItemRenderer, '_constructor', arguments);
 
@@ -25,5 +22,8 @@ OJ.extendClass(
         '_onRemoveClick' : function(evt){
             this._list.removeItem(this.data);
         }
+    },
+    {
+        '_TEMPLATE' : 'oj.form.OjToken'
     }
 );

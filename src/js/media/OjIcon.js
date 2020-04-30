@@ -7,8 +7,6 @@ OJ.extendComponent(
             "source" : null
         },
 
-        "_template" : "<i></i>",
-
 
         "_constructor" : function(icon_class){
             this._super(OjComponent, "_constructor", []);
@@ -58,6 +56,7 @@ OJ.extendComponent(
         }
     },
     {
-        "_TAGS" : ["i", "icon"]
+        "_TAGS" : ["i", "icon"],
+        "_TEMPLATE" : "<i></i>"
     }
 );

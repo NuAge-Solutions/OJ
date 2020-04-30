@@ -15,8 +15,6 @@ OJ.extendClass(
 
         '_height': 0, '_loaded': false, '_resize_vals': ['none', 'fill', 'fit', 'hFill', 'wFill'], '_width': 0,
 
-        //'_template': 'oj.media.OjMedia',
-
         '_h_align': OjStyleElement.CENTER,
         '_v_align': OjStyleElement.MIDDLE,
 

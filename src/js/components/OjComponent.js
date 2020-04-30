@@ -24,7 +24,7 @@ OJ.extendClass(
 
         "_constructor" : function(){
             const args = [null, this],
-                template = this._template;
+                template = this._static._TEMPLATE;
 
             // process the template if any
             if(template){
@@ -33,7 +33,7 @@ OJ.extendClass(
                 }
                 else{
                     // TODO: this will throw an error until importTemplate is replaced
-                    //args[0] = importTemplate(this._template);
+                    //args[0] = importTemplate(template);
                 }
             }
 

@@ -19,8 +19,6 @@ OJ.extendClass(
             "title" : null
         },
 
-        "_template" : "oj.window.OjAlert",
-
 
         "_constructor" : function(content, title, buttons, cancel_label, callback){
             this._super(OjComponent, "_constructor", []);
@@ -199,6 +197,8 @@ OJ.extendClass(
         }
     },
     {
+        "_TEMPLATE" : "oj.window.OjAlert",
+
         "NONE" : 0,
         "SHALLOW" : 1,
         "DEEP" : 2,

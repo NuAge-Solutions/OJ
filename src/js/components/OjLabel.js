@@ -6,8 +6,6 @@ OJ.extendComponent(
             "suffix" : null
         },
 
-        "_template" : "<label></label>",
-
 
         "_constructor" : function(text){
             this._super(OjComponent, "_constructor", []);
@@ -106,6 +104,7 @@ OJ.extendComponent(
         }
     },
     {
-        "_TAGS" : ["label"]
+        "_TAGS" : ["label"],
+        "_TEMPLATE" : "<label></label>"
     }
 );

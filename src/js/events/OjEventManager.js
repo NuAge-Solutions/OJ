@@ -117,7 +117,7 @@ OJ.extendManager(
                 var events = this._events,
                     target_id = target.oj_id,
                     context_id = context == window ? 'window' : context.oj_id,
-                    guid = context_id + ':' + (callback.guid ? callback.guid : callback.guid = OJ.guid());
+                    guid = context_id + ':' + (callback.guid || (callback.guid = OJ.guid()));
 
                 // make sure we have a holder for this type of event
                 if(!events[type]){

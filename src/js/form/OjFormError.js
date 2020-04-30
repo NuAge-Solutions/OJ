@@ -6,9 +6,6 @@ importJs('oj.renderers.OjItemRenderer');
 OJ.extendClass(
     'OjFormError', [OjItemRenderer],
     {
-        '_template' : 'oj.form.OjFormError',
-
-
         '_redrawData' : function(){
             var data = this._data,
                 input = this.input,
@@ -34,5 +31,8 @@ OJ.extendClass(
                 }
             }
         }
+    },
+    {
+        '_TEMPLATE' : 'oj.form.OjFormError'
     }
 );

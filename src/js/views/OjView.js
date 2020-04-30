@@ -23,7 +23,7 @@ OJ.extendComponent(
             "title_view" : null
         },
 
-        "_loading_msg" : "Loading", "_template" : "oj.views.OjView", "_is_loaded" : false,
+        "_loading_msg" : "Loading", "_is_loaded" : false,
 
         "_unloading_msg" : "UnLoading",
 
@@ -297,6 +297,9 @@ OJ.extendComponent(
         }
     },
     {
+        "_TAGS" : ["view"],
+        "_TEMPLATE" : "oj.views.OjView",
+
         "ICON" : null,
         "SHORT_TITLE" : null,
         "TITLE" : null,
@@ -304,8 +307,6 @@ OJ.extendComponent(
         "ICON_CHANGE" : "onTitleChange",
         "LOAD" : "onViewLoad",
         "TITLE_CHANGE" : "onTitleChange",
-        "UNLOAD" : "onViewUnload",
-
-        "_TAGS" : ["view"]
+        "UNLOAD" : "onViewUnload"
     }
 );

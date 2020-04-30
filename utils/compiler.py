@@ -471,7 +471,7 @@ class Compiler (object):
 
         # search through the contents to replace template strings
         index = 1
-        needle = "['|\"]_template['|\"][ ]*:[ ]*('|\")([\S]+)['|\"]"
+        needle = "['|\"]_TEMPLATE['|\"][ ]*:[ ]*('|\")([\S]+)['|\"]"
 
         while index:
             match = re.search(needle, contents[index:])
@@ -545,7 +545,7 @@ class Compiler (object):
                 #     shell=True
                 # )
                 call(
-                    'uglifyjs -c -o "' + prod_path + '" "' + dev_path + '"',
+                    'uglifyjs --keep-classnames -c -o "' + prod_path + '" "' + dev_path + '"',
                     shell=True
                 )
             elif ext == CSS:
@@ -567,7 +567,7 @@ class Compiler (object):
                         ('"_props_"', '"_p_"'), ('_props_:', '_p_:'), ('._props_', '._p_'),
                         ('"_static"', '".$"'), ('._static', '.$'),
                         ('"_super"', '"_s"'), ('_super:', '_s:'), ('._super(', '._s('), ('._super=', '._s='),
-                        ('"_template"', '"_t"'), ('_template:', '_t:'), ('._template', '._t'),
+                        ('"_TEMPLATE"', '"_T"'), ('_TEMPLATE:', '_T:'), ('._TEMPLATE', '._T'),
                         ('"_unset"', '"_u"'), ('_unset:', '_u:'), ('._unset', '._u')
                     ]
                 )

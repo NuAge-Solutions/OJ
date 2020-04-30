@@ -75,71 +75,6 @@ OJ.extendClass(
         "_translate" : "0px, 0px",
 
 
-        "_compile_" : function(def){
-            var cls = OjStyleElement;
-
-            if(cls.STYLE_MODE == cls.STYLE_IE){
-                this._getStyle = this._getStyleIe;
-            }
-            else if(cls.STYLE_MODE == cls.STYLE_BACKUP){
-                this._getStyle = this._getStyleBackup;
-            }
-
-            // build functions for style getter and setters
-            def._style_funcs_.call(this, "margin", "Margin");
-            def._style_funcs_.call(this, "padding", "Padding");
-        },
-
-        "_style_funcs_" : function(style, u_style){
-            var g = "get",
-                s = "set",
-                bottom = "Bottom",
-                left = "Left",
-                right = "Right",
-                top = "Top";
-
-            this[g + u_style] = function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
-                return this._getStyler(style, arguments);
-            };
-
-            this[s + u_style] = function(val/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
-                this._setStyler(style, arguments);
-            };
-
-            this[g + u_style + bottom] = function(){
-                return this[g + u_style](2);
-            };
-
-            this[s + u_style + bottom] = function(val){
-                this[s + u_style](null, null, val, null);
-            };
-
-            this[g + u_style + left] = function(){
-                return this[g + u_style](3);
-            };
-
-            this[s + u_style + left] = function(val){
-                this[s + u_style](null, null, null, val);
-            };
-
-            this[g + u_style + right] = function(){
-                return this[g + u_style](1);
-            };
-
-            this[s + u_style + right] = function(val){
-                this[s + u_style](null, val, null, null);
-            };
-
-            this[g + u_style + top] = function(){
-                return this[g + u_style](0);
-            };
-
-            this[s + u_style + top] = function(val){
-                this[s + u_style](val, null, null, null);
-            };
-        },
-
-
         "_constructor" : function(source, context){
             var self = this;
 
@@ -2029,6 +1964,72 @@ OJ.extendClass(
         }
     },
     {
+        "_compile_" : function(cls, proto){
+            if(cls.STYLE_MODE == cls.STYLE_IE){
+                proto._getStyle = proto._getStyleIe;
+            }
+            else if(cls.STYLE_MODE == cls.STYLE_BACKUP){
+                proto._getStyle = proto._getStyleBackup;
+            }
+
+            // build functions for style getter and setters
+            cls._style_funcs_.call(proto, "margin", "Margin");
+            cls._style_funcs_.call(proto, "padding", "Padding");
+
+            // cleanup method
+            delete cls._style_funcs_;
+        },
+
+        "_style_funcs_" : function(style, u_style){
+            var g = "get",
+                s = "set",
+                bottom = "Bottom",
+                left = "Left",
+                right = "Right",
+                top = "Top";
+
+            this[g + u_style] = function(/*side_index : top = 0, right = 1, bottom = 2, left = 3*/){
+                return this._getStyler(style, arguments);
+            };
+
+            this[s + u_style] = function(val/* | top/bottom, right/left | top, right/left, bottom | top, right, bottom, left*/){
+                this._setStyler(style, arguments);
+            };
+
+            this[g + u_style + bottom] = function(){
+                return this[g + u_style](2);
+            };
+
+            this[s + u_style + bottom] = function(val){
+                this[s + u_style](null, null, val, null);
+            };
+
+            this[g + u_style + left] = function(){
+                return this[g + u_style](3);
+            };
+
+            this[s + u_style + left] = function(val){
+                this[s + u_style](null, null, null, val);
+            };
+
+            this[g + u_style + right] = function(){
+                return this[g + u_style](1);
+            };
+
+            this[s + u_style + right] = function(val){
+                this[s + u_style](null, val, null, null);
+            };
+
+            this[g + u_style + top] = function(){
+                return this[g + u_style](0);
+            };
+
+            this[s + u_style + top] = function(val){
+                this[s + u_style](val, null, null, null);
+            };
+        },
+
+
         "COMPONENT_TAGS" : {},
 
         "STYLE_BACKUP" : "styleBackup",

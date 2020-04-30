@@ -10,8 +10,6 @@ OJ.extendComponent(
             'showIcon' : false
         },
 
-        '_template' : 'oj.renderers.OjListItem',
-
 
         '_destructor' : function(/*depth = 0*/){
             var data = this._data;
@@ -110,6 +108,7 @@ OJ.extendComponent(
         }
     },
     {
-        '_TAGS' : ['list-item', 'oj-li', 'li']
+        '_TAGS' : ['list-item', 'oj-li', 'li'],
+        '_TEMPLATE' : 'oj.renderers.OjListItem'
     }
 );
