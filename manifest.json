@@ -1,13 +1,10 @@
 {
-
   "dependencies_path" : "dependencies",
 
   "source_path" : "src",
 
   "packages" : {
-
     "oj" : {
-
       "assets" : ["*"],
       "assets_exclude" : [".*"],
 
@@ -18,21 +15,13 @@
 
       "themes" : ["*"],
       "themes_exclude" : []
-
     }
-
   },
 
   "builds" : {
-
     "oj.example" : {
-
       "packages" : ["oj"],
-
       "html" : "src/html/example.html"
-
     }
-
   }
-
 }
