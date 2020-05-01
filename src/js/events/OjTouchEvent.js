@@ -38,8 +38,8 @@ OJ.extendClass(
         }
     },
     {
-        'convertDomEvent' : function(evt){
-            var type;
+        "convertDomEvent" : function(evt){
+            let type;
 
             evt = OjDomEvent.normalizeDomEvent(evt);
 
@@ -49,13 +49,14 @@ OJ.extendClass(
             else if(evt.type == OjDomEvent.TOUCH_START){
                 type = OjTouchEvent.START;
             }
-      else if(
-        evt.type == OjDomEvent.TOUCH_END || evt.type == OjDomEvent.TOUCH_CANCEL || evt.type == OjDomEvent.TOUCH_LEAVE
-      ){
+            else if(
+                evt.type == OjDomEvent.TOUCH_END || evt.type == OjDomEvent.TOUCH_CANCEL || evt.type == OjDomEvent.TOUCH_LEAVE
+            ){
                 type = OjTouchEvent.END;
             }
 
-            var new_evt = new OjTouchEvent(type, evt.changedTouches[0].pageX, evt.changedTouches[0].pageY, evt.bubbles, evt.cancelable);
+            const touch = evt.changedTouches.first || {pageX: 0, pageY: 0},  // this is a hack for simulated touches that are foo bar'd
+                new_evt = new OjTouchEvent(type, touch.pageX, touch.pageY, evt.bubbles, evt.cancelable);
             new_evt._target = OjElement.element(evt.target)
             new_evt._current_target = OjElement.element(evt.current_target);
 
