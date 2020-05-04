@@ -1,0 +1,17 @@
+image: python:3.7.2
+
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Compile Latest
+          deployment: production
+          script:
+            - apt update
+            - apt install nodejs
+            - ./oj.py install
+            - ./oj.py compile -v
+            - git add -f builds/*
+            - git commit -m "auto rebuild master [skip ci]"
+            - git push origin master

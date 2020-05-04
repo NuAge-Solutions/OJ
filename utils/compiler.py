@@ -1,3 +1,4 @@
+import fnmatch
 import gzip
 
 from subprocess import call
@@ -35,50 +36,7 @@ class Compiler (object):
         self.packages = ALL
         self.types = TYPES
 
-        self.manifest = manifest if isinstance(manifest, dict) else load_manifest_file(manifest)
-
-    # loading methods
-    def _load_manifest_file(self, manifest_path):
-        # get the manifest directory path
-        manifest_dir = os.path.dirname(manifest_path)
-
-        # load the manifest file
-        manifest = load_json(manifest_path)
-        dependencies = {}
-
-        # process the manifest packages
-        for key in manifest:
-            val = manifest[key]
-
-            # check for a package dict
-            if isinstance(val, dict):
-                # update the source path
-                if 'source' in val:
-                    val['source'] = os.path.join(manifest_dir, val['source'])
-
-            # its a sub-manifest path
-            elif val:
-                # process the dependency manifest
-                dependency = self._load_manifest_file(
-                    os.path.join(manifest_dir, val)
-                )
-
-                # store sub-dependencies
-                for d in dependency:
-                    dependencies[d] = dependency[d]
-
-                # update manifest with dependency manifest object
-                manifest[key] = dependency[key]
-
-            else:
-                manifest[key] = None
-
-        # process sub-dependencies to fill in any gaps
-        for key in dependencies:
-            if key not in manifest:
-                manifest[key] = dependencies[key]
-
-        return manifest
+        self.manifest = manifest if isinstance(manifest, Manifest) else load_manifest_file(manifest)
 
     # processing methods
     def _process_css(self, contents):
@@ -213,11 +171,12 @@ class Compiler (object):
         # return the results
         return '\n'.join([prefix, contents, suffix])
 
-    def _process_package(self, name, source, package):
+    def _process_package(self, name, package):
         trace('Compiling Package "' + name + '"', newline=True)
 
         # parse name
         parts = name.split('.')
+        source = package["source_path"]
 
         # setup package vars
         self._assets_exc = package.get('assets_exclude', ['.*'])
@@ -539,18 +498,13 @@ class Compiler (object):
             prod_path = os.path.join(directory, name + '.' + ext)
 
             if ext == JS:
-                # call(
-                #     'java -jar "' + os.path.join(utils_dir, 'yuicompressor.jar') +
-                #     '" -o "' + prod_path + '" "' + dev_path + '"',
-                #     shell=True
-                # )
                 call(
-                    'uglifyjs --keep-classnames -c -o "' + prod_path + '" "' + dev_path + '"',
+                    os.path.join(bin_dir, 'uglifyjs') + ' --keep-classnames -c -o "' + prod_path + '" "' + dev_path + '"',
                     shell=True
                 )
             elif ext == CSS:
                 call(
-                    'cleancss -o "' + prod_path + '" "' + dev_path + '"',
+                    os.path.join(bin_dir, 'cleancss') + ' -o "' + prod_path + '" "' + dev_path + '"',
                     shell=True
                 )
 
@@ -587,42 +541,29 @@ class Compiler (object):
         if pre_compiled:
             file_put_contents(dev_path, pre_compiled + contents)
 
-    def run(self, destination, mode="prod", packages="all", types="all"):
+    def run(self, destination, packages, mode="prod", recursive=False, types="all"):
+        manifest_packages = self.manifest.packages
+        all_packages = manifest_packages.keys() if recursive else self.manifest.root_packages
+
         # setup vars
         self.build = {}
         self.destination = destination
         self.mode = mode
-        self.packages = packages if ALL != packages else sorted(self.manifest.keys())
-        self.types = types if ALL != types else TYPES
+        self.packages = all_packages if ALL == packages else packages
+        self.types = TYPES if ALL == types else types
 
         # process packages
         processed = []
 
         for package in self.packages:
-            if package in processed:
-                continue
+            # find matching packages
+            for pkg in manifest_packages:
+                # check for previously processed
+                if pkg in processed:
+                    continue
 
-            processed.append(package)
+                if fnmatch.fnmatchcase(pkg, package):
+                    processed.append(pkg)
 
-            parts = package.split(".")
-            root = parts[0]
-
-            if root in self.manifest:
-                sub_packages = self.manifest[root]["packages"]
-                source = self.manifest[root]["source_path"]
-
-                # check for wildcard
-                if len(parts) > 1 and parts[1] == "*":
                     # process the root package first
-                    self._process_package(root, source, sub_packages[root])
-
-                    # then process the sub-packages
-                    for sub_package in sub_packages:
-                        if sub_package != root:
-                            self._process_package(sub_package, source, sub_packages[sub_package])
-
-                elif package in sub_packages:
-                    self._process_package(package, source, sub_packages[package])
-
-            else:
-                warning("Package \"" + package + "\" not found in manifest.")
+                    self._process_package(pkg, manifest_packages[pkg])

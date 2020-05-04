@@ -2,7 +2,7 @@
   "dependencies_path" : "dependencies",
 
   "source_path" : "src",
-
+  "name": "oj",
   "packages" : {
     "oj" : {
       "assets" : ["*"],

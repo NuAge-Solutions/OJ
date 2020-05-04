@@ -1,8 +1,9 @@
 import argparse
+import os
 import utils
-import utils.sh as sh
 
-from utils import *
+from subprocess import call
+from utils import ALL, CSS, DEV, JS, PROD, TEMPLATE, THEME, TYPES, load_manifest_file, sh, trace
 
 
 _reserved_packages = ["android", "ios", "linux", "osx", "windows"]
@@ -41,23 +42,26 @@ def _process_args(args):
     action = args.action
     destination = args.destination
     mode = args.mode
-    packages = []
+    packages = args.packages
 
-    for pkg in args.packages:
-        platform = _platform(pkg)
+    if packages != ALL:
+        packages = []
 
-        if platform:
-            destination = platform.destination(action, destination)
+        for pkg in args.packages:
+            platform = _platform(pkg)
 
-            mode = platform.mode(action, mode)
+            if platform:
+                destination = platform.destination(action, destination)
 
-            pkg = platform.package(action, pkg)
+                mode = platform.mode(action, mode)
 
-            if pkg:
+                pkg = platform.package(action, pkg)
+
+                if pkg:
+                    packages.append(pkg)
+
+            else:
                 packages.append(pkg)
-
-        else:
-            packages.append(pkg)
 
     return destination, mode, packages
 
@@ -67,7 +71,7 @@ def run(src_path):
     parser = argparse.ArgumentParser(description="Compile Objective-JS Package(s).")
 
     parser.add_argument(
-        "action", choices=["add", "build", "compile", "dist", "remove", "setup", "install"], default="compile",
+        "action", choices=["add", "build", "compile", "dist", "remove", "setup", "install", "update"], default="compile",
         help="The action to take when running the script."
     )
 
@@ -80,6 +84,11 @@ def run(src_path):
              "Action \"remove\": The classes you want to remove. At least one class must be specified.\n" +
              "Action \"setup\": The first argument is the package name and the second is the destination.\n" +
              "***Note: Package names 'android', 'ios', 'linux', 'osx', & 'windows' are reserved."
+    )
+
+    parser.add_argument(
+        "-r", action="store_true", default=False,
+        help="Process packages recursively."
     )
 
     parser.add_argument(
@@ -103,8 +112,18 @@ def run(src_path):
     )
 
     parser.add_argument(
-        "--verbose", type=int, default=0,
+        "--indent", type=int, default=0,
+        help="Trace output indent level."
+    )
+
+    parser.add_argument(
+        "--verbose", action = "store_true", default=False,
         help="Show verbose output."
+    )
+
+    parser.add_argument(
+        "--recursive", action="store_true", default=False,
+        help="Process packages recursively."
     )
 
     # process the script args
@@ -118,10 +137,9 @@ def run(src_path):
         kwargs["types"] = TYPES
 
     # setup verbose setting
-    utils.VERBOSE = args.verbose
-
-    if args.v and utils.VERBOSE == 0:
-        utils.VERBOSE = 1
+    utils.INDENT = args.indent
+    utils.RECURSIVE = args.recursive or args.r
+    utils.VERBOSE = args.verbose or args.v
 
     destination, mode, packages = _process_args(args)
 
@@ -135,10 +153,6 @@ def run(src_path):
         add(src_path, **kwargs)
 
     elif args.action == "build":
-        # check that at least one package was specified
-        if args.packages == ALL:
-            raise Exception("When building at least one package must be specified. All/empty is unsupported.")
-
         # setup compiler instance
         from utils.builder import Builder
 
@@ -146,7 +160,7 @@ def run(src_path):
 
         # build the compile kwargs
         kwargs["mode"] = mode
-
+        kwargs["recursive"] = utils.RECURSIVE
         kwargs.pop("types")
 
         # run the compiler
@@ -160,10 +174,10 @@ def run(src_path):
 
         # build the compile kwargs
         kwargs["mode"] = mode
-        kwargs["packages"] = packages
+        kwargs["recursive"] = utils.RECURSIVE
 
         # run the compiler
-        compiler.run(destination, **kwargs)
+        compiler.run(destination, packages, **kwargs)
 
     elif args.action == "dist":
         from zipfile import ZipFile
@@ -178,9 +192,42 @@ def run(src_path):
                 zip.extractall(destination)
 
     elif args.action == "install":
-        sh.npm.install("-g", "uglify-es")
-        sh.npm.install("-g", "clean-css")
-        sh.npm.install("-g", "clean-css-cli")
+        sh_kwargs = {
+            "indent": 1
+        }
+
+        manifest = load_manifest_file("manifest.json")
+
+        if manifest.name == "oj":
+            trace("Install Utils Node Modules")
+            trace(sh.npm.install(_cwd=utils.utils_dir), **sh_kwargs)
+
+        # install node module from source
+        trace("Install Package Node Modules")
+        trace(sh.npm.install(_cwd=manifest.source_path), **sh_kwargs)
+
+        # process install commands
+        trace("Install Commands")
+
+        for install in manifest.install:
+            call(install, shell=True)
+
+        # install dependencies
+        if utils.RECURSIVE:
+            for pkg in manifest.dependencies:
+                dependency = manifest.dependencies[pkg]
+                dependency_path = dependency.path
+
+                trace("Install Dependency: " + pkg)
+
+                cmd = sh.Command(os.path.join(src_path, dependency_path, "oj.py"))
+                cmd_args = ["install", "-r"]
+
+                if utils.VERBOSE:
+                    cmd_args.append("-v")
+                    cmd_args.append("--indent=" + str(utils.INDENT + 1))
+
+                trace(cmd(*cmd_args, _cwd=dependency_path), **sh_kwargs)
 
     elif args.action == "remove":
         # setup compiler instance
@@ -194,3 +241,41 @@ def run(src_path):
         from utils.manage import setup
 
         setup(src_path, *packages)
+
+    elif args.action == "update":
+        sh_kwargs = {
+            "indent": 1
+        }
+
+        manifest = load_manifest_file("manifest.json")
+
+        if manifest.name == "oj":
+            trace("Update Utils Node Modules")
+            trace(sh.npm.update(_cwd=utils.utils_dir), **sh_kwargs)
+
+        # install node module from source
+        trace("Update Package Node Modules")
+        trace(sh.npm.update(_cwd=manifest.source_path), **sh_kwargs)
+
+        # process install commands
+        trace("Update Commands")
+
+        for install in manifest.install:
+            call(install, shell=True)
+
+        # install dependencies
+        if utils.RECURSIVE:
+            for pkg in manifest.dependencies:
+                dependency = manifest.dependencies[pkg]
+                dependency_path = dependency.path
+
+                trace("Update Dependency: " + pkg)
+
+                cmd = sh.Command(os.path.join(src_path, dependency_path, "oj.py"))
+                cmd_args = ["update", "-r"]
+
+                if utils.VERBOSE:
+                    cmd_args.append("-v")
+                    cmd_args.append("--indent=" + str(utils.INDENT + 1))
+
+                trace(cmd(*cmd_args, _cwd=dependency_path), **sh_kwargs)

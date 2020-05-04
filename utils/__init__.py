@@ -2,6 +2,7 @@ import errno
 import json
 import os
 import re
+import utils.sh as sh
 import shutil
 import sys
 
@@ -21,8 +22,9 @@ THEME = 'theme'
 TYPES = [CSS, JS, TEMPLATE, THEME]
 MODES = [DEV, PROD]
 
+INDENT = 0
+RECURSIVE = 0
 VERBOSE = 0
-
 
 if sys.version < '3':
     import codecs
@@ -35,6 +37,35 @@ else:
 
 
 utils_dir = os.path.dirname(os.path.realpath(__file__))
+bin_dir = os.path.join(utils_dir, "node_modules", ".bin")
+
+
+class Manifest:
+    def __init__(self, path):
+        # get the manifest directory path
+        self.path = os.path.dirname(path)
+
+        if not self.path:
+            self.path = os.getcwd()
+
+        # load the manifest file
+        self.json = load_json(path)
+
+        # setup vars
+        self.builds = self.json.get("builds", {})
+        self.dependencies = self.json.get("dependencies", {})
+        self.dependencies_path = os.path.join(self.path, self.json.get("dependencies_path", "dependencies"))
+        self.install = self.json.get("install", [])
+        self.name = self.json.get("name", os.path.basename(self.path))
+        self.packages = self.json.get("packages", {})
+        self.root_builds = self.builds.keys(),
+        self.root_packages = self.packages.keys()
+        self.source_path = os.path.join(self.path, self.json.get("source_path", "src"))
+
+        for pkg in self.root_packages:
+            self.packages[pkg]["dependencies_path"] = self.dependencies_path
+            self.packages[pkg]["path"] = self.path
+            self.packages[pkg]["source_path"] = self.source_path
 
 
 def cp(source, destination):
@@ -182,74 +213,52 @@ def load_json(source):
     return json.loads(file_get_contents(source))
 
 
+def load_manifest_dependencies(dependencies_path):
+    dependencies = {}
+    sub_dependencies = []
+
+    if os.path.isdir(dependencies_path):
+        for path in os.listdir(dependencies_path):
+            if path[0] == "." or path in dependencies:
+                continue
+
+            dependency_path = os.path.join(dependencies_path, path)
+            dependency_manifest_path = os.path.join(dependency_path, "manifest.json")
+
+            if os.path.isfile(dependency_manifest_path):
+                manifest = Manifest(dependency_manifest_path)
+
+                dependencies[path] = manifest
+
+                sub_dependencies.append(manifest.dependencies_path)
+
+    for sub_dependency in sub_dependencies:
+        dependencies.update(
+            load_manifest_dependencies(sub_dependency)
+        )
+
+    # load manual path dependencies
+    for pkg in dependencies:
+        dependency = dependencies[pkg]
+
+        if isinstance(dependency, str):
+            for sub_pkg, dependency in load_manifest_dependencies(dependency).items():
+                if sub_pkg == pkg or sub_pkg not in dependencies:
+                    dependencies[sub_pkg] = dependency
+
+    return dependencies
+
+
 def load_manifest_file(manifest_path):
-        # get the manifest directory path
-        manifest_dir = os.path.dirname(manifest_path)
+    manifest = Manifest(manifest_path)
 
-        # load the manifest file
-        raw_manifest = load_json(manifest_path)
+    # process dependencies
+    for ns, dependency in load_manifest_dependencies(manifest.dependencies_path).items():
+        manifest.builds = dict(dependency.builds, **manifest.builds)
+        manifest.dependencies[ns] = dependency
+        manifest.packages = dict(dependency.packages, **manifest.packages)
 
-        # update the dependencies path
-        raw_manifest["dependencies_path"] = os.path.join(
-            manifest_dir, raw_manifest.get("dependencies_path", "dependencies")
-        )
-
-        # update the source path
-        raw_manifest["source_path"] = os.path.join(
-            manifest_dir, raw_manifest.get("source_path", "src")
-        )
-
-        # discover package name
-        package = list(raw_manifest["packages"].keys())[0].split(".")[0]
-
-        # setup manifest
-        manifest = dict()
-        manifest[package] = raw_manifest
-
-        # process dependencies
-        if os.path.isdir(raw_manifest["dependencies_path"]):
-            for path in os.listdir(raw_manifest["dependencies_path"]):
-                if path[0] == ".":
-                    continue
-
-                path = os.path.join(raw_manifest["dependencies_path"], path, "manifest.json")
-
-                if os.path.isfile(path):
-                    manifest.update(
-                        load_manifest_file(path)
-                    )
-
-        # # process the manifest packages
-        # for key in manifest:
-        #     val = manifest[key]
-        #
-        #     # check for a package dict
-        #     if isinstance(val, dict):
-        #         pass
-        #
-        #     # its a sub-manifest path
-        #     elif val:
-        #         # process the dependency manifest
-        #         dependency = load_manifest_file(
-        #             os.path.join(manifest_dir, val)
-        #         )
-        #
-        #         # store sub-dependencies
-        #         for d in dependency:
-        #             dependencies[d] = dependency[d]
-        #
-        #         # update manifest with dependency manifest object
-        #         manifest[key] = dependency[key]
-        #
-        #     else:
-        #         manifest[key] = None
-        #
-        # # process sub-dependencies to fill in any gaps
-        # for key in dependencies:
-        #     if key not in manifest:
-        #         manifest[key] = dependencies[key]
-
-        return manifest
+    return manifest
 
 
 def mkdir(path, *args):
@@ -291,8 +300,11 @@ def error(msg):
 
 
 def trace(msg, indent=0, newline=False):
-    if VERBOSE and indent <= VERBOSE:
-        print(('\n' if newline else '') + ('  ' * indent) + msg)
+    if msg and VERBOSE:
+        indent = ('  ' * (INDENT + indent))
+        msg = indent + str(msg)
+
+        print(("\n" if newline else "") + msg.replace("\n", "\n" + indent).replace("\r", "\n" + indent))
 
 
 def warning(msg):

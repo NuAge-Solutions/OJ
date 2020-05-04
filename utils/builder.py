@@ -10,7 +10,7 @@ class Builder (object):
     def __init__(self, manifest):
         super(Builder, self).__init__()
 
-        self.manifest = manifest if isinstance(manifest, dict) else load_manifest_file(manifest)
+        self.manifest = manifest if isinstance(manifest, Manifest) else load_manifest_file(manifest)
 
     def _build_zip(self, destination, package, build, mode):
         zip_name = package
@@ -41,7 +41,7 @@ class Builder (object):
                             continue
 
                         if not is_assets and (
-                                        file[-3:] == ".gz" or (mode_suffix and mode_suffix not in file) or (not mode_suffix and "-" in file)
+                            file[-3:] == ".gz" or (mode_suffix and mode_suffix not in file) or (not mode_suffix and "-" in file)
                         ):
                             continue
 
@@ -137,13 +137,15 @@ class Builder (object):
 
                 _cmd(*args, **kwargs)
 
-    def run(self, destination, packages, mode="prod"):
+    def run(self, destination, packages, mode="prod", recursive=False):
         # setup compiler
         from utils.compiler import Compiler
 
         compiler = Compiler(self.manifest)
 
         # process builds
+        packages = sorted(self.manifest.keys()) if ALL == packages else packages
+
         for package in packages:
             manifest, build = self._find_manifest_and_build(package)
             p_destination = os.path.join(destination, package)
